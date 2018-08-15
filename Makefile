@@ -25,6 +25,8 @@ clean: FORCE
 	rm -rf docs/build
 distclean: clean
 	rm -rf bin
+	rm -f tags
+	rm -f cscope.out
 	rm -f docs/paper.pdf
 	rm -rf docs/reference
 	rm -f docs/manual.pdf
