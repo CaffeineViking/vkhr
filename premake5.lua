@@ -47,7 +47,7 @@ project (name)
     vpaths {
         ["src/*"] = "src/**.cc",
         ["include/*"] = "include/**.hh",
-        ["scenes/*"]  = { "share/scenes/**.vkhr" }
+        ["scenes/*"]  = { "share/scenes/**.vkhr" },
         ["shaders/*"] = { "share/shader/**.glsl",
                           "share/shader/**.vert",
                           "share/shader/**.geom",
