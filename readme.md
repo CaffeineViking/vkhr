@@ -1,5 +1,5 @@
-Real-Time Hair Renderer in Vulkan
-=================================
+Real-Time Hair Renderer
+=======================
 
 Compiling and Running
 ---------------------
@@ -11,7 +11,7 @@ Compiling and Running
 5. Finally, issue the command `make -j8 -C build` and wait.
 6. When complete, both `bin` and `lib` have been built.
 7. Run the Vulkan hair renderer by using `bin/vkhr`.
-8. **Shortcuts:** `make run` will build and run.
+8. **Shortcuts:** `make run` both will build and run.
 
 Usage and Documents
 -------------------
