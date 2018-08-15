@@ -1,0 +1,31 @@
+# Maintainer: Erik S. V. Jansson <caffeineviking@gmail.com>
+
+pkgname=vkhr-git
+pkgver=VERSION
+pkgrel=1
+pkgdesc="Real-Time Hair Renderer in Vulkan"
+arch=('i686' 'x86_64')
+url="https://github.com/CaffeineViking/vkhr"
+license=('MIT')
+provides=('vkhr')
+depends=('glfw' 'vulkan')
+makedepends=('git' 'premake-git')
+source=('git+https://github.com/CaffeineViking/vkhr')
+md5sums=('SKIP')
+
+pkgver() {
+	cd vkhr
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd vkhr
+	make
+}
+
+package() {
+	cd vkhr
+	install -Dm755 bin/vkhr "$pkgdir"/usr/bin/vkhr
+	install -Dm755 docs/vkhr.1 "$pkgdir"/usr/share/man/man1/vkhr.1
+	install -Dm644 license.md "$pkgdir"/usr/share/licenses/vkhr/LICENSE
+}
