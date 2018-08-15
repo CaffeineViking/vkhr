@@ -7,7 +7,9 @@ workspace (name)
     configurations { "Debug",
                      "Release" }
 
-    startproject "vkhr"
+    filter { "action:vs*" }
+        startproject "vkhr"
+        architecture "x86_64"
 
     filter "configurations:Debug"
         floatingpoint "Strict"
@@ -27,14 +29,34 @@ project (name)
     targetdir "bin"
     kind "WindowedApp"
 
-    files "src/main.cc"
-    files "foreign/src/**.c"
-    files "foreign/src/**.cpp"
+    includedirs "include"
+    files { "include/**.hh" }
     files { "src/"..name.."/**.cc" }
+    files "src/main.cc"
 
+    files { "share/shader/**.glsl",
+            "share/shader/**.vert",
+            "share/shader/**.geom",
+            "share/shader/**.tesc",
+            "share/shader/**.tese",
+            "share/shader/**.frag",
+            "share/shader/**.comp" }
+
+    vpaths {
+        ["sources/*"] = "src/**.cc",
+        ["headers/*"] = "include/**.hh",
+        ["shaders/*"] = { "share/shader/**.glsl",
+                          "share/shader/**.vert",
+                          "share/shader/**.geom",
+                          "share/shader/**.tesc",
+                          "share/shader/**.tese",
+                          "share/shader/**.frag",
+                          "share/shader/**.comp" }
+    }
+
+    -- For header-only libraries.
     includedirs "foreign/include"
     includedirs "foreign/glm"
-    includedirs "include"
 
     filter { "system:windows", "action:gmake" }
         links { "glfw3", "vulkan" }
