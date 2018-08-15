@@ -10,6 +10,7 @@ workspace (name)
     filter { "action:vs*" }
         startproject "vkhr"
         architecture "x86_64"
+        systemversion "10.0.17134.0"
 
     filter "configurations:Debug"
         floatingpoint "Strict"
@@ -27,13 +28,14 @@ SDK = "$(VULKAN_SDK)"
 
 project (name)
     targetdir "bin"
-    kind "WindowedApp"
+    kind "ConsoleApp"
 
     includedirs "include"
     files { "include/**.hh" }
     files { "src/"..name.."/**.cc" }
     files "src/main.cc"
 
+    files { "share/scenes/**.vkhr" }
     files { "share/shader/**.glsl",
             "share/shader/**.vert",
             "share/shader/**.geom",
@@ -43,8 +45,9 @@ project (name)
             "share/shader/**.comp" }
 
     vpaths {
-        ["sources/*"] = "src/**.cc",
-        ["headers/*"] = "include/**.hh",
+        ["src/*"] = "src/**.cc",
+        ["include/*"] = "include/**.hh",
+        ["scenes/*"]  = { "share/scenes/**.vkhr" }
         ["shaders/*"] = { "share/shader/**.glsl",
                           "share/shader/**.vert",
                           "share/shader/**.geom",
