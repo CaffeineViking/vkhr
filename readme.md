@@ -22,6 +22,10 @@ System Requirements
 Dependencies
 ------------
 
+* Premake 5 (build)
+* A Vulkan 1.1 SDK
+* GLFW 3.2
+
 Structure
 ---------
 
