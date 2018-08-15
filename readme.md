@@ -11,6 +11,7 @@ Compiling and Running
 2. Execute `git submodule update --init --recursive`.
 3. Acquire the latest version of the `premake5` build system.
 4. Thereafter, execute `premake5 gmake` if building on Make.
+    * If you're targeting e.g. Visual Studio: `premake5 vs2017`
 5. Finally, issue the command `make -j8 -C build` and wait.
 6. When complete, both `bin` and `lib` have been built.
 7. Run the Vulkan hair renderer by using `bin/vkhr`.
