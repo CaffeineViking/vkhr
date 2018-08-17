@@ -9,16 +9,16 @@ workspace (name)
                      "Release" }
 
     filter "configurations:Debug"
-        defines "DEBUG"
+        defines  "DEBUG"
         optimize "Off"
-        symbols "On"
+        symbols  "On"
 
     floatingpoint "Fast"
 
     filter "configurations:Release"
-        defines "RELEASE"
+        defines  "RELEASE"
         optimize "Speed"
-        symbols "Off"
+        symbols  "Off"
 
     filter { "action:vs*" }
         include "utils/wsdk.lua"
