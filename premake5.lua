@@ -1,28 +1,35 @@
 name = "vkhr"
 workspace (name)
-    language "C++"
-    location "build"
-    warnings "Extra"
+    language   "C++"
+    location   "build"
+    warnings   "Extra"
     cppdialect "C++17"
+
     configurations { "Debug",
                      "Release" }
 
-    filter { "action:vs*" }
-        startproject "vkhr"
-        architecture "x86_64"
-        systemversion "10.0.17134.0"
-
     filter "configurations:Debug"
-        floatingpoint "Strict"
         defines "DEBUG"
         optimize "Off"
         symbols "On"
 
+    floatingpoint "Fast"
+
     filter "configurations:Release"
-        floatingpoint "Fast"
         defines "RELEASE"
         optimize "Speed"
         symbols "Off"
+
+    filter { "action:vs*" }
+        include "utils/wsdk.lua"
+        startproject "vkhr"
+        platforms { "Win32", "Win64" }
+        -- Premake5 fails to detect SDK.
+        systemversion(os.winSdk()..".0")
+        filter "platforms:Win32"
+            architecture "x86"
+        filter "platforms:Win64"
+            architecture "x86_64"
 
 SDK = "$(VULKAN_SDK)"
 
