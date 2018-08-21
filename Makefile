@@ -8,6 +8,22 @@ run: FORCE
 	premake5 gmake
 	make -j8 -C build ${name} config=${config}
 	bin/${name} ${args}
+help: FORCE
+	@echo "Usage: make [config=name] [target]"
+	@echo ""
+	@echo "CONFIGURATIONS:"
+	@echo "  release"
+	@echo "  debug"
+	@echo ""
+	@echo "TARGETS:"
+	@echo "   all"
+	@echo "   run"
+	@echo "   help"
+	@echo "   docs"
+	@echo "   tags"
+	@echo "   clean"
+	@echo "   distclean"
+	@echo ""
 
 docs: FORCE
 	make -C docs
