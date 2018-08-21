@@ -74,4 +74,4 @@ project (name)
         links { SDK.."/lib/vulkan-1.lib" }
         includedirs { SDK.."/include" }
     filter "system:linux or bsd or solaris"
-        links { "glfw3", "vulkan" }
+        links { "glfw",  "vulkan" }
