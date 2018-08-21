@@ -66,6 +66,9 @@ project (name)
 
     -- For header-only libraries.
     includedirs "foreign/include"
+    includedirs "foreign/imgui"
+    files { "foreign/imgui/imgui_draw.cpp",
+            "foreign/imgui/imgui.cpp" }
     includedirs "foreign/glm"
 
     filter { "system:windows", "action:gmake" }

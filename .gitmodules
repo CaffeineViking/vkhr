@@ -1,3 +1,6 @@
 [submodule "foreign/glm"]
 	path = foreign/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "foreign/imgui"]
+	path = foreign/imgui
+	url = https://github.com/ocornut/imgui.git
