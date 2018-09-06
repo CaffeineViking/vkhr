@@ -50,16 +50,16 @@ Structure
 * `docs`: any generated documentation for this project is over here.
 * `foreign`: external headers and source for libraries and modules.
 * `include`: only internal headers from this project should go here.
-    * `vkhr`: internal headers for the hair Vulkan renderer project.
+    * `vkhr`: internal headers for the Vulkan hair renderer project.
 * `lib`: any generated libraries from the project reside here.
 * `license.md`: please look through this very carefully.
 * `premake5.lua`: configuration file for the build system.
 * `readme.md`: this file contains information on the project.
 * `share`: any extra data that needs to be bundled should go here.
-    * `binary`: the blobs that will be used, like the hair style file.
-    * `images`: any image on disk that should be used as textures.
+    * `binary`: the blobs that will be used, like the hair style files.
+    * `images`: any images on disk that should be used as textures.
     * `models`: the meshes/models/materials to be used in the project.
-    * `shader`: all of the uncompiled shader that are to be used here.
+    * `shader`: all of the uncompiled shaders that are to be used go here.
     * `scenes`: any sort of scene files (e.g. in json) should go here.
 * `src`: all source code for the project should be located below here.
     * `vkhr`: source code for the Vulkan hair renderer project itself.
@@ -70,6 +70,8 @@ Reporting Bugs
 --------------
 
 There are definitely no known bugs in this software at this time.
+
+Still, if you find anything, feel free to open an issue and I'll fix it!
 
 Acknowledgements
 ----------------
