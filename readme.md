@@ -59,7 +59,7 @@ Structure
     * `binary`: the blobs that will be used, like the hair style files.
     * `images`: any images on disk that should be used as textures.
     * `models`: the meshes/models/materials to be used in the project.
-    * `shader`: all of the uncompiled shaders that are to be used go here.
+    * `shader`: all of the uncompiled shaders should go over here.
     * `scenes`: any sort of scene files (e.g. in json) should go here.
 * `src`: all source code for the project should be located below here.
     * `vkhr`: source code for the Vulkan hair renderer project itself.
