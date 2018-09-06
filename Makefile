@@ -4,9 +4,7 @@ config = "debug"
 all: FORCE
 	premake5 gmake
 	make -j8 -C build config=${config}
-run: FORCE
-	premake5 gmake
-	make -j8 -C build ${name} config=${config}
+run: all
 	bin/${name} ${args}
 help: FORCE
 	@echo "Usage: make [config=name] [target]"
