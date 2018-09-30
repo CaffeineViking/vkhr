@@ -69,6 +69,7 @@ project (name)
     includedirs "foreign/include"
     includedirs "foreign/imgui"
     files { "foreign/imgui/imgui_draw.cpp",
+            "foreign/imgui/imgui_widgets.cpp",
             "foreign/imgui/imgui.cpp" }
     includedirs "foreign/glm"
 
