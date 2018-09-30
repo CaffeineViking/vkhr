@@ -40,6 +40,7 @@ project (name)
     includedirs "include"
     files { "include/**.hh" }
     files { "src/"..name.."/**.cc" }
+    files { "src/vkpp/**.cc" }
     files "src/main.cc"
 
     files { "share/scenes/**.vkhr" }

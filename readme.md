@@ -51,6 +51,7 @@ Structure
 * `foreign`: external headers and source for libraries and modules.
 * `include`: only internal headers from this project should go here.
     * `vkhr`: internal headers for the Vulkan hair renderer project.
+    * `vkpp`: headers for a minimal modern C++ Vulkan wrapper.
 * `lib`: any generated libraries from the project reside here.
 * `license.md`: please look through this very carefully.
 * `premake5.lua`: configuration file for the build system.
@@ -63,6 +64,7 @@ Structure
     * `scenes`: any sort of scene files (e.g. in json) should go here.
 * `src`: all source code for the project should be located below here.
     * `vkhr`: source code for the Vulkan hair renderer project itself.
+    * `vkpp`: full implementation of an Vulkan C++ wrapper (separate).
     * `main.cc`: the primary entry point when generating the binaries.
 * `utils`: any sort of helper scripts or similar should be over here.
 
@@ -75,3 +77,8 @@ Still, if you find anything, feel free to open an issue and I'll fix it!
 
 Acknowledgements
 ----------------
+
+Legal Notice
+------------
+
+Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
