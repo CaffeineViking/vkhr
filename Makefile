@@ -17,11 +17,15 @@ help: FORCE
 	@echo "   all"
 	@echo "   run"
 	@echo "   help"
+	@echo "   dependencies"
 	@echo "   docs"
 	@echo "   tags"
 	@echo "   clean"
 	@echo "   distclean"
 	@echo ""
+
+dependencies: FORCE
+	git submodule update --init --recursive --depth 1
 
 docs: FORCE
 	make -C docs
