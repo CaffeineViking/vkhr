@@ -17,6 +17,7 @@ help: FORCE
 	@echo "   all"
 	@echo "   run"
 	@echo "   help"
+	@echo "   solution"
 	@echo "   dependencies"
 	@echo "   docs"
 	@echo "   tags"
@@ -24,6 +25,8 @@ help: FORCE
 	@echo "   distclean"
 	@echo ""
 
+solution: FORCE
+	premake5 vs2017
 dependencies: FORCE
 	git submodule update --init --recursive --depth 1
 
@@ -45,9 +48,7 @@ distclean: clean
 	rm -rf bin
 	rm -f tags
 	rm -f cscope.out
-	rm -f docs/paper.pdf
 	rm -rf docs/reference
-	rm -f docs/manual.pdf
 FORCE:
 
 # Clarifies that these are not files :-).

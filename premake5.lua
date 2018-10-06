@@ -55,6 +55,10 @@ project (name)
     vpaths {
         ["src/*"] = "src/**.cc",
         ["include/*"] = "include/**.hh",
+        ["foreign/*"] = { "foreign/**.hpp",
+                          "foreign/**.h",
+                          "foreign/**.cpp",
+                          "foreign/**.c" },
         ["scenes/*"]  = { "share/scenes/**.vkhr" },
         ["shaders/*"] = { "share/shader/**.glsl",
                           "share/shader/**.vert",
@@ -68,12 +72,16 @@ project (name)
     -- For header-only libraries.
     includedirs "foreign/include"
     includedirs "foreign/imgui"
-    files { "foreign/imgui/imgui_draw.cpp",
+    files { "foreign/imgui/*.h",
+            "foreign/imgui/imgui_draw.cpp",
             "foreign/imgui/imgui_widgets.cpp",
             "foreign/imgui/imgui.cpp" }
     includedirs "foreign/tinyobjloader"
-    files { "foreign/tinyobjloader/tiny_obj_loader.cc" }
+    files { "foreign/tinyobjloader/tiny_obj_loader.cc",
+            "foreign/tinyobjloader/tiny_obj_loader.h" }
     includedirs "foreign/stb"
+    files { "foreign/stb/*.h" }
+    files { "foreign/glm/glm/**.hpp" }
     includedirs "foreign/glm"
 
     filter { "system:windows", "action:gmake" }
