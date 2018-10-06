@@ -72,6 +72,7 @@ project (name)
             "foreign/imgui/imgui_widgets.cpp",
             "foreign/imgui/imgui.cpp" }
     includedirs "foreign/tinyobjloader"
+    files { "foreign/tinyobjloader/tiny_obj_loader.cc" }
     includedirs "foreign/stb"
     includedirs "foreign/glm"
 
