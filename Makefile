@@ -51,5 +51,4 @@ distclean: clean
 	rm -rf docs/reference
 FORCE:
 
-# Clarifies that these are not files :-).
-.PHONY: all run docs tags clean distclean
+.PHONY: all run help solution dependencies docs tags clean distclean
