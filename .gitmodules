@@ -4,3 +4,9 @@
 [submodule "foreign/imgui"]
 	path = foreign/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "foreign/tinyobjloader"]
+	path = foreign/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git
+[submodule "foreign/stb"]
+	path = foreign/stb
+	url = https://github.com/nothings/stb.git

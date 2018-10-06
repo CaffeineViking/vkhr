@@ -71,6 +71,8 @@ project (name)
     files { "foreign/imgui/imgui_draw.cpp",
             "foreign/imgui/imgui_widgets.cpp",
             "foreign/imgui/imgui.cpp" }
+    includedirs "foreign/tinyobjloader"
+    includedirs "foreign/stb"
     includedirs "foreign/glm"
 
     filter { "system:windows", "action:gmake" }
