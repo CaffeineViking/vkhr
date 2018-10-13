@@ -43,7 +43,7 @@ project (name)
     files { "src/vkpp/**.cc" }
     files "src/main.cc"
 
-    files { "share/scenes/**.vkhr" }
+    files { "share/scenes/**.json" }
     files { "share/shader/**.glsl",
             "share/shader/**.vert",
             "share/shader/**.geom",
@@ -59,7 +59,7 @@ project (name)
                           "foreign/**.h",
                           "foreign/**.cpp",
                           "foreign/**.c" },
-        ["scenes/*"]  = { "share/scenes/**.vkhr" },
+        ["scenes/*"]  = { "share/scenes/**.json" },
         ["shaders/*"] = { "share/shader/**.glsl",
                           "share/shader/**.vert",
                           "share/shader/**.geom",
@@ -76,6 +76,7 @@ project (name)
             "foreign/imgui/imgui_draw.cpp",
             "foreign/imgui/imgui_widgets.cpp",
             "foreign/imgui/imgui.cpp" }
+    includedirs "foreign/json/include"
     includedirs "foreign/tinyobjloader"
     files { "foreign/tinyobjloader/tiny_obj_loader.cc",
             "foreign/tinyobjloader/tiny_obj_loader.h" }

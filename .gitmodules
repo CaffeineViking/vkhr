@@ -10,3 +10,6 @@
 [submodule "foreign/stb"]
 	path = foreign/stb
 	url = https://github.com/nothings/stb.git
+[submodule "foreign/json"]
+	path = foreign/json
+	url = https://github.com/nlohmann/json.git
