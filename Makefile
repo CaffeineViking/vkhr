@@ -17,18 +17,34 @@ help: FORCE
 	@echo "   all"
 	@echo "   run"
 	@echo "   help"
+	@echo "   download (all)"
+	@echo "   download-libglfw"
+	@echo "   download-modules"
+	@echo "   download-premake"
 	@echo "   solution"
-	@echo "   download"
 	@echo "   docs"
 	@echo "   tags"
 	@echo "   clean"
 	@echo "   distclean"
 	@echo ""
 
+download: download-modules download-premake download-libglfw
+download-libglfw: FORCE
+	rm -rf foreign/glfw
+	wget https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
+	unzip glfw-3.2.1.bin.WIN64.zip
+	rm -f glfw-3.2.1.bin.WIN64.zip
+	mv glfw-3.2.1.bin.WIN64 foreign/glfw
+download-modules: FORCE
+	git submodule update --init --recursive --depth 1
+download-premake: FORCE
+	rm -f premake5.exe
+	wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha12/premake-5.0.0-alpha12-windows.zip
+	unzip premake-5.0.0-alpha12-windows.zip
+	rm -f premake-5.0.0-alpha12-windows.zip
+
 solution: FORCE
 	premake5 vs2017
-download: FORCE
-	git submodule update --init --recursive --depth 1
 
 docs: FORCE
 	make -C docs

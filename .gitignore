@@ -3,6 +3,8 @@ bin/
 build/
 docs/latex/
 docs/build/
+foreign/glfw
+premake5.exe
 docs/reference/
 
 # Compiled Object files

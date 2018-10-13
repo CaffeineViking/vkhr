@@ -13,25 +13,25 @@ workspace (name)
         optimize "Off"
         symbols  "On"
 
-    floatingpoint "Fast"
-
     filter "configurations:Release"
         defines  "RELEASE"
         optimize "Speed"
         symbols  "Off"
 
+    floatingpoint "Fast"
+
     filter { "action:vs*" }
         include "utils/wsdk.lua"
         startproject "vkhr"
-        platforms { "Win32", "Win64" }
+        platforms { "Win64" }
+        -- Don't handle Win32 for now...
         -- Premake5 fails to detect SDK.
         systemversion(os.winSdk()..".0")
-        filter "platforms:Win32"
-            architecture "x86"
         filter "platforms:Win64"
             architecture "x86_64"
 
-SDK = "$(VULKAN_SDK)"
+SDK     = "$(VULKAN_SDK)"
+libglfw = "foreign/glfw"
 
 project (name)
     targetdir "bin"
@@ -52,22 +52,7 @@ project (name)
             "share/shader/**.frag",
             "share/shader/**.comp" }
 
-    vpaths {
-        ["src/*"] = "src/**.cc",
-        ["include/*"] = "include/**.hh",
-        ["foreign/*"] = { "foreign/**.hpp",
-                          "foreign/**.h",
-                          "foreign/**.cpp",
-                          "foreign/**.c" },
-        ["scenes/*"]  = { "share/scenes/**.json" },
-        ["shaders/*"] = { "share/shader/**.glsl",
-                          "share/shader/**.vert",
-                          "share/shader/**.geom",
-                          "share/shader/**.tesc",
-                          "share/shader/**.tese",
-                          "share/shader/**.frag",
-                          "share/shader/**.comp" }
-    }
+    os.vpaths() -- Virtual paths.
 
     -- For header-only libraries.
     includedirs "foreign/include"
@@ -90,5 +75,7 @@ project (name)
     filter { "system:windows", "action:vs*" }
         links { SDK.."/lib/vulkan-1.lib" }
         includedirs { SDK.."/include" }
+        includedirs { libglfw.."/include" }
+        links { libglfw.."/lib-vc2015/glfw3.lib" }
     filter "system:linux or bsd or solaris"
         links { "glfw",  "vulkan" }
