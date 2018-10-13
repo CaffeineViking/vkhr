@@ -18,7 +18,7 @@ help: FORCE
 	@echo "   run"
 	@echo "   help"
 	@echo "   solution"
-	@echo "   dependencies"
+	@echo "   download"
 	@echo "   docs"
 	@echo "   tags"
 	@echo "   clean"
@@ -27,7 +27,7 @@ help: FORCE
 
 solution: FORCE
 	premake5 vs2017
-dependencies: FORCE
+download: FORCE
 	git submodule update --init --recursive --depth 1
 
 docs: FORCE
@@ -51,4 +51,4 @@ distclean: clean
 	rm -rf docs/reference
 FORCE:
 
-.PHONY: all run help solution dependencies docs tags clean distclean
+.PHONY: all run help solution download docs tags clean distclean
