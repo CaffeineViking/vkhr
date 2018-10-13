@@ -18,9 +18,9 @@ help: FORCE
 	@echo "   run"
 	@echo "   help"
 	@echo "   download (all)"
-	@echo "   download-libglfw"
 	@echo "   download-modules"
 	@echo "   download-premake"
+	@echo "   download-glfw"
 	@echo "   solution"
 	@echo "   docs"
 	@echo "   tags"
@@ -28,8 +28,8 @@ help: FORCE
 	@echo "   distclean"
 	@echo ""
 
-download: download-modules download-premake download-libglfw
-download-libglfw: FORCE
+download: download-modules download-premake download-glfw
+download-glfw: FORCE
 	rm -rf foreign/glfw
 	wget https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
 	unzip glfw-3.2.1.bin.WIN64.zip
