@@ -1,4 +1,4 @@
-name = "vkhr"
+name   = "vkhr"
 config = "debug"
 
 all: FORCE
@@ -20,7 +20,6 @@ help: FORCE
 	@echo "   download (all)"
 	@echo "   download-modules"
 	@echo "   download-premake"
-	@echo "   download-glfw"
 	@echo "   solution"
 	@echo "   docs"
 	@echo "   tags"
@@ -62,4 +61,4 @@ distclean: clean
 	rm -rf docs/reference
 FORCE:
 
-.PHONY: all run help solution download download-modules download-premake docs tags clean distclean
+.PHONY: all run help download download-modules download-premake solution docs tags clean distclean
