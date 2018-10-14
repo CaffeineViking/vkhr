@@ -30,8 +30,7 @@ workspace (name)
         filter "platforms:Win64"
             architecture "x86_64"
 
-SDK     = "$(VULKAN_SDK)"
-libglfw = "foreign/glfw"
+SDK  = "$(VULKAN_SDK)"
 
 project (name)
     targetdir "bin"
@@ -75,7 +74,8 @@ project (name)
     filter { "system:windows", "action:vs*" }
         links { SDK.."/lib/vulkan-1.lib" }
         includedirs { SDK.."/include" }
-        includedirs { libglfw.."/include" }
-        links { libglfw.."/lib-vc2015/glfw3.lib" }
+        includedirs { "foreign/glfw" }
+        files { "foreign/glfw/GLFW/*.h" }
+        links { "foreign/glfw/glfw3.lib" }
     filter "system:linux or bsd or solaris"
         links { "glfw",  "vulkan" }

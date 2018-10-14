@@ -28,13 +28,7 @@ help: FORCE
 	@echo "   distclean"
 	@echo ""
 
-download: download-modules download-premake download-glfw
-download-glfw: FORCE
-	rm -rf foreign/glfw
-	wget https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip
-	unzip glfw-3.2.1.bin.WIN64.zip
-	rm -f glfw-3.2.1.bin.WIN64.zip
-	mv glfw-3.2.1.bin.WIN64 foreign/glfw
+download: download-modules download-premake
 download-modules: FORCE
 	git submodule update --init --recursive --depth 1
 download-premake: FORCE
@@ -67,4 +61,4 @@ distclean: clean
 	rm -rf docs/reference
 FORCE:
 
-.PHONY: all run help solution download docs tags clean distclean
+.PHONY: all run help solution download download-modules download-premake docs tags clean distclean
