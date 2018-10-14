@@ -1,0 +1,1 @@
+#include <vkhr/scene.hh>
