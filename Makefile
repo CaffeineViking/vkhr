@@ -39,6 +39,7 @@ download-premake: FORCE
 
 solution: FORCE
 	premake5 vs2017
+	start build/vkhr.sln
 
 docs: FORCE
 	make -C docs

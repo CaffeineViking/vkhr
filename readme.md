@@ -11,13 +11,13 @@ Compiling and Running
 2. Then, do: `git submodule update --init --recursive --depth 1`
     * **Description:** fetches submodule dependencies to `foreign`
 3. Since we use [premake](https://premake.github.io/), you'll most likely need to fetch it as well:
-    * **Windows (MinGW/WSL Bash):** do `make download-premake`!
     * **Tip:** there's pre-generated Visual Studio solutions in `build`
+        * if you're happy with that, you can skip the steps below
+    * **Windows (MinGW/WSL Bash):** do `make download-premake`!
     * **Unix-like:** just install `premake5` with your package manager
 4. Now make sure you have the [glfw3](https://www.glfw.org/) external dependency solved
-    * **Visual Studio (MinGW/WSL Bash):** do `make download-glfw`
-        * or manually include and link `glfw` later in the solution
     * **Unix-like:** just install `glfw` with your package manager too
+    * **Visual Studio:** pre-built version is already provided for you!
 5. Generate the `vkhr` project files by targeting your current setup
     * **Visual Studio:** `premake5 vs2017` or my alias `make solution`
         * then open the Visual Studio project in `build/vkhr.sln`
@@ -27,7 +27,10 @@ Compiling and Running
 Usage and Documents
 -------------------
 
-* `bin/vkhr [hair-scene-file]`
+* `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.json` with the standard window and renderer settings.
+* `bin/vkhr share/scenes/curly.json`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
+* **Arguments:** `--resolution=1280x720` , `--fullscreen=true` , `--msaa=4` , `--vsync=true` , `--profile=false` , `--gui=true`
+* **Controls:** simply `click` and `drag` to rotate the camera, use `scroll` to zoom, and the `gui` to modify everything else.
 
 System Requirements
 -------------------
@@ -37,9 +40,10 @@ Hardware must support Vulkan™.
 Dependencies
 ------------
 
-* Premake 5 (build)
-* A Vulkan 1.1 SDK
-* GLFW 3.2
+* `premake5` (pre-build)
+* Any Vulkan™ 1.1 SDK
+* `glfw3` (tested v3.2.1)
+* Any C++17 compiler!
 
 All other dependencies are fetched using `git submodules`, and include the following libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`. The Vulkan C++ wrapper `vkpp` is being developed alongside `vkhr`.
 
