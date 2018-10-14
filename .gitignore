@@ -1,5 +1,6 @@
 # Project Specific
 bin/
+lib/
 build/
 docs/latex/
 docs/build/
@@ -28,7 +29,6 @@ docs/reference/
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -46,7 +46,6 @@ docs/reference/
 *.pch
 
 # Libraries
-*.lib
 *.a
 *.la
 *.lo
