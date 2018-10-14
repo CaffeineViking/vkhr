@@ -20,7 +20,6 @@ help: FORCE
 	@echo "   help"
 	@echo "   download (all)"
 	@echo "   download-modules"
-	@echo "   download-premake"
 	@echo "   solution"
 	@echo "   docs"
 	@echo "   tags"
@@ -28,14 +27,9 @@ help: FORCE
 	@echo "   distclean"
 	@echo ""
 
-download: download-modules download-premake
+download: download-modules
 download-modules: FORCE
 	git submodule update --init --recursive --depth 1
-download-premake: FORCE
-	rm -f premake5.exe
-	wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha12/premake-5.0.0-alpha12-windows.zip
-	unzip premake-5.0.0-alpha12-windows.zip
-	rm -f premake-5.0.0-alpha12-windows.zip
 
 solution: FORCE
 	premake5 vs2017
@@ -56,4 +50,4 @@ distclean: clean
 	rm -f  cscope.out
 FORCE:
 
-.PHONY: all run help download download-modules download-premake solution docs tags clean distclean
+.PHONY: all run help download download-modules solution docs tags clean distclean

@@ -13,7 +13,6 @@ Compiling and Running
 3. Since we use [premake](https://premake.github.io/), you'll most likely need to fetch it as well:
     * **Tip:** there's pre-generated Visual Studio solutions in `build`
         * if you're happy with that, you can skip the steps below
-    * **Windows (MinGW/WSL Bash):** do `make download-premake`!
     * **Unix-like:** just install `premake5` with your package manager
 4. Now make sure you have the [glfw3](https://www.glfw.org/) external dependency solved
     * **Unix-like:** just install `glfw` with your package manager too
@@ -29,13 +28,13 @@ Usage and Documents
 
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.json` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.json`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--resolution=1280x720` , `--fullscreen=true` , `--msaa=4` , `--vsync=true` , `--profile=false` , `--gui=true`
-* **Controls:** simply `click` and `drag` to rotate the camera, use `scroll` to zoom, and the `gui` to modify everything else.
+* **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes` , `--gui=yes`.
+* **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else :-)
 
 System Requirements
 -------------------
 
-Hardware must support Vulkan™.
+Platform *must* support Vulkan™ 1.1.
 
 Dependencies
 ------------
