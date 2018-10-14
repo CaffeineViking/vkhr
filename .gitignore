@@ -1,10 +1,7 @@
 # Project Specific
 bin/
-lib/
 build/
-docs/latex/
 docs/build/
-docs/reference/
 
 # Compiled Object files
 *.slo

@@ -5,6 +5,14 @@ function os.winSdk()
 end
 
 function os.vpaths()
+    files { "share/scenes/**.json" }
+    files { "share/shader/**.glsl",
+            "share/shader/**.vert",
+            "share/shader/**.geom",
+            "share/shader/**.tesc",
+            "share/shader/**.tese",
+            "share/shader/**.frag",
+            "share/shader/**.comp" }
     vpaths {
         ["src/*"] = "src/**.cc",
         ["include/*"] = "include/**.hh",

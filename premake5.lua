@@ -42,15 +42,6 @@ project (name)
     files { "src/vkpp/**.cc" }
     files "src/main.cc"
 
-    files { "share/scenes/**.json" }
-    files { "share/shader/**.glsl",
-            "share/shader/**.vert",
-            "share/shader/**.geom",
-            "share/shader/**.tesc",
-            "share/shader/**.tese",
-            "share/shader/**.frag",
-            "share/shader/**.comp" }
-
     os.vpaths() -- Virtual paths.
 
     -- For header-only libraries.
