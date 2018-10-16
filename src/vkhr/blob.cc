@@ -1,1 +1,0 @@
-#include <vkhr/blob.hh>

@@ -1,1 +1,0 @@
-#include <vkhr/image.hh>

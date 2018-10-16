@@ -28,7 +28,7 @@ Usage and Documents
 
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.json` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.json`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes` , `--gui=yes`.
+* **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes`  and `--gui=yes`.
 * **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else :-)
 
 System Requirements
@@ -65,11 +65,11 @@ Structure
 * `premake5.lua`: configuration file for the build system.
 * `readme.md`: this file contains information on the project.
 * `share`: any extra data that needs to be bundled should go here.
-    * `binary`: the blobs that will be used, like the hair style files.
     * `images`: any images on disk that should be used as textures.
     * `models`: the meshes/models/materials to be used in the project.
     * `shader`: all of the uncompiled shaders should go over here.
     * `scenes`: any sort of scene files (e.g. in json) should go here.
+    * `styles`: the hair styles compatible with the Cem Yuksel format.
 * `src`: all source code for the project should be located below here.
     * `vkhr`: source code for the Vulkan hair renderer project itself.
     * `vkpp`: full implementation of an Vulkan C++ wrapper (separate).
