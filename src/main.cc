@@ -5,6 +5,9 @@
 #include <vkhr/definition.hh>
 #include <vkhr/hair_style.hh>
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 int main(int, char**) {
     auto start_time = std::chrono::system_clock::now();
 
@@ -50,5 +53,29 @@ int main(int, char**) {
     default: std::cerr << "something else :(" << std::endl;
     }
 
+    // Copy-paste from the GLFW examples. To test building.
+
+    GLFWwindow* window;
+
+    /* Initialize the library */
+    if (!glfwInit())
+        return -1;
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+    /* Create a windowed mode window and no OpenGL context */
+    window = glfwCreateWindow(640, 480, "Test!", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        return -1;
+    }
+
+    /* Loop until the user closes the window */
+    while (!glfwWindowShouldClose(window)) {
+        /* Poll for and process events */
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
     return 0;
 }
