@@ -24,6 +24,7 @@ workspace (name)
         include "utils/wsdk.lua"
         startproject "vkhr"
         platforms { "Win64" }
+        debugdir "." -- project root.
         -- Don't handle Win32 for now...
         -- Premake5 fails to detect SDK.
         systemversion(os.winSdk()..".0")

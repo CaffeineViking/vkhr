@@ -43,8 +43,8 @@ namespace vkhr {
         bool load(const std::string& file_path);
         bool save(const std::string& file_path) const;
 
-        std::size_t get_strand_count() const;
-        std::size_t get_vertex_count() const;
+        unsigned get_strand_count() const;
+        unsigned get_vertex_count() const;
 
         bool has_segments() const;
         bool has_vertices() const;

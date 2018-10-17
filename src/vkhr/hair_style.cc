@@ -58,11 +58,11 @@ namespace vkhr {
         return fail_bit = Error::None, true;
     }
 
-    std::size_t HairStyle::get_strand_count() const {
+    unsigned HairStyle::get_strand_count() const {
         return segments.size();
     }
 
-    std::size_t HairStyle::get_vertex_count() const {
+    unsigned HairStyle::get_vertex_count() const {
         return vertices.size();
     }
 
