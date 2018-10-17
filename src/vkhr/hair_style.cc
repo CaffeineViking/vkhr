@@ -59,7 +59,15 @@ namespace vkhr {
     }
 
     unsigned HairStyle::get_strand_count() const {
-        return segments.size();
+        if (file_header.field.has_segments) {
+            return segments.size();
+        } else if (segments.size() != 0) {
+            return segments.size();
+        } return file_header.strand_count;
+    }
+
+    void HairStyle::set_strand_count(unsigned strand_count) {
+        file_header.strand_count = strand_count;
     }
 
     unsigned HairStyle::get_vertex_count() const {
@@ -142,10 +150,10 @@ namespace vkhr {
         file_header.signature[2] = 'I';
         file_header.signature[3] = 'R';
 
+        update_bitfield();
+
         file_header.strand_count = get_strand_count();
         file_header.vertex_count = get_vertex_count();
-
-        update_bitfield();
     }
 
     void HairStyle::update_bitfield() const {

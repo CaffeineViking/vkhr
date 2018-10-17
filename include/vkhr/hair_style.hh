@@ -44,6 +44,7 @@ namespace vkhr {
         bool save(const std::string& file_path) const;
 
         unsigned get_strand_count() const;
+        void set_strand_count(unsigned strand_count);
         unsigned get_vertex_count() const;
 
         bool has_segments() const;
