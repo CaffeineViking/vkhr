@@ -29,4 +29,14 @@ package() {
 	install -Dm755 bin/vkhr    "$pkgdir"/usr/bin/vkhr
 	install -Dm755 docs/vkhr.1 "$pkgdir"/usr/share/man/man1/vkhr.1
 	install -Dm644 license.md  "$pkgdir"/usr/share/licenses/vkhr/LICENSE
+
+	install -Dm644 share/styles/wCurly.hair     "$pkgdir"/usr/share/vkhr/styles/wCurly.hair
+	install -Dm644 share/styles/wStraight.hair  "$pkgdir"/usr/share/vkhr/styles/wStraight.hair
+	install -Dm644 share/styles/wWavy.hair      "$pkgdir"/usr/share/vkhr/styles/wWavy.hair
+	install -Dm644 share/styles/wWavyThin.hair  "$pkgdir"/usr/share/vkhr/styles/wWavyThin.hair
+
+	install -Dm644 share/models/woman/eye.tga   "$pkgdir"/usr/share/vkhr/models/woman/eye.tga
+	install -Dm644 share/models/woman/head.tga  "$pkgdir"/usr/share/vkhr/models/woman/head.tga
+	install -Dm644 share/models/woman/woman.mtl "$pkgdir"/usr/share/vkhr/models/woman/woman.mtl
+	install -Dm644 share/models/woman/woman.obj "$pkgdir"/usr/share/vkhr/models/woman/woman.obj
 }

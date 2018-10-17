@@ -6,13 +6,13 @@ end
 
 function os.vpaths()
     files { "share/scenes/**.json" }
-    files { "share/shader/**.glsl",
-            "share/shader/**.vert",
-            "share/shader/**.geom",
-            "share/shader/**.tesc",
-            "share/shader/**.tese",
-            "share/shader/**.frag",
-            "share/shader/**.comp" }
+    files { "share/shaders/**.glsl",
+            "share/shaders/**.vert",
+            "share/shaders/**.geom",
+            "share/shaders/**.tesc",
+            "share/shaders/**.tese",
+            "share/shaders/**.frag",
+            "share/shaders/**.comp" }
     vpaths {
         ["src/*"] = "src/**.cc",
         ["include/*"] = "include/**.hh",
@@ -21,13 +21,13 @@ function os.vpaths()
                           "foreign/**.cpp",
                           "foreign/**.c" },
         ["scenes/*"]  = { "share/scenes/**.json" },
-        ["shaders/*"] = { "share/shader/**.glsl",
-                          "share/shader/**.vert",
-                          "share/shader/**.geom",
-                          "share/shader/**.tesc",
-                          "share/shader/**.tese",
-                          "share/shader/**.frag",
-                          "share/shader/**.comp" }
+        ["shaders/*"] = { "share/shaders/**.glsl",
+                          "share/shaders/**.vert",
+                          "share/shaders/**.geom",
+                          "share/shaders/**.tesc",
+                          "share/shaders/**.tese",
+                          "share/shaders/**.frag",
+                          "share/shaders/**.comp" }
     }
 end
 

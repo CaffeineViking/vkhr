@@ -29,12 +29,12 @@ Usage and Documents
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.json` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.json`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
 * **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes`  and `--gui=yes`.
-* **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else :-)
+* **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else.
 
 System Requirements
 -------------------
 
-Platform *must* support Vulkan™ 1.1.
+Platforms *must* support Vulkan™.
 
 Dependencies
 ------------
@@ -67,7 +67,7 @@ Structure
 * `share`: any extra data that needs to be bundled should go here.
     * `images`: any images on disk that should be used as textures.
     * `models`: the meshes/models/materials to be used in the project.
-    * `shader`: all of the uncompiled shaders should go over here.
+    * `shaders`: all of the uncompiled shaders should go over here.
     * `scenes`: any sort of scene files (e.g. in json) should go here.
     * `styles`: the hair styles compatible with the Cem Yuksel format.
 * `src`: all source code for the project should be located below here.
@@ -85,6 +85,10 @@ Still, if you find anything, feel free to open an issue and I'll fix it!
 
 Acknowledgements
 ----------------
+
+All hair styles are courtesy of Cem Yuksel's great [HAIR model files](http://www.cemyuksel.com/research/hairmodels/) repository.
+
+The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
 
 Legal Notice
 ------------
