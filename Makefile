@@ -20,6 +20,7 @@ help: FORCE
 	@echo "   help"
 	@echo "   download (all)"
 	@echo "   download-modules"
+	@echo "   pre-generate"
 	@echo "   makefile"
 	@echo "   solution"
 	@echo "   docs"
@@ -32,6 +33,8 @@ download: download-modules
 download-modules: FORCE
 	git submodule update --init --recursive --depth 1
 
+pre-generate: distclean makefile solution
+	git add -f build
 makefile: FORCE
 	premake5 gmake
 solution: FORCE
@@ -52,4 +55,4 @@ distclean: clean
 	rm -f  cscope.out
 FORCE:
 
-.PHONY: all run help download download-modules makefile solution docs tags clean distclean
+.PHONY: all run help download download-modules pre-generate makefile solution docs tags clean distclean

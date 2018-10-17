@@ -5,3 +5,4 @@ share/models/** filter=lfs diff=lfs merge=lfs -text
 docs/figures/** filter=lfs diff=lfs merge=lfs -text
 share/styles/** filter=lfs diff=lfs merge=lfs -text
 foreign/*       linguist-vendored
+build/*         linguist-vendored
