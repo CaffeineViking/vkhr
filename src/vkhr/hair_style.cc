@@ -123,9 +123,10 @@ namespace vkhr {
     }
 
     void HairStyle::set_information(const std::string& information) {
-        const std::size_t max_size { std::min(sizeof(file_header.information),
-                                              information.length() + 1) }; // + terminator.
-        std::strncpy(file_header.information, information.c_str(), max_size);
+        const std::size_t info_size { sizeof(file_header.information) };
+        std::memset(file_header.information, '\0', info_size); // For consistency.
+        const std::size_t copy_size { std::min(info_size, information.length()) };
+        std::strncpy(file_header.information, information.c_str(), copy_size);
     }
 
     bool HairStyle::valid_signature() const {
