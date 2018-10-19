@@ -7,8 +7,6 @@
 #include <stb_image.h>
 
 namespace vkhr {
-    class Image final {
-    };
 }
 
 #endif
