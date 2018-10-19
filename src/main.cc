@@ -5,6 +5,8 @@
 #include <vkhr/definition.hh>
 #include <vkhr/hair_style.hh>
 
+#include <stb_image.h>
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -69,6 +71,14 @@ int main(int, char**) {
         glfwTerminate();
         return -1;
     }
+
+    GLFWimage vulkan_icon;
+
+    /* Testing out if the STB image loading is working correctly! */
+
+    vulkan_icon.pixels = stbi_load(IMAGE("vulkan.png"), &vulkan_icon.width,
+                                   &vulkan_icon.height, 0, 4);
+    glfwSetWindowIcon(window, 1, &vulkan_icon);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {

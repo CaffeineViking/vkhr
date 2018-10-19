@@ -26,8 +26,8 @@ Compiling and Running
 Usage and Documents
 -------------------
 
-* `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.json` with the standard window and renderer settings.
-* `bin/vkhr share/scenes/curly.json`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
+* `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
+* `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
 * **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes`  and `--gui=yes`.
 * **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else.
 

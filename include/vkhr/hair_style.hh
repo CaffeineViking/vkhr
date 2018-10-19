@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace vkhr {
-    class HairStyle {
+    class HairStyle final {
     public:
         HairStyle() = default;
         HairStyle(const std::string& file_path);

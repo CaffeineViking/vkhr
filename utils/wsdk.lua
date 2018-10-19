@@ -5,7 +5,7 @@ function os.winSdk()
 end
 
 function os.vpaths()
-    files { "share/scenes/**.json" }
+    files { "share/scenes/**.vkhr" }
     files { "share/shaders/**.glsl",
             "share/shaders/**.vert",
             "share/shaders/**.geom",
@@ -20,7 +20,7 @@ function os.vpaths()
                           "foreign/**.h",
                           "foreign/**.cpp",
                           "foreign/**.c" },
-        ["scenes/*"]  = { "share/scenes/**.json" },
+        ["scenes/*"]  = { "share/scenes/**.vkhr" },
         ["shaders/*"] = { "share/shaders/**.glsl",
                           "share/shaders/**.vert",
                           "share/shaders/**.geom",
