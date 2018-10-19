@@ -1,0 +1,43 @@
+{
+    "transform": {
+        "scale":     [1, 1, 1],
+        "translate": [0, 0, 5],
+        "rotate": [0, 0, 0, 1],
+
+        "perspectiveCamera": {
+            "fieldOfView": 1.57,
+            "aspectRatio": 1.77,
+            "near": 0.0,
+            "far": 100.0,
+            "lookAt": [0, 0, 0]
+        },
+
+        "pointLights": [
+            {
+                "intensity": [1, 1, 1],
+                "falloff": "quadratic"
+            }
+        ]
+    },
+
+    "transform": {
+        "scale":     [1, 1, 1],
+        "translate": [0, 0, 0],
+        "rotate": [0, 0, 0, 1],
+
+        "models": [
+            {
+                "mesh": "../models/woman/woman.obj",
+                "material": "../models/woman/woman.mtl"
+            }
+        ],
+
+        "hairStyles": [
+            {
+                "geometry": "../styles/wCurly.hair",
+                "shadingModel": "Kajiya-Kay",
+                "quality":  0.25
+            }
+        ]
+    }
+}
