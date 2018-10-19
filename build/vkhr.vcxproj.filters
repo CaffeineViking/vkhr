@@ -828,7 +828,10 @@
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h">
       <Filter>foreign\tinyobjloader</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\definition.hh">
+    <ClInclude Include="..\include\vkhr\argument_parser.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\camera.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\hair_style.hh">
@@ -837,7 +840,22 @@
     <ClInclude Include="..\include\vkhr\image.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\input_handler.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\logger.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\paths.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\vkpp.hh">
@@ -860,10 +878,28 @@
     <ClCompile Include="..\src\main.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\argument_parser.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\camera.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\hair_style.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\image.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\input_handler.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\logger.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\scene_graph.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
   </ItemGroup>

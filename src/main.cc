@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-#include <vkhr/definition.hh>
+#include <vkhr/paths.hh>
 #include <vkhr/hair_style.hh>
 
 #include <stb_image.h>

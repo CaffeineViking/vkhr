@@ -1,5 +1,5 @@
-#ifndef VKHR_DEFINITION_HH
-#define VKHR_DEFINITION_HH
+#ifndef VKHR_PATHS_HH
+#define VKHR_PATHS_HH
 
 #ifndef SHARE_PATH
 #define SHARE_PATH "share/"
