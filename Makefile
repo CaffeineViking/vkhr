@@ -21,7 +21,6 @@ help: FORCE
 	@echo "   download (all)"
 	@echo "   download-modules"
 	@echo "   pre-generate"
-	@echo "   makefile"
 	@echo "   solution"
 	@echo "   docs"
 	@echo "   tags"
@@ -33,10 +32,10 @@ download: download-modules
 download-modules: FORCE
 	git submodule update --init --recursive --depth 1
 
-pre-generate: distclean makefile solution
+pre-generate: clean solution
+	rm -f build/Makefile
+	rm -f build/vkhr.make
 	git add -f build
-makefile: FORCE
-	premake5 gmake
 solution: FORCE
 	premake5 vs2017
 
@@ -50,10 +49,9 @@ clean: FORCE
 	rm -rf build/obj
 	rm -rf docs/build
 distclean: clean
-	rm -f  bin/${name}
-	rm -f  bin/${name}.exe
 	rm -f  cscope.out
 	rm -f  tags
+	rm -rf bin
 FORCE:
 
-.PHONY: all run help download download-modules pre-generate makefile solution docs tags clean distclean
+.PHONY: all run help download download-modules pre-generate solution docs tags clean distclean

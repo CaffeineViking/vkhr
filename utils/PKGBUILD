@@ -41,4 +41,7 @@ package() {
 	install -Dm644 share/models/woman/head.tga  "$pkgdir"/usr/share/vkhr/models/woman/head.tga
 	install -Dm644 share/models/woman/woman.mtl "$pkgdir"/usr/share/vkhr/models/woman/woman.mtl
 	install -Dm644 share/models/woman/woman.obj "$pkgdir"/usr/share/vkhr/models/woman/woman.obj
+
+	install -Dm644 share/models/lara/lara.obj "$pkgdir"/usr/share/vkhr/models/lara/lara.obj
+	install -Dm644 share/models/bear/bear.obj "$pkgdir"/usr/share/vkhr/models/bear/bear.obj
 }
