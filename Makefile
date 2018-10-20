@@ -47,12 +47,13 @@ tags: FORCE
 	cscope -Rb -s src/${name} -s include/${name}
 
 clean: FORCE
-	rm -rf build
+	rm -rf build/obj
 	rm -rf docs/build
 distclean: clean
-	rm -rf bin
-	rm -f  tags
+	rm -f  bin/${name}
+	rm -f  bin/${name}.exe
 	rm -f  cscope.out
+	rm -f  tags
 FORCE:
 
 .PHONY: all run help download download-modules pre-generate makefile solution docs tags clean distclean

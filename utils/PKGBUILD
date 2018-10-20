@@ -26,9 +26,11 @@ build() {
 
 package() {
 	cd vkhr
-	install -Dm755 bin/vkhr    "$pkgdir"/usr/bin/vkhr
-	install -Dm755 docs/vkhr.1 "$pkgdir"/usr/share/man/man1/vkhr.1
-	install -Dm644 license.md  "$pkgdir"/usr/share/licenses/vkhr/LICENSE
+	install -Dm755 bin/vkhr                     "$pkgdir"/usr/bin/vkhr
+	install -Dm755 docs/vkhr.1                  "$pkgdir"/usr/share/man/man1/vkhr.1
+	install -Dm644 license.md                   "$pkgdir"/usr/share/licenses/vkhr/LICENSE
+
+	install -Dm644 share/images/vulkan.png      "$pkgdir"/usr/share/vkhr/images/vulkan.png
 
 	install -Dm644 share/styles/wCurly.hair     "$pkgdir"/usr/share/vkhr/styles/wCurly.hair
 	install -Dm644 share/styles/wStraight.hair  "$pkgdir"/usr/share/vkhr/styles/wStraight.hair
