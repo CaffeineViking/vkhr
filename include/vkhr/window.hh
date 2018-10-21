@@ -30,6 +30,9 @@ namespace vkhr {
 
         int get_refresh_rate() const;
 
+        const char** get_surface_extensions(unsigned* c);
+        VkSurfaceKHR create_surface(VkInstance instance);
+
         void resize(const int width, const int height);
 
         GLFWwindow* get_handle();

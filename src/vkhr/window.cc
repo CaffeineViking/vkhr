@@ -120,6 +120,20 @@ namespace vkhr {
         return monitor_refresh_rate;
     }
 
+    const char** Window::get_surface_extensions(unsigned* c) {
+        return glfwGetRequiredInstanceExtensions(c);
+    }
+
+    VkSurfaceKHR Window::create_surface(VkInstance instance) {
+        VkSurfaceKHR surface;
+
+        if (glfwCreateWindowSurface(instance, handle, nullptr, &surface)) {
+            throw std::runtime_error { "Failed to create Vulkan surface!" };
+        }
+
+        return surface;
+    }
+
     void Window::resize(const int width, const int height) {
         this->width  = width;
         this->height = height;
