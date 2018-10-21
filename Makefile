@@ -35,6 +35,7 @@ download-modules: FORCE
 pre-generate: clean solution
 	rm -f build/Makefile
 	rm -f build/vkhr.make
+	rm -rf build/.vs
 	git add -f build
 solution: FORCE
 	premake5 vs2017
