@@ -6,8 +6,8 @@
 #include <vkhr/hair_style.hh>
 #include <vkhr/image.hh>
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include <vkhr/input_maps.hh>
+#include <vkhr/window.hh>
 
 int main(int, char**) {
     auto start_time = std::chrono::system_clock::now();
@@ -54,35 +54,21 @@ int main(int, char**) {
     default: std::cerr << "something else :(" << std::endl;
     }
 
-    // Copy-paste from the GLFW examples. To test building.
+    const vkhr::Image vulkan_icon { IMAGE("vulkan.icon") };
+    vkhr::Window window { 1280, 720, "VKHR", vulkan_icon };
 
-    GLFWwindow* window;
+    vkhr::InputMapper input_map { window };
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+    input_map.bind("quit",       vkhr::Input::Key::Escape);
+    input_map.bind("fullscreen", vkhr::Input::Key::F);
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    while (window.is_open()) {
+        if (input_map.pressed("quit")) {
+            window.close();
+        }
 
-    /* Create a windowed mode window and no OpenGL context */
-    window = glfwCreateWindow(640, 480, "Test!", NULL, NULL);
-    if (!window) {
-        glfwTerminate();
-        return -1;
+        window.poll_events();
     }
 
-    vkhr::Image vulkan_image { IMAGE("vulkan.png") };
-    GLFWimage vulkan_icon { static_cast<int>(vulkan_image.get_width()),
-                            static_cast<int>(vulkan_image.get_height()),
-                            vulkan_image.get_data() }; // Pass raw data.
-    glfwSetWindowIcon(window, 1, &vulkan_icon);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window)) {
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
     return 0;
 }
