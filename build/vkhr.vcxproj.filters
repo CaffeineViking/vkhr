@@ -828,7 +828,7 @@
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h">
       <Filter>foreign\tinyobjloader</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\argument_parser.hh">
+    <ClInclude Include="..\include\vkhr\arg_parser.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\camera.hh">
@@ -840,7 +840,7 @@
     <ClInclude Include="..\include\vkhr\image.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\input_handler.hh">
+    <ClInclude Include="..\include\vkhr\input_maps.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\logger.hh">
@@ -849,7 +849,7 @@
     <ClInclude Include="..\include\vkhr\paths.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\scene_graph.hh">
+    <ClInclude Include="..\include\vkhr\scene_node.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
@@ -878,7 +878,7 @@
     <ClCompile Include="..\src\main.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\argument_parser.cc">
+    <ClCompile Include="..\src\vkhr\arg_parser.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\camera.cc">
@@ -890,13 +890,13 @@
     <ClCompile Include="..\src\vkhr\image.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\input_handler.cc">
+    <ClCompile Include="..\src\vkhr\input_maps.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\logger.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\scene_graph.cc">
+    <ClCompile Include="..\src\vkhr\scene_node.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">

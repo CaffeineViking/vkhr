@@ -351,14 +351,14 @@
     <ClInclude Include="..\foreign\stb\stb_voxel_render.h" />
     <ClInclude Include="..\foreign\stb\stretchy_buffer.h" />
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h" />
-    <ClInclude Include="..\include\vkhr\argument_parser.hh" />
+    <ClInclude Include="..\include\vkhr\arg_parser.hh" />
     <ClInclude Include="..\include\vkhr\camera.hh" />
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
-    <ClInclude Include="..\include\vkhr\input_handler.hh" />
+    <ClInclude Include="..\include\vkhr\input_maps.hh" />
     <ClInclude Include="..\include\vkhr\logger.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />
-    <ClInclude Include="..\include\vkhr\scene_graph.hh" />
+    <ClInclude Include="..\include\vkhr\scene_node.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\window.hh" />
     <ClInclude Include="..\include\vkpp\vkpp.hh" />
@@ -369,13 +369,13 @@
     <ClCompile Include="..\foreign\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
     <ClCompile Include="..\src\main.cc" />
-    <ClCompile Include="..\src\vkhr\argument_parser.cc" />
+    <ClCompile Include="..\src\vkhr\arg_parser.cc" />
     <ClCompile Include="..\src\vkhr\camera.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\image.cc" />
-    <ClCompile Include="..\src\vkhr\input_handler.cc" />
+    <ClCompile Include="..\src\vkhr\input_maps.cc" />
     <ClCompile Include="..\src\vkhr\logger.cc" />
-    <ClCompile Include="..\src\vkhr\scene_graph.cc" />
+    <ClCompile Include="..\src\vkhr\scene_node.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
   </ItemGroup>
   <ItemGroup>
