@@ -49,7 +49,7 @@ namespace vkhr {
                                    &monitor_width_in_mm,
                                    &monitor_height_in_mm);
 
-        const double inch_to_mm { 25.4 };
+        const float inch_to_mm = 25.4;
 
         horizontal_dpi = monitor_width  / monitor_width_in_mm  / inch_to_mm;
         vertical_dpi   = monitor_height / monitor_height_in_mm / inch_to_mm;
@@ -152,7 +152,7 @@ namespace vkhr {
     }
 
     void Window::poll_events() {
-        double elapsed_time { glfwGetTime() };
+        float elapsed_time = get_current_time();
         frame_time = elapsed_time - last_frame_time;
         last_frame_time = elapsed_time;
 
@@ -188,7 +188,7 @@ namespace vkhr {
     }
 
     float Window::get_current_time() const {
-        return glfwGetTime();
+        return static_cast<float>(glfwGetTime());
     }
 
     float Window::delta_time() const {
