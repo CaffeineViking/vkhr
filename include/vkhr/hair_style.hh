@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <string>
-#include <iostream>
+#include <fstream>
 #include <vector>
 
 namespace vkhr {
@@ -38,7 +38,7 @@ namespace vkhr {
         };
 
         operator bool() const;
-        Error get_previous_failure_code() const;
+        Error get_last_error_state() const;
 
         bool load(const std::string& file_path);
         bool save(const std::string& file_path) const;
@@ -75,7 +75,7 @@ namespace vkhr {
         std::vector<glm::vec3> color;
 
     private:
-        struct FileHeader {
+        mutable struct FileHeader {
             char signature[4]; // H, A, I, R.
             unsigned strand_count,
                      vertex_count;
@@ -97,7 +97,7 @@ namespace vkhr {
             float    default_color[3];
 
             char information[88];
-        };
+        } file_header;
 
         bool valid_signature() const;
         bool format_is_valid() const;
@@ -105,11 +105,19 @@ namespace vkhr {
         void complete_header() const;
         void update_bitfield() const;
 
+        bool set_error_state(Error error_state) const;
+
+        template<typename T>
+        bool read_field(std::ifstream& file, std::vector<T>& field);
+
         bool read_segments(std::ifstream& file);
         bool read_vertices(std::ifstream& file);
         bool read_thickness(std::ifstream& file);
         bool read_transparancy(std::ifstream& file);
         bool read_color(std::ifstream& file);
+
+        template<typename T>
+        bool write_field(std::ofstream& file, const std::vector<T>& field) const;
 
         bool write_segments(std::ofstream& file) const;
         bool write_vertices(std::ofstream& file) const;
@@ -117,9 +125,24 @@ namespace vkhr {
         bool write_transparancy(std::ofstream& file) const;
         bool write_color(std::ofstream& file) const;
 
-        mutable Error fail_bit { Error::None };
-        mutable FileHeader file_header;
+        mutable Error error_state { Error::None };
     };
+
+    template<typename T>
+    bool HairStyle::read_field(std::ifstream& file, std::vector<T>& field) {
+        if (!file.read(reinterpret_cast<char*>(field.data()),
+                       field.size() * sizeof(field[0])))
+            return false;
+        return true;
+    }
+
+    template<typename T>
+    bool HairStyle::write_field(std::ofstream& file, const std::vector<T>& field) const {
+        if (!file.write(reinterpret_cast<const char*>(field.data()),
+                        field.size() * sizeof(field[0])))
+            return false;
+        return true;
+    }
 }
 
 #endif

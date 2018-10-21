@@ -10,60 +10,64 @@ namespace vkhr {
     }
 
     HairStyle::operator bool() const {
-        return fail_bit == Error::None;
+        return error_state == Error::None;
     }
 
-    HairStyle::Error HairStyle::get_previous_failure_code() const {
-        return fail_bit;
+    HairStyle::Error HairStyle::get_last_error_state() const {
+        return error_state;
     }
 
     bool HairStyle::load(const std::string& file_path) {
         std::ifstream file { file_path, std::ios::binary };
 
-        if (!file) return fail_bit = Error::OpeningFile, false;
+        if (!file) return set_error_state(Error::OpeningFile);
 
         if (!file.read(reinterpret_cast<char*>(&file_header), sizeof(FileHeader)))
-            return fail_bit = Error::ReadingFileHeader, false;
+            return set_error_state(Error::ReadingFileHeader);
 
-        if (!valid_signature()) return fail_bit = Error::InvalidSignature, false;
+        if (!valid_signature()) return set_error_state(Error::InvalidSignature);
 
-        if (!read_segments(file)) return fail_bit = Error::ReadingSegments, false;
-        if (!read_vertices(file)) return fail_bit = Error::ReadingVertices, false;
-        if (!read_thickness(file)) return fail_bit = Error::ReadingThickness, false;
-        if (!read_transparancy(file)) return fail_bit = Error::ReadingTransparency, false;
-        if (!read_color(file)) return fail_bit = Error::ReadingColor, false;
+        if (!read_segments(file)) return set_error_state(Error::ReadingSegments);
+        if (!read_vertices(file)) return set_error_state(Error::ReadingVertices);
+        if (!read_thickness(file)) return set_error_state(Error::ReadingThickness);
+        if (!read_transparancy(file)) return set_error_state(Error::ReadingTransparency);
+        if (!read_color(file)) return set_error_state(Error::ReadingColor);
 
-        if (!format_is_valid()) return fail_bit = Error::InvalidFormat, false;
+        if (!format_is_valid()) return set_error_state(Error::InvalidFormat);
 
-        return fail_bit = Error::None, true;
+        return set_error_state(Error::None);
     }
 
     bool HairStyle::save(const std::string& file_path) const {
         complete_header(); // Fill in remaining header fields.
-        if (!format_is_valid()) return fail_bit = Error::InvalidFormat, false;
+
+        if (!format_is_valid()) return set_error_state(Error::InvalidFormat);
 
         std::ofstream file { file_path, std::ios::binary };
 
-        if (!file) return fail_bit = Error::OpeningFile, false;
+        if (!file) return set_error_state(Error::OpeningFile);
 
         if (!file.write(reinterpret_cast<char*>(&file_header), sizeof(FileHeader)))
-            return fail_bit = Error::WritingFileHeader, false;
+            return set_error_state(Error::WritingFileHeader);
 
-        if (!write_segments(file)) return fail_bit = Error::WritingSegments, false;
-        if (!write_vertices(file)) return fail_bit = Error::WritingVertices, false;
-        if (!write_thickness(file)) return fail_bit = Error::WritingThickness, false;
-        if (!write_transparancy(file)) return fail_bit = Error::WritingTransparency, false;
-        if (!write_color(file)) return fail_bit = Error::WritingColor, false;
+        if (!write_segments(file)) return set_error_state(Error::WritingSegments);
+        if (!write_vertices(file)) return set_error_state(Error::WritingVertices);
+        if (!write_thickness(file)) return set_error_state(Error::WritingThickness);
+        if (!write_transparancy(file)) return set_error_state(Error::WritingTransparency);
+        if (!write_color(file)) return set_error_state(Error::WritingColor);
 
-        return fail_bit = Error::None, true;
+        // Signature is already set, so we don't need to check for validity.
+
+        return set_error_state(Error::None);
     }
 
     unsigned HairStyle::get_strand_count() const {
-        if (file_header.field.has_segments) {
-            return segments.size();
-        } else if (segments.size() != 0) {
-            return segments.size();
-        } return file_header.strand_count;
+        if (segments.size() != 0) {
+            return static_cast<unsigned>(segments.size());
+        } else {
+            // Use the manually defined one.
+            return file_header.strand_count;
+        }
     }
 
     void HairStyle::set_strand_count(unsigned strand_count) {
@@ -71,7 +75,7 @@ namespace vkhr {
     }
 
     unsigned HairStyle::get_vertex_count() const {
-        return vertices.size();
+        return static_cast<unsigned>(vertices.size());
     }
 
     bool HairStyle::has_segments() const { return segments.size(); }
@@ -166,88 +170,75 @@ namespace vkhr {
         file_header.field.future_extension = 0;
     }
 
+    bool HairStyle::set_error_state(Error error_state) const {
+        this->error_state = error_state;
+        if (error_state == Error::None) {
+            return true;
+        } else return false;
+    }
+
     bool HairStyle::read_segments(std::ifstream& file) {
         if (file_header.field.has_segments) {
             segments.resize(file_header.strand_count);
-            if (!file.read(reinterpret_cast<char*>(segments.data()),
-                           segments.size() * sizeof(segments[0])))
-                return false;
+            return read_field(file, segments);
         } return true;
     }
 
     bool HairStyle::read_vertices(std::ifstream& file) {
         if (file_header.field.has_vertices) {
             vertices.resize(file_header.vertex_count);
-            if (!file.read(reinterpret_cast<char*>(vertices.data()),
-                           vertices.size() * sizeof(vertices[0])))
-                return false;
+            return read_field(file, vertices);
         } return true;
     }
 
     bool HairStyle::read_thickness(std::ifstream& file) {
         if (file_header.field.has_thickness) {
             thickness.resize(file_header.vertex_count);
-            if (!file.read(reinterpret_cast<char*>(thickness.data()),
-                           thickness.size() * sizeof(thickness[0])))
-                return false;
+            return read_field(file, thickness);
         } return true;
     }
 
     bool HairStyle::read_transparancy(std::ifstream& file) {
         if (file_header.field.has_transparency) {
             transparency.resize(file_header.vertex_count);
-            if (!file.read(reinterpret_cast<char*>(transparency.data()),
-                           transparency.size() * sizeof(transparency[0])))
-                return false;
+            return read_field(file, transparency);
         } return true;
     }
 
     bool HairStyle::read_color(std::ifstream& file) {
         if (file_header.field.has_color) {
             color.resize(file_header.vertex_count);
-            if (!file.read(reinterpret_cast<char*>(color.data()),
-                           color.size() * sizeof(color[0])))
-                return false;
+            return read_field(file, color);
         } return true;
     }
 
     bool HairStyle::write_segments(std::ofstream& file) const {
         if (file_header.field.has_segments) {
-            if (!file.write(reinterpret_cast<const char*>(segments.data()),
-                            segments.size() * sizeof(segments[0])))
-                return false;
+            return write_field(file, segments);
         } return true;
     }
 
     bool HairStyle::write_vertices(std::ofstream& file) const {
         if (file_header.field.has_vertices) {
-            if (!file.write(reinterpret_cast<const char*>(vertices.data()),
-                            vertices.size() * sizeof(vertices[0])))
-                return false;
+            return write_field(file, vertices);
         } return true;
     }
 
     bool HairStyle::write_thickness(std::ofstream& file) const {
         if (file_header.field.has_thickness) {
-            if (!file.write(reinterpret_cast<const char*>(thickness.data()),
-                            thickness.size() * sizeof(thickness[0])))
-                return false;
+            return write_field(file, thickness);
         } return true;
     }
 
     bool HairStyle::write_transparancy(std::ofstream& file) const {
         if (file_header.field.has_transparency) {
-            if (!file.write(reinterpret_cast<const char*>(transparency.data()),
-                            transparency.size() * sizeof(transparency[0])))
-                return false;
+            return write_field(file, transparency);
         } return true;
     }
 
     bool HairStyle::write_color(std::ofstream& file) const {
         if (file_header.field.has_color) {
-            if (!file.write(reinterpret_cast<const char*>(color.data()),
-                            color.size() * sizeof(color[0])))
-                return false;
+            return write_field(file, color);
         } return true;
     }
 }

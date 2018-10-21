@@ -23,7 +23,7 @@ int main(int, char**) {
 
     // NOT how to handle errors. Just for testing purposes!
 
-    switch (curly_hair.get_previous_failure_code()) {
+    switch (curly_hair.get_last_error_state()) {
     case vkhr::HairStyle::Error::None: break;
     case vkhr::HairStyle::Error::OpeningFile:
         std::cerr << "failed to open a file!" << std::endl;
