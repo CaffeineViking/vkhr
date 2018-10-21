@@ -83,7 +83,7 @@ namespace vkhr {
         if (file_ext_pos == std::string::npos)
             return false;
 
-        auto extension = file_path.substr(file_ext_pos + 1);
+        const auto extension = file_path.substr(file_ext_pos + 1);
         int error;
 
         if (extension == "png") error = stbi_write_png(file_path.c_str(), width, height,
@@ -133,15 +133,15 @@ namespace vkhr {
         return image_data;
     }
 
-    Image::Color* Image::get_pixels() {
+    Color* Image::get_pixels() {
         return reinterpret_cast<Color*>(image_data);
     }
 
-    const Image::Color* Image::get_pixels() const {
+    const Color* Image::get_pixels() const {
         return reinterpret_cast<Color*>(image_data);
     }
 
-    const Image::Color& Image::get_pixel(const int x,
+    const Color& Image::get_pixel(const int x,
                                   const int y) const {
         return get_pixels()[y * width + x];
     }
@@ -163,10 +163,13 @@ namespace vkhr {
     }
 
     void Image::resize(const int width, const int height) {
+        if (width == this->width && height == this->height)
+            return; // We're done here folks!
+
         Image resized_image { width, height };
 
-        float x_ratio { width  / static_cast<float>(this->width) },
-              y_ratio { height / static_cast<float>(this->height) };
+        const float x_ratio { width  / static_cast<float>(this->width) },
+                    y_ratio { height / static_cast<float>(this->height) };
 
         for (int j { 0 }; j < height; ++j)
         for (int i { 0 }; i < width;  ++i) {

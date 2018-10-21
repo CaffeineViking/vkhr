@@ -6,10 +6,10 @@
 #include <string>
 
 namespace vkhr {
+    using Color = glm::tvec4<unsigned char>;
+
     class Image final {
     public:
-        using Color = glm::tvec4<unsigned char>;
-
         Image() = default;
         Image(const int width,
               const int height);
