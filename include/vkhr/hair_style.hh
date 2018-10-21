@@ -44,7 +44,7 @@ namespace vkhr {
         bool save(const std::string& file_path) const;
 
         unsigned get_strand_count() const;
-        void set_strand_count(unsigned strand_count);
+        void set_strand_count(const unsigned strand_count);
         unsigned get_vertex_count() const;
 
         bool has_segments() const;
@@ -54,11 +54,11 @@ namespace vkhr {
         bool has_color() const;
 
         unsigned get_default_segment_count() const;
-        void set_default_segment_count(unsigned default_segment_count);
-        void set_default_thickness(float default_thickness);
+        void set_default_segment_count(const unsigned default_segment_count);
+        void set_default_thickness(const float default_thickness);
         float get_default_thickness() const;
         float get_default_transparency() const;
-        void set_default_transparency(float default_transparency);
+        void set_default_transparency(const float default_transparency);
         void set_default_color(const glm::vec3& default_color);
         glm::vec3 get_default_color() const;
 
@@ -105,7 +105,7 @@ namespace vkhr {
         void complete_header() const;
         void update_bitfield() const;
 
-        bool set_error_state(Error error_state) const;
+        bool set_error_state(const Error error_state) const;
 
         template<typename T>
         bool read_field(std::ifstream& file, std::vector<T>& field);

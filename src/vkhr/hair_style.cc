@@ -70,7 +70,7 @@ namespace vkhr {
         }
     }
 
-    void HairStyle::set_strand_count(unsigned strand_count) {
+    void HairStyle::set_strand_count(const unsigned strand_count) {
         file_header.strand_count = strand_count;
     }
 
@@ -90,11 +90,11 @@ namespace vkhr {
         return file_header.default_segment_count;
     }
 
-    void HairStyle::set_default_segment_count(unsigned default_segment_count) {
+    void HairStyle::set_default_segment_count(const unsigned default_segment_count) {
         file_header.default_segment_count = default_segment_count;
     }
 
-    void HairStyle::set_default_thickness(float default_thickness) {
+    void HairStyle::set_default_thickness(const float default_thickness) {
         file_header.default_thickness = default_thickness;
     }
 
@@ -106,7 +106,7 @@ namespace vkhr {
         return file_header.default_transparency;
     }
 
-    void HairStyle::set_default_transparency(float default_transparency) {
+    void HairStyle::set_default_transparency(const float default_transparency) {
         file_header.default_transparency = default_transparency;
     }
 
@@ -170,7 +170,7 @@ namespace vkhr {
         file_header.field.future_extension = 0;
     }
 
-    bool HairStyle::set_error_state(Error error_state) const {
+    bool HairStyle::set_error_state(const Error error_state) const {
         this->error_state = error_state;
         if (error_state == Error::None) {
             return true;
