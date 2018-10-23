@@ -72,6 +72,20 @@ int main(int, char**) {
         "VK_EXT_debug_utils"
     };
 
+    std::cout << "\nAvailable layers:\n" << std::endl;
+    for (auto layers : vk::Instance::get_available_layers()) {
+        std::cout << layers.name << '\n';
+    }
+
+    std::cout << std::endl;
+
+    std::cout << "Available extensions:\n" << std::endl;
+    for (auto extensions : vk::Instance::get_available_extensions()) {
+        std::cout << extensions.name << '\n';
+    }
+
+    std::cout << std::endl;
+
     const vkhr::Image vulkan_icon { IMAGE("vulkan.icon") };
     vkhr::Window window { 1280, 720, "VKHR", vulkan_icon };
 
@@ -91,6 +105,18 @@ int main(int, char**) {
         required_layers,
         required_extensions
     };
+
+    std::cout << "Layers enabled:\n" << std::endl;
+    for (auto layer : instance.get_enabled_layers()) {
+        std::cout << layer.name << '\n';
+    }
+
+    std::cout << std::endl;
+
+    std::cout << "Extensions enabled:\n" << std::endl;
+    for (auto extension : instance.get_enabled_extensions()) {
+        std::cout << extension.name << '\n';
+    }
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {

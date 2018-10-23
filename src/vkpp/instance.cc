@@ -49,9 +49,9 @@ namespace vkpp {
         for (std::size_t i { 0 }; i < extension_names.size(); ++i)
             extension_names[i] = required_extensions[i].name.c_str();
 
-        create_info.enabledExtensionCount = extension_names.size();
+        create_info.enabledExtensionCount = static_cast<std::uint32_t>(extension_names.size());
         create_info.ppEnabledExtensionNames = extension_names.data();
-        create_info.enabledLayerCount = layer_names.size();
+        create_info.enabledLayerCount = static_cast<std::uint32_t>(layer_names.size());
         create_info.ppEnabledLayerNames = layer_names.data();
         create_info.pApplicationInfo = &app_info;
 

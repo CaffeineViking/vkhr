@@ -53,7 +53,7 @@ namespace vkhr {
                                    &monitor_width_in_mm,
                                    &monitor_height_in_mm);
 
-        const float inch_to_mm = 25.4;
+        const float inch_to_mm = 25.4f;
 
         horizontal_dpi = monitor_width  / monitor_width_in_mm  / inch_to_mm;
         vertical_dpi   = monitor_height / monitor_height_in_mm / inch_to_mm;

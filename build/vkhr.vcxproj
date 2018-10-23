@@ -361,6 +361,12 @@
     <ClInclude Include="..\include\vkhr\scene_node.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\window.hh" />
+    <ClInclude Include="..\include\vkpp\exception.hh" />
+    <ClInclude Include="..\include\vkpp\extension.hh" />
+    <ClInclude Include="..\include\vkpp\instance.hh" />
+    <ClInclude Include="..\include\vkpp\layer.hh" />
+    <ClInclude Include="..\include\vkpp\metadata.hh" />
+    <ClInclude Include="..\include\vkpp\version.hh" />
     <ClInclude Include="..\include\vkpp\vkpp.hh" />
   </ItemGroup>
   <ItemGroup>
@@ -377,6 +383,11 @@
     <ClCompile Include="..\src\vkhr\logger.cc" />
     <ClCompile Include="..\src\vkhr\scene_node.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
+    <ClCompile Include="..\src\vkpp\exception.cc" />
+    <ClCompile Include="..\src\vkpp\extension.cc" />
+    <ClCompile Include="..\src\vkpp\instance.cc" />
+    <ClCompile Include="..\src\vkpp\layer.cc" />
+    <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

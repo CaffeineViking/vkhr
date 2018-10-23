@@ -52,6 +52,9 @@
     <Filter Include="src\vkhr">
       <UniqueIdentifier>{B7B838CF-A385-93DA-CC9E-8182B8CAC868}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\vkpp">
+      <UniqueIdentifier>{BDB938CF-A986-93DA-D29F-8182BECBC868}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\foreign\glfw\GLFW\glfw3.h">
@@ -855,6 +858,24 @@
     <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\exception.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\extension.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\instance.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\layer.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\metadata.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\version.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\vkpp.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -898,6 +919,21 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\exception.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\extension.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\instance.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\layer.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\version.cc">
+      <Filter>src\vkpp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
