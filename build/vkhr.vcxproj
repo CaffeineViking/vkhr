@@ -378,9 +378,6 @@
     <ClCompile Include="..\src\vkhr\scene_node.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\share\scenes\curly.vkhr" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -46,9 +46,6 @@
     <Filter Include="include\vkpp">
       <UniqueIdentifier>{99D7E369-853A-730E-2EC0-ABC41A023F91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scenes">
-      <UniqueIdentifier>{A602591B-92A4-83F1-7B5F-974567A00A42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -902,10 +899,5 @@
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\share\scenes\curly.vkhr">
-      <Filter>scenes</Filter>
-    </None>
   </ItemGroup>
 </Project>
