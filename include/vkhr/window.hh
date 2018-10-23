@@ -3,10 +3,13 @@
 
 #include <vkhr/image.hh>
 
+#include <vkpp/extension.hh>
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <vector>
 
 namespace vkhr {
     class Window final {
@@ -23,6 +26,7 @@ namespace vkhr {
         bool request_vsync() const;
 
         void toggle_fullscreen();
+        void hide(); void show();
 
         int get_width()  const;
         float get_aspect_ratio() const;
@@ -30,8 +34,8 @@ namespace vkhr {
 
         int get_refresh_rate() const;
 
-        const char** get_surface_extensions(unsigned* c);
-        VkSurfaceKHR create_surface(VkInstance instance);
+        std::vector<vkpp::Extension> get_surface_extensions() const;
+        VkSurfaceKHR create_surface(VkInstance instance) const;
 
         void resize(const int width, const int height);
 

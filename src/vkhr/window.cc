@@ -11,6 +11,10 @@ namespace vkhr {
             throw std::runtime_error { "Failed to initialize GLFW 3!" };
         }
 
+        if (!glfwVulkanSupported()) {
+            throw std::runtime_error { "Couldn't find Vulkan loader!" };
+        }
+
         glfwWindowHint(GLFW_RESIZABLE,  GLFW_FALSE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_VISIBLE,    GLFW_FALSE);
@@ -96,6 +100,14 @@ namespace vkhr {
         return vsync;
     }
 
+    void Window::show() {
+        glfwShowWindow(handle);
+    }
+
+    void Window::hide() {
+        glfwHideWindow(handle);
+    }
+
     int Window::get_width() const {
         if (fullscreen) {
             return monitor_width;
@@ -120,11 +132,18 @@ namespace vkhr {
         return monitor_refresh_rate;
     }
 
-    const char** Window::get_surface_extensions(unsigned* c) {
-        return glfwGetRequiredInstanceExtensions(c);
+    std::vector<vkpp::Extension> Window::get_surface_extensions() const {
+        unsigned extension_count;
+        auto extension_names = glfwGetRequiredInstanceExtensions(&extension_count);
+
+        std::vector<vkpp::Extension> surface_extensions(extension_count);
+        for (std::size_t i { 0 }; i < surface_extensions.size(); ++i)
+            surface_extensions[i].name = extension_names[i];
+
+        return surface_extensions;
     }
 
-    VkSurfaceKHR Window::create_surface(VkInstance instance) {
+    VkSurfaceKHR Window::create_surface(VkInstance instance) const {
         VkSurfaceKHR surface;
 
         if (glfwCreateWindowSurface(instance, handle, nullptr, &surface)) {
