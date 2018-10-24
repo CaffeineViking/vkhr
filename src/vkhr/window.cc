@@ -196,7 +196,7 @@ namespace vkhr {
 
             auto final_title = title + fps_text;
             if (append.size() > 0)
-                final_title.append(" – " + append);
+                final_title.append(" — " + append);
 
             glfwSetWindowTitle(handle, final_title.c_str());
 

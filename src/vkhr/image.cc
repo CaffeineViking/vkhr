@@ -7,8 +7,6 @@
 #include <stb_image.h>
 
 #include <cstring>
-#include <utility>
-#include <iostream>
 
 namespace vkhr {
     Image::Image(const int width, const int height)

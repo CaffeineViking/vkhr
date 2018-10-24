@@ -1,11 +1,14 @@
 #ifndef VKPP_INSTANCE_HH
 #define VKPP_INSTANCE_HH
 
+#include <vulkan/vulkan.h>
+
+#include <vkpp/application.hh>
 #include <vkpp/layer.hh>
-#include <vkpp/metadata.hh>
 #include <vkpp/extension.hh>
 #include <vkpp/version.hh>
 
+#include <utility>
 #include <vector>
 
 namespace vkpp {
@@ -16,6 +19,11 @@ namespace vkpp {
                  const std::vector<Extension> required_extensions);
         ~Instance() noexcept;
 
+        Instance(Instance&& instance) noexcept;
+        Instance& operator=(Instance&& instance) noexcept;
+
+        friend void swap(Instance& lhs, Instance& rhs);
+
         VkInstance& get_handle();
 
         // Find if layer/extension is supported by this instance.
@@ -23,7 +31,7 @@ namespace vkpp {
         std::vector<Layer> find(const std::vector<Layer>& layers);
         std::vector<Extension> find(const std::vector<Extension>& extensions);
 
-        const Application get_application_information() const;
+        const Application& get_application() const;
         const std::vector<Layer>& get_enabled_layers() const;
         const std::vector<Extension>& get_enabled_extensions() const;
 
@@ -39,7 +47,7 @@ namespace vkpp {
         std::vector<Layer> enabled_layers;
         std::vector<Extension> enabled_extensions;
 
-        VkInstance handle;
+        VkInstance handle { VK_NULL_HANDLE };
     };
 }
 

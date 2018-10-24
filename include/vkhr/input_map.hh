@@ -1,5 +1,5 @@
-#ifndef VKHR_INPUT_MAPS_HH
-#define VKHR_INPUT_MAPS_HH
+#ifndef VKHR_INPUT_MAP_HH
+#define VKHR_INPUT_MAP_HH
 
 #include <vkhr/window.hh>
 
@@ -116,9 +116,9 @@ namespace vkhr {
         };
     }
 
-    class InputMapper final {
+    class InputMap final {
     public:
-        InputMapper(Window& window);
+        InputMap(Window& window);
 
         void unbind(const std::string& id);
 
@@ -153,7 +153,7 @@ namespace vkhr {
         // window pointers to their specific input mappers on create.
         //
         static void mouse_button_callback(GLFWwindow*, int, int, int);
-        static std::unordered_map<GLFWwindow*, InputMapper*> callback_map;
+        static std::unordered_map<GLFWwindow*, InputMap*> callback_map;
         static void key_callback(GLFWwindow*, int, int, int, int);
 
         std::unordered_map<Input::Key, Input::State> key_state_map;

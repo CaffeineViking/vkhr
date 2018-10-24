@@ -1,18 +1,18 @@
-#include <vkhr/input_maps.hh>
+#include <vkhr/input_map.hh>
 
 namespace vkhr {
-    InputMapper::InputMapper(Window& window)
-                : handle { window.get_handle() } {
+    InputMap::InputMap(Window& window)
+        : handle { window.get_handle() } {
         callback_map[handle] = this;
         glfwSetKeyCallback(handle, &key_callback);
         glfwSetMouseButtonCallback(handle, &mouse_button_callback);
     }
 
-    std::unordered_map<GLFWwindow*, InputMapper*> InputMapper::callback_map;
+    std::unordered_map<GLFWwindow*, InputMap*> InputMap::callback_map;
 
-    void InputMapper::mouse_button_callback(GLFWwindow* window, int button,
+    void InputMap::mouse_button_callback(GLFWwindow* window, int button,
                                             int action, int) {
-        InputMapper* mapper { callback_map[window] };
+        InputMap* mapper { callback_map[window] };
         Input::MouseButton mouse_button { static_cast<Input::MouseButton>(button) };
 
         auto mouse_state_iter = mapper->mouse_button_state.find(mouse_button);
@@ -26,8 +26,8 @@ namespace vkhr {
             mapper->mouse_button_state[mouse_button] = static_cast<Input::State>(action);
     }
 
-    void InputMapper::key_callback(GLFWwindow* window, int keyid, int, int action, int) {
-        InputMapper* mapper { callback_map[window] };
+    void InputMap::key_callback(GLFWwindow* window, int keyid, int, int action, int) {
+        InputMap* mapper { callback_map[window] };
         Input::Key key { static_cast<Input::Key>(keyid) };
 
         auto key_state_iter = mapper->key_state_map.find(key);
@@ -41,30 +41,30 @@ namespace vkhr {
             mapper->key_state_map[key] = static_cast<Input::State>(action);
     }
 
-    void InputMapper::unbind(const std::string& id) {
+    void InputMap::unbind(const std::string& id) {
         mouse_button_map.erase(id);
         key_map.erase(id);
     }
 
-    void InputMapper::bind(const std::string& id, Input::Key key) {
+    void InputMap::bind(const std::string& id, Input::Key key) {
         key_map.insert({ id, key });
     }
 
-    void InputMapper::bind(const std::string& id, const std::vector<Input::Key>& keys) {
+    void InputMap::bind(const std::string& id, const std::vector<Input::Key>& keys) {
         for (Input::Key key : keys) bind(id, key);
     }
 
-    void InputMapper::bind(const std::string& id, Input::MouseButton mouse_button) {
+    void InputMap::bind(const std::string& id, Input::MouseButton mouse_button) {
         mouse_button_map.insert({ id, mouse_button });
     }
 
-    void InputMapper::bind(const std::string& id,
+    void InputMap::bind(const std::string& id,
                            const std::vector<Input::MouseButton>& mouse_buttons) {
         for (Input::MouseButton mouse_button : mouse_buttons) bind(id, mouse_button);
     }
 
     std::vector<Input::MouseButton>
-    InputMapper::get_mouse_button_map(const std::string& id) const {
+    InputMap::get_mouse_button_map(const std::string& id) const {
         std::vector<Input::MouseButton> mouse_buttons;
         auto iter_pair = mouse_button_map.equal_range(id);
         for (auto map_iter = iter_pair.first; map_iter != iter_pair.second; ++map_iter)
@@ -72,7 +72,7 @@ namespace vkhr {
         return mouse_buttons;
     }
 
-    std::vector<Input::Key> InputMapper::get_key_map(const std::string& id) const {
+    std::vector<Input::Key> InputMap::get_key_map(const std::string& id) const {
         std::vector<Input::Key> keys;
         auto iter_pair = key_map.equal_range(id);
         for (auto map_iter = iter_pair.first; map_iter != iter_pair.second; ++map_iter)
@@ -80,7 +80,7 @@ namespace vkhr {
         return keys;
     }
 
-    bool InputMapper::pressed(Input::Key key) const {
+    bool InputMap::pressed(Input::Key key) const {
         auto key_iterator = key_state_map.find(key);
         if (key_iterator != key_state_map.end())
             return key_iterator->second == Input::State::Pressed ||
@@ -89,7 +89,7 @@ namespace vkhr {
         else return false;
     }
 
-    bool InputMapper::just_pressed(Input::Key key) {
+    bool InputMap::just_pressed(Input::Key key) {
         auto key_iterator = key_state_map.find(key);
         if (key_iterator != key_state_map.end()) {
             if (key_iterator->second == Input::State::JustPressed) {
@@ -101,14 +101,14 @@ namespace vkhr {
         return false;
     }
 
-    bool InputMapper::released(Input::Key key) const {
+    bool InputMap::released(Input::Key key) const {
         auto key_iterator = key_state_map.find(key);
         if (key_iterator != key_state_map.end())
             return key_iterator->second == Input::State::Released;
         else return false;
     }
 
-    bool InputMapper::pressed(Input::MouseButton mouse_button) const {
+    bool InputMap::pressed(Input::MouseButton mouse_button) const {
         auto mouse_button_iterator = mouse_button_state.find(mouse_button);
         if (mouse_button_iterator != mouse_button_state.end())
             return mouse_button_iterator->second == Input::State::Pressed ||
@@ -117,7 +117,7 @@ namespace vkhr {
         else return false;
     }
 
-    bool InputMapper::just_pressed(Input::MouseButton mouse_button) {
+    bool InputMap::just_pressed(Input::MouseButton mouse_button) {
         auto mouse_button_iterator = mouse_button_state.find(mouse_button);
         if (mouse_button_iterator != mouse_button_state.end()) {
             if (mouse_button_iterator->second == Input::State::JustPressed) {
@@ -129,14 +129,14 @@ namespace vkhr {
         return false;
     }
 
-    bool InputMapper::released(Input::MouseButton mouse_button) const {
+    bool InputMap::released(Input::MouseButton mouse_button) const {
         auto mouse_button_iterator = mouse_button_state.find(mouse_button);
         if (mouse_button_iterator != mouse_button_state.end())
             return mouse_button_iterator->second == Input::State::Released;
         else return false;
     }
 
-    bool InputMapper::pressed(const std::string& id) const {
+    bool InputMap::pressed(const std::string& id) const {
         auto key_range = key_map.equal_range(id);
         for (auto key_iter = key_range.first; key_iter != key_range.second; ++key_iter)
             if (pressed(key_iter->second)) return true;
@@ -150,7 +150,7 @@ namespace vkhr {
         return false;
     }
 
-    bool InputMapper::just_pressed(const std::string& id) {
+    bool InputMap::just_pressed(const std::string& id) {
         auto key_range = key_map.equal_range(id);
         for (auto key_iter = key_range.first; key_iter != key_range.second; ++key_iter)
             if (just_pressed(key_iter->second)) return true;
@@ -164,7 +164,7 @@ namespace vkhr {
         return false;
     }
 
-    bool InputMapper::released(const std::string& id) const {
+    bool InputMap::released(const std::string& id) const {
         auto key_range = key_map.equal_range(id);
         for (auto key_iter = key_range.first; key_iter != key_range.second; ++key_iter)
             if (released(key_iter->second)) return true;
@@ -178,19 +178,19 @@ namespace vkhr {
         return false;
     }
 
-    glm::vec2 InputMapper::mouse_position() const {
+    glm::vec2 InputMap::mouse_position() const {
         glm::dvec2 position;
         glfwGetCursorPos(handle, &position.x, &position.y);
         return position;
     }
 
-    void InputMapper::toggle_mouse_lock() {
+    void InputMap::toggle_mouse_lock() {
         mouse_locked = !mouse_locked;
         if (mouse_locked) glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         else glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
-    bool InputMapper::is_mouse_locked() const {
+    bool InputMap::is_mouse_locked() const {
         int mode { glfwGetInputMode(handle, GLFW_CURSOR) };
         if (mode == GLFW_CURSOR_DISABLED) return true;
         else return false;

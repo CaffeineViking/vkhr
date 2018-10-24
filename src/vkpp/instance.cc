@@ -49,9 +49,9 @@ namespace vkpp {
         for (std::size_t i { 0 }; i < extension_names.size(); ++i)
             extension_names[i] = required_extensions[i].name.c_str();
 
-        create_info.enabledExtensionCount = static_cast<std::uint32_t>(extension_names.size());
+        create_info.enabledExtensionCount = extension_names.size();
         create_info.ppEnabledExtensionNames = extension_names.data();
-        create_info.enabledLayerCount = static_cast<std::uint32_t>(layer_names.size());
+        create_info.enabledLayerCount = layer_names.size();
         create_info.ppEnabledLayerNames = layer_names.data();
         create_info.pApplicationInfo = &app_info;
 
@@ -60,7 +60,26 @@ namespace vkpp {
     }
 
     Instance::~Instance() noexcept {
-        vkDestroyInstance(handle, nullptr);
+        if (handle != VK_NULL_HANDLE) {
+            vkDestroyInstance(handle, nullptr);
+        }
+    }
+
+    Instance::Instance(Instance&& instance) noexcept {
+        swap(*this, instance);
+    }
+
+    Instance& Instance::operator=(Instance&& instance) noexcept {
+        swap(*this, instance);
+        return *this;
+    }
+
+    void swap(Instance& lhs, Instance& rhs) {
+        using std::swap;
+        swap(lhs.application_info, rhs.application_info);
+        swap(lhs.enabled_layers, rhs.enabled_layers);
+        swap(lhs.enabled_extensions, rhs.enabled_extensions);
+        swap(lhs.handle, rhs.handle);
     }
 
     VkInstance& Instance::get_handle() {
@@ -101,7 +120,7 @@ namespace vkpp {
         return missing_extensions;
     }
 
-    const Application Instance::get_application_information() const {
+    const Application& Instance::get_application() const {
         return application_info;
     }
 
