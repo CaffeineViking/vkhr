@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\glfw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\glfw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -75,7 +75,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\glfw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\glfw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -325,6 +325,8 @@
     <ClInclude Include="..\foreign\glm\glm\vec3.hpp" />
     <ClInclude Include="..\foreign\glm\glm\vec4.hpp" />
     <ClInclude Include="..\foreign\glm\glm\vector_relational.hpp" />
+    <ClInclude Include="..\foreign\imgui\examples\imgui_impl_glfw.h" />
+    <ClInclude Include="..\foreign\imgui\examples\imgui_impl_vulkan.h" />
     <ClInclude Include="..\foreign\imgui\imconfig.h" />
     <ClInclude Include="..\foreign\imgui\imgui.h" />
     <ClInclude Include="..\foreign\imgui\imgui_internal.h" />
@@ -355,21 +357,30 @@
     <ClInclude Include="..\include\vkhr\camera.hh" />
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
-    <ClInclude Include="..\include\vkhr\input_maps.hh" />
+    <ClInclude Include="..\include\vkhr\input_map.hh" />
     <ClInclude Include="..\include\vkhr\logger.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />
-    <ClInclude Include="..\include\vkhr\scene_node.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer.hh" />
+    <ClInclude Include="..\include\vkhr\ray_tracer.hh" />
+    <ClInclude Include="..\include\vkhr\renderer.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\window.hh" />
+    <ClInclude Include="..\include\vkpp\application.hh" />
+    <ClInclude Include="..\include\vkpp\debug_messenger.hh" />
+    <ClInclude Include="..\include\vkpp\device.hh" />
     <ClInclude Include="..\include\vkpp\exception.hh" />
     <ClInclude Include="..\include\vkpp\extension.hh" />
     <ClInclude Include="..\include\vkpp\instance.hh" />
     <ClInclude Include="..\include\vkpp\layer.hh" />
-    <ClInclude Include="..\include\vkpp\metadata.hh" />
+    <ClInclude Include="..\include\vkpp\physical_device.hh" />
+    <ClInclude Include="..\include\vkpp\surface.hh" />
     <ClInclude Include="..\include\vkpp\version.hh" />
     <ClInclude Include="..\include\vkpp\vkpp.hh" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\foreign\imgui\examples\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\foreign\imgui\examples\imgui_impl_vulkan.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui_widgets.cpp" />
@@ -379,14 +390,20 @@
     <ClCompile Include="..\src\vkhr\camera.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\image.cc" />
-    <ClCompile Include="..\src\vkhr\input_maps.cc" />
+    <ClCompile Include="..\src\vkhr\input_map.cc" />
     <ClCompile Include="..\src\vkhr\logger.cc" />
-    <ClCompile Include="..\src\vkhr\scene_node.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer.cc" />
+    <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
+    <ClCompile Include="..\src\vkhr\scene_graph.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
+    <ClCompile Include="..\src\vkpp\debug_messenger.cc" />
+    <ClCompile Include="..\src\vkpp\device.cc" />
     <ClCompile Include="..\src\vkpp\exception.cc" />
     <ClCompile Include="..\src\vkpp\extension.cc" />
     <ClCompile Include="..\src\vkpp\instance.cc" />
     <ClCompile Include="..\src\vkpp\layer.cc" />
+    <ClCompile Include="..\src\vkpp\physical_device.cc" />
+    <ClCompile Include="..\src\vkpp\surface.cc" />
     <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

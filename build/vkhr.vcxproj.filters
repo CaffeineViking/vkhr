@@ -31,6 +31,9 @@
     <Filter Include="foreign\imgui">
       <UniqueIdentifier>{D9BC2BA0-457D-A7D6-0EB8-F0537A37ECB2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="foreign\imgui\examples">
+      <UniqueIdentifier>{A78E6AC8-9388-931A-7CF5-292B688EF986}</UniqueIdentifier>
+    </Filter>
     <Filter Include="foreign\stb">
       <UniqueIdentifier>{07C61A6F-737B-9364-FC6F-8D3B68248A68}</UniqueIdentifier>
     </Filter>
@@ -750,6 +753,12 @@
     <ClInclude Include="..\foreign\glm\glm\vector_relational.hpp">
       <Filter>foreign\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="..\foreign\imgui\examples\imgui_impl_glfw.h">
+      <Filter>foreign\imgui\examples</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\imgui\examples\imgui_impl_vulkan.h">
+      <Filter>foreign\imgui\examples</Filter>
+    </ClInclude>
     <ClInclude Include="..\foreign\imgui\imconfig.h">
       <Filter>foreign\imgui</Filter>
     </ClInclude>
@@ -840,7 +849,7 @@
     <ClInclude Include="..\include\vkhr\image.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\input_maps.hh">
+    <ClInclude Include="..\include\vkhr\input_map.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\logger.hh">
@@ -849,7 +858,16 @@
     <ClInclude Include="..\include\vkhr\paths.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\scene_node.hh">
+    <ClInclude Include="..\include\vkhr\rasterizer.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\ray_tracer.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\renderer.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
@@ -857,6 +875,15 @@
     </ClInclude>
     <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\application.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\debug_messenger.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\device.hh">
+      <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\exception.hh">
       <Filter>include\vkpp</Filter>
@@ -870,7 +897,10 @@
     <ClInclude Include="..\include\vkpp\layer.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkpp\metadata.hh">
+    <ClInclude Include="..\include\vkpp\physical_device.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\surface.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\version.hh">
@@ -881,6 +911,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\foreign\imgui\examples\imgui_impl_glfw.cpp">
+      <Filter>foreign\imgui\examples</Filter>
+    </ClCompile>
+    <ClCompile Include="..\foreign\imgui\examples\imgui_impl_vulkan.cpp">
+      <Filter>foreign\imgui\examples</Filter>
+    </ClCompile>
     <ClCompile Include="..\foreign\imgui\imgui.cpp">
       <Filter>foreign\imgui</Filter>
     </ClCompile>
@@ -908,17 +944,29 @@
     <ClCompile Include="..\src\vkhr\image.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\input_maps.cc">
+    <ClCompile Include="..\src\vkhr\input_map.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\logger.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\scene_node.cc">
+    <ClCompile Include="..\src\vkhr\rasterizer.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\scene_graph.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\debug_messenger.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\device.cc">
+      <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\exception.cc">
       <Filter>src\vkpp</Filter>
@@ -930,6 +978,12 @@
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\layer.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\physical_device.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\surface.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\version.cc">
