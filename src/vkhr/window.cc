@@ -132,7 +132,7 @@ namespace vkhr {
         return monitor_refresh_rate;
     }
 
-    std::vector<vkpp::Extension> Window::get_surface_extension() const {
+    std::vector<vkpp::Extension> Window::get_surface_extensions() const {
         unsigned extension_count;
         auto extension_names = glfwGetRequiredInstanceExtensions(&extension_count);
 

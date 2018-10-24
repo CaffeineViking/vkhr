@@ -17,6 +17,14 @@ namespace vkpp {
 
         using Callback = PFN_vkDebugUtilsMessengerCallbackEXT;
 
+        static constexpr const char* validation_layer {
+            "VK_LAYER_LUNARG_standard_validation"
+        };
+
+        static constexpr const char* debug_utils {
+            "VK_EXT_debug_utils"
+        };
+
         DebugMessenger() = default;
         DebugMessenger(VkInstance instance, Callback callback = nullptr);
         ~DebugMessenger() noexcept;

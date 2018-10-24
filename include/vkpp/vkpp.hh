@@ -1,6 +1,7 @@
 #ifndef VKPP_VKPP_HH
 #define VKPP_VKPP_HH
 
+#include <vkpp/append.hh>
 #include <vkpp/application.hh>
 #include <vkpp/debug_messenger.hh>
 #include <vkpp/device.hh>

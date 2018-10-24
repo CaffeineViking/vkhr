@@ -366,6 +366,7 @@
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\window.hh" />
+    <ClInclude Include="..\include\vkpp\append.hh" />
     <ClInclude Include="..\include\vkpp\application.hh" />
     <ClInclude Include="..\include\vkpp\debug_messenger.hh" />
     <ClInclude Include="..\include\vkpp\device.hh" />

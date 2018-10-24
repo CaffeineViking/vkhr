@@ -7,6 +7,7 @@
 #include <vkpp/debug_messenger.hh>
 #include <vkpp/layer.hh>
 #include <vkpp/extension.hh>
+#include <vkpp/physical_device.hh>
 #include <vkpp/version.hh>
 
 #include <utility>
@@ -31,6 +32,7 @@ namespace vkpp {
 
         // Find if layer/extension is supported by this instance.
         // returns: the layers/extensions that are NOT supported!
+
         std::vector<Layer> find(const std::vector<Layer>& layers) const;
         std::vector<Extension> find(const std::vector<Extension>& extensions) const;
         std::vector<Extension> find(const std::vector<Extension>& extensions,
@@ -41,6 +43,8 @@ namespace vkpp {
         const Application& get_application() const;
         const std::vector<Layer>& get_enabled_layers() const;
         const std::vector<Extension>& get_enabled_extensions() const;
+
+        const std::vector<PhysicalDevice>& get_physical_devices() const;
 
         DebugMessenger& get_debug_messenger();
 
@@ -56,6 +60,7 @@ namespace vkpp {
 
         std::vector<Layer> enabled_layers;
         std::vector<Extension> enabled_extensions;
+        std::vector<PhysicalDevice> physical_devices;
         static std::vector<Extension> available_extensions;
         static std::vector<Layer> available_layers;
 

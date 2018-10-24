@@ -34,7 +34,7 @@ namespace vkhr {
 
         int get_refresh_rate() const;
 
-        std::vector<vkpp::Extension> get_surface_extension() const;
+        std::vector<vkpp::Extension> get_surface_extensions() const;
         VkSurfaceKHR create_surface(VkInstance instance) const;
 
         void resize(const int width, const int height);

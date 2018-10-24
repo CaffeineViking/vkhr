@@ -149,6 +149,10 @@ namespace vkpp {
         return enabled_layers;
     }
 
+    const std::vector<PhysicalDevice>& Instance::get_physical_devices() const {
+        return physical_devices;
+    }
+
     const std::vector<Extension>& Instance::get_enabled_extensions() const {
         return enabled_extensions;
     }

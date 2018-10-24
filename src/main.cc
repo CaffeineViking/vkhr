@@ -5,6 +5,11 @@ namespace vk = vkpp;
 
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { argc, argv };
+
+    while (auto argument = argp.parse()) {
+        continue; // Handle stuff later.
+    }
+
     vk::Version target_vulkan_loader { 1, 1 };
     vk::Application application_information {
         "VKHR", { 1, 0, 0 },
@@ -13,11 +18,11 @@ int main(int argc, char** argv) {
     };
 
     std::vector<vk::Layer> required_layers {
-        "VK_LAYER_LUNARG_standard_validation"
+        vk::DebugMessenger::validation_layer
     };
 
     std::vector<vk::Extension> required_extensions {
-        "VK_EXT_debug_utils"
+        vk::DebugMessenger::debug_utils
     };
 
     const vkhr::Image vulkan_icon { IMAGE("vulkan.icon") };
@@ -28,17 +33,15 @@ int main(int argc, char** argv) {
     input_map.bind("quit",       vkhr::Input::Key::Escape);
     input_map.bind("fullscreen", vkhr::Input::Key::F);
 
-    // Append the required Vulkan surface extensions as well.
-    auto surface_extensions = window.get_surface_extension();
-    required_extensions.insert(required_extensions.begin(),
-                               surface_extensions.begin(),
-                               surface_extensions.end());
+    vkpp::append(window.get_surface_extensions(), required_extensions);
 
     vk::Instance instance {
         application_information,
         required_layers,
         required_extensions
     };
+
+    auto physical_devices = instance.get_physical_devices();
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 

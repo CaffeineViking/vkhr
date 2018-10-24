@@ -876,6 +876,9 @@
     <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\append.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\application.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
