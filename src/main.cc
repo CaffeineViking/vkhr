@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     input_map.bind("fullscreen", vkhr::Input::Key::F);
 
     // Append the required Vulkan surface extensions as well.
-    auto surface_extensions = window.get_surface_extensions();
+    auto surface_extensions = window.get_surface_extension();
     required_extensions.insert(required_extensions.begin(),
                                surface_extensions.begin(),
                                surface_extensions.end());

@@ -32,6 +32,10 @@ workspace (name)
             architecture "x86_64"
 
 SDK  = "$(VULKAN_SDK)"
+GLFW = "foreign/glfw/"
+
+-- With MinGW x64, always static link with the default C++ stdlib.
+STATIC_LINK = "-static -static-libstdc++ -static-libgcc -lpthread"
 
 project (name)
     targetdir "bin"
@@ -67,12 +71,16 @@ project (name)
     includedirs "foreign/glm"
 
     filter { "system:windows", "action:gmake" }
-        links { "glfw3", "vulkan" }
+        links { SDK.."/lib/vulkan-1" }
+        linkoptions { STATIC_LINK }
+        includedirs { GLFW }
+        linkoptions { "-mwindows" }
+        links { GLFW.."/lib-mingw-w64/glfw3" }
     filter { "system:windows", "action:vs*" }
         links { SDK.."/lib/vulkan-1.lib" }
         includedirs { SDK.."/include" }
-        includedirs { "foreign/glfw" }
-        files { "foreign/glfw/GLFW/*.h" }
-        links { "foreign/glfw/glfw3.lib" }
+        includedirs { GLFW }
+        files { GLFW.."/GLFW/*.h" }
+        links { GLFW.."/lib-vc2015/glfw3.lib" }
     filter "system:linux or bsd or solaris"
         links { "glfw",  "vulkan" }
