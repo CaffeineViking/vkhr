@@ -40,10 +40,6 @@ int main(int argc, char** argv) {
         required_extensions
     };
 
-    vk::DebugMessenger debugger {
-        instance
-    };
-
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 
     while (window.is_open()) {

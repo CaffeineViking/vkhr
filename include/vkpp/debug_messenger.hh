@@ -1,9 +1,9 @@
 #ifndef VKPP_DEBUG_MESSENGER_HH
 #define VKPP_DEBUG_MESSENGER_HH
 
-#include <vkpp/instance.hh>
-
 #include <vulkan/vulkan.h>
+
+#include <utility>
 
 namespace vkpp {
     class DebugMessenger final {
@@ -15,33 +15,28 @@ namespace vkpp {
             Error = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
         };
 
-        DebugMessenger(Instance& instance, Severity severity = Severity::Warning);
+        using Callback = PFN_vkDebugUtilsMessengerCallbackEXT;
+
+        DebugMessenger() = default;
+        DebugMessenger(VkInstance instance, Callback callback = nullptr);
         ~DebugMessenger() noexcept;
+
+        void destroy() noexcept;
 
         DebugMessenger(DebugMessenger&& debug_messenger) noexcept;
         DebugMessenger& operator=(DebugMessenger&& debug_messenger) noexcept;
 
         friend void swap(DebugMessenger& lhs, DebugMessenger& rhs);
 
-        void disable() { enabled = false; }
-        bool is_enabled() const { return enabled; }
-        void enable()  { enabled = true;  }
-
-        void set_severity(Severity minimum_severity);
-        Severity get_severity() const;
+        void set_minimum_severity(Severity minimum_severity);
+        Severity get_minimum_severity() const;
 
     private:
-        static constexpr const char* CreateDebugUtilsMessenger {
-            "vkCreateDebugUtilsMessengerEXT"
-        };
+        static constexpr const char* pfn_create  { "vkCreateDebugUtilsMessengerEXT" };
+        static constexpr const char* pfn_destroy { "vkDestroyDebugUtilsMessengerEXT" };
 
-        static constexpr const char* DestroyDebugUtilsMessenger {
-            "vkDestroyDebugUtilsMessengerEXT"
-        };
-
-        bool enabled { true };
-        Severity minimum_severity;
-        VkDebugUtilsMessengerEXT handle;
+        Severity* minimum_severity { nullptr };
+        VkDebugUtilsMessengerEXT handle { VK_NULL_HANDLE };
         VkInstance instance_handle;
     };
 }
