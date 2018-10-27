@@ -17,18 +17,21 @@ Compiling and Running
 4. Now make sure you have the [glfw3](https://www.glfw.org/) external dependency solved
     * **Unix-like:** just install `glfw` with your package manager too
     * **Visual Studio:** pre-built version is already provided for you!
-5. Generate the `vkhr` project files by targeting your current setup
+5. Finally, you'll also need [Embree](https://embree.github.io/) for the hair raytracing back-end:
+    * **Unix-like:** just install `embree` using your package managers
+    * **Visual Studio:** pre-built version is already provided for you!
+6. Generate the `vkhr` project files by targeting your current setup
     * **Visual Studio:** `premake5 vs2017` or my alias `make solution`
         * then open the Visual Studio project in `build/vkhr.sln`
     * **GNU Makefiles:** `premake5 gmake` or just call `make all/run`.
-6. Build as usual in your platform, and run with `bin/vkhr <scene>`.
+7. Build as usual in your platform, and run with `bin/vkhr <scene>`.
 
 Usage and Documents
 -------------------
 
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes`  and `--gui=yes`.
+* **Arguments:** `--width 1280 --height 720` , `--no-fullscreen` , `--no-msaa` , `--no-vsync` , `--no-profiling`  and `--gui`.
 * **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else.
 
 System Requirements
@@ -42,6 +45,7 @@ Dependencies
 * `premake5` (pre-build)
 * Any Vulkan™ 1.1 SDK
 * `glfw3` (tested v3.2.1)
+* `embree3` (uses v3.2.4)
 * Any C++17 compiler!
 
 All other dependencies are fetched using `git submodules`, and include the following libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`. The Vulkan C++ wrapper `vkpp` is being developed alongside `vkhr`.
@@ -94,3 +98,5 @@ Legal Notice
 ------------
 
 Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
+
+See: [foreign/glfw/COPYING.txt](foreign/glfw/COPYING.txt) plus [foreign/embree/LICENSE.txt](foreign/embree/LICENSE.txt) for licenses.
