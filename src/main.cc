@@ -3,8 +3,6 @@
 
 namespace vk = vkpp;
 
-#include <embree3/rtcore.h>
-
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     vkhr::populate_with_default_values(argp);
@@ -46,8 +44,6 @@ int main(int argc, char** argv) {
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 
-    RTCDevice device { rtcNewDevice("verbose=1") };
-
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();
@@ -58,6 +54,5 @@ int main(int argc, char** argv) {
         window.poll_events();
     }
 
-    rtcReleaseDevice(device);
     return 0;
 }
