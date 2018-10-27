@@ -105,42 +105,6 @@ namespace vkpp {
         return find(extensions, get_available_extensions());
     }
 
-    std::vector<Extension> Instance::find(const std::vector<Extension>& extensions,
-                                          const std::vector<Extension>& available) const {
-        std::vector<Extension> missing_extensions;
-
-        for (const auto extension : extensions) {
-            bool extension_found { false };
-            for (const auto available_extension : available) {
-                if (extension == available_extension)
-                    extension_found = true;
-            }
-
-            if (!extension_found)
-                missing_extensions.push_back(extension);
-        }
-
-        return missing_extensions;
-    }
-
-    std::vector<Layer> Instance::find(const std::vector<Layer>& layers,
-                                      const std::vector<Layer>& available) const {
-        std::vector<Layer> missing_layers;
-
-        for (const auto layer : layers) {
-            bool layer_found { false };
-            for (const auto available_layer : available) {
-                if (layer == available_layer)
-                    layer_found = true;
-            }
-
-            if (!layer_found)
-                missing_layers.push_back(layer);
-        }
-
-        return missing_layers;
-    }
-
     const Application& Instance::get_application() const {
         return application_info;
     }
@@ -200,20 +164,6 @@ namespace vkpp {
             available_extensions[i] = extension_properties[i];
 
         return available_extensions;
-    }
-
-    std::string Instance::collapse(const std::vector<Extension>& exts) {
-        std::string extension_string;
-        for (const auto extension : exts)
-            extension_string.append(extension.name + " ");
-        return extension_string;
-    }
-
-    std::string Instance::collapse(const std::vector<Layer>& layers) {
-        std::string layer_string;
-        for (const auto layer : layers)
-            layer_string.append(layer.name + " ");
-        return layer_string;
     }
 
     // Cache the available layers plus extensions.

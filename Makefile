@@ -22,6 +22,8 @@ help: FORCE
 	@echo "   download-modules"
 	@echo "   pre-generate"
 	@echo "   solution"
+	@echo "   bundle-assets"
+	@echo "   distribute"
 	@echo "   docs"
 	@echo "   tags"
 	@echo "   clean"
@@ -38,6 +40,15 @@ pre-generate: clean solution
 solution: FORCE
 	premake5 vs2017
 
+bundle-assets: FORCE
+	rm -rf bin/share
+	cp -r share bin/share
+
+distribute: bundle-assets
+	mv bin ${name}
+	zip -r ${name} ${name}
+	mv ${name} bin
+
 docs: FORCE
 	make -C docs
 tags: FORCE
@@ -47,12 +58,14 @@ tags: FORCE
 clean: FORCE
 	rm -rf build/obj
 	rm -f  build/Makefile
-	rm -f  build/vkhr.make
+	rm -f  build/${name}.make
 	rm -rf docs/build
 distclean: clean
-	rm -f  cscope.out
-	rm -f  tags
-	rm -rf bin
+	rm -f ${name}.zip
+	rm -f cscope.out
+	rm -f tags
+	rm -rf bin/share
+	find bin/ -type f ! -name "*.dll" -delete
 FORCE:
 
-.PHONY: all run help download download-modules pre-generate solution docs tags clean distclean
+.PHONY: all run help download download-modules pre-generate solution bundle-assets distribute docs tags clean distclean

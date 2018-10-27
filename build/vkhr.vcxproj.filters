@@ -4,11 +4,23 @@
     <Filter Include="foreign">
       <UniqueIdentifier>{2F88A8BA-9B67-2756-A47F-B22C10DE8DB7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="foreign\embree">
+      <UniqueIdentifier>{AEEA4B9C-9AB8-3FA2-834C-B0C86FB91B07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="foreign\embree\include">
+      <UniqueIdentifier>{21E0B79D-0DDA-E0EF-F646-7700E2DF465C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="foreign\embree\include\embree3">
+      <UniqueIdentifier>{936AE20F-7F90-AC76-68D6-3142549BD142}</UniqueIdentifier>
+    </Filter>
     <Filter Include="foreign\glfw">
       <UniqueIdentifier>{4ED16C52-3A34-FCF6-E3B9-34ADCFFBC779}</UniqueIdentifier>
     </Filter>
-    <Filter Include="foreign\glfw\GLFW">
-      <UniqueIdentifier>{4D8D84F5-B9A3-828B-021B-0EAD6E705313}</UniqueIdentifier>
+    <Filter Include="foreign\glfw\include">
+      <UniqueIdentifier>{C166250F-ADF5-AED8-5614-C3D34282BF7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="foreign\glfw\include\GLFW">
+      <UniqueIdentifier>{A0822302-0C45-578C-55F5-E518C1F62F6A}</UniqueIdentifier>
     </Filter>
     <Filter Include="foreign\glm">
       <UniqueIdentifier>{FE911A6F-6A47-9364-F33B-8D3B5FF08968}</UniqueIdentifier>
@@ -60,11 +72,38 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\foreign\glfw\GLFW\glfw3.h">
-      <Filter>foreign\glfw\GLFW</Filter>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore.h">
+      <Filter>foreign\embree\include\embree3</Filter>
     </ClInclude>
-    <ClInclude Include="..\foreign\glfw\GLFW\glfw3native.h">
-      <Filter>foreign\glfw\GLFW</Filter>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_buffer.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_builder.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_common.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_device.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_geometry.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_ray.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_scene.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\embree\include\embree3\rtcore_version.h">
+      <Filter>foreign\embree\include\embree3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\glfw\include\GLFW\glfw3.h">
+      <Filter>foreign\glfw\include\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foreign\glfw\include\GLFW\glfw3native.h">
+      <Filter>foreign\glfw\include\GLFW</Filter>
     </ClInclude>
     <ClInclude Include="..\foreign\glm\glm\common.hpp">
       <Filter>foreign\glm\glm</Filter>
@@ -840,6 +879,9 @@
     <ClInclude Include="..\include\vkhr\arg_parser.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\arguments.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\camera.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -853,6 +895,9 @@
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\logger.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\model.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\paths.hh">
@@ -951,6 +996,9 @@
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\logger.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\model.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\rasterizer.cc">

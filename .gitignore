@@ -2,6 +2,7 @@
 bin/
 build/
 docs/build/
+vkhr.zip
 
 # Compiled Object files
 *.slo

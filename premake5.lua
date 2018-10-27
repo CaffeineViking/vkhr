@@ -1,4 +1,5 @@
 name = "vkhr"
+
 workspace (name)
     language   "C++"
     location   "build"
@@ -31,8 +32,9 @@ workspace (name)
         filter "platforms:Win64"
             architecture "x86_64"
 
-SDK  = "$(VULKAN_SDK)"
-GLFW = "foreign/glfw/"
+SDK    = "$(VULKAN_SDK)"
+GLFW   = "foreign/glfw"
+EMBREE = "foreign/embree"
 
 -- With MinGW x64, always static link with the default C++ stdlib.
 STATIC_LINK = "-static -static-libstdc++ -static-libgcc -lpthread"
@@ -71,16 +73,27 @@ project (name)
     includedirs "foreign/glm"
 
     filter { "system:windows", "action:gmake" }
-        links { SDK.."/lib/vulkan-1" }
-        linkoptions { STATIC_LINK }
-        includedirs { GLFW }
-        linkoptions { "-mwindows" }
-        links { GLFW.."/lib-mingw-w64/glfw3" }
-    filter { "system:windows", "action:vs*" }
-        links { SDK.."/lib/vulkan-1.lib" }
         includedirs { SDK.."/include" }
-        includedirs { GLFW }
-        files { GLFW.."/GLFW/*.h" }
-        links { GLFW.."/lib-vc2015/glfw3.lib" }
+        includedirs { EMBREE.."/include" }
+        includedirs { GLFW.."/include" }
+
+        files { GLFW.."/include/GLFW/*.h" }
+        files { EMBREE.."/include/embree3/*.h" }
+        linkoptions { STATIC_LINK, "-mwindows" }
+
+        links { SDK.."/lib/vulkan-1" }
+        links { GLFW.."/lib/glfw3dll" }
+        links { EMBREE.."/lib/embree3" }
+    filter { "system:windows", "action:vs*" }
+        includedirs { SDK.."/include" }
+        includedirs { EMBREE.."/include" }
+        includedirs { GLFW.."/include" }
+
+        files { GLFW.."/include/GLFW/*.h" }
+        files { EMBREE.."/include/embree3/*.h" }
+
+        links { SDK.."/lib/vulkan-1.lib" }
+        links { GLFW.."/lib/glfw3dll.lib" }
+        links { EMBREE.."/lib/embree3.lib" }
     filter "system:linux or bsd or solaris"
-        links { "glfw",  "vulkan" }
+        links { "embree3", "glfw",  "vulkan" }

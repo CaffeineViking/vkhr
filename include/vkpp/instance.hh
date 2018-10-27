@@ -30,15 +30,11 @@ namespace vkpp {
 
         VkInstance& get_handle();
 
-        // Find if layer/extension is supported by this instance.
-        // returns: the layers/extensions that are NOT supported!
-
-        std::vector<Layer> find(const std::vector<Layer>& layers) const;
+        // Find the layers/extensions supported by this instance, returns those missing!
+        template<typename T> std::vector<T> find(const std::vector<T>& requested,
+                                                 const std::vector<T>& available) const;
+        std::vector<Layer>     find(const std::vector<Layer>& layers) const;
         std::vector<Extension> find(const std::vector<Extension>& extensions) const;
-        std::vector<Extension> find(const std::vector<Extension>& extensions,
-                                    const std::vector<Extension>& available) const;
-        std::vector<Layer> find(const std::vector<Layer>& layers,
-                                const std::vector<Layer>& available) const;
 
         const Application& get_application() const;
         const std::vector<Layer>& get_enabled_layers() const;
@@ -53,8 +49,8 @@ namespace vkpp {
         static const std::vector<Extension>& get_available_extensions();
 
     private:
-        static std::string collapse(const std::vector<Extension>& extensions);
-        static std::string collapse(const std::vector<Layer>& layers);
+        template<typename T>
+        static std::string collapse(const std::vector<T>& vector);
 
         Application application_info;
 
@@ -67,6 +63,33 @@ namespace vkpp {
         VkInstance handle { VK_NULL_HANDLE };
         DebugMessenger debug_utils_messenger;
     };
+
+    template<typename T>
+    std::string Instance::collapse(const std::vector<T>& vector) {
+        std::string element_string;
+        for (const auto element : vector)
+            element_string.append(element.name + " ");
+        return element_string;
+    }
+
+    template<typename T>
+    std::vector<T> Instance::find(const std::vector<T>& requested,
+                                  const std::vector<T>& available) const {
+        std::vector<T> missing_requests;
+
+        for (const auto request : requested) {
+            bool request_found { false };
+            for (const auto available_request : available) {
+                if (request == available_request)
+                    request_found = true;
+            }
+
+            if (!request_found)
+                missing_requests.push_back(request);
+        }
+
+        return missing_requests;
+    }
 }
 
 #endif

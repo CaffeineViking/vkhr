@@ -6,7 +6,7 @@
 #include <vulkan/vulkan.h>
 
 namespace vkpp {
-    class PhysicalDevice final {
+    struct PhysicalDevice {
     };
 }
 

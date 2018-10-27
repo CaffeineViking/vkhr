@@ -4,6 +4,8 @@
 #include <tiny_obj_loader.h>
 
 namespace vkhr {
+    class Model final {
+    };
 }
 
 #endif
