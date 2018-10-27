@@ -41,8 +41,8 @@ solution: FORCE
 docs: FORCE
 	make -C docs
 tags: FORCE
-	ctags  -R     src/${name}    include/${name}
-	cscope -Rb -s src/${name} -s include/${name}
+	ctags  -R     src/${name}    src/vkpp    include/${name}    include/vkpp
+	cscope -Rb -s src/${name} -s src/vkpp -s include/${name} -s include/vkpp
 
 clean: FORCE
 	rm -rf build/obj

@@ -4,13 +4,12 @@
 namespace vk = vkpp;
 
 int main(int argc, char** argv) {
-    vkhr::ArgParser argp { argc, argv };
+    vkhr::ArgParser argp { vkhr::arguments };
+    vkhr::populate_with_default_values(argp);
 
-    while (auto argument = argp.parse()) {
-        continue; // Handle stuff later.
-    }
+    auto scene_file = argp.parse(argc, argv);
 
-    vk::Version target_vulkan_loader { 1, 1 };
+    vk::Version target_vulkan_loader { 1,1 };
     vk::Application application_information {
         "VKHR", { 1, 0, 0 },
         "None", { 0, 0, 0 },
@@ -33,7 +32,7 @@ int main(int argc, char** argv) {
     input_map.bind("quit",       vkhr::Input::Key::Escape);
     input_map.bind("fullscreen", vkhr::Input::Key::F);
 
-    vkpp::append(window.get_surface_extensions(), required_extensions);
+    vk::append(window.get_surface_extensions(), required_extensions);
 
     vk::Instance instance {
         application_information,
