@@ -31,7 +31,7 @@ Usage and Documents
 
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--resolution=1280x720` , `--fullscreen=yes` , `--msaa=4x` , `--vsync=yes` , `--profile=yes`  and `--gui=yes`.
+* **Arguments:** `--width 1280 --height 720` , `--no-fullscreen` , `--no-msaa` , `--no-vsync` , `--no-profiling`  and `--gui`.
 * **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else.
 
 System Requirements
@@ -99,4 +99,4 @@ Legal Notice
 
 Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
 
-See: [foreign/glfw/COPYING.txt](foreign/glfw/COPYING.txt) and [foreign/embree/LICENSE.txt](foreign/embree/LICENSE.txt) for licenses.
+See: [foreign/glfw/COPYING.txt](foreign/glfw/COPYING.txt) plus [foreign/embree/LICENSE.txt](foreign/embree/LICENSE.txt) for licenses.
