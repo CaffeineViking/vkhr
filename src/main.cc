@@ -5,8 +5,6 @@ namespace vk = vkpp;
 
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
-    vkhr::populate_with_default_values(argp);
-
     auto scene_file = argp.parse(argc, argv);
 
     vk::Version target_vulkan_loader { 1,1 };
@@ -41,6 +39,7 @@ int main(int argc, char** argv) {
     };
 
     auto physical_devices = instance.get_physical_devices();
+    window.append_string(physical_devices[0].get_details());
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 

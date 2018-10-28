@@ -77,8 +77,6 @@ project (name)
         includedirs { EMBREE.."/include" }
         includedirs { GLFW.."/include" }
 
-        files { GLFW.."/include/GLFW/*.h" }
-        files { EMBREE.."/include/embree3/*.h" }
         linkoptions { STATIC_LINK, "-mwindows" }
 
         links { SDK.."/lib/vulkan-1" }

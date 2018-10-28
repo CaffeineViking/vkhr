@@ -3,130 +3,143 @@
 #include <cstdlib>
 
 namespace vkhr {
-    ArgParser::ArgParser(const Map& argm)
-                        : parameter_type_map { argm } {
-        for (const auto& pair : argm) {
-            Value value;
-            switch (pair.second) {
-            case Type::Integer:
-                value.integer = 0;
-                break;
-            case Type::Boolean:
-                value.boolean = 0;
-                break;
-            case Type::String:
-                value.string = "";
-                break;
-            case Type::Floating:
-                value.floating = 0.0;
-                break;
-            default: break;
-            }
-
-            value_map[pair.first] = value;
+    ArgParser::ArgParser(const std::vector<Argument>& arguments) {
+        for (const auto& argument : arguments) {
+            add_argument(argument);
         }
     }
 
     std::string ArgParser::parse(int argc, char** argv) {
-        this->current = 1;
-        this->argument_count = argc;
-        this->arguments = argv;
+        current_argument = 1;
+        argument_count  = argc;
+        argument_values = argv;
 
-        std::string leftovers = "";
+        std::string parse_tail;
 
-        while (auto parameter_name = parse()) {
-            std::string name = parameter_name;
+        while (auto token = get_next_token()) {
+            std::string token_string { token };
 
-            if (name.substr(0, 2) != "--") {
-                leftovers.append(name);
-                continue;
-            }
+            std::string argument_name;
 
-            name = name.substr(2, std::string::npos);
-            auto parameter = parameter_type_map.find(name);
-            auto boolean_p = parameter_type_map.end();
-            std::string boolean_name = "";
+            if (token_string.length() > 2) {
+                auto magic = token_string.substr(0, 2);
 
-            if (name.length() > 3) {
-                boolean_name = name.substr(3, std::string::npos);
-                boolean_p = parameter_type_map.find(boolean_name);
-            }
-
-            if (parameter != parameter_type_map.end() ||
-                boolean_p != parameter_type_map.end()) {
-
-                Type type;
-
-                if (boolean_p != parameter_type_map.end()) {
-                    type = boolean_p->second;
-                } else {
-                    type = parameter->second;
+                if (magic != "--") {
+                    parse_tail = token_string;
+                    break;
                 }
 
-                Value parameter_value;
+                argument_name = token_string.substr(2);
+            } else {
+                parse_tail = token_string;
+                break;
+            }
 
-                switch (type) {
-                case Type::Integer:
-                    parameter_value.integer  = parse_int();
+            auto argument = arguments.find(argument_name);
+            if (argument != arguments.end()) {
+
+                switch (argument->second.type) {
+                case Argument::Type::Integer:
+                    parse_integer(argument->second);
                     break;
-                case Type::Boolean:
-                    parameter_value.boolean  = parse_bool(name);
+                case Argument::Type::Boolean:
+                    parse_boolean(argument->second);
                     break;
-                case Type::String:
-                    parameter_value.string   = parse_string();
+                case Argument::Type::String:
+                    parse_string(argument->second);
                     break;
-                case Type::Floating:
-                    parameter_value.floating = parse_float();
+                case Argument::Type::Floating:
+                    parse_floating(argument->second);
                     break;
                 default: break;
                 }
 
-                if (type == Type::Boolean) {
-                    if (parameter_value.boolean == false) {
-                        value_map[boolean_name] = parameter_value;
-                    } else {
-                        value_map[name] = parameter_value;
-                    }
-                } else {
-                    value_map[name] = parameter_value;
-                }
             }
         }
 
-        return leftovers;
+        return parse_tail;
     }
 
-    const char* ArgParser::get_executed_command() const {
-        return arguments[0];
+    std::string ArgParser::get_help() const {
+        return "";
     }
 
-    const char* ArgParser::parse() {
-        if (current >= argument_count)
+    const Argument& ArgParser::operator[](const std::string& name) const {
+        return arguments.at(name);
+    }
+
+    bool ArgParser::add_argument(const Argument& argument) {
+        return arguments.insert({ argument.name, argument }).second;
+    }
+
+    bool ArgParser::remove_argument(const std::string& name) {
+        auto argument_position = arguments.find(name);
+        if (argument_position != arguments.end()) {
+            arguments.erase(argument_position);
+            return true;
+        }
+
+        return false;
+    }
+
+    const char* ArgParser::get_next_token() {
+        if (current_argument > argument_count) {
             return nullptr;
-        return arguments[current++];
+        } else {
+            return argument_values[current_argument++];
+        }
     }
 
-    ArgParser::Value& ArgParser::operator[](const std::string& name) {
-        return value_map.at(name);
+    bool ArgParser::parse_integer(Argument& argument) {
+        auto integer = get_next_token();
+
+        if (integer != nullptr) {
+            argument.value.integer = std::atoi(integer);
+            return true;
+        }
+
+        return false;
     }
 
-    int ArgParser::parse_int() {
-        return std::atoi(arguments[current++]);
+    bool ArgParser::parse_boolean(Argument& argument) {
+        auto boolean = get_next_token();
+
+        if (boolean != nullptr) {
+            std::string boolean_string { boolean };
+
+            if (boolean_string == "on" ||
+                boolean_string == "yes") {
+                argument.value.boolean = true;
+            } else if (boolean_string == "off" ||
+                       boolean_string == "no") {
+                argument.value.boolean = false;
+            } else return false;
+
+            return true;
+        }
+
+        return false;
     }
 
-    bool ArgParser::parse_bool(const std::string& name) {
-        if (name.length() > 3) {
-            auto value = name.substr(0, 2);
-            if (value == "no") return false;
-            else return true;
-        } else return true;
+    bool ArgParser::parse_string(Argument& argument) {
+        auto string = get_next_token();
+
+        if (string != nullptr) {
+            argument.value.string = string;
+            return true;
+        }
+
+        return false;
     }
 
-    const char* ArgParser::parse_string() {
-        return arguments[current++];
-    }
+    bool ArgParser::parse_floating(Argument& argument) {
+        auto floating = get_next_token();
 
-    float ArgParser::parse_float() {
-        return std::atof(arguments[current++]);
+        if (floating != nullptr) {
+            argument.value.floating = std::atof(floating);
+            return true;
+        }
+
+        return false;
     }
 }

@@ -1,50 +1,42 @@
 #ifndef VKHR_ARGUMENT_PARSER_HH
 #define VKHR_ARGUMENT_PARSER_HH
 
-#include <string>
+#include <vkhr/argument.hh>
+
 #include <unordered_map>
+
+#include <vector>
+#include <string>
 
 namespace vkhr {
     class ArgParser final {
     public:
-        enum class Type {
-            Integer,
-            Boolean,
-            String,
-            Floating
-        };
-
-        union Value {
-            int integer;
-            bool boolean;
-            const char* string;
-            float floating;
-        };
-
-        using Map = std::unordered_map<std::string, Type>;
-
-        ArgParser(const Map& argm);
+        ArgParser() = default;
+        ArgParser(const std::vector<Argument>& arguments);
 
         std::string parse(int argc, char** argv);
 
-        Value& operator[](const std::string& name);
+        std::string get_help() const;
 
-        const char* get_executed_command() const;
+        const Argument& operator[](const std::string& name) const;
+
+        bool add_argument(const Argument& argument);
+        bool remove_argument(const std::string& name);
 
     private:
-        const char* parse();
+        const char* get_next_token();
 
-        int parse_int();
-        bool parse_bool(const std::string& name);
-        const char* parse_string();
-        float parse_float();
+        bool parse_integer(Argument& argument);
+        bool parse_boolean(Argument& argument);
+        bool parse_string(Argument& argument);
+        bool parse_floating(Argument& argument);
 
-        int current { 1 };
+        int current_argument { 1 };
         int argument_count { 0 };
-        char** arguments { nullptr };
+        char** argument_values { nullptr };
 
-        Map parameter_type_map;
-        std::unordered_map<std::string, Value> value_map;
+        std::unordered_map<std::string,
+                           Argument> arguments;
     };
 }
 
