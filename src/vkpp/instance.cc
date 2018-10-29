@@ -65,6 +65,21 @@ namespace vkpp {
         if (find({ "VK_EXT_debug_utils" }, required_extensions).size() == 0)
         if (find({ "VK_LAYER_LUNARG_standard_validation" }, required_layers).size() == 0)
             debug_utils_messenger = std::move(DebugMessenger { handle, debug_callback });
+
+        std::uint32_t count;
+
+        if (VkResult error = vkEnumeratePhysicalDevices(handle, &count, nullptr))
+            throw Exception { error, "failed physical device enumeration!" };
+
+        std::vector<VkPhysicalDevice> physical_devices(count);
+
+        vkEnumeratePhysicalDevices(handle, &count, physical_devices.data());
+
+        this->physical_devices.reserve(count);
+
+        for (const auto& physical_device : physical_devices) {
+            this->physical_devices.push_back(physical_device);
+        }
     }
 
     Instance::~Instance() noexcept {

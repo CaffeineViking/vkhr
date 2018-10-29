@@ -7,6 +7,9 @@ int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
 
+    // TODO: move over lots of boilerplate to
+    // some rasterizer abstractions (Vulkan).
+
     vk::Version target_vulkan_loader { 1,1 };
     vk::Application application_information {
         "VKHR", { 1, 0, 0 },
@@ -38,8 +41,15 @@ int main(int argc, char** argv) {
         required_extensions
     };
 
-    auto physical_devices = instance.get_physical_devices();
-    window.append_string(physical_devices[0].get_details());
+    auto surface = window.create_surface(instance.get_handle());
+
+    auto score = [](const vk::PhysicalDevice& physical_device) {
+        return physical_device.is_discrete_gpu();
+    };
+
+    auto physical_device = instance.find_physical_device(score);
+
+    window.append_string(physical_device.get_details());
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 

@@ -363,7 +363,7 @@
     <ClInclude Include="..\foreign\stb\stretchy_buffer.h" />
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h" />
     <ClInclude Include="..\include\vkhr\arg_parser.hh" />
-    <ClInclude Include="..\include\vkhr\arguments.hh" />
+    <ClInclude Include="..\include\vkhr\argument.hh" />
     <ClInclude Include="..\include\vkhr\camera.hh" />
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
@@ -399,6 +399,7 @@
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
     <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\vkhr\arg_parser.cc" />
+    <ClCompile Include="..\src\vkhr\argument.cc" />
     <ClCompile Include="..\src\vkhr\camera.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\image.cc" />

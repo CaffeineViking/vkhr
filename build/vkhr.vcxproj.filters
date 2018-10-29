@@ -879,7 +879,7 @@
     <ClInclude Include="..\include\vkhr\arg_parser.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\arguments.hh">
+    <ClInclude Include="..\include\vkhr\argument.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\camera.hh">
@@ -981,6 +981,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\arg_parser.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\argument.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\camera.cc">

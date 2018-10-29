@@ -40,6 +40,9 @@ namespace vkpp {
         const std::vector<Layer>& get_enabled_layers() const;
         const std::vector<Extension>& get_enabled_extensions() const;
 
+        // Finds physical device which evaluates to true when 'suitable' is checked on it.
+        template<typename F> const PhysicalDevice& find_physical_device(F suitable) const;
+
         const std::vector<PhysicalDevice>& get_physical_devices() const;
 
         DebugMessenger& get_debug_messenger();
@@ -49,8 +52,7 @@ namespace vkpp {
         static const std::vector<Extension>& get_available_extensions();
 
     private:
-        template<typename T>
-        static std::string collapse(const std::vector<T>& vector);
+        template<typename T> static std::string collapse(const std::vector<T>& vector);
 
         Application application_info;
 
@@ -89,6 +91,24 @@ namespace vkpp {
         }
 
         return missing_requests;
+    }
+
+    template<typename F>
+    const PhysicalDevice& Instance::find_physical_device(F score) const {
+        std::vector<int> scores;
+        for (const auto& physical_device : physical_devices)
+            scores.push_back(score(physical_device));
+
+        int best_scoring { 0 };
+        std::size_t best { 0 };
+        for (std::size_t i { 0 }; i < physical_devices.size(); ++i) {
+            if (scores[i] > best_scoring) {
+                best_scoring = scores[i];
+                best = i;
+            }
+        }
+
+        return physical_devices[best];
     }
 }
 
