@@ -28,13 +28,9 @@ namespace vkpp {
             Cpu = VK_PHYSICAL_DEVICE_TYPE_CPU
         };
 
-        bool is_gpu() const;
-
         bool is_discrete_gpu() const;
         bool is_integrated_gpu() const;
         bool is_virtual_gpu() const;
-
-        static constexpr std::uint32_t DefaultMemoryHeap { 0 };
 
         std::uint32_t get_memory_heap() const;
         VkDeviceSize  get_memory_size() const;
@@ -44,10 +40,12 @@ namespace vkpp {
         const std::vector<VkQueueFamilyProperties> get_queue_families() const;
         const VkPhysicalDeviceProperties& get_properties() const;
 
-        std::int32_t get_compute_queue()  const;
+        bool is_gpu() const;
+
+        std::int32_t get_compute_queue() const;
         std::int32_t get_graphics_queue() const;
         std::int32_t get_transfer_queue() const;
-        std::int32_t get_present_queue()  const;
+        std::int32_t get_present_queue() const;
 
         std::string get_details() const;
         const std::string& get_name() const;
@@ -63,7 +61,13 @@ namespace vkpp {
         VkPhysicalDeviceMemoryProperties memory_properties;
         VkPhysicalDeviceProperties properties;
 
+        void find_device_memory_heap_index();
+
         std::vector<VkQueueFamilyProperties> queue_families;
+
+        std::int32_t device_heap_index { -1 };
+
+        void locate_queue_family_indices();
 
         std::int32_t graphics_queue_family_index { -1 };
         std::int32_t compute_queue_family_index  { -1 };

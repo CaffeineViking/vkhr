@@ -7,6 +7,8 @@ namespace vkpp {
         vkGetPhysicalDeviceMemoryProperties(handle, &memory_properties);
         vkGetPhysicalDeviceFeatures(handle, &features);
 
+        find_device_memory_heap_index();
+
         name = properties.deviceName;
         type = static_cast<Type>(properties.deviceType);
 
@@ -16,7 +18,10 @@ namespace vkpp {
         vkGetPhysicalDeviceQueueFamilyProperties(handle, &count,
                                                  queue_families.data());
 
-        // TODO: find a suitable present queue (e.g graphics queue)
+        locate_queue_family_indices(); // Queues.
+    }
+
+    void PhysicalDevice::locate_queue_family_indices() {
         for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
             if (queue_families[i].queueCount > 0) {
                 if (queue_families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
@@ -26,6 +31,13 @@ namespace vkpp {
                 if (queue_families[i].queueFlags & VK_QUEUE_TRANSFER_BIT)
                     transfer_queue_family_index = i;
             }
+        }
+    }
+
+    void PhysicalDevice::find_device_memory_heap_index() {
+        for (std::size_t i { 0 }; i < memory_properties.memoryHeapCount; ++i) {
+            if (memory_properties.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+                device_heap_index = i;
         }
     }
 
@@ -64,14 +76,12 @@ namespace vkpp {
     }
 
     std::uint32_t PhysicalDevice::get_memory_heap() const {
-        return DefaultMemoryHeap;
+        return device_heap_index;
     }
 
     VkDeviceSize PhysicalDevice::get_memory_size() const {
-        const auto heap = get_memory_heap();
-        if (memory_properties.memoryHeapCount != 0) {
-            return memory_properties.memoryHeaps[heap].size;
-        } else return 0;
+        auto heap = get_memory_heap();
+        return memory_properties.memoryHeaps[heap].size;
     }
 
     const VkPhysicalDeviceFeatures& PhysicalDevice::get_features() const {
