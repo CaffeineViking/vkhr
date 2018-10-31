@@ -41,13 +41,13 @@ int main(int argc, char** argv) {
         required_extensions
     };
 
-    auto surface = window.create_surface(instance.get_handle());
-
+    // Find physical device that seem most promising of the lot.
     auto score = [](const vk::PhysicalDevice& physical_device) {
         return physical_device.is_discrete_gpu();
     };
 
     auto physical_device = instance.find_physical_device(score);
+    auto surface = window.create_surface(instance.get_handle());
 
     window.append_string(physical_device.get_details());
 
