@@ -15,7 +15,8 @@ namespace vkhr {
             Pressed = GLFW_PRESS,
             Released = GLFW_RELEASE,
             Repeat = GLFW_REPEAT,
-            JustPressed
+            JustPressed,
+            JustReleased
         };
 
         enum class Key {
@@ -133,13 +134,16 @@ namespace vkhr {
 
         bool pressed(Input::Key key) const;
         bool just_pressed(Input::Key key);
+        bool just_released(Input::Key key);
         bool released(Input::Key key) const;
         bool pressed(Input::MouseButton key) const;
         bool just_pressed(Input::MouseButton key);
+        bool just_released(Input::MouseButton key);
         bool released(Input::MouseButton key) const;
 
         bool pressed(const std::string& id) const;
         bool just_pressed(const std::string& id);
+        bool just_released(const std::string& id);
         bool released(const std::string& id) const;
 
         glm::vec2 mouse_position() const;

@@ -22,6 +22,10 @@ namespace vkhr {
         Input::State current_state { mapper->mouse_button_state[mouse_button] };
         if (current_state == Input::State::Released && action == GLFW_PRESS)
             mapper->mouse_button_state[mouse_button] = Input::State::JustPressed;
+        else if ((current_state == Input::State::Pressed ||
+                  current_state == Input::State::Repeat) &&
+                  action == GLFW_RELEASE)
+            mapper->mouse_button_state[mouse_button] = Input::State::JustReleased;
         else
             mapper->mouse_button_state[mouse_button] = static_cast<Input::State>(action);
     }
@@ -37,6 +41,10 @@ namespace vkhr {
         Input::State current_state { mapper->key_state_map[key] };
         if (current_state == Input::State::Released && action == GLFW_PRESS)
             mapper->key_state_map[key] = Input::State::JustPressed;
+        else if ((current_state == Input::State::Pressed ||
+                  current_state == Input::State::Repeat) &&
+                  action == GLFW_RELEASE)
+            mapper->key_state_map[key] = Input::State::JustReleased;
         else
             mapper->key_state_map[key] = static_cast<Input::State>(action);
     }
@@ -101,10 +109,23 @@ namespace vkhr {
         return false;
     }
 
+    bool InputMap::just_released(Input::Key key) {
+        auto key_iterator = key_state_map.find(key);
+        if (key_iterator != key_state_map.end()) {
+            if (key_iterator->second == Input::State::JustReleased) {
+                key_state_map[key] = Input::State::Released;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     bool InputMap::released(Input::Key key) const {
         auto key_iterator = key_state_map.find(key);
         if (key_iterator != key_state_map.end())
-            return key_iterator->second == Input::State::Released;
+            return key_iterator->second == Input::State::Released ||
+                   key_iterator->second == Input::State::JustReleased;
         else return false;
     }
 
@@ -129,10 +150,23 @@ namespace vkhr {
         return false;
     }
 
+    bool InputMap::just_released(Input::MouseButton mouse_button) {
+        auto mouse_button_iterator = mouse_button_state.find(mouse_button);
+        if (mouse_button_iterator != mouse_button_state.end()) {
+            if (mouse_button_iterator->second == Input::State::JustReleased) {
+                mouse_button_state[mouse_button] = Input::State::Released;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     bool InputMap::released(Input::MouseButton mouse_button) const {
         auto mouse_button_iterator = mouse_button_state.find(mouse_button);
         if (mouse_button_iterator != mouse_button_state.end())
-            return mouse_button_iterator->second == Input::State::Released;
+            return mouse_button_iterator->second == Input::State::Released ||
+                   mouse_button_iterator->second == Input::State::JustReleased;
         else return false;
     }
 
