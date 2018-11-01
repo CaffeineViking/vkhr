@@ -9,15 +9,16 @@
 #define VKHR_LOGGER_FILE "./vkhr.log"
 #endif
 
-// e.g shared path could be /usr/share/vkhr/
-// need to supply SHARE_PATH at compile time
+// e.g. shared path could be: /usr/share/vkhr/
+// need to supply SHARED_PATH at compile time!
 
-#define ASSET(PATH)  VKHR_ASSETS_PATH PATH
+#define ASSET(PATH)  VKHR_ASSETS_PATH    PATH
 
-#define IMAGE(PATH)  ASSET("images/"  PATH)
-#define MODEL(PATH)  ASSET("models/"  PATH)
-#define SCENE(PATH)  ASSET("scenes/"  PATH)
-#define SHADER(PATH) ASSET("shaders/" PATH)
-#define STYLE(PATH)  ASSET("styles/"  PATH)
+#define IMAGE(PATH)  ASSET("images/"     PATH)
+#define MODEL(PATH)  ASSET("models/"     PATH)
+#define SCENE(PATH)  ASSET("scenes/"     PATH)
+#define SHADER(PATH) ASSET("shaders/"    PATH)
+#define SPIRV(PATH)  SHADER("generated/" PATH)
+#define STYLE(PATH)  ASSET("styles/"     PATH)
 
 #endif

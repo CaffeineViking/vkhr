@@ -47,7 +47,7 @@ project (name)
     files { "include/**.hh" }
     files { "src/"..name.."/**.cc" }
     files { "src/vkpp/**.cc" }
-    files "src/main.cc"
+    files   "src/main.cc"
 
     os.vpaths() -- Virtual paths.
 

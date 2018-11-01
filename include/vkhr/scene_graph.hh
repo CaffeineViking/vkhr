@@ -47,6 +47,9 @@ namespace vkhr {
         const std::list<HairStyle>& get_hair_styles() const;
         const std::list<Model>& get_models() const;
 
+        const Camera& get_camera() const;
+        Camera& get_camera();
+
         class Node final {
         public:
             void add(const Node& node);

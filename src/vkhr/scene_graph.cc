@@ -85,6 +85,14 @@ namespace vkhr {
         return models;
     }
 
+    const Camera& SceneGraph::get_camera() const {
+        return camera;
+    }
+
+    Camera& SceneGraph::get_camera() {
+        return camera;
+    }
+
     const std::vector<HairStyle*>& SceneGraph::Node::get_hair_styles() const {
         return hair_styles;
     }
