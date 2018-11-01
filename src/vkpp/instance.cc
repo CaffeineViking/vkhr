@@ -2,6 +2,8 @@
 
 #include <vkpp/exception.hh>
 
+#include <utility>
+
 namespace vkpp {
     Instance::Instance(const Application& application_information,
                        const std::vector<Layer> required_layers,

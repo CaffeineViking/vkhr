@@ -18,7 +18,17 @@ namespace vkpp {
         vkGetPhysicalDeviceQueueFamilyProperties(handle, &count,
                                                  queue_families.data());
 
-        locate_queue_family_indices(); // Queues.
+        vkEnumerateDeviceExtensionProperties(handle, nullptr, &count, nullptr);
+        std::vector<VkExtensionProperties> extension_properties(count);
+        vkEnumerateDeviceExtensionProperties(handle, nullptr, &count,
+                                             extension_properties.data());
+
+        available_extensions.resize(extension_properties.size());
+        for (std::size_t i { 0 }; i < available_extensions.size(); ++i)
+            available_extensions[i] = extension_properties[i];
+
+        locate_queue_family_indices(); // Find queue families.
+        assign_queue_family_indices(); // Added to queue list.
     }
 
     void PhysicalDevice::locate_queue_family_indices() {
@@ -32,6 +42,18 @@ namespace vkpp {
                     transfer_queue_family_index = i;
             }
         }
+    }
+
+    void PhysicalDevice::assign_queue_family_indices() {
+        queue_family_indices.clear();
+        if (graphics_queue_family_index != -1)
+            queue_family_indices.push_back(graphics_queue_family_index);
+        if (compute_queue_family_index != -1)
+            queue_family_indices.push_back(compute_queue_family_index);
+        if (transfer_queue_family_index != -1)
+            queue_family_indices.push_back(transfer_queue_family_index);
+        if (present_queue_family_index != -1)
+            queue_family_indices.push_back(present_queue_family_index);
     }
 
     void PhysicalDevice::find_device_memory_heap_index() {
@@ -92,27 +114,36 @@ namespace vkpp {
         return memory_properties;
     }
 
-    const std::vector<VkQueueFamilyProperties> PhysicalDevice::get_queue_families() const {
+    const std::vector<VkQueueFamilyProperties>&
+    PhysicalDevice::get_queue_family_properties() const {
         return queue_families;
+    }
+
+    const std::vector<Extension>& PhysicalDevice::get_available_extensions() const {
+        return available_extensions;
     }
 
     const VkPhysicalDeviceProperties& PhysicalDevice::get_properties() const {
         return properties;
     }
 
-    std::int32_t PhysicalDevice::get_compute_queue() const {
+    const std::vector<std::int32_t>& PhysicalDevice::get_queue_family_indices() const {
+        return queue_family_indices;
+    }
+
+    std::int32_t PhysicalDevice::get_compute_queue_index() const {
         return compute_queue_family_index;
     }
 
-    std::int32_t PhysicalDevice::get_graphics_queue() const {
+    std::int32_t PhysicalDevice::get_graphics_queue_index() const {
         return graphics_queue_family_index;
     }
 
-    std::int32_t PhysicalDevice::get_transfer_queue() const {
+    std::int32_t PhysicalDevice::get_transfer_queue_index() const {
         return transfer_queue_family_index;
     }
 
-    std::int32_t PhysicalDevice::get_present_queue() const {
+    std::int32_t PhysicalDevice::get_present_queue_index() const {
         return present_queue_family_index;
     }
 

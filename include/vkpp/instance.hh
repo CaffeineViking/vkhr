@@ -1,8 +1,6 @@
 #ifndef VKPP_INSTANCE_HH
 #define VKPP_INSTANCE_HH
 
-#include <vulkan/vulkan.h>
-
 #include <vkpp/application.hh>
 #include <vkpp/debug_messenger.hh>
 #include <vkpp/layer.hh>
@@ -10,13 +8,13 @@
 #include <vkpp/physical_device.hh>
 #include <vkpp/version.hh>
 
-#include <utility>
+#include <vulkan/vulkan.h>
+
 #include <vector>
 
 namespace vkpp {
     class Instance final {
     public:
-        Instance() = default;
         Instance(const Application& application_information,
                  const std::vector<Layer> required_layers,
                  const std::vector<Extension> required_extensions,

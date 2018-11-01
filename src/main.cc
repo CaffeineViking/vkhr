@@ -3,6 +3,8 @@
 
 namespace vk = vkpp;
 
+#include <iostream>
+
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -18,11 +20,11 @@ int main(int argc, char** argv) {
     };
 
     std::vector<vk::Layer> required_layers {
-        vk::DebugMessenger::validation_layer
+        "VK_LAYER_LUNARG_standard_validation"
     };
 
     std::vector<vk::Extension> required_extensions {
-        vk::DebugMessenger::debug_utils
+        "VK_EXT_debug_utils"
     };
 
     const vkhr::Image vulkan_icon { IMAGE("vulkan.icon") };
@@ -47,9 +49,25 @@ int main(int argc, char** argv) {
     };
 
     auto physical_device = instance.find_physical_device(score);
-    auto surface = window.create_surface(instance.get_handle());
 
     window.append_string(physical_device.get_details());
+
+    auto surface = window.create_surface(instance.get_handle());
+
+    std::vector<vk::Extension> device_extensions {
+        "VK_KHR_swapchain"
+    };
+
+    vk::PhysicalDevice::Features device_features {
+        // Nothing for now
+    };
+
+    vk::Device device {
+        physical_device,
+        required_layers,
+        device_extensions,
+        device_features
+    };
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 
