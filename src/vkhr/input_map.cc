@@ -20,11 +20,14 @@ namespace vkhr {
             mapper->mouse_button_state[mouse_button] = Input::State::Released;
 
         Input::State current_state { mapper->mouse_button_state[mouse_button] };
-        if (current_state == Input::State::Released && action == GLFW_PRESS)
+        if ((current_state == Input::State::Released ||
+             current_state == Input::State::JustReleased) &&
+            action == GLFW_PRESS)
             mapper->mouse_button_state[mouse_button] = Input::State::JustPressed;
         else if ((current_state == Input::State::Pressed ||
-                  current_state == Input::State::Repeat) &&
-                  action == GLFW_RELEASE)
+                  current_state == Input::State::Repeat ||
+                  current_state == Input::State::JustPressed) &&
+                 action == GLFW_RELEASE)
             mapper->mouse_button_state[mouse_button] = Input::State::JustReleased;
         else
             mapper->mouse_button_state[mouse_button] = static_cast<Input::State>(action);
@@ -39,11 +42,14 @@ namespace vkhr {
             mapper->key_state_map[key] = Input::State::Released;
 
         Input::State current_state { mapper->key_state_map[key] };
-        if (current_state == Input::State::Released && action == GLFW_PRESS)
+        if ((current_state == Input::State::Released ||
+             current_state == Input::State::JustReleased) &&
+            action == GLFW_PRESS)
             mapper->key_state_map[key] = Input::State::JustPressed;
         else if ((current_state == Input::State::Pressed ||
-                  current_state == Input::State::Repeat) &&
-                  action == GLFW_RELEASE)
+                  current_state == Input::State::Repeat ||
+                  current_state == Input::State::JustPressed) &&
+                 action == GLFW_RELEASE)
             mapper->key_state_map[key] = Input::State::JustReleased;
         else
             mapper->key_state_map[key] = static_cast<Input::State>(action);
