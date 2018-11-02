@@ -34,15 +34,35 @@ namespace vkpp {
                                                  const std::vector<T>& available) const;
         std::vector<Extension> find(const std::vector<Extension>& extensions) const;
 
-        const PhysicalDevice::Features& get_enabled_features()     const;
-        const std::vector<Extension>&   get_enabled_extensions()   const;
-        const std::vector<Extension>&   get_available_extensions() const;
+        const PhysicalDevice::Features& get_enabled_features() const;
+        const std::vector<Extension>& get_available_extensions() const;
+        const std::vector<Extension>& get_enabled_extensions() const;
+
+        bool has_compute_queue() const;
+        bool has_graphics_queue() const;
+        bool has_transfer_queue() const;
+        bool has_present_queue() const;
+
+        Queue* get_compute_queue();  // Warning: there may or may NOT be a queue of the
+        Queue* get_graphics_queue(); // type you want, in that case make sure to check
+        Queue* get_transfer_queue(); // if the resulting queue is nullptr. In most cases
+        Queue* get_present_queue();  // this this will work, but you should be careful.
 
     private:
         template<typename T> static std::string collapse(const std::vector<T>& vector);
 
+        void assign_queues();
+        void assign_queue(std::int32_t index, Queue** queue);
+
         std::vector<Extension> enabled_extensions;
         PhysicalDevice::Features enabled_features;
+
+        std::vector<Queue> queues;
+
+        Queue* graphics_queue { nullptr };
+        Queue* compute_queue { nullptr };
+        Queue* transfer_queue { nullptr };
+        Queue* present_queue { nullptr };
 
         PhysicalDevice* physical_device { nullptr };
 

@@ -7,9 +7,11 @@
 #include <vulkan/vulkan.h>
 
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace vkpp {
+    class Surface; // forward.
     class PhysicalDevice final {
     public:
         PhysicalDevice(const VkPhysicalDevice& physical_device);
@@ -46,12 +48,21 @@ namespace vkpp {
         const std::vector<Extension>& get_available_extensions() const;
         const VkPhysicalDeviceProperties& get_properties() const;
 
-        const std::vector<std::int32_t>& get_queue_family_indices() const;
+        bool has_present_queue(Surface& surface) const;
+        void assign_present_queue_indices(Surface& surface);
 
-        std::int32_t get_compute_queue_index() const;
-        std::int32_t get_graphics_queue_index() const;
-        std::int32_t get_transfer_queue_index() const;
-        std::int32_t get_present_queue_index() const;
+        const std::unordered_set<std::int32_t>& get_queue_family_indices() const;
+
+        bool has_every_queue() const;
+
+        bool has_compute_queue() const;
+        bool has_graphics_queue() const;
+        bool has_transfer_queue() const;
+
+        std::int32_t get_compute_queue_family_index() const;
+        std::int32_t get_graphics_queue_family_index() const;
+        std::int32_t get_transfer_queue_family_index() const;
+        std::int32_t get_present_queue_family_index() const;
 
         std::string get_details() const;
         const std::string& get_name() const;
@@ -81,11 +92,11 @@ namespace vkpp {
         std::int32_t transfer_queue_family_index { -1 };
         std::int32_t present_queue_family_index  { -1 };
 
-        std::vector<std::int32_t> queue_family_indices;
+        std::unordered_set<std::int32_t> queue_family_indices;
 
         std::vector<Extension> available_extensions;
 
-        VkPhysicalDevice handle;
+        VkPhysicalDevice handle { VK_NULL_HANDLE };
     };
 }
 

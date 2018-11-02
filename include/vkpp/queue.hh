@@ -8,8 +8,12 @@ namespace vkpp {
     public:
         Queue(const VkQueue& queue);
 
+        operator VkQueue() const;
+
+        VkQueue& get_handle();
+
     private:
-        VkQueue handle;
+        VkQueue handle { VK_NULL_HANDLE };
     };
 }
 

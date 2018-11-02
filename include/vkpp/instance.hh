@@ -5,6 +5,7 @@
 #include <vkpp/debug_messenger.hh>
 #include <vkpp/layer.hh>
 #include <vkpp/extension.hh>
+#include <vkpp/exception.hh>
 #include <vkpp/physical_device.hh>
 #include <vkpp/version.hh>
 
@@ -38,8 +39,8 @@ namespace vkpp {
         const std::vector<Layer>& get_enabled_layers() const;
         const std::vector<Extension>& get_enabled_extensions() const;
 
-        // Finds physical device which evaluates to true when 'suitable' is checked on it.
-        template<typename F> const PhysicalDevice& find_physical_device(F suitable) const;
+        // Finds physical devices which evaluates to true when 'suitable' is checked on it.
+        template<typename F> const PhysicalDevice& find_physical_devices(F suitable) const;
 
         const std::vector<PhysicalDevice>& get_physical_devices() const;
 
@@ -92,7 +93,7 @@ namespace vkpp {
     }
 
     template<typename F>
-    const PhysicalDevice& Instance::find_physical_device(F score) const {
+    const PhysicalDevice& Instance::find_physical_devices(F score) const {
         std::vector<int> scores;
         for (const auto& physical_device : physical_devices)
             scores.push_back(score(physical_device));
@@ -104,6 +105,11 @@ namespace vkpp {
                 best_scoring = scores[i];
                 best = i;
             }
+        }
+
+        if (best_scoring == 0) {
+            throw Exception { "couldn't find the physical device!",
+            "no physical devices achieve a score higher than 0!" };
         }
 
         return physical_devices[best];

@@ -3,8 +3,6 @@
 
 namespace vk = vkpp;
 
-#include <iostream>
-
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -35,7 +33,8 @@ int main(int argc, char** argv) {
     input_map.bind("quit",       vkhr::Input::Key::Escape);
     input_map.bind("fullscreen", vkhr::Input::Key::F);
 
-    vk::append(window.get_surface_extensions(), required_extensions);
+    vk::append(window.get_vulkan_surface_extensions(),
+               required_extensions);
 
     vk::Instance instance {
         application_information,
@@ -43,16 +42,20 @@ int main(int argc, char** argv) {
         required_extensions
     };
 
-    // Find physical device that seem most promising of the lot.
-    auto score = [](const vk::PhysicalDevice& physical_device) {
-        return physical_device.is_discrete_gpu();
+    auto window_surface = window.create_vulkan_surface(instance);
+
+    // Find physical devices that seem most promising of the lot.
+    auto score = [&](const vk::PhysicalDevice& physical_device) {
+        return physical_device.is_discrete_gpu() *
+               physical_device.has_every_queue() *
+               physical_device.has_present_queue(window_surface);
     };
 
-    auto physical_device = instance.find_physical_device(score);
+    auto physical_device = instance.find_physical_devices(score);
 
     window.append_string(physical_device.get_details());
 
-    auto surface = window.create_surface(instance.get_handle());
+    physical_device.assign_present_queue_indices(window_surface);
 
     std::vector<vk::Extension> device_extensions {
         "VK_KHR_swapchain"

@@ -132,7 +132,7 @@ namespace vkhr {
         return monitor_refresh_rate;
     }
 
-    std::vector<vkpp::Extension> Window::get_surface_extensions() const {
+    std::vector<vkpp::Extension> Window::get_vulkan_surface_extensions() const {
         unsigned extension_count;
         auto extension_names = glfwGetRequiredInstanceExtensions(&extension_count);
 
@@ -143,14 +143,14 @@ namespace vkhr {
         return surface_extensions;
     }
 
-    VkSurfaceKHR Window::create_surface(VkInstance instance) const {
-        VkSurfaceKHR surface;
+    vkpp::Surface Window::create_vulkan_surface(vkpp::Instance& instance) const {
+        auto instance_handle = instance.get_handle();
+        VkSurfaceKHR surface_handle;
 
-        if (glfwCreateWindowSurface(instance, handle, nullptr, &surface)) {
-            throw std::runtime_error { "Failed to create Vulkan surface!" };
-        }
+        if (glfwCreateWindowSurface(instance_handle, handle, nullptr, &surface_handle))
+            throw std::runtime_error { "Failed to create a Vulkan window surface!" };
 
-        return surface;
+        return vkpp::Surface { instance_handle, surface_handle };
     }
 
     void Window::resize(const int width, const int height) {

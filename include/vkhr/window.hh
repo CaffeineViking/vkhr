@@ -3,7 +3,9 @@
 
 #include <vkhr/image.hh>
 
+#include <vkpp/surface.hh>
 #include <vkpp/extension.hh>
+#include <vkpp/instance.hh>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -34,8 +36,8 @@ namespace vkhr {
 
         int get_refresh_rate() const;
 
-        std::vector<vkpp::Extension> get_surface_extensions() const;
-        VkSurfaceKHR create_surface(VkInstance instance) const;
+        std::vector<vkpp::Extension> get_vulkan_surface_extensions()  const;
+        vkpp::Surface create_vulkan_surface(vkpp::Instance& instance) const;
 
         void resize(const int width, const int height);
 

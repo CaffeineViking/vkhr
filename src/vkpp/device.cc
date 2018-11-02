@@ -12,11 +12,11 @@ namespace vkpp {
                   : enabled_extensions { required_extensions },
                     enabled_features { required_features },
                     physical_device { &physical_device } {
-        float queue_priority = 1.0 / physical_device.get_queue_family_indices().size();
-
         std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
 
-        for (auto queue_family_index : physical_device.get_queue_family_indices()) {
+        float queue_priority = 1.0 / physical_device.get_queue_family_indices().size();
+
+        for (const auto& queue_family_index : physical_device.get_queue_family_indices()) {
             VkDeviceQueueCreateInfo queue_create_info;
             queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queue_create_info.pNext = nullptr;
@@ -68,7 +68,7 @@ namespace vkpp {
                                             &create_info, nullptr, &handle))
             throw Exception { error, "couldn't create device!" };
 
-        // TODO: get the queue handles and construct vkpp::Queue.
+        assign_queues(); // Get the queue object from the device.
     }
 
     Device::~Device() noexcept {
@@ -111,5 +111,53 @@ namespace vkpp {
 
     const std::vector<Extension>& Device::get_available_extensions() const {
         return physical_device->get_available_extensions();
+    }
+
+    bool Device::has_compute_queue() const {
+        return compute_queue != nullptr;
+    }
+
+    bool Device::has_graphics_queue() const {
+        return graphics_queue != nullptr;
+    }
+
+    bool Device::has_transfer_queue() const {
+        return transfer_queue != nullptr;
+    }
+
+    bool Device::has_present_queue() const {
+        return present_queue != nullptr;
+    }
+
+    Queue* Device::get_compute_queue() {
+        return compute_queue;
+    }
+
+    Queue* Device::get_graphics_queue() {
+        return graphics_queue;
+    }
+
+    Queue* Device::get_transfer_queue() {
+        return transfer_queue;
+    }
+
+    Queue* Device::get_present_queue() {
+        return present_queue;
+    }
+
+    void Device::assign_queues() {
+        auto& physical_device = get_physical_device();
+        assign_queue(physical_device.get_graphics_queue_family_index(), &graphics_queue);
+        assign_queue(physical_device.get_compute_queue_family_index(),  &compute_queue);
+        assign_queue(physical_device.get_transfer_queue_family_index(), &transfer_queue);
+        assign_queue(physical_device.get_present_queue_family_index(),  &present_queue);
+    }
+
+    void Device::assign_queue(std::int32_t index, Queue** queue) {
+        if (index != -1) {
+            VkQueue queue_handle;
+            vkGetDeviceQueue(handle, index, 0, &queue_handle);
+            *queue = &this->queues.emplace_back(Queue { queue_handle });
+        }
     }
 }

@@ -34,11 +34,14 @@ namespace vkpp {
     void PhysicalDevice::locate_queue_family_indices() {
         for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
             if (queue_families[i].queueCount > 0) {
-                if (queue_families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+                if (!has_graphics_queue() &&
+                    queue_families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
                     graphics_queue_family_index = i;
-                if (queue_families[i].queueFlags & VK_QUEUE_COMPUTE_BIT)
+                if (!has_compute_queue() &&
+                    queue_families[i].queueFlags & VK_QUEUE_COMPUTE_BIT)
                     compute_queue_family_index  = i;
-                if (queue_families[i].queueFlags & VK_QUEUE_TRANSFER_BIT)
+                if (!has_transfer_queue() &&
+                    queue_families[i].queueFlags & VK_QUEUE_TRANSFER_BIT)
                     transfer_queue_family_index = i;
             }
         }
@@ -47,13 +50,13 @@ namespace vkpp {
     void PhysicalDevice::assign_queue_family_indices() {
         queue_family_indices.clear();
         if (graphics_queue_family_index != -1)
-            queue_family_indices.push_back(graphics_queue_family_index);
+            queue_family_indices.insert(graphics_queue_family_index);
         if (compute_queue_family_index != -1)
-            queue_family_indices.push_back(compute_queue_family_index);
+            queue_family_indices.insert(compute_queue_family_index);
         if (transfer_queue_family_index != -1)
-            queue_family_indices.push_back(transfer_queue_family_index);
+            queue_family_indices.insert(transfer_queue_family_index);
         if (present_queue_family_index != -1)
-            queue_family_indices.push_back(present_queue_family_index);
+            queue_family_indices.insert(present_queue_family_index);
     }
 
     void PhysicalDevice::find_device_memory_heap_index() {
@@ -127,23 +130,73 @@ namespace vkpp {
         return properties;
     }
 
-    const std::vector<std::int32_t>& PhysicalDevice::get_queue_family_indices() const {
+    bool PhysicalDevice::has_present_queue(Surface& surface) const {
+        if (present_queue_family_index == -1) {
+            VkBool32 supported { 0 };
+            for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
+                vkGetPhysicalDeviceSurfaceSupportKHR(handle, i, surface.get_handle(),
+                                                    &supported);
+                if (supported) return true;
+            }
+        } else {
+            return true;
+        }
+
+        return false;
+    }
+
+    void PhysicalDevice::assign_present_queue_indices(Surface& surface) {
+        VkBool32 presentation_supported { 0 };
+        for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
+            vkGetPhysicalDeviceSurfaceSupportKHR(handle, i, surface.get_handle(),
+                                                 &presentation_supported);
+            if (presentation_supported) {
+                present_queue_family_index = i;
+                break;
+            }
+        }
+
+        // Assume we'll use this physical device.
+        surface.set_active_physical_device(*this);
+        assign_queue_family_indices();
+    }
+
+    const std::unordered_set<std::int32_t>&
+    PhysicalDevice::get_queue_family_indices() const {
         return queue_family_indices;
     }
 
-    std::int32_t PhysicalDevice::get_compute_queue_index() const {
+    bool PhysicalDevice::has_every_queue() const {
+        return has_compute_queue()  &&
+               has_graphics_queue() &&
+               has_transfer_queue();
+    }
+
+    bool PhysicalDevice::has_compute_queue() const {
+        return compute_queue_family_index != -1;
+    }
+
+    bool PhysicalDevice::has_graphics_queue() const {
+        return graphics_queue_family_index != -1;
+    }
+
+    bool PhysicalDevice::has_transfer_queue() const {
+        return transfer_queue_family_index != -1;
+    }
+
+    std::int32_t PhysicalDevice::get_compute_queue_family_index() const {
         return compute_queue_family_index;
     }
 
-    std::int32_t PhysicalDevice::get_graphics_queue_index() const {
+    std::int32_t PhysicalDevice::get_graphics_queue_family_index() const {
         return graphics_queue_family_index;
     }
 
-    std::int32_t PhysicalDevice::get_transfer_queue_index() const {
+    std::int32_t PhysicalDevice::get_transfer_queue_family_index() const {
         return transfer_queue_family_index;
     }
 
-    std::int32_t PhysicalDevice::get_present_queue_index() const {
+    std::int32_t PhysicalDevice::get_present_queue_family_index() const {
         return present_queue_family_index;
     }
 
