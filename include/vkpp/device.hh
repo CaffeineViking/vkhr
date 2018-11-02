@@ -10,15 +10,17 @@
 #include <vulkan/vulkan.h>
 
 #include <vector>
+#include <unordered_map>
 #include <string>
 
 namespace vkpp {
     class Device final {
     public:
+        Device() = default;
         Device(PhysicalDevice& physical_device,
                const std::vector<Layer>& enabled_instance_layers,
                const std::vector<Extension>& required_extensions,
-               const PhysicalDevice::Features& required_features);
+               const VkPhysicalDeviceFeatures& required_features);
         ~Device() noexcept;
 
         Device(Device&& device) noexcept;
@@ -34,7 +36,8 @@ namespace vkpp {
                                                  const std::vector<T>& available) const;
         std::vector<Extension> find(const std::vector<Extension>& extensions) const;
 
-        const PhysicalDevice::Features& get_enabled_features() const;
+        const VkPhysicalDeviceFeatures& get_enabled_features() const;
+        const VkPhysicalDeviceFeatures& get_available_features() const;
         const std::vector<Extension>& get_available_extensions() const;
         const std::vector<Extension>& get_enabled_extensions() const;
 
@@ -43,7 +46,7 @@ namespace vkpp {
         bool has_transfer_queue() const;
         bool has_present_queue() const;
 
-        Queue* get_compute_queue();  // Warning: there may or may NOT be a queue of the
+        Queue* get_compute_queue();  // WARNING: there may or may NOT be a queue of the
         Queue* get_graphics_queue(); // type you want, in that case make sure to check
         Queue* get_transfer_queue(); // if the resulting queue is nullptr. In most cases
         Queue* get_present_queue();  // this this will work, but you should be careful.
@@ -55,9 +58,9 @@ namespace vkpp {
         void assign_queue(std::int32_t index, Queue** queue);
 
         std::vector<Extension> enabled_extensions;
-        PhysicalDevice::Features enabled_features;
+        VkPhysicalDeviceFeatures enabled_features;
 
-        std::vector<Queue> queues;
+        std::unordered_map<std::int32_t, Queue> queues;
 
         Queue* graphics_queue { nullptr };
         Queue* compute_queue { nullptr };

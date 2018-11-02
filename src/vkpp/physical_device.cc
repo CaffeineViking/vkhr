@@ -13,6 +13,7 @@ namespace vkpp {
         type = static_cast<Type>(properties.deviceType);
 
         std::uint32_t count;
+
         vkGetPhysicalDeviceQueueFamilyProperties(handle, &count, nullptr);
         queue_families.resize(count);
         vkGetPhysicalDeviceQueueFamilyProperties(handle, &count,
@@ -61,8 +62,10 @@ namespace vkpp {
 
     void PhysicalDevice::find_device_memory_heap_index() {
         for (std::size_t i { 0 }; i < memory_properties.memoryHeapCount; ++i) {
-            if (memory_properties.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+            if (memory_properties.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) {
                 device_heap_index = i;
+                return;
+            }
         }
     }
 
@@ -100,12 +103,12 @@ namespace vkpp {
         return type == Type::VirtualGpu;
     }
 
-    std::uint32_t PhysicalDevice::get_memory_heap() const {
+    std::uint32_t PhysicalDevice::get_device_memory_heap() const {
         return device_heap_index;
     }
 
-    VkDeviceSize PhysicalDevice::get_memory_size() const {
-        auto heap = get_memory_heap();
+    VkDeviceSize PhysicalDevice::get_device_memory_size() const {
+        auto heap = get_device_memory_heap();
         return memory_properties.memoryHeaps[heap].size;
     }
 
@@ -130,21 +133,6 @@ namespace vkpp {
         return properties;
     }
 
-    bool PhysicalDevice::has_present_queue(Surface& surface) const {
-        if (present_queue_family_index == -1) {
-            VkBool32 supported { 0 };
-            for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
-                vkGetPhysicalDeviceSurfaceSupportKHR(handle, i, surface.get_handle(),
-                                                    &supported);
-                if (supported) return true;
-            }
-        } else {
-            return true;
-        }
-
-        return false;
-    }
-
     void PhysicalDevice::assign_present_queue_indices(Surface& surface) {
         VkBool32 presentation_supported { 0 };
         for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
@@ -156,9 +144,25 @@ namespace vkpp {
             }
         }
 
-        // Assume we'll use this physical device.
-        surface.set_active_physical_device(*this);
+        // Presentation, format, capability.
+        query_surface_capabilities(surface);
+
         assign_queue_family_indices();
+    }
+
+    bool PhysicalDevice::has_present_queue(Surface& surface) const {
+        if (!has_present_queue()) {
+            VkBool32 presentation_supported { 0 };
+            for (std::size_t i { 0 }; i < queue_families.size(); ++i) {
+                vkGetPhysicalDeviceSurfaceSupportKHR(handle, i, surface.get_handle(),
+                                                     &presentation_supported);
+                if (presentation_supported) return true;
+            }
+        } else {
+            return true;
+        }
+
+        return false;
     }
 
     const std::unordered_set<std::int32_t>&
@@ -182,6 +186,10 @@ namespace vkpp {
 
     bool PhysicalDevice::has_transfer_queue() const {
         return transfer_queue_family_index != -1;
+    }
+
+    bool PhysicalDevice::has_present_queue() const {
+        return present_queue_family_index != -1;
     }
 
     std::int32_t PhysicalDevice::get_compute_queue_family_index() const {
@@ -221,5 +229,35 @@ namespace vkpp {
         case Type::Cpu: return "Host CPU";
         default: return "?";
         }
+    }
+
+
+    void PhysicalDevice::query_surface_capabilities(Surface& window_surface) {
+        auto& surface = window_surface.get_handle();
+
+        VkSurfaceCapabilitiesKHR capabilities;
+
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(handle, surface, &capabilities);
+
+        window_surface.set_capabilities(capabilities);
+
+        std::uint32_t count;
+
+        std::vector<VkSurfaceFormatKHR> formats;
+
+        vkGetPhysicalDeviceSurfaceFormatsKHR(handle, surface, &count, nullptr);
+        formats.resize(count);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(handle, surface, &count, formats.data());
+
+        window_surface.set_formats(formats);
+
+        std::vector<VkPresentModeKHR> present_modes;
+
+        vkGetPhysicalDeviceSurfacePresentModesKHR(handle, surface, &count, nullptr);
+        present_modes.resize(count);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(handle, surface, &count,
+                                                  present_modes.data());
+
+        window_surface.set_presentation_modes(present_modes);
     }
 }

@@ -8,7 +8,7 @@ namespace vkpp {
     Device::Device(PhysicalDevice& physical_device,
                    const std::vector<Layer>& enabled_instance_layers,
                    const std::vector<Extension>& required_extensions,
-                   const PhysicalDevice::Features& required_features)
+                   const VkPhysicalDeviceFeatures& required_features)
                   : enabled_extensions { required_extensions },
                     enabled_features { required_features },
                     physical_device { &physical_device } {
@@ -88,9 +88,23 @@ namespace vkpp {
 
     void swap(Device& lhs, Device& rhs) {
         using std::swap;
-        swap(lhs.handle, rhs.handle);
+
         swap(lhs.enabled_extensions, rhs.enabled_extensions);
+        swap(lhs.enabled_features, rhs.enabled_features);
+
+        swap(lhs.queues, rhs.queues);
+
+        swap(lhs.graphics_queue, rhs.graphics_queue);
+        swap(lhs.compute_queue, rhs.compute_queue);
+        swap(lhs.transfer_queue, rhs.transfer_queue);
+        swap(lhs.present_queue, rhs.present_queue);
+
         swap(lhs.physical_device, rhs.physical_device);
+
+        swap(lhs.handle, rhs.handle);
+
+        rhs.physical_device = nullptr;
+        rhs.handle = VK_NULL_HANDLE;
     }
 
     VkDevice& Device::get_handle() {
@@ -107,6 +121,10 @@ namespace vkpp {
 
     const std::vector<Extension>& Device::get_enabled_extensions() const {
         return enabled_extensions;
+    }
+
+    const VkPhysicalDeviceFeatures& Device::get_available_features() const {
+        return physical_device->get_features();
     }
 
     const std::vector<Extension>& Device::get_available_extensions() const {
@@ -146,18 +164,20 @@ namespace vkpp {
     }
 
     void Device::assign_queues() {
-        auto& physical_device = get_physical_device();
+        auto& physical_device = get_physical_device(); // Create Queues from the index.
+        assign_queue(physical_device.get_compute_queue_family_index(), &compute_queue);
         assign_queue(physical_device.get_graphics_queue_family_index(), &graphics_queue);
-        assign_queue(physical_device.get_compute_queue_family_index(),  &compute_queue);
         assign_queue(physical_device.get_transfer_queue_family_index(), &transfer_queue);
-        assign_queue(physical_device.get_present_queue_family_index(),  &present_queue);
+        assign_queue(physical_device.get_present_queue_family_index(), &present_queue);
     }
 
     void Device::assign_queue(std::int32_t index, Queue** queue) {
-        if (index != -1) {
+        if (queues.count(index) == 0) {
             VkQueue queue_handle;
             vkGetDeviceQueue(handle, index, 0, &queue_handle);
-            *queue = &this->queues.emplace_back(Queue { queue_handle });
+            queues[index] = Queue { queue_handle };
         }
+
+        *queue = &queues[index];
     }
 }

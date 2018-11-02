@@ -128,6 +128,11 @@ namespace vkhr {
         }
     }
 
+    VkExtent2D Window::get_extent() const {
+        return { static_cast<std::uint32_t>(get_width()),
+                 static_cast<std::uint32_t>(get_height()) };
+    }
+
     int Window::get_refresh_rate() const {
         return monitor_refresh_rate;
     }

@@ -34,6 +34,8 @@ namespace vkhr {
         float get_aspect_ratio() const;
         int get_height() const;
 
+        VkExtent2D get_extent() const;
+
         int get_refresh_rate() const;
 
         std::vector<vkpp::Extension> get_vulkan_surface_extensions()  const;

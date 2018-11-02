@@ -7,21 +7,16 @@
 namespace vkpp {
     static VKAPI_ATTR VkBool32 VKAPI_CALL debug_messenger_callback(
                       VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
-                      VkDebugUtilsMessageTypeFlagsEXT message_type,
+                      VkDebugUtilsMessageTypeFlagsEXT,
                       const VkDebugUtilsMessengerCallbackDataEXT* message_data,
                       void* usrdata) {
         const auto minimum_severity = *reinterpret_cast<DebugMessenger::Severity*>(usrdata);
         const auto severity_bit = (VkDebugUtilsMessageSeverityFlagBitsEXT) minimum_severity;
 
         if (message_severity >= severity_bit) {
-            std::cerr << "Vulkan ";
-            if (message_type & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
-                std::cerr << "general: ";
-            else if (message_type & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
-                std::cerr << "validation: ";
-            else if (message_type & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
-                std::cerr << "performance: ";
-            std::cerr << message_data->pMessage << std::endl;
+            std::cerr << '\n'
+                      << message_data->pMessage
+                      << std::endl;
         }
 
         return VK_FALSE;
@@ -70,8 +65,9 @@ namespace vkpp {
     void DebugMessenger::destroy() noexcept {
         auto fp = vkGetInstanceProcAddr(instance_handle, pfn_destroy);
         auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT) fp;
-        if (vkDestroyDebugUtilsMessengerEXT != nullptr && handle != VK_NULL_HANDLE)
+        if (vkDestroyDebugUtilsMessengerEXT != nullptr && handle != VK_NULL_HANDLE) {
             vkDestroyDebugUtilsMessengerEXT(instance_handle, handle, nullptr);
+        }
 
         instance_handle = VK_NULL_HANDLE;
         handle = VK_NULL_HANDLE;
@@ -92,9 +88,11 @@ namespace vkpp {
 
     void swap(DebugMessenger& lhs, DebugMessenger& rhs) {
         using std::swap;
+
         swap(lhs.minimum_severity, rhs.minimum_severity);
         swap(lhs.handle, rhs.handle);
         swap(lhs.instance_handle, rhs.instance_handle);
+
         rhs.instance_handle = VK_NULL_HANDLE;
         rhs.handle = VK_NULL_HANDLE;
     }

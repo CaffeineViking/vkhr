@@ -6,6 +6,7 @@
 namespace vkpp {
     class Queue final {
     public:
+        Queue() = default;
         Queue(const VkQueue& queue);
 
         operator VkQueue() const;

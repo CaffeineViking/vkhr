@@ -11,9 +11,9 @@
 #include <vector>
 
 namespace vkpp {
-    class Surface; // forward.
     class PhysicalDevice final {
     public:
+        PhysicalDevice() = default;
         PhysicalDevice(const VkPhysicalDevice& physical_device);
 
         operator VkPhysicalDevice() const;
@@ -31,25 +31,20 @@ namespace vkpp {
             Cpu = VK_PHYSICAL_DEVICE_TYPE_CPU
         };
 
-        using Features = VkPhysicalDeviceFeatures;
-
         bool is_discrete_gpu() const;
         bool is_integrated_gpu() const;
         bool is_virtual_gpu() const;
 
         bool is_gpu() const;
 
-        std::uint32_t get_memory_heap() const;
-        VkDeviceSize  get_memory_size() const;
+        std::uint32_t get_device_memory_heap() const;
+        VkDeviceSize  get_device_memory_size() const;
 
         const VkPhysicalDeviceFeatures& get_features() const;
         const VkPhysicalDeviceMemoryProperties& get_memory_properties() const;
         const std::vector<VkQueueFamilyProperties>& get_queue_family_properties() const;
         const std::vector<Extension>& get_available_extensions() const;
         const VkPhysicalDeviceProperties& get_properties() const;
-
-        bool has_present_queue(Surface& surface) const;
-        void assign_present_queue_indices(Surface& surface);
 
         const std::unordered_set<std::int32_t>& get_queue_family_indices() const;
 
@@ -58,6 +53,11 @@ namespace vkpp {
         bool has_compute_queue() const;
         bool has_graphics_queue() const;
         bool has_transfer_queue() const;
+        bool has_present_queue() const;
+
+        void assign_present_queue_indices(Surface& surface);
+
+        bool has_present_queue(Surface& surface) const;
 
         std::int32_t get_compute_queue_family_index() const;
         std::int32_t get_graphics_queue_family_index() const;
@@ -70,6 +70,8 @@ namespace vkpp {
         std::string get_type_string() const;
 
     private:
+        void query_surface_capabilities(Surface& surface);
+
         std::string name;
 
         Type type;

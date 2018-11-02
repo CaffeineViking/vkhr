@@ -939,6 +939,9 @@
     <ClInclude Include="..\include\vkpp\extension.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\image_view.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\instance.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -952,6 +955,9 @@
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\surface.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\swap_chain.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\version.hh">
@@ -1031,6 +1037,9 @@
     <ClCompile Include="..\src\vkpp\extension.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkpp\image_view.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkpp\instance.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
@@ -1044,6 +1053,9 @@
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\surface.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\swap_chain.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\version.cc">

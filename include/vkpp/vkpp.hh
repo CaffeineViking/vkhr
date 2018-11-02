@@ -8,9 +8,12 @@
 #include <vkpp/exception.hh>
 #include <vkpp/extension.hh>
 #include <vkpp/instance.hh>
+#include <vkpp/image_view.hh>
 #include <vkpp/layer.hh>
 #include <vkpp/physical_device.hh>
+#include <vkpp/queue.hh>
 #include <vkpp/surface.hh>
+#include <vkpp/swap_chain.hh>
 #include <vkpp/version.hh>
 
 #endif
