@@ -1,9 +1,7 @@
 name   = "vkhr"
 config = "debug"
 
-all: FORCE
-	premake5 gmake
-	make -j8 -C build config=${config}
+all: shaders program
 run: all
 	bin/${name} ${args}
 
@@ -18,6 +16,8 @@ help: FORCE
 	@echo "   all"
 	@echo "   run"
 	@echo "   help"
+	@echo "   shaders"
+	@echo "   program"
 	@echo "   download (all)"
 	@echo "   download-modules"
 	@echo "   pre-generate"
@@ -29,6 +29,13 @@ help: FORCE
 	@echo "   clean"
 	@echo "   distclean"
 	@echo ""
+
+program: FORCE
+	premake5 gmake
+	make -j8 -C build config=${config}
+
+shaders: FORCE
+	make -C share/shaders
 
 download: download-modules
 download-modules: FORCE
@@ -68,4 +75,4 @@ distclean: clean
 	find bin/ -type f ! -name "*.dll" -delete
 FORCE:
 
-.PHONY: all run help download download-modules pre-generate solution bundle-assets distribute docs tags clean distclean
+.PHONY: all run help program shaders download download-modules pre-generate solution bundle-assets distribute docs tags clean distclean
