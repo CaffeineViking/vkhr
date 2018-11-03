@@ -69,10 +69,6 @@ namespace vkpp {
         }
     }
 
-    PhysicalDevice::operator VkPhysicalDevice() const {
-        return handle;
-    }
-
     bool PhysicalDevice::operator==(const PhysicalDevice& other) const {
         return handle == other.handle;
     }

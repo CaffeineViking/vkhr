@@ -33,10 +33,6 @@ namespace vkpp {
         rhs.handle = VK_NULL_HANDLE;
     }
 
-    Surface::operator VkSurfaceKHR() const {
-        return handle;
-    }
-
     VkSurfaceKHR& Surface::get_handle() {
         return handle;
     }

@@ -3,6 +3,8 @@
 
 namespace vk = vkpp;
 
+#include <iostream>
+
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -61,6 +63,7 @@ int main(int argc, char** argv) {
         vk::SwapChain::DeviceExtension
     };
 
+    // Just enable every device feature we have right now.
     auto device_features = physical_device.get_features();
 
     vk::Device device {
@@ -84,6 +87,9 @@ int main(int argc, char** argv) {
         preferred_present_mode,
         window.get_extent()
     };
+
+    vk::ShaderModule vertex_shader   { device, SPIRV("simple.vert") };
+    vk::ShaderModule fragment_shader { device, SPIRV("simple.frag") };
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 

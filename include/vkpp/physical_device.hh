@@ -16,8 +16,6 @@ namespace vkpp {
         PhysicalDevice() = default;
         PhysicalDevice(const VkPhysicalDevice& physical_device);
 
-        operator VkPhysicalDevice() const;
-
         bool operator==(const PhysicalDevice& other) const;
         bool operator!=(const PhysicalDevice& other) const;
 

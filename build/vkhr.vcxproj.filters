@@ -957,6 +957,9 @@
     <ClInclude Include="..\include\vkpp\queue.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\shader_module.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\surface.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -1053,6 +1056,9 @@
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\queue.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\shader_module.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\surface.cc">

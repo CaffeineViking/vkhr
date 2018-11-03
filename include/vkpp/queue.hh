@@ -9,8 +9,6 @@ namespace vkpp {
         Queue() = default;
         Queue(const VkQueue& queue);
 
-        operator VkQueue() const;
-
         VkQueue& get_handle();
 
     private:

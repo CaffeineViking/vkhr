@@ -18,8 +18,6 @@ namespace vkpp {
 
         friend void swap(Surface& lhs, Surface& rhs);
 
-        operator VkSurfaceKHR() const;
-
         void set_capabilities(const VkSurfaceCapabilitiesKHR& capabilities);
         void set_presentation_modes(const std::vector<VkPresentModeKHR>& present_modes);
         void set_formats(const std::vector<VkSurfaceFormatKHR>& formats);

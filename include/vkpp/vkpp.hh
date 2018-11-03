@@ -12,6 +12,7 @@
 #include <vkpp/layer.hh>
 #include <vkpp/physical_device.hh>
 #include <vkpp/queue.hh>
+#include <vkpp/shader_module.hh>
 #include <vkpp/surface.hh>
 #include <vkpp/swap_chain.hh>
 #include <vkpp/version.hh>
