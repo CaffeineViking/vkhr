@@ -71,6 +71,7 @@ class ShaderScript:
                 command = command + dependencies.decode("utf-8")
                 command = command + "\t"
                 command = command + self.GLSLC
+                command = command + "-o " + os.path.join("spirv/", shader_file + ".spv ")
                 command = command + shader_file
 
                 contents = contents + command

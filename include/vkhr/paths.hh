@@ -18,7 +18,7 @@
 #define MODEL(PATH)  ASSET("models/"  PATH)
 #define SCENE(PATH)  ASSET("scenes/"  PATH)
 #define SHADER(PATH) ASSET("shaders/" PATH)
-#define SPIRV(PATH)  ASSET("shaders/" PATH)
+#define SPIRV(PATH)  SHADER("spirv/"  PATH)
 #define STYLE(PATH)  ASSET("styles/"  PATH)
 
 #endif

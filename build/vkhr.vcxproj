@@ -426,6 +426,11 @@
     <ClCompile Include="..\src\vkpp\swap_chain.cc" />
     <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\share\shaders\simple.frag" />
+    <None Include="..\share\shaders\simple.glsl" />
+    <None Include="..\share\shaders\simple.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
