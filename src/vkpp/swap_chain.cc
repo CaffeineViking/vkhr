@@ -9,7 +9,7 @@
 namespace vkpp {
     SwapChain::SwapChain(Device& logical_device, Surface& surface,
                          const VkSurfaceFormatKHR& preferred_format,
-                         const PresentMode& preferred_present_mode,
+                         const PresentationMode& preferred_present_mode,
                          const VkExtent2D& preferred_window_extent)
                         : surface { &surface },
                           device { logical_device.get_handle() } {
@@ -138,7 +138,7 @@ namespace vkpp {
         return format;
     }
 
-    const SwapChain::PresentMode& SwapChain::get_presentation_mode() const {
+    const SwapChain::PresentationMode& SwapChain::get_presentation_mode() const {
         return presentation_mode;
     }
 
@@ -163,6 +163,7 @@ namespace vkpp {
             create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
             create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
             create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+            create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 
             create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
             create_info.subresourceRange.baseMipLevel = 0;
@@ -219,18 +220,18 @@ namespace vkpp {
         return found_format;
     }
 
-    bool SwapChain::choose_mode(const PresentMode& preferred_presentation_mode) {
+    bool SwapChain::choose_mode(const PresentationMode& preferred_presentation_mode) {
         const auto& present_modes = surface->get_presentation_modes();
 
         for (const auto& present_mode : present_modes) {
-            auto mode = static_cast<PresentMode>(present_mode);
+            auto mode = static_cast<PresentationMode>(present_mode);
             if (mode == preferred_presentation_mode) {
                 presentation_mode = preferred_presentation_mode;
                 return true;
-            } else if (mode == PresentMode::MailBox) {
+            } else if (mode == PresentationMode::MailBox) {
                 presentation_mode = mode;
                 return true;
-            } else if (mode == PresentMode::Fifo) {
+            } else if (mode == PresentationMode::Fifo) {
                 presentation_mode = mode;
                 return true;
             }

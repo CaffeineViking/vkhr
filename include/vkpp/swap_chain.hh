@@ -12,7 +12,7 @@
 namespace vkpp {
     class SwapChain final {
     public:
-        enum class PresentMode {
+        enum class PresentationMode {
             Immediate = VK_PRESENT_MODE_IMMEDIATE_KHR,
             Fifo = VK_PRESENT_MODE_FIFO_KHR,
             FifoRelaxed = VK_PRESENT_MODE_FIFO_RELAXED_KHR,
@@ -22,7 +22,7 @@ namespace vkpp {
         SwapChain() = default;
         SwapChain(Device& device, Surface& window_surface,
                   const VkSurfaceFormatKHR& preferred_format,
-                  const PresentMode& preferred_present_mode,
+                  const PresentationMode& preferred_present_mode,
                   const VkExtent2D& preferred_window_extent);
         ~SwapChain() noexcept;
 
@@ -42,14 +42,14 @@ namespace vkpp {
         const std::vector<ImageView>& get_image_views() const;
 
         const VkExtent2D& get_current_extent() const;
-        const PresentMode& get_presentation_mode() const;
+        const PresentationMode& get_presentation_mode() const;
         const VkSurfaceFormatKHR& get_format() const;
 
     private:
         void create_swapchain_images();
 
         bool choose_format(const VkSurfaceFormatKHR& preferred_format);
-        bool choose_mode(const PresentMode& preferred_presentation_mode);
+        bool choose_mode(const PresentationMode& preferred_presentation_mode);
 
         void choose_extent(const VkExtent2D& window_extent);
 
@@ -57,7 +57,7 @@ namespace vkpp {
         std::vector<ImageView>  image_views;
 
         VkSurfaceFormatKHR format;
-        PresentMode presentation_mode;
+        PresentationMode presentation_mode;
         VkExtent2D current_extent;
 
         Surface* surface { nullptr };
