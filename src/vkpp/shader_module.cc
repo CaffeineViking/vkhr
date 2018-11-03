@@ -17,6 +17,24 @@ namespace vkpp {
             "the file path '" + file_path + "' doesn't exist" };
         }
 
+        std::string glsl_path { file_path.substr(0, file_path.find_last_of(".")) };
+        std::string extension { glsl_path.substr(glsl_path.find_last_of(".") + 1) };
+
+        if (extension == "vert") {
+            shader_type = Type::Vertex;
+        } else if (extension == "tesc") {
+            shader_type = Type::TesselationControl;
+        } else if (extension == "tese") {
+            shader_type = Type::TesselationEvaluation;
+        } else if (extension == "frag") {
+            shader_type = Type::Fragment;
+        } else if (extension == "comp") {
+            shader_type = Type::Compute;
+        } else {
+            throw Exception { "couldn't create shader module!",
+            "the shader at '" + file_path + "' isn't a stage" };
+        }
+
         file_size = file.tellg();
         spirv.resize(file_size);
         file.seekg(0);
@@ -67,6 +85,10 @@ namespace vkpp {
 
     VkShaderModule& ShaderModule::get_handle() {
         return handle;
+    }
+
+    ShaderModule::Type ShaderModule::get_stage() const {
+        return shader_type;
     }
 
     std::size_t ShaderModule::get_file_size() const {

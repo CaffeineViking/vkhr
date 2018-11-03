@@ -3,14 +3,9 @@
 
 namespace vk = vkpp;
 
-#include <iostream>
-
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
-
-    // TODO: move over lots of boilerplate to
-    // some rasterizer abstractions (Vulkan).
 
     vk::Version target_vulkan_loader { 1,1 };
     vk::Application application_information {
@@ -20,11 +15,11 @@ int main(int argc, char** argv) {
     };
 
     std::vector<vk::Layer> required_layers {
-        vk::DebugMessenger::InstanceLayer
+        "VK_LAYER_LUNARG_standard_validation"
     };
 
     std::vector<vk::Extension> required_extensions {
-        vk::DebugMessenger::InstanceExtension
+        "VK_EXT_debug_utils"
     };
 
     const vkhr::Image vulkan_icon { IMAGE("vulkan.icon") };
@@ -60,7 +55,7 @@ int main(int argc, char** argv) {
     physical_device.assign_present_queue_indices(window_surface);
 
     std::vector<vk::Extension> device_extensions {
-        vk::SwapChain::DeviceExtension
+        "VK_KHR_swapchain"
     };
 
     // Just enable every device feature we have right now.
@@ -73,23 +68,31 @@ int main(int argc, char** argv) {
         device_features
     };
 
-    VkSurfaceFormatKHR preferred_format {
-        VK_FORMAT_B8G8R8A8_UNORM,
-        VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
-    };
-
-    auto preferred_present_mode = vk::SwapChain::PresentMode::MailBox;
-
     vk::SwapChain swap_chain {
         device,
         window_surface,
-        preferred_format,
-        preferred_present_mode,
+        {
+            VK_FORMAT_B8G8R8A8_UNORM,
+            VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+        },
+        vk::SwapChain::PresentationMode::Fifo,
         window.get_extent()
     };
 
-    vk::ShaderModule vertex_shader   { device, SPIRV("simple.vert") };
-    vk::ShaderModule fragment_shader { device, SPIRV("simple.frag") };
+    std::vector<vk::ShaderModule> shaders;
+
+    shaders.emplace_back(device, SPIRV("simple.vert"));
+    shaders.emplace_back(device, SPIRV("simple.frag"));
+
+    vk::GraphicsPipeline graphics_pipeline { device };
+
+    graphics_pipeline.set_scissor({ 0, 0, window.get_extent() });
+    graphics_pipeline.set_viewport({ 0.0, 0.0,
+                                     static_cast<float>(window.get_width()),
+                                     static_cast<float>(window.get_height()),
+                                     0.0, 1.0 });
+
+    graphics_pipeline.set_shader_stages(shaders);
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 

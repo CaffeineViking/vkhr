@@ -31,10 +31,6 @@ namespace vkpp {
 
         friend void swap(SwapChain& lhs, SwapChain& rhs);
 
-        static constexpr const char* DeviceExtension {
-            "VK_KHR_swapchain"
-        };
-
         VkSwapchainKHR& get_handle();
 
         Surface& get_surface() const;

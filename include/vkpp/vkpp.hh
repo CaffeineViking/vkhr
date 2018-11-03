@@ -11,6 +11,7 @@
 #include <vkpp/image_view.hh>
 #include <vkpp/layer.hh>
 #include <vkpp/physical_device.hh>
+#include <vkpp/pipeline.hh>
 #include <vkpp/queue.hh>
 #include <vkpp/shader_module.hh>
 #include <vkpp/surface.hh>

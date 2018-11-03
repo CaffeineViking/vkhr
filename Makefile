@@ -35,8 +35,8 @@ program: FORCE
 	make -j8 -C build config=${config}
 
 shaders: FORCE
-	utils/glslc.py share/shaders
-	make -C share/shaders
+	-utils/glslc.py share/shaders
+	-make -C share/shaders
 
 download: download-modules
 download-modules: FORCE
