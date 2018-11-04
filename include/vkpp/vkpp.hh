@@ -13,6 +13,7 @@
 #include <vkpp/physical_device.hh>
 #include <vkpp/pipeline.hh>
 #include <vkpp/queue.hh>
+#include <vkpp/render_pass.hh>
 #include <vkpp/shader_module.hh>
 #include <vkpp/surface.hh>
 #include <vkpp/swap_chain.hh>

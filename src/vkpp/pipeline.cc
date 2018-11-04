@@ -11,7 +11,9 @@ namespace vkpp {
         }
     }
 
-    Pipeline::Pipeline(Device& device) : device { device.get_handle() } { }
+    Pipeline::Pipeline(Device& device, Layout& layout)
+                      : device { device.get_handle() },
+                        layout { &layout } { }
 
     Pipeline::Pipeline(Pipeline&& pipeline) noexcept {
         swap(*this, pipeline);
@@ -27,13 +29,169 @@ namespace vkpp {
 
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
+        swap(lhs.layout, rhs.layout);
 
         rhs.device = VK_NULL_HANDLE;
         rhs.handle = VK_NULL_HANDLE;
+        rhs.layout = nullptr;
     }
 
     VkPipeline& Pipeline::get_handle() {
         return handle;
+    }
+
+    Pipeline::Layout& Pipeline::get_layout() {
+        return *layout;
+    }
+
+    Pipeline::Layout::~Layout() noexcept {
+        if (handle != VK_NULL_HANDLE) {
+            vkDestroyPipelineLayout(device, handle, nullptr);
+        }
+    }
+
+    Pipeline::Layout::Layout(Device& logical_device,
+                             std::vector<DescriptorSet::Layout>& descriptor_layouts,
+                             const std::vector<VkPushConstantRange>& push_constants)
+                            : push_constants { push_constants },
+                              device { logical_device.get_handle() } {
+        auto create_info = create_partial_info();
+
+        create_info.setLayoutCount = descriptor_layouts.size();
+
+        this->descriptor_layouts.reserve(descriptor_layouts.size());
+        for (auto& descriptor_layout : descriptor_layouts) {
+            this->descriptor_layouts.push_back(descriptor_layout.get_handle());
+        }
+
+        if (descriptor_layouts.size() != 0) {
+            create_info.pSetLayouts = this->descriptor_layouts.data();
+        }
+
+        create(create_info);
+    }
+
+    Pipeline::Layout::Layout(Device& logical_device,
+                             const std::vector<VkPushConstantRange>& push_constants)
+                            : push_constants { push_constants },
+                              device { logical_device.get_handle() } {
+        create(create_partial_info());
+    }
+
+    VkPipelineLayoutCreateInfo Pipeline::Layout::create_partial_info() {
+        VkPipelineLayoutCreateInfo create_info;
+        create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        create_info.pNext = nullptr;
+        create_info.flags = 0;
+
+        create_info.setLayoutCount = 0;
+
+        create_info.pushConstantRangeCount = push_constants.size();
+
+        create_info.pSetLayouts = nullptr;
+
+        if (push_constants.size() != 0) {
+            create_info.pPushConstantRanges = push_constants.data();
+        }
+
+        return create_info;
+    }
+
+    void Pipeline::Layout::create(VkPipelineLayoutCreateInfo create_info) {
+        if (VkResult error = vkCreatePipelineLayout(device, &create_info,
+                                                    nullptr, &handle)) {
+            throw Exception { error, "couldn't create pipeline layout!" };
+        }
+    }
+
+    Pipeline::Layout::Layout(Layout&& layout) noexcept {
+        swap(*this, layout);
+    }
+
+    Pipeline::Layout& Pipeline::Layout::operator=(Layout&& layout) noexcept {
+        swap(*this, layout);
+        return *this;
+    }
+
+    void swap(Pipeline::Layout& lhs, Pipeline::Layout& rhs) {
+        using std::swap;
+
+        swap(lhs.push_constants,     rhs.push_constants);
+        swap(lhs.descriptor_layouts, rhs.descriptor_layouts);
+
+        swap(lhs.handle, rhs.handle);
+        swap(lhs.device, rhs.device);
+
+        rhs.handle = VK_NULL_HANDLE;
+        rhs.device = VK_NULL_HANDLE;
+    }
+
+    VkPipelineLayout& Pipeline::Layout::get_handle() {
+        return handle;
+    }
+
+    GraphicsPipeline::GraphicsPipeline(Device& logical_device,
+                                       std::vector<ShaderModule>& shader_modules,
+                                       const FixedFunction& fixed_functions,
+                                       Pipeline::Layout& pipeline_layout,
+                                       RenderPass& render_pass,
+                                       std::uint32_t subpass)
+                                      : Pipeline { logical_device, pipeline_layout },
+                                        fixed_functions { fixed_functions },
+                                        render_pass { &render_pass },
+                                        subpass_index { subpass } {
+        set_shader_stages(shader_modules);
+
+        VkGraphicsPipelineCreateInfo create_info;
+        create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        create_info.pNext = nullptr;
+        create_info.flags = 0;
+
+        create_info.stageCount = shader_stages.size();
+        create_info.pStages = shader_stages.data();
+
+        bool has_tessellation_stage { false };
+
+        for (const auto& shader_module : shader_modules) {
+            if (shader_module.get_stage() == ShaderModule::Type::TesselationControl ||
+                shader_module.get_stage() == ShaderModule::Type::TesselationEvaluation)
+                has_tessellation_stage = true;
+        }
+
+        create_info.pVertexInputState = &(fixed_functions.vertex_input_state);
+        create_info.pInputAssemblyState = &(fixed_functions.input_assembly_state);
+
+        if (has_tessellation_stage) {
+            create_info.pTessellationState = &(fixed_functions.tessellation_state);
+        } else {
+            create_info.pTessellationState = nullptr;
+        }
+
+        create_info.pViewportState = &(fixed_functions.viewport_state);
+        create_info.pRasterizationState = &(fixed_functions.rasterization_state);
+        create_info.pMultisampleState = &(fixed_functions.multisample_state);
+        create_info.pDepthStencilState = &(fixed_functions.depth_stencil_state);
+        create_info.pColorBlendState = &(fixed_functions.color_blending_state);
+
+        if (fixed_functions.dynamic_states.size() != 0) {
+            create_info.pDynamicState = &(fixed_functions.dynamic_state);
+        } else {
+            create_info.pDynamicState = nullptr;
+        }
+
+        auto layout = pipeline_layout.get_handle();
+
+        create_info.layout = layout;
+        create_info.renderPass = render_pass.get_handle();
+        create_info.subpass = subpass;
+
+        create_info.basePipelineHandle = VK_NULL_HANDLE;
+        create_info.basePipelineIndex = -1;
+
+        if (VkResult error = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1,
+                                                       &create_info, nullptr, &handle)) {
+            throw Exception { error, "couldn't create a graphics pipeline!" };
+        }
     }
 
     GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& pipeline) noexcept {
@@ -50,140 +208,145 @@ namespace vkpp {
 
         swap(static_cast<Pipeline&>(lhs), static_cast<Pipeline&>(rhs));
 
-        swap(lhs.shader_stages, rhs.shader_stages);
+        swap(lhs.shader_stages,   rhs.shader_stages);
 
-        swap(lhs.vertex_input_state, rhs.vertex_input_state);
-        swap(lhs.input_assembly_state, rhs.input_assembly_state);
-        swap(lhs.tessellation_state, rhs.tessellation_state);
-        swap(lhs.viewport_state, rhs.viewport_state);
-        swap(lhs.rasterization_state, rhs.rasterization_state);
-        swap(lhs.multisample_state, rhs.multisample_state);
-        swap(lhs.depth_stencil_state, rhs.depth_stencil_state);
-        swap(lhs.color_blending_state, rhs.color_blending_state);
-        swap(lhs.dynamic_state, rhs.dynamic_state);
+        swap(lhs.fixed_functions, rhs.fixed_functions);
     }
 
-    VkPrimitiveTopology GraphicsPipeline::get_topology() const {
+    VkPrimitiveTopology GraphicsPipeline::FixedFunction::get_topology() const {
         return input_assembly_state.topology;
     }
 
-    void GraphicsPipeline::set_topology(VkPrimitiveTopology topology) {
+    void GraphicsPipeline::FixedFunction::set_topology(VkPrimitiveTopology topology) {
         input_assembly_state.topology = topology;
     }
 
-    std::uint32_t GraphicsPipeline::get_patch_control_points() const {
+    std::uint32_t GraphicsPipeline::FixedFunction::get_patch_control_points() const {
         return tessellation_state.patchControlPoints;
     }
 
-    void GraphicsPipeline::set_patch_control_points(std::uint32_t n) {
+    void GraphicsPipeline::FixedFunction::set_patch_control_points(std::uint32_t n) {
         tessellation_state.patchControlPoints = n;
     }
 
-    const VkViewport& GraphicsPipeline::get_viewport() const {
+    const VkViewport& GraphicsPipeline::FixedFunction::get_viewport() const {
         return viewport;
     }
 
-    void GraphicsPipeline::set_viewport(const VkViewport& viewport) {
+    void GraphicsPipeline::FixedFunction::set_viewport(const VkViewport& viewport) {
         this->viewport = viewport;
         viewport_state.pViewports = &(this->viewport);
         viewport_state.viewportCount = 1;
     }
 
-    void GraphicsPipeline::set_scissor(const VkRect2D& scissor) {
+    void GraphicsPipeline::FixedFunction::set_scissor(const VkRect2D& scissor) {
         this->scissor = scissor;
         viewport_state.pScissors = &(this->scissor);
         viewport_state.scissorCount = 1;
     }
 
-    const VkRect2D& GraphicsPipeline::get_scissor() const {
+    const VkRect2D& GraphicsPipeline::FixedFunction::get_scissor() const {
         return scissor;
     }
 
-    void GraphicsPipeline::set_line_width(float line_width) {
+    void GraphicsPipeline::FixedFunction::set_line_width(float line_width) {
         rasterization_state.lineWidth = line_width;
     }
 
-    float GraphicsPipeline::get_line_width() const {
+    float GraphicsPipeline::FixedFunction::get_line_width() const {
         return rasterization_state.lineWidth;
     }
 
-    VkPolygonMode GraphicsPipeline::get_polygon_mode() const {
+    VkPolygonMode GraphicsPipeline::FixedFunction::get_polygon_mode() const {
         return rasterization_state.polygonMode;
     }
 
-    void GraphicsPipeline::set_polygon_mode(VkPolygonMode polygon_mode) {
+    void GraphicsPipeline::FixedFunction::set_polygon_mode(VkPolygonMode polygon_mode) {
         rasterization_state.polygonMode = polygon_mode;
     }
 
-    void GraphicsPipeline::set_culling_mode(VkCullModeFlags culling_mode) {
+    void GraphicsPipeline::FixedFunction::set_culling_mode(VkCullModeFlags culling_mode) {
         rasterization_state.cullMode = culling_mode;
     }
-    VkCullModeFlags GraphicsPipeline::get_culling_mode() const {
+    VkCullModeFlags GraphicsPipeline::FixedFunction::get_culling_mode() const {
         return rasterization_state.cullMode;
     }
 
-    VkFrontFace GraphicsPipeline::get_front_face() const {
+    VkFrontFace GraphicsPipeline::FixedFunction::get_front_face() const {
         return rasterization_state.frontFace;
     }
 
-    void GraphicsPipeline::set_front_face(VkFrontFace front_face) {
+    void GraphicsPipeline::FixedFunction::set_front_face(VkFrontFace front_face) {
         rasterization_state.frontFace = front_face;
     }
 
-    void GraphicsPipeline::enable_depth_testing() {
+    void GraphicsPipeline::FixedFunction::enable_depth_testing() {
         depth_stencil_state.depthWriteEnable = VK_TRUE;
         depth_stencil_state.depthTestEnable  = VK_TRUE;
     }
 
-    void GraphicsPipeline::disable_depth_testing() {
+    void GraphicsPipeline::FixedFunction::disable_depth_testing() {
         depth_stencil_state.depthWriteEnable = VK_FALSE;
         depth_stencil_state.depthTestEnable  = VK_FALSE;
     }
 
-    void GraphicsPipeline::disable_alpha_blending(std::uint32_t attachment) {
-        if (attachments.size() <= attachment) {
-            attachments.resize(attachment);
+    void GraphicsPipeline::FixedFunction::disable_alpha_blending_for(std::uint32_t a) {
+        if (attachments.size() <= a) {
+            attachments.resize(a + 1);
         }
 
-        attachments[attachment].blendEnable = VK_FALSE;
+        attachments[a].blendEnable = VK_FALSE;
 
         color_blending_state.attachmentCount = attachments.size();
         color_blending_state.pAttachments    = attachments.data();
     }
 
-    void GraphicsPipeline::enable_alpha_blending(std::uint32_t attachment) {
-        if (attachments.size() <= attachment) {
-            attachments.resize(attachment);
+    void GraphicsPipeline::FixedFunction::enable_alpha_blending_for(std::uint32_t a) {
+        if (attachments.size() <= a) {
+            attachments.resize(a + 1);
         }
 
-        attachments[attachment].colorWriteMask =  VK_COLOR_COMPONENT_R_BIT |
+        attachments[a].colorWriteMask =  VK_COLOR_COMPONENT_R_BIT |
                                                   VK_COLOR_COMPONENT_G_BIT |
                                                   VK_COLOR_COMPONENT_B_BIT |
                                                   VK_COLOR_COMPONENT_A_BIT;
-        attachments[attachment].blendEnable = VK_TRUE;
-        attachments[attachment].srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-        attachments[attachment].dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-        attachments[attachment].colorBlendOp = VK_BLEND_OP_ADD;
-        attachments[attachment].srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-        attachments[attachment].dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-        attachments[attachment].alphaBlendOp = VK_BLEND_OP_ADD;
+        attachments[a].blendEnable = VK_TRUE;
+        attachments[a].srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+        attachments[a].dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        attachments[a].colorBlendOp = VK_BLEND_OP_ADD;
+        attachments[a].srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+        attachments[a].dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+        attachments[a].alphaBlendOp = VK_BLEND_OP_ADD;
 
         color_blending_state.attachmentCount = attachments.size();
         color_blending_state.pAttachments    = attachments.data();
     }
 
-    void GraphicsPipeline::add_dynamic_state(VkDynamicState dyn_state) {
+    void GraphicsPipeline::FixedFunction::add_dynamic_state(VkDynamicState dyn_state) {
         dynamic_states.push_back(dyn_state);
         dynamic_state.dynamicStateCount = dynamic_states.size();
         dynamic_state.pDynamicStates = dynamic_states.data();
     }
 
-    void GraphicsPipeline::set_shader_stages(std::vector<ShaderModule>& shaders) {
-        shader_stages.clear();
-        add_shader_stages(shaders);
+    const GraphicsPipeline::FixedFunction& GraphicsPipeline::get_fixed_functions() const {
+        return fixed_functions;
     }
 
-    void GraphicsPipeline::add_shader_stages(std::vector<ShaderModule>& shaders) {
+    std::uint32_t GraphicsPipeline::get_subpass() const {
+        return subpass_index;
+    }
+
+    RenderPass& GraphicsPipeline::get_render_pass() const {
+        return *render_pass;
+    }
+
+    const std::vector<VkPipelineShaderStageCreateInfo>&
+    GraphicsPipeline::get_shader_stages() const {
+        return shader_stages;
+    }
+
+    void GraphicsPipeline::set_shader_stages(std::vector<ShaderModule>& shaders) {
+        shader_stages.clear();
         for (auto& shader : shaders) {
             VkPipelineShaderStageCreateInfo shader_info;
             shader_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -191,6 +354,7 @@ namespace vkpp {
             shader_info.flags = 0;
 
             shader_info.stage = static_cast<VkShaderStageFlagBits>(shader.get_stage());
+
             shader_info.module = shader.get_handle();
             shader_info.pName = "main";
             shader_info.pSpecializationInfo = nullptr; // TODO: add this to ShaderModule
@@ -214,6 +378,32 @@ namespace vkpp {
         swap(static_cast<Pipeline&>(lhs), static_cast<Pipeline&>(rhs));
 
         swap(lhs.shader_stage, rhs.shader_stage);
+    }
+
+    ComputePipeline::ComputePipeline(Device& logical_device,
+                                     ShaderModule& shader_module,
+                                     Pipeline::Layout& pipeline_layout)
+                                    : Pipeline { logical_device, pipeline_layout } {
+        set_shader(shader_module);
+
+        VkComputePipelineCreateInfo create_info;
+        create_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+        create_info.pNext = nullptr;
+        create_info.flags = 0;
+
+        create_info.stage = shader_stage;
+
+        auto layout = pipeline_layout.get_handle();
+
+        create_info.layout = layout;
+
+        create_info.basePipelineHandle = VK_NULL_HANDLE;
+        create_info.basePipelineIndex = -1;
+
+        if (VkResult error = vkCreateComputePipelines(device, VK_NULL_HANDLE, 1,
+                                                      &create_info, nullptr, &handle)) {
+            throw Exception { error, "couldn't create a compute pipeline!" };
+        }
     }
 
     void ComputePipeline::set_shader(ShaderModule& shader) {

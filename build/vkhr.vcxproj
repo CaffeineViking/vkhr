@@ -380,6 +380,7 @@
     <ClInclude Include="..\include\vkpp\append.hh" />
     <ClInclude Include="..\include\vkpp\application.hh" />
     <ClInclude Include="..\include\vkpp\debug_messenger.hh" />
+    <ClInclude Include="..\include\vkpp\descriptor_set.hh" />
     <ClInclude Include="..\include\vkpp\device.hh" />
     <ClInclude Include="..\include\vkpp\exception.hh" />
     <ClInclude Include="..\include\vkpp\extension.hh" />
@@ -389,6 +390,7 @@
     <ClInclude Include="..\include\vkpp\physical_device.hh" />
     <ClInclude Include="..\include\vkpp\pipeline.hh" />
     <ClInclude Include="..\include\vkpp\queue.hh" />
+    <ClInclude Include="..\include\vkpp\render_pass.hh" />
     <ClInclude Include="..\include\vkpp\shader_module.hh" />
     <ClInclude Include="..\include\vkpp\surface.hh" />
     <ClInclude Include="..\include\vkpp\swap_chain.hh" />
@@ -416,6 +418,7 @@
     <ClCompile Include="..\src\vkhr\scene_graph.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
     <ClCompile Include="..\src\vkpp\debug_messenger.cc" />
+    <ClCompile Include="..\src\vkpp\descriptor_set.cc" />
     <ClCompile Include="..\src\vkpp\device.cc" />
     <ClCompile Include="..\src\vkpp\exception.cc" />
     <ClCompile Include="..\src\vkpp\extension.cc" />
@@ -425,6 +428,7 @@
     <ClCompile Include="..\src\vkpp\physical_device.cc" />
     <ClCompile Include="..\src\vkpp\pipeline.cc" />
     <ClCompile Include="..\src\vkpp\queue.cc" />
+    <ClCompile Include="..\src\vkpp\render_pass.cc" />
     <ClCompile Include="..\src\vkpp\shader_module.cc" />
     <ClCompile Include="..\src\vkpp\surface.cc" />
     <ClCompile Include="..\src\vkpp\swap_chain.cc" />

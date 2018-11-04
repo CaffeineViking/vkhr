@@ -77,7 +77,11 @@ namespace vkpp {
         swap(lhs.handle, rhs.handle);
         swap(lhs.device, rhs.device);
 
-        swap(lhs.file_path, rhs.file_path);
+        swap(lhs.shader_type, rhs.shader_type);
+        swap(lhs.file_path,   rhs.file_path);
+        swap(lhs.file_size,   rhs.file_size);
+        swap(lhs.hashed_data, rhs.hashed_data);
+        swap(lhs.spirv,       rhs.spirv);
 
         rhs.handle = VK_NULL_HANDLE;
         rhs.device = VK_NULL_HANDLE;

@@ -3,6 +3,8 @@
 
 namespace vk = vkpp;
 
+#include <iostream>
+
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -79,20 +81,55 @@ int main(int argc, char** argv) {
         window.get_extent()
     };
 
-    std::vector<vk::ShaderModule> shaders;
+    vk::RenderPass::Subpass subpass {
+        {
+            { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL }
+        }
+    };
 
-    shaders.emplace_back(device, SPIRV("simple.vert"));
-    shaders.emplace_back(device, SPIRV("simple.frag"));
+    std::vector<vk::RenderPass::Attachment> attachments {
+        {
+            swap_chain.get_format(),
+            swap_chain.get_sample_count(),
+            swap_chain.get_layout()
+        }
+    };
 
-    vk::GraphicsPipeline graphics_pipeline { device };
+    vk::RenderPass render_pass {
+        device,
+        attachments,
+        subpass
+    };
 
-    graphics_pipeline.set_scissor({ 0, 0, window.get_extent() });
-    graphics_pipeline.set_viewport({ 0.0, 0.0,
-                                     static_cast<float>(window.get_width()),
-                                     static_cast<float>(window.get_height()),
-                                     0.0, 1.0 });
+    vk::GraphicsPipeline::FixedFunction fixed_functions;
 
-    graphics_pipeline.set_shader_stages(shaders);
+    fixed_functions.disable_depth_testing(); // soon(tm)
+
+    fixed_functions.set_scissor({ 0,0, window.get_extent() });
+    fixed_functions.set_viewport({ 0.0, 0.0,
+                                   static_cast<float>(window.get_width()),
+                                   static_cast<float>(window.get_height()),
+                                   0.0, 1.0 });
+
+    fixed_functions.enable_alpha_blending_for(0);
+
+    std::vector<vk::ShaderModule> shading_stages;
+
+    shading_stages.emplace_back(device, SPIRV("simple.vert"));
+    shading_stages.emplace_back(device, SPIRV("simple.frag"));
+
+    // Just the empty layout now.
+    vk::Pipeline::Layout layout {
+        device
+    };
+
+    vk::GraphicsPipeline graphics_pipeline {
+        device,
+        shading_stages,
+        fixed_functions,
+        layout,
+        render_pass, 0u
+    };
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 

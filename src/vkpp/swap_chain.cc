@@ -134,8 +134,20 @@ namespace vkpp {
         return current_extent;
     }
 
-    const VkSurfaceFormatKHR& SwapChain::get_format() const {
-        return format;
+    const VkFormat& SwapChain::get_format() const {
+        return format.format;
+    }
+
+    const VkColorSpaceKHR& SwapChain::get_color_space() const {
+        return format.colorSpace;
+    }
+
+    VkImageLayout SwapChain::get_layout() const {
+        return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    }
+
+    VkSampleCountFlagBits SwapChain::get_sample_count() {
+        return VK_SAMPLE_COUNT_1_BIT; // TODO: MSAA.
     }
 
     const SwapChain::PresentationMode& SwapChain::get_presentation_mode() const {

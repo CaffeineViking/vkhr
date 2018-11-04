@@ -933,6 +933,9 @@
     <ClInclude Include="..\include\vkpp\debug_messenger.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\descriptor_set.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\device.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -958,6 +961,9 @@
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\queue.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\render_pass.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\shader_module.hh">
@@ -1037,6 +1043,9 @@
     <ClCompile Include="..\src\vkpp\debug_messenger.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkpp\descriptor_set.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkpp\device.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
@@ -1062,6 +1071,9 @@
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\queue.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\render_pass.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\shader_module.cc">

@@ -37,9 +37,12 @@ namespace vkpp {
 
         const std::vector<ImageView>& get_image_views() const;
 
+        VkImageLayout get_layout() const;
         const VkExtent2D& get_current_extent() const;
+        VkSampleCountFlagBits get_sample_count();
         const PresentationMode& get_presentation_mode() const;
-        const VkSurfaceFormatKHR& get_format() const;
+        const VkColorSpaceKHR& get_color_space() const;
+        const VkFormat& get_format() const;
 
     private:
         void create_swapchain_images();
