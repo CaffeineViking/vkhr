@@ -46,6 +46,8 @@ namespace vkpp {
         bool has_transfer_queue() const;
         bool has_present_queue() const;
 
+        void wait_idle();
+
         Queue* get_compute_queue();  // WARNING: there may or may NOT be a queue of the
         Queue* get_graphics_queue(); // type you want, in that case make sure to check
         Queue* get_transfer_queue(); // if the resulting queue is nullptr. In most cases

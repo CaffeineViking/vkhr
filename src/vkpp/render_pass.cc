@@ -9,8 +9,7 @@ namespace vkpp {
                            const std::vector<Attachment>& attachments,
                            const std::vector<Subpass>& subpasses,
                            const std::vector<Dependency>& dependencies)
-                          : dependencies { dependencies },
-                            device { logical_device.get_handle() } {
+                          : device { logical_device.get_handle() } {
         VkRenderPassCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
         create_info.pNext = nullptr;
@@ -68,8 +67,9 @@ namespace vkpp {
 
             this->subpasses[i].pResolveAttachments = nullptr;
 
-            if (subpass.has_depth_attachment) {
-                this->subpasses[i].pDepthStencilAttachment = &subpass.depth_attachment;
+            if (subpass.depth_attachment.first) {
+                const auto& depth = &subpass.depth_attachment.second;
+                this->subpasses[i].pDepthStencilAttachment = depth;
             } else {
                 this->subpasses[i].pDepthStencilAttachment = nullptr;
             }
@@ -85,6 +85,20 @@ namespace vkpp {
         }
 
         create_info.dependencyCount = this->dependencies.size();
+
+        this->dependencies.reserve(dependencies.size());
+
+        for (const auto& dependency : dependencies) {
+            this->dependencies.push_back({
+                dependency.source_subpass,
+                dependency.destination_subpass,
+                dependency.source_stages,
+                dependency.destination_stages,
+                dependency.source_mask,
+                dependency.destination_mask,
+                0
+            });
+        }
 
         if (this->dependencies.size() != 0) {
             create_info.pDependencies = this->dependencies.data();
@@ -102,6 +116,13 @@ namespace vkpp {
                            Subpass& subpass)
                           : RenderPass { device, attachments,
                             std::vector<Subpass> { subpass } } {  }
+
+    RenderPass::RenderPass(Device& device,
+                           const std::vector<Attachment>& attachments,
+                           Subpass& subpass, Dependency& dependency)
+                          : RenderPass { device, attachments,
+                            std::vector<Subpass> { subpass },
+                            std::vector<Dependency> { dependency } } {  }
 
     RenderPass::~RenderPass() noexcept {
         if (handle != VK_NULL_HANDLE) {

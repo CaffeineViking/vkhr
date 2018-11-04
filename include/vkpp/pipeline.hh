@@ -24,6 +24,8 @@ namespace vkpp {
 
         VkPipeline& get_handle();
 
+        virtual VkPipelineBindPoint get_bind_point() const = 0;
+
         class Layout final {
         public:
             Layout() = default;
@@ -76,6 +78,8 @@ namespace vkpp {
     class GraphicsPipeline final : public Pipeline {
     public:
         GraphicsPipeline() = default;
+
+        VkPipelineBindPoint get_bind_point() const override;
 
         struct FixedFunction {
             VkPipelineVertexInputStateCreateInfo   vertex_input_state {
@@ -219,7 +223,7 @@ namespace vkpp {
                          const FixedFunction& fixed_functions,
                          Pipeline::Layout& pipeline_layout,
                          RenderPass& renderpass,
-                         std::uint32_t subpass);
+                         std::uint32_t subpass = 0);
 
         GraphicsPipeline(GraphicsPipeline&& pipeline) noexcept;
         GraphicsPipeline& operator=(GraphicsPipeline&& pipeline) noexcept;
@@ -249,6 +253,8 @@ namespace vkpp {
     class ComputePipeline final : public Pipeline {
     public:
         ComputePipeline() = default;
+
+        VkPipelineBindPoint get_bind_point() const override;
 
         ComputePipeline(Device& device,
                         ShaderModule& shader_module,

@@ -72,6 +72,7 @@ namespace vkpp {
     }
 
     Device::~Device() noexcept {
+        wait_idle(); // Until complete.
         if (handle != VK_NULL_HANDLE) {
             vkDestroyDevice(handle, nullptr);
         }
@@ -145,6 +146,10 @@ namespace vkpp {
 
     bool Device::has_present_queue() const {
         return present_queue != nullptr;
+    }
+
+    void Device::wait_idle() {
+        vkDeviceWaitIdle(handle);
     }
 
     Queue* Device::get_compute_queue() {

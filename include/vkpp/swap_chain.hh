@@ -3,7 +3,9 @@
 
 #include <vkpp/device.hh>
 #include <vkpp/image_view.hh>
+#include <vkpp/semaphore.hh>
 #include <vkpp/surface.hh>
+#include <vkpp/fence.hh>
 
 #include <vulkan/vulkan.h>
 
@@ -35,14 +37,23 @@ namespace vkpp {
 
         Surface& get_surface() const;
 
-        const std::vector<ImageView>& get_image_views() const;
+        std::uint32_t acquire_next_image(Fence& fence);
+        std::uint32_t acquire_next_image(Semaphore& semaphore);
+
+        std::vector<ImageView>& get_image_views();
+        VkImageView get_attachment(std::size_t i);
+
+        std::uint32_t get_width()  const;
+        std::uint32_t get_height() const;
 
         VkImageLayout get_layout() const;
-        const VkExtent2D& get_current_extent() const;
+        const VkExtent2D& get_extent() const;
         VkSampleCountFlagBits get_sample_count();
         const PresentationMode& get_presentation_mode() const;
         const VkColorSpaceKHR& get_color_space() const;
         const VkFormat& get_format() const;
+
+        std::size_t size() const;
 
     private:
         void create_swapchain_images();

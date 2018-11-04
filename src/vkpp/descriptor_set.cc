@@ -28,7 +28,7 @@ namespace vkpp {
         create_info.flags = 0;
 
         create_info.bindingCount = real_bindings.size();
-        create_info.pBindings = real_bindings.data();
+        create_info.pBindings    = real_bindings.data();
 
         if (VkResult error = vkCreateDescriptorSetLayout(device, &create_info,
                                                          nullptr, &handle)) {

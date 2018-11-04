@@ -126,12 +126,40 @@ namespace vkpp {
         return *surface;
     }
 
-    const std::vector<ImageView>& SwapChain::get_image_views() const {
+    std::uint32_t SwapChain::acquire_next_image(Fence& fence) {
+        std::uint32_t next;
+        vkAcquireNextImageKHR(device, handle, std::numeric_limits<std::uint64_t>::max(),
+                              VK_NULL_HANDLE,
+                              fence.get_handle(), &next);
+        return next;
+    }
+
+    std::uint32_t SwapChain::acquire_next_image(Semaphore& semaphore) {
+        std::uint32_t next;
+        vkAcquireNextImageKHR(device, handle, std::numeric_limits<std::uint64_t>::max(),
+                              semaphore.get_handle(),
+                              VK_NULL_HANDLE, &next);
+        return next;
+    }
+
+    std::vector<ImageView>& SwapChain::get_image_views() {
         return image_views;
     }
 
-    const VkExtent2D& SwapChain::get_current_extent() const {
+    VkImageView SwapChain::get_attachment(std::size_t i) {
+        return image_views[i].get_handle();
+    }
+
+    const VkExtent2D& SwapChain::get_extent() const {
         return current_extent;
+    }
+
+    std::uint32_t SwapChain::get_width()  const {
+        return current_extent.width;
+    }
+
+    std::uint32_t SwapChain::get_height() const {
+        return current_extent.height;
     }
 
     const VkFormat& SwapChain::get_format() const {
@@ -154,13 +182,17 @@ namespace vkpp {
         return presentation_mode;
     }
 
+    std::size_t SwapChain::size() const {
+        return image_views.size();
+    }
+
     void SwapChain::create_swapchain_images() {
         std::uint32_t image_count = images.size();
         vkGetSwapchainImagesKHR(device, handle, &image_count, nullptr);
         images.resize(image_count);
         vkGetSwapchainImagesKHR(device, handle, &image_count, images.data());
 
-        image_views.resize(image_count);
+        image_views.reserve(image_count);
 
         for (const auto& image : images) {
             VkImageViewCreateInfo create_info;
@@ -240,15 +272,11 @@ namespace vkpp {
             if (mode == preferred_presentation_mode) {
                 presentation_mode = preferred_presentation_mode;
                 return true;
-            } else if (mode == PresentationMode::MailBox) {
-                presentation_mode = mode;
-                return true;
             } else if (mode == PresentationMode::Fifo) {
                 presentation_mode = mode;
-                return true;
             }
         }
 
-        return false;
+        return true; // TODO: warn about other present mode.
     }
 }

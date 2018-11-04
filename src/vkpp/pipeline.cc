@@ -213,6 +213,10 @@ namespace vkpp {
         swap(lhs.fixed_functions, rhs.fixed_functions);
     }
 
+    VkPipelineBindPoint GraphicsPipeline::get_bind_point() const {
+        return VK_PIPELINE_BIND_POINT_GRAPHICS;
+    }
+
     VkPrimitiveTopology GraphicsPipeline::FixedFunction::get_topology() const {
         return input_assembly_state.topology;
     }
@@ -361,6 +365,10 @@ namespace vkpp {
 
             shader_stages.push_back(shader_info);
         }
+    }
+
+    VkPipelineBindPoint ComputePipeline::get_bind_point() const {
+        return VK_PIPELINE_BIND_POINT_COMPUTE;
     }
 
     ComputePipeline::ComputePipeline(ComputePipeline&& pipeline) noexcept {
