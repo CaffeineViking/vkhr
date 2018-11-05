@@ -32,7 +32,7 @@ namespace vkpp {
 
             Layout(Device& logical_device, // TODO: better way to do this.
                    std::vector<DescriptorSet::Layout>& descriptor_layouts,
-                   const std::vector<VkPushConstantRange>& push_constants);
+                   const std::vector<VkPushConstantRange>& push_constants = {  });
 
             Layout(Device& logical_device,
                    const std::vector<VkPushConstantRange>& push_constants = {  });

@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 
     // Find physical devices that seem most promising of the lot.
     auto score = [&](const vk::PhysicalDevice& physical_device) {
-        return physical_device.is_integrated_gpu() *
+        return physical_device.is_discrete_gpu() *
                physical_device.has_every_queue() *
                physical_device.has_present_queue(window_surface);
     };
@@ -108,11 +108,22 @@ int main(int argc, char** argv) {
         dependency
     };
 
+    struct Vertex {
+        glm::vec2 pos;
+        glm::vec3 color;
+    };
+
+    const std::vector<Vertex> vertices = {
+        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+    };
+
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
     fixed_functions.disable_depth_testing(); // soon(tm)
 
-    fixed_functions.set_scissor({ 0,0, window.get_extent() });
+    fixed_functions.set_scissor({ 0, 0, window.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
                                    static_cast<float>(window.get_width()),
                                    static_cast<float>(window.get_height()),
@@ -138,7 +149,7 @@ int main(int argc, char** argv) {
         render_pass
     };
 
-    auto framebuffers = swap_chain.create_buffers(render_pass);
+    auto framebuffers = swap_chain.create_framebuffers(render_pass);
 
     vk::Semaphore image_available { device };
     vk::Semaphore render_complete { device };
@@ -149,7 +160,8 @@ int main(int argc, char** argv) {
 
     for (std::size_t i { 0 }; i < command_buffers.size(); ++i) {
         command_buffers[i].begin();
-        command_buffers[i].begin_render_pass(render_pass, framebuffers[i], { 0.0, 0.0, 0.0, 1.0 });
+        command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
+                                             { 1.0f, 1.0f, 1.0f, 1.0f });
         command_buffers[i].bind_pipeline(graphics_pipeline);
         command_buffers[i].draw(3, 1, 0, 0);
         command_buffers[i].end_render_pass();

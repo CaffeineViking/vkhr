@@ -42,7 +42,7 @@ namespace vkpp {
         std::uint32_t acquire_next_image(Fence& fence);
         std::uint32_t acquire_next_image(Semaphore& semaphore);
 
-        std::vector<Framebuffer> create_buffers(RenderPass& render_pass);
+        std::vector<Framebuffer> create_framebuffers(RenderPass& render_pass);
 
         std::vector<ImageView>& get_image_views();
         VkImageView get_attachment(std::size_t i);

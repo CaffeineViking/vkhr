@@ -144,7 +144,7 @@ namespace vkpp {
         return next;
     }
 
-    std::vector<Framebuffer> SwapChain::create_buffers(RenderPass& render_pass) {
+    std::vector<Framebuffer> SwapChain::create_framebuffers(RenderPass& render_pass) {
         std::vector<Framebuffer> framebuffers;
 
         framebuffers.reserve(image_views.size());
