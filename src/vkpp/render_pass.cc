@@ -1,5 +1,7 @@
 #include <vkpp/render_pass.hh>
 
+#include <vkpp/device.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>
@@ -121,6 +123,13 @@ namespace vkpp {
                            const std::vector<Attachment>& attachments,
                            Subpass& subpass, Dependency& dependency)
                           : RenderPass { device, attachments,
+                            std::vector<Subpass> { subpass },
+                            std::vector<Dependency> { dependency } } {  }
+
+    RenderPass::RenderPass(Device& device, Attachment& attachment,
+                           Subpass& subpass, Dependency& dependency)
+                          : RenderPass { device,
+                            std::vector<Attachment> { attachment },
                             std::vector<Subpass> { subpass },
                             std::vector<Dependency> { dependency } } {  }
 

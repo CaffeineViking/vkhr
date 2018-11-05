@@ -3,8 +3,6 @@
 
 namespace vk = vkpp;
 
-#include <iostream>
-
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -45,7 +43,7 @@ int main(int argc, char** argv) {
 
     // Find physical devices that seem most promising of the lot.
     auto score = [&](const vk::PhysicalDevice& physical_device) {
-        return physical_device.is_discrete_gpu() *
+        return physical_device.is_integrated_gpu() *
                physical_device.has_every_queue() *
                physical_device.has_present_queue(window_surface);
     };
@@ -81,6 +79,12 @@ int main(int argc, char** argv) {
         window.get_extent()
     };
 
+    vk::RenderPass::Attachment attachment {
+        swap_chain.get_format(),
+        swap_chain.get_sample_count(),
+        swap_chain.get_layout()
+    };
+
     vk::RenderPass::Subpass subpass {
         {
             { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL }
@@ -93,20 +97,13 @@ int main(int argc, char** argv) {
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
         0,
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
-    };
-
-    std::vector<vk::RenderPass::Attachment> attachments {
-        {
-            swap_chain.get_format(),
-            swap_chain.get_sample_count(), // attachment #0
-            swap_chain.get_layout()
-        }
+        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
     };
 
     vk::RenderPass render_pass {
         device,
-        attachments,
+        attachment,
         subpass,
         dependency
     };
@@ -141,87 +138,23 @@ int main(int argc, char** argv) {
         render_pass
     };
 
-    // TODO: move the code below to a better abstraction level.
-
-    std::vector<VkFramebuffer> framebuffers(swap_chain.size());
-
-    for (std::size_t i { 0 }; i < framebuffers.size(); ++i) {
-        VkImageView attachments[1] {
-            swap_chain.get_attachment(i)
-        };
-
-        VkFramebufferCreateInfo create_info { };
-        create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        create_info.renderPass = render_pass.get_handle();
-        create_info.attachmentCount = 1;
-        create_info.pAttachments = attachments;
-        create_info.width = swap_chain.get_width();
-        create_info.height = swap_chain.get_height();
-        create_info.layers = 1;
-
-        if (vkCreateFramebuffer(device.get_handle(), &create_info, nullptr, &framebuffers[i])) {
-            std::cerr << "Couldn't create framebuffer!" << std::endl;
-        }
-    }
-
-    VkCommandPool command_pool;
-
-    VkCommandPoolCreateInfo command_pool_create_info { };
-    command_pool_create_info.sType =  VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    command_pool_create_info.queueFamilyIndex = physical_device.get_graphics_queue_family_index();
-    command_pool_create_info.flags = 0;
-
-    if (vkCreateCommandPool(device.get_handle(), &command_pool_create_info, nullptr, &command_pool)) {
-        std::cerr << "Couldn't create the command pool!" << std::endl;
-    }
-
-    std::vector<VkCommandBuffer> command_buffers(swap_chain.size());
-
-    VkCommandBufferAllocateInfo command_pool_alloc_info { };
-
-    command_pool_alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    command_pool_alloc_info.commandPool = command_pool;
-    command_pool_alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    command_pool_alloc_info.commandBufferCount = static_cast<std::uint32_t>(command_buffers.size());
-
-    if (vkAllocateCommandBuffers(device.get_handle(), &command_pool_alloc_info, command_buffers.data())) {
-        std::cerr << "Couldn't allocate command buffers!" << std::endl;
-    }
-
-    for (std::size_t i { 0 }; i < command_buffers.size(); ++i) {
-        VkCommandBufferBeginInfo command_buffer_begin {  };
-        command_buffer_begin.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        command_buffer_begin.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-        command_buffer_begin.pInheritanceInfo = nullptr;
-
-        if (vkBeginCommandBuffer(command_buffers[i], &command_buffer_begin)) {
-            std::cerr << "Couldn't begin command buffer!" << std::endl;
-        }
-
-        VkRenderPassBeginInfo render_pass_begin {  };
-        render_pass_begin.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        render_pass_begin.renderPass = render_pass.get_handle();
-        render_pass_begin.framebuffer = framebuffers[i];
-        render_pass_begin.renderArea.offset = { 0, 0 };
-        render_pass_begin.renderArea.extent = swap_chain.get_extent();
-
-        VkClearValue clear_color { 0.0, 0.0, 0.0, 1.0 };
-
-        render_pass_begin.clearValueCount = 1;
-        render_pass_begin.pClearValues = &clear_color;
-
-        vkCmdBeginRenderPass(command_buffers[i], &render_pass_begin, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(command_buffers[i], graphics_pipeline.get_bind_point(), graphics_pipeline.get_handle());
-        vkCmdDraw(command_buffers[i], 3, 1, 0, 0);
-        vkCmdEndRenderPass(command_buffers[i]);
-
-        if (vkEndCommandBuffer(command_buffers[i])) {
-            std::cerr << "Couldn't end command buffer!" << std::endl;
-        }
-    }
+    auto framebuffers = swap_chain.create_buffers(render_pass);
 
     vk::Semaphore image_available { device };
     vk::Semaphore render_complete { device };
+
+    vk::CommandPool command_pool { device, device.get_graphics_queue() };
+
+    auto command_buffers = command_pool.allocate(2);
+
+    for (std::size_t i { 0 }; i < command_buffers.size(); ++i) {
+        command_buffers[i].begin();
+        command_buffers[i].begin_render_pass(render_pass, framebuffers[i], { 0.0, 0.0, 0.0, 1.0 });
+        command_buffers[i].bind_pipeline(graphics_pipeline);
+        command_buffers[i].draw(3, 1, 0, 0);
+        command_buffers[i].end_render_pass();
+        command_buffers[i].end();
+    }
 
     vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 
@@ -234,42 +167,14 @@ int main(int argc, char** argv) {
 
         auto next_image = swap_chain.acquire_next_image(image_available);
 
-        VkSubmitInfo submit_info {  };
-        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        VkPipelineStageFlags wait_stages { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-        submit_info.waitSemaphoreCount = 1;
-        submit_info.pWaitSemaphores = &image_available.get_handle();
-        submit_info.pWaitDstStageMask = &wait_stages;
-        submit_info.commandBufferCount = 1;
-        submit_info.pCommandBuffers = &command_buffers[next_image];
+        device.get_graphics_queue().submit(command_buffers[next_image],
+                                           image_available,
+                                           VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                           render_complete);
 
-        submit_info.signalSemaphoreCount = 1;
-        submit_info.pSignalSemaphores = &render_complete.get_handle();
-
-        if (vkQueueSubmit(device.get_graphics_queue()->get_handle(), 1, &submit_info, VK_NULL_HANDLE)) {
-            std::cerr << "Failed to submit draw commands to graphics queue!" << std::endl;
-        }
-
-        VkPresentInfoKHR present_info {  };
-        present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-        present_info.waitSemaphoreCount = 1;
-        present_info.pWaitSemaphores = &render_complete.get_handle();
-        present_info.swapchainCount = 1;
-        present_info.pSwapchains = &swap_chain.get_handle();
-        present_info.pImageIndices = &next_image;
-        present_info.pResults = nullptr;
-
-        vkQueuePresentKHR(device.get_present_queue()->get_handle(), &present_info);
+        device.get_present_queue().present(swap_chain, next_image, render_complete);
 
         window.poll_events();
-    }
-
-    device.wait_idle();
-
-    vkDestroyCommandPool(device.get_handle(), command_pool, nullptr);
-
-    for (auto& framebuffer : framebuffers) {
-        vkDestroyFramebuffer(device.get_handle(), framebuffer, nullptr);
     }
 
     return 0;

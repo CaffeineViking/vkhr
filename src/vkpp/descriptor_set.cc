@@ -1,5 +1,7 @@
 #include <vkpp/descriptor_set.hh>
 
+#include <vkpp/device.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>

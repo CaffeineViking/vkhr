@@ -1,11 +1,13 @@
 #ifndef VKPP_DESCRIPTOR_SET_HH
 #define VKPP_DESCRIPTOR_SET_HH
 
-#include <vkpp/device.hh>
+#include <vulkan/vulkan.h>
 
 #include <vector>
+#include <cstdint>
 
 namespace vkpp {
+    class Device;
     class DescriptorSet final {
     public:
         struct Binding {

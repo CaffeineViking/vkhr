@@ -48,10 +48,10 @@ namespace vkpp {
 
         void wait_idle();
 
-        Queue* get_compute_queue();  // WARNING: there may or may NOT be a queue of the
-        Queue* get_graphics_queue(); // type you want, in that case make sure to check
-        Queue* get_transfer_queue(); // if the resulting queue is nullptr. In most cases
-        Queue* get_present_queue();  // this this will work, but you should be careful.
+        Queue& get_compute_queue();  // WARNING: there may or may NOT be a queue of the
+        Queue& get_graphics_queue(); // type you want, in that case make sure to check
+        Queue& get_transfer_queue(); // if the resulting queue is nullptr. In most cases
+        Queue& get_present_queue();  // this this will work, but you should be careful.
 
     private:
         template<typename T> static std::string collapse(const std::vector<T>& vector);
@@ -65,9 +65,9 @@ namespace vkpp {
         std::unordered_map<std::int32_t, Queue> queues;
 
         Queue* graphics_queue { nullptr };
-        Queue* compute_queue { nullptr };
+        Queue* compute_queue  { nullptr };
         Queue* transfer_queue { nullptr };
-        Queue* present_queue { nullptr };
+        Queue* present_queue  { nullptr };
 
         PhysicalDevice* physical_device { nullptr };
 

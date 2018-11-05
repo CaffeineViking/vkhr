@@ -1,5 +1,7 @@
 #include <vkpp/swap_chain.hh>
 
+#include <vkpp/device.hh>
+
 #include <vkpp/exception.hh>
 
 #include <algorithm>
@@ -59,7 +61,7 @@ namespace vkpp {
             logical_device.get_physical_device().get_present_queue_family_index()
         };
 
-        if (logical_device.get_graphics_queue() == logical_device.get_present_queue()) {
+        if (&logical_device.get_graphics_queue() == &logical_device.get_present_queue()) {
             create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
             create_info.pQueueFamilyIndices = nullptr;
             create_info.queueFamilyIndexCount = 0;
@@ -140,6 +142,21 @@ namespace vkpp {
                               semaphore.get_handle(),
                               VK_NULL_HANDLE, &next);
         return next;
+    }
+
+    std::vector<Framebuffer> SwapChain::create_buffers(RenderPass& render_pass) {
+        std::vector<Framebuffer> framebuffers;
+
+        framebuffers.reserve(image_views.size());
+
+        for (auto& image_attachment : image_views) {
+            framebuffers.emplace_back(device,
+                                      render_pass,
+                                      image_attachment,
+                                      get_extent());
+        }
+
+        return framebuffers;
     }
 
     std::vector<ImageView>& SwapChain::get_image_views() {

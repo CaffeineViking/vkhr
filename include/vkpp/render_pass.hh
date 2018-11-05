@@ -1,14 +1,14 @@
 #ifndef VKPP_RENDER_PASS_HH
 #define VKPP_RENDER_PASS_HH
 
-#include <vkpp/device.hh>
-
 #include <vulkan/vulkan.h>
 
 #include <vector>
 #include <utility>
+#include <cstdint>
 
 namespace vkpp {
+    class Device;
     class RenderPass final {
     public:
         struct Attachment {
@@ -36,16 +36,22 @@ namespace vkpp {
         };
 
         RenderPass() = default;
-        RenderPass(Device& device,
+
+        RenderPass(Device& logical_device,
                    const std::vector<Attachment>& attachments,
                    const std::vector<Subpass>& subpasses,
-                   const std::vector<Dependency>& dependencies = {});
+                   const std::vector<Dependency>& dependencies = { });
 
-        RenderPass(Device& device,
+        RenderPass(Device& logical_device,
                    const std::vector<Attachment>& attachments,
                    Subpass& subpass);
-        RenderPass(Device& device,
+        RenderPass(Device& logical_device,
+                   Attachment& attachments,
+                   Subpass& subpass);
+        RenderPass(Device& logical_device,
                    const std::vector<Attachment>& attachments,
+                   Subpass& subpass, Dependency& dependency);
+        RenderPass(Device& logical_device, Attachment& attachment,
                    Subpass& subpass, Dependency& dependency);
 
         ~RenderPass() noexcept;

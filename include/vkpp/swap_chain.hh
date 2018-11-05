@@ -1,9 +1,10 @@
 #ifndef VKPP_SWAP_CHAIN_HH
 #define VKPP_SWAP_CHAIN_HH
 
-#include <vkpp/device.hh>
 #include <vkpp/image_view.hh>
 #include <vkpp/semaphore.hh>
+#include <vkpp/framebuffer.hh>
+#include <vkpp/render_pass.hh>
 #include <vkpp/surface.hh>
 #include <vkpp/fence.hh>
 
@@ -12,6 +13,7 @@
 #include <vector>
 
 namespace vkpp {
+    class Device;
     class SwapChain final {
     public:
         enum class PresentationMode {
@@ -39,6 +41,8 @@ namespace vkpp {
 
         std::uint32_t acquire_next_image(Fence& fence);
         std::uint32_t acquire_next_image(Semaphore& semaphore);
+
+        std::vector<Framebuffer> create_buffers(RenderPass& render_pass);
 
         std::vector<ImageView>& get_image_views();
         VkImageView get_attachment(std::size_t i);

@@ -1,5 +1,7 @@
 #include <vkpp/pipeline.hh>
 
+#include <vkpp/device.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>

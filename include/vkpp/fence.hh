@@ -1,11 +1,12 @@
 #ifndef VKPP_FENCE_HH
 #define VKPP_FENCE_HH
 
-#include <vkpp/device.hh>
-
 #include <vulkan/vulkan.h>
 
+#include <cstdint>
+
 namespace vkpp {
+    class Device;
     class Fence final {
     public:
         Fence() = default;

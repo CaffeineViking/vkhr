@@ -1,14 +1,13 @@
 #ifndef VKPP_SHADER_MODULE_HH
 #define VKPP_SHADER_MODULE_HH
 
-#include <vkpp/device.hh>
-
 #include <vulkan/vulkan.h>
 
 #include <string>
 #include <vector>
 
 namespace vkpp {
+    class Device;
     class ShaderModule final {
     public:
         ShaderModule() = default;

@@ -1,11 +1,10 @@
 #ifndef VKPP_SEMAPHORE_HH
 #define VKPP_SEMAPHORE_HH
 
-#include <vkpp/device.hh>
-
 #include <vulkan/vulkan.h>
 
 namespace vkpp {
+    class Device;
     class Semaphore final {
     public:
         Semaphore() = default;

@@ -1,7 +1,6 @@
 #ifndef VKPP_PIPELINE_HH
 #define VKPP_PIPELINE_HH
 
-#include <vkpp/device.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/descriptor_set.hh>
 #include <vkpp/shader_module.hh>
@@ -11,6 +10,7 @@
 #include <vector>
 
 namespace vkpp {
+    class Device;
     class Pipeline {
     public:
         Pipeline() = default;

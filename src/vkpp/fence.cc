@@ -1,5 +1,7 @@
 #include <vkpp/fence.hh>
 
+#include <vkpp/device.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>

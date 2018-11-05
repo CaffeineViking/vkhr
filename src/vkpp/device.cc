@@ -72,7 +72,7 @@ namespace vkpp {
     }
 
     Device::~Device() noexcept {
-        wait_idle(); // Until complete.
+        wait_idle(); // For sync
         if (handle != VK_NULL_HANDLE) {
             vkDestroyDevice(handle, nullptr);
         }
@@ -152,20 +152,20 @@ namespace vkpp {
         vkDeviceWaitIdle(handle);
     }
 
-    Queue* Device::get_compute_queue() {
-        return compute_queue;
+    Queue& Device::get_compute_queue() {
+        return *compute_queue;
     }
 
-    Queue* Device::get_graphics_queue() {
-        return graphics_queue;
+    Queue& Device::get_graphics_queue() {
+        return *graphics_queue;
     }
 
-    Queue* Device::get_transfer_queue() {
-        return transfer_queue;
+    Queue& Device::get_transfer_queue() {
+        return *transfer_queue;
     }
 
-    Queue* Device::get_present_queue() {
-        return present_queue;
+    Queue& Device::get_present_queue() {
+        return *present_queue;
     }
 
     void Device::assign_queues() {
@@ -180,7 +180,7 @@ namespace vkpp {
         if (queues.count(index) == 0) {
             VkQueue queue_handle;
             vkGetDeviceQueue(handle, index, 0, &queue_handle);
-            queues[index] = Queue { queue_handle };
+            queues[index] = Queue { queue_handle, static_cast<std::uint32_t>(index) };
         }
 
         *queue = &queues[index];

@@ -1117,9 +1117,6 @@
     <None Include="..\share\shaders\simple.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\simple.glsl">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="..\share\shaders\simple.vert">
       <Filter>shaders</Filter>
     </None>
