@@ -74,9 +74,6 @@ namespace vkpp {
 
         swap(lhs.size, rhs.size);
         swap(lhs.type, rhs.type);
-
-        rhs.device = VK_NULL_HANDLE;
-        rhs.handle = VK_NULL_HANDLE;
     }
 
     VkDeviceMemory& DeviceMemory::get_handle() {

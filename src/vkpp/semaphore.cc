@@ -38,9 +38,6 @@ namespace vkpp {
 
         swap(lhs.handle, rhs.handle);
         swap(lhs.device, rhs.device);
-
-        lhs.handle = VK_NULL_HANDLE;
-        lhs.device = VK_NULL_HANDLE;
     }
 
     VkSemaphore& Semaphore::get_handle() {

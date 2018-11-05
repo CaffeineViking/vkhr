@@ -114,10 +114,6 @@ namespace vkpp {
         swap(lhs.format, rhs.format);
         swap(lhs.presentation_mode, rhs.presentation_mode);
         swap(lhs.current_extent, rhs.current_extent);
-
-        rhs.device  = VK_NULL_HANDLE;
-        rhs.handle  = VK_NULL_HANDLE;
-        rhs.surface = nullptr;
     }
 
     VkSwapchainKHR& SwapChain::get_handle() {

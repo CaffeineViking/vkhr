@@ -84,9 +84,6 @@ namespace vkpp {
         swap(lhs.file_size,   rhs.file_size);
         swap(lhs.hashed_data, rhs.hashed_data);
         swap(lhs.spirv,       rhs.spirv);
-
-        rhs.handle = VK_NULL_HANDLE;
-        rhs.device = VK_NULL_HANDLE;
     }
 
     VkShaderModule& ShaderModule::get_handle() {

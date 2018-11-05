@@ -32,10 +32,6 @@ namespace vkpp {
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
         swap(lhs.layout, rhs.layout);
-
-        rhs.device = VK_NULL_HANDLE;
-        rhs.handle = VK_NULL_HANDLE;
-        rhs.layout = nullptr;
     }
 
     VkPipeline& Pipeline::get_handle() {
@@ -123,9 +119,6 @@ namespace vkpp {
 
         swap(lhs.handle, rhs.handle);
         swap(lhs.device, rhs.device);
-
-        rhs.handle = VK_NULL_HANDLE;
-        rhs.device = VK_NULL_HANDLE;
     }
 
     VkPipelineLayout& Pipeline::Layout::get_handle() {

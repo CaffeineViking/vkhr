@@ -157,9 +157,6 @@ namespace vkpp {
 
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
-
-        rhs.device = VK_NULL_HANDLE;
-        rhs.handle = VK_NULL_HANDLE;
     }
 
     VkRenderPass& RenderPass::get_handle() {

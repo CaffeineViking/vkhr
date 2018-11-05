@@ -93,9 +93,6 @@ namespace vkpp {
         swap(lhs.size, rhs.size);
         swap(lhs.sharing_mode, rhs.sharing_mode);
         swap(lhs.usage, rhs.usage);
-
-        rhs.handle = VK_NULL_HANDLE;
-        rhs.device = VK_NULL_HANDLE;
     }
 
     VkBuffer& Buffer::get_handle() {

@@ -59,9 +59,6 @@ namespace vkpp {
         swap(lhs.handle, rhs.handle);
         swap(lhs.device, rhs.device);
         swap(lhs.bindings, rhs.bindings);
-
-        rhs.device = VK_NULL_HANDLE;
-        rhs.handle = VK_NULL_HANDLE;
     }
 
     VkDescriptorSetLayout& DescriptorSet::Layout::get_handle() {

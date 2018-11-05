@@ -103,9 +103,6 @@ namespace vkpp {
         swap(lhs.physical_device, rhs.physical_device);
 
         swap(lhs.handle, rhs.handle);
-
-        rhs.physical_device = nullptr;
-        rhs.handle = VK_NULL_HANDLE;
     }
 
     VkDevice& Device::get_handle() {

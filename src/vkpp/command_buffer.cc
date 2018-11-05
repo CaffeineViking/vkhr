@@ -39,12 +39,6 @@ namespace vkpp {
         swap(lhs.pool, rhs.pool);
         swap(lhs.device, rhs.device);
         swap(lhs.queue_family, rhs.queue_family);
-
-        rhs.queue_family = nullptr;
-
-        rhs.handle = VK_NULL_HANDLE;
-        rhs.pool = VK_NULL_HANDLE;
-        rhs.device = VK_NULL_HANDLE;
     }
 
     VkCommandBuffer& CommandBuffer::get_handle() {
@@ -118,6 +112,21 @@ namespace vkpp {
         vkCmdDraw(handle, index_count, instance_count, first_vertex, first_instance);
     }
 
+    void CommandBuffer::bind_index_buffer(Buffer& index_buffer,
+                                          VkIndexType type,
+                                          VkDeviceSize offset) {
+        vkCmdBindIndexBuffer(handle, index_buffer.get_handle(), offset, type);
+    }
+
+    void CommandBuffer::draw_indexed(std::uint32_t index_count,
+                                     std::uint32_t instance_count,
+                                     std::uint32_t first_index,
+                                     std::int32_t  vertex_offset,
+                                     std::uint32_t first_instance) {
+        vkCmdDrawIndexed(handle, index_count, instance_count,
+                         first_index, vertex_offset, first_instance);
+    }
+
     void CommandBuffer::end_render_pass() {
         vkCmdEndRenderPass(handle);
     }
@@ -165,10 +174,6 @@ namespace vkpp {
         swap(lhs.handle, rhs.handle);
         swap(lhs.queue_family, rhs.queue_family);
         swap(lhs.device, rhs.device);
-
-        rhs.handle = VK_NULL_HANDLE;
-        rhs.queue_family = nullptr;
-        rhs.device = VK_NULL_HANDLE;
     }
 
     VkCommandPool& CommandPool::get_handle() {

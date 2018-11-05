@@ -28,9 +28,6 @@ namespace vkpp {
 
         swap(lhs.handle, rhs.handle);
         swap(lhs.instance, rhs.instance);
-
-        rhs.instance = VK_NULL_HANDLE;
-        rhs.handle = VK_NULL_HANDLE;
     }
 
     VkSurfaceKHR& Surface::get_handle() {

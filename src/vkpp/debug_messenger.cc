@@ -92,9 +92,6 @@ namespace vkpp {
         swap(lhs.minimum_severity, rhs.minimum_severity);
         swap(lhs.handle, rhs.handle);
         swap(lhs.instance_handle, rhs.instance_handle);
-
-        rhs.instance_handle = VK_NULL_HANDLE;
-        rhs.handle = VK_NULL_HANDLE;
     }
 
     DebugMessenger::Severity DebugMessenger::get_minimum_severity() const {

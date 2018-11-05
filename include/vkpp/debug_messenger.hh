@@ -37,7 +37,7 @@ namespace vkpp {
 
         Severity* minimum_severity { nullptr };
         VkDebugUtilsMessengerEXT handle { VK_NULL_HANDLE };
-        VkInstance instance_handle;
+        VkInstance instance_handle { VK_NULL_HANDLE };
     };
 }
 
