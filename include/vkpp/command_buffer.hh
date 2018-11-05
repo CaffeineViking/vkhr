@@ -18,13 +18,28 @@ namespace vkpp {
     public:
         CommandBuffer() = default;
 
-        CommandBuffer(VkCommandBuffer& command_buffer);
+        CommandBuffer(VkCommandBuffer& command_buffer,
+                      VkCommandPool& command_pool,
+                      VkDevice& device, Queue* queue);
+
+        ~CommandBuffer() noexcept;
+
+        CommandBuffer(CommandBuffer&& command_buffer) noexcept;
+        CommandBuffer& operator=(CommandBuffer&& command_buffer) noexcept;
+
+        friend void swap(CommandBuffer& lhs, CommandBuffer& rhs);
 
         VkCommandBuffer& get_handle();
 
-        static constexpr auto Default = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+        Queue& get_queue();
 
-        void begin(VkCommandBufferUsageFlags = Default);
+        static constexpr auto Simultaneous = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+        void begin(VkCommandBufferUsageFlags = Simultaneous);
+
+        void copy_buffer(Buffer& source, Buffer& destination,
+                         std::uint32_t source_offset = 0,
+                         std::uint32_t destination_offset = 0);
 
         void begin_render_pass(RenderPass& render_pass,
                                Framebuffer& framebuffer,
@@ -47,6 +62,10 @@ namespace vkpp {
         void end();
 
     private:
+        Queue* queue_family    { nullptr };
+
+        VkDevice        device { VK_NULL_HANDLE };
+        VkCommandPool   pool   { VK_NULL_HANDLE };
         VkCommandBuffer handle { VK_NULL_HANDLE };
     };
 

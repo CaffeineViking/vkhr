@@ -57,6 +57,8 @@ namespace vkpp {
         const VkColorSpaceKHR& get_color_space() const;
         const VkFormat& get_format() const;
 
+        const VkSurfaceFormatKHR& get_surface_format() const;
+
         std::size_t size() const;
 
     private:

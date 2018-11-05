@@ -118,6 +118,13 @@ namespace vkpp {
 
         return 0;
     }
+    std::uint32_t PhysicalDevice::find_host_visible_memory(const VkMemoryRequirements req) {
+        return find_memory(req, HostVisibleMemory | HostCoherentMemory);
+    }
+
+    std::uint32_t PhysicalDevice::find_device_local_memory(const VkMemoryRequirements req) {
+        return find_memory(req, DeviceLocalMemory);
+    }
 
     const VkPhysicalDeviceFeatures& PhysicalDevice::get_features() const {
         return features;

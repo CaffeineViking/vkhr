@@ -17,7 +17,13 @@ namespace vkpp {
                      VkDeviceSize size_in_bytes,
                      std::uint32_t type);
 
-        DeviceMemory(Device& device, VkMemoryRequirements requirements);
+        enum class Type {
+            HostVisible,
+            DeviceLocal
+        };
+
+        DeviceMemory(Device& device, VkMemoryRequirements requirements,
+                     Type type = Type::HostVisible); // Warning!
 
         ~DeviceMemory() noexcept;
 

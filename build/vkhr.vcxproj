@@ -389,6 +389,7 @@
     <ClInclude Include="..\include\vkpp\extension.hh" />
     <ClInclude Include="..\include\vkpp\fence.hh" />
     <ClInclude Include="..\include\vkpp\framebuffer.hh" />
+    <ClInclude Include="..\include\vkpp\image.hh" />
     <ClInclude Include="..\include\vkpp\image_view.hh" />
     <ClInclude Include="..\include\vkpp\instance.hh" />
     <ClInclude Include="..\include\vkpp\layer.hh" />
@@ -396,6 +397,7 @@
     <ClInclude Include="..\include\vkpp\pipeline.hh" />
     <ClInclude Include="..\include\vkpp\queue.hh" />
     <ClInclude Include="..\include\vkpp\render_pass.hh" />
+    <ClInclude Include="..\include\vkpp\sampler.hh" />
     <ClInclude Include="..\include\vkpp\semaphore.hh" />
     <ClInclude Include="..\include\vkpp\shader_module.hh" />
     <ClInclude Include="..\include\vkpp\surface.hh" />
@@ -433,6 +435,9 @@
     <ClCompile Include="..\src\vkpp\extension.cc" />
     <ClCompile Include="..\src\vkpp\fence.cc" />
     <ClCompile Include="..\src\vkpp\framebuffer.cc" />
+    <ClCompile Include="..\src\vkpp\image.cc">
+      <ObjectFileName>$(IntDir)\image1.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\src\vkpp\image_view.cc" />
     <ClCompile Include="..\src\vkpp\instance.cc" />
     <ClCompile Include="..\src\vkpp\layer.cc" />
@@ -440,6 +445,7 @@
     <ClCompile Include="..\src\vkpp\pipeline.cc" />
     <ClCompile Include="..\src\vkpp\queue.cc" />
     <ClCompile Include="..\src\vkpp\render_pass.cc" />
+    <ClCompile Include="..\src\vkpp\sampler.cc" />
     <ClCompile Include="..\src\vkpp\semaphore.cc" />
     <ClCompile Include="..\src\vkpp\shader_module.cc" />
     <ClCompile Include="..\src\vkpp\surface.cc" />

@@ -128,5 +128,4 @@ namespace vkpp {
         memory = device_memory.get_handle();
         vkBindBufferMemory(device, handle, memory, offset);
     }
-
 }

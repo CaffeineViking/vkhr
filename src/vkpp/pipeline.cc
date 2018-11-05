@@ -409,10 +409,10 @@ namespace vkpp {
         color_blending_state.pAttachments    = attachments.data();
     }
 
-    void GraphicsPipeline::FixedFunction::add_dynamic_state(VkDynamicState dyn_state) {
-        dynamic_states.push_back(dyn_state);
-        dynamic_state.dynamicStateCount = dynamic_states.size();
-        dynamic_state.pDynamicStates = dynamic_states.data();
+    void GraphicsPipeline::FixedFunction::add_dynamic_state(VkDynamicState dynamic_state) {
+        dynamic_states.push_back(dynamic_state);
+        this->dynamic_state.dynamicStateCount = dynamic_states.size();
+        this->dynamic_state.pDynamicStates    = dynamic_states.data();
     }
 
     const GraphicsPipeline::FixedFunction& GraphicsPipeline::get_fixed_functions() const {

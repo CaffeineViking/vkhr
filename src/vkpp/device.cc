@@ -72,8 +72,8 @@ namespace vkpp {
     }
 
     Device::~Device() noexcept {
-        wait_idle(); // For sync
         if (handle != VK_NULL_HANDLE) {
+            wait_idle(); // for resources etc
             vkDestroyDevice(handle, nullptr);
         }
     }

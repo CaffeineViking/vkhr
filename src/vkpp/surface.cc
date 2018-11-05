@@ -60,5 +60,4 @@ namespace vkpp {
     const std::vector<VkSurfaceFormatKHR>& Surface::get_formats() const {
         return formats;
     }
-
 }

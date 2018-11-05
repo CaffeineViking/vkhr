@@ -46,6 +46,13 @@ namespace vkpp {
             VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
         };
 
+        static constexpr VkMemoryPropertyFlagBits DeviceLocalMemory {
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+        };
+
+        std::uint32_t find_host_visible_memory(const VkMemoryRequirements requirements);
+        std::uint32_t find_device_local_memory(const VkMemoryRequirements requirements);
+
         std::uint32_t find_memory(const VkMemoryRequirements& requirements,
                                   std::uint32_t properties = HostVisibleMemory |
                                                              HostCoherentMemory);

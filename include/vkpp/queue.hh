@@ -21,16 +21,21 @@ namespace vkpp {
 
         std::uint32_t get_family_index() const;
 
-        void submit(CommandBuffer& command_buffer,
-                    Semaphore& wait,
-                    VkPipelineStageFlags wait_stage,
-                    Semaphore& signal);
+        Queue& submit(CommandBuffer& command_buffer);
 
-        void wait_idle();
+        Queue& submit(CommandBuffer& command_buffer,
+                      Semaphore& wait,
+                      VkPipelineStageFlags wait_stage,
+                      Semaphore& signal);
 
-        void present(SwapChain& swap_chain,
-                     std::uint32_t indices,
-                     Semaphore& wait);
+        Queue& wait_idle();
+
+        Queue& present(SwapChain& swap_chain,
+                       std::uint32_t indices,
+                       Semaphore& wait);
+
+        Queue& present(SwapChain& swap_chain,
+                       std::uint32_t indices);
 
     private:
         std::uint32_t family_index { 42 };

@@ -14,10 +14,32 @@ namespace vkpp {
         return family_index;
     }
 
-    void Queue::submit(CommandBuffer& command_buffer,
-                       Semaphore& wait,
-                       VkPipelineStageFlags wait_stage,
-                       Semaphore& signal) {
+    Queue& Queue::submit(CommandBuffer& command_buffer) {
+        VkSubmitInfo submit_info {  };
+        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+        submit_info.waitSemaphoreCount = 0;
+        submit_info.pWaitSemaphores = nullptr;
+
+        submit_info.pWaitDstStageMask = nullptr;
+
+        submit_info.commandBufferCount = 1;
+        submit_info.pCommandBuffers = &command_buffer.get_handle();
+
+        submit_info.signalSemaphoreCount = 0;
+        submit_info.pSignalSemaphores = nullptr;
+
+        if (VkResult error = vkQueueSubmit(handle, 1, &submit_info, VK_NULL_HANDLE)) {
+            throw Exception { error, "couldn't submit command buffer to the queue!" };
+        }
+
+        return *this;
+    }
+
+    Queue& Queue::submit(CommandBuffer& command_buffer,
+                         Semaphore& wait,
+                         VkPipelineStageFlags wait_stage,
+                         Semaphore& signal) {
         VkSubmitInfo submit_info {  };
         submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -35,15 +57,18 @@ namespace vkpp {
         if (VkResult error = vkQueueSubmit(handle, 1, &submit_info, VK_NULL_HANDLE)) {
             throw Exception { error, "couldn't submit command buffer to the queue!" };
         }
+
+        return *this;
     }
 
-    void Queue::wait_idle() {
+    Queue& Queue::wait_idle() {
         vkQueueWaitIdle(handle);
+        return *this;
     }
 
-    void Queue::present(SwapChain& swap_chain,
-                        std::uint32_t indices,
-                        Semaphore& wait) {
+    Queue& Queue::present(SwapChain& swap_chain,
+                          std::uint32_t indices,
+                          Semaphore& wait) {
         VkPresentInfoKHR present_info {  };
         present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
@@ -55,7 +80,28 @@ namespace vkpp {
         present_info.pResults = nullptr;
 
         if (VkResult error = vkQueuePresentKHR(handle, &present_info)) {
-            throw Exception { error, "couldn't present the renders!" };
+            throw Exception { error, "couldn't present swapchain!" };
         }
+
+        return *this;
+    }
+
+    Queue& Queue::present(SwapChain& swap_chain,
+                          std::uint32_t indices) {
+        VkPresentInfoKHR present_info {  };
+        present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+        present_info.waitSemaphoreCount = 0;
+        present_info.pWaitSemaphores = nullptr;
+        present_info.swapchainCount = 1;
+        present_info.pSwapchains = &swap_chain.get_handle();
+        present_info.pImageIndices = &indices;
+        present_info.pResults = nullptr;
+
+        if (VkResult error = vkQueuePresentKHR(handle, &present_info)) {
+            throw Exception { error, "couldn't present swapchain!" };
+        }
+
+        return *this;
     }
 }

@@ -125,21 +125,38 @@ int main(int argc, char** argv) {
         { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } }
     };
 
+    vk::Buffer staging_buffer {
+        device,
+        sizeof(vertices[0]) * vertices.size(),
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+    };
+
+    auto staging_requirements = staging_buffer.get_memory_requirements();
+
+    vk::DeviceMemory staging_buffer_memory {
+        device,
+        staging_requirements,
+        vk::DeviceMemory::Type::HostVisible
+    };
+
+    staging_buffer.bind(staging_buffer_memory);
+    staging_buffer_memory.copy(vertices, 0ul);
+
     vk::Buffer vertex_buffer {
         device,
         sizeof(vertices[0]) * vertices.size(),
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
     };
 
-    auto memory_requirements = vertex_buffer.get_memory_requirements();
+    auto vertex_requirements = vertex_buffer.get_memory_requirements();
 
     vk::DeviceMemory vertex_buffer_memory {
         device,
-        memory_requirements
+        vertex_requirements,
+        vk::DeviceMemory::Type::DeviceLocal
     };
 
     vertex_buffer.bind(vertex_buffer_memory);
-    vertex_buffer_memory.copy(vertices, 0ul);
 
     std::vector<vk::VertexBinding> vertex_bindings {
         {
@@ -203,6 +220,16 @@ int main(int argc, char** argv) {
     vk::Semaphore render_complete { device };
 
     vk::CommandPool command_pool { device, device.get_graphics_queue() };
+
+    {
+        auto command_buffer = command_pool.allocate();
+
+        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        command_buffer.copy_buffer(staging_buffer, vertex_buffer);
+        command_buffer.end();
+
+        device.get_transfer_queue().submit(command_buffer).wait_idle();
+    }
 
     auto command_buffers = command_pool.allocate(2);
 

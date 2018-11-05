@@ -5,14 +5,54 @@
 
 #include <vkpp/exception.hh>
 
+#include <algorithm>
+
 #include <utility>
 
 namespace vkpp {
-    CommandBuffer::CommandBuffer(VkCommandBuffer&  command_buffer)
-                                : handle { command_buffer } { }
+    CommandBuffer::CommandBuffer(VkCommandBuffer& command_buffer,
+                                 VkCommandPool&   command_pool,
+                                 VkDevice& device, Queue* queue)
+                                : queue_family { queue }, device { device },
+                                  pool { command_pool }, handle { command_buffer } { }
+
+    CommandBuffer::~CommandBuffer() noexcept {
+        if (handle != VK_NULL_HANDLE) {
+            queue_family->wait_idle();
+            vkFreeCommandBuffers(device, pool, 1, &handle);
+        }
+    }
+
+    CommandBuffer::CommandBuffer(CommandBuffer&& command_buffer) noexcept {
+        swap(*this, command_buffer);
+    }
+
+    CommandBuffer& CommandBuffer::operator=(CommandBuffer&& command_buffer) noexcept {
+        swap(*this, command_buffer);
+        return *this;
+    }
+
+    void swap(CommandBuffer& lhs, CommandBuffer& rhs) {
+        using std::swap;
+
+        swap(lhs.handle, rhs.handle);
+        swap(lhs.pool, rhs.pool);
+        swap(lhs.device, rhs.device);
+        swap(lhs.queue_family, rhs.queue_family);
+
+        rhs.queue_family = nullptr;
+
+        rhs.handle = VK_NULL_HANDLE;
+        rhs.pool = VK_NULL_HANDLE;
+        rhs.device = VK_NULL_HANDLE;
+    }
 
     VkCommandBuffer& CommandBuffer::get_handle() {
         return handle;
+    }
+
+    Queue& CommandBuffer::get_queue() {
+        return *queue_family;
     }
 
     void CommandBuffer::begin(VkCommandBufferUsageFlags usage) {
@@ -26,6 +66,20 @@ namespace vkpp {
         if (VkResult error = vkBeginCommandBuffer(handle, &begin_info)) {
             throw Exception { error, "failed to start recording command buffer!" };
         }
+    }
+    void CommandBuffer::copy_buffer(Buffer& source, Buffer& destination,
+                                    std::uint32_t source_offset,
+                                    std::uint32_t destination_offset) {
+        VkBufferCopy buffer_copy;
+
+        buffer_copy.srcOffset = source_offset;
+        buffer_copy.dstOffset = destination_offset;
+
+        buffer_copy.size = std::min(source.get_size(), destination.get_size());
+
+        vkCmdCopyBuffer(handle,
+                        source.get_handle(), destination.get_handle(),
+                        1, &buffer_copy);
     }
 
     void CommandBuffer::begin_render_pass(RenderPass& render_pass,
@@ -90,8 +144,8 @@ namespace vkpp {
     }
 
     CommandPool::~CommandPool() noexcept {
-        queue_family->wait_idle();
         if (handle != VK_NULL_HANDLE) {
+            queue_family->wait_idle();
             vkDestroyCommandPool(device, handle, nullptr);
         }
     }
@@ -144,7 +198,7 @@ namespace vkpp {
             throw Exception { error, "couldn't allocate command buffer!" };
         }
 
-        return CommandBuffer { cmd_handle };
+        return CommandBuffer { cmd_handle, handle, device, queue_family };
     }
 
     std::vector<CommandBuffer> CommandPool::allocate(std::uint32_t amount,
@@ -168,7 +222,8 @@ namespace vkpp {
         command_buffers.reserve(amount);
 
         for (auto command_buffer : cmds)
-            command_buffers.emplace_back(command_buffer);
+            command_buffers.emplace_back(command_buffer, handle,
+                                         device, queue_family);
 
         return command_buffers;
     }

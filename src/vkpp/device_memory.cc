@@ -26,7 +26,8 @@ namespace vkpp {
         }
     }
 
-    DeviceMemory::DeviceMemory(Device& logical_device, VkMemoryRequirements requirements)
+    DeviceMemory::DeviceMemory(Device& logical_device, VkMemoryRequirements requirements,
+                               Type memory_type) // Warning: default is host-side memory!
                               : size { requirements.size },
                                 device { logical_device.get_handle() } {
         VkMemoryAllocateInfo alloc_info;
@@ -37,7 +38,13 @@ namespace vkpp {
 
         auto& physical_device = logical_device.get_physical_device();
 
-        alloc_info.memoryTypeIndex = physical_device.find_memory(requirements);
+        if (memory_type == Type::HostVisible) {
+            this->type = physical_device.find_host_visible_memory(requirements);
+        } else if (memory_type == Type::DeviceLocal) {
+            this->type = physical_device.find_device_local_memory(requirements);
+        }
+
+        alloc_info.memoryTypeIndex = this->type;
 
         if (VkResult error = vkAllocateMemory(device, &alloc_info, nullptr, &handle)) {
             throw Exception { error, "couldn't allocate device memory!" };

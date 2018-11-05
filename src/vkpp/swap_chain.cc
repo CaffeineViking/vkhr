@@ -183,6 +183,10 @@ namespace vkpp {
         return format.format;
     }
 
+    const VkSurfaceFormatKHR& SwapChain::get_surface_format() const {
+        return format;
+    }
+
     const VkColorSpaceKHR& SwapChain::get_color_space() const {
         return format.colorSpace;
     }
