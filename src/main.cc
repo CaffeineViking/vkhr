@@ -108,18 +108,83 @@ int main(int argc, char** argv) {
         dependency
     };
 
-    struct Vertex {
-        glm::vec2 pos;
-        glm::vec3 color;
-    };
+    vkhr::HairStyle curly_hair { STYLE("ponytail.hair") };
 
-    const std::vector<Vertex> vertices = {
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
-    };
+    auto& vertices = curly_hair.vertices;
+
+    VkVertexInputBindingDescription binding_description { };
+
+    binding_description.binding = 0;
+
+    binding_description.stride = sizeof(glm::vec2);
+    binding_description.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+    VkVertexInputAttributeDescription attribute_description { };
+
+    attribute_description.binding = 0;
+    attribute_description.location = 0;
+    attribute_description.format = VK_FORMAT_R32G32_SFLOAT;
+    attribute_description.offset = 0;
+
+    VkDeviceSize vertex_offset { 0 };
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
+
+    fixed_functions.set_line_width(2.0);
+
+    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+
+    fixed_functions.vertex_input_state.vertexBindingDescriptionCount = 1;
+    fixed_functions.vertex_input_state.pVertexBindingDescriptions = &binding_description;
+    fixed_functions.vertex_input_state.vertexAttributeDescriptionCount = 1;
+    fixed_functions.vertex_input_state.pVertexAttributeDescriptions = &attribute_description;
+
+    VkBufferCreateInfo buffer_info = {};
+    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer_info.size = sizeof(vertices[0]) * vertices.size();
+
+    buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+
+    buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    VkBuffer vertex_buffer;
+
+    if (vkCreateBuffer(device.get_handle(), &buffer_info, nullptr, &vertex_buffer)) {
+        throw std::runtime_error { "Failed to create the hair strand buffer data!" };
+    }
+
+    VkMemoryRequirements memory_requirements;
+    vkGetBufferMemoryRequirements(device.get_handle(), vertex_buffer, &memory_requirements);
+
+    VkPhysicalDeviceMemoryProperties memory_properties;
+    vkGetPhysicalDeviceMemoryProperties(physical_device.get_handle(), &memory_properties);
+
+    std::uint32_t mindex;
+    std::uint32_t filter { memory_requirements.memoryTypeBits };
+    std::uint32_t properties { VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
+    for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++) {
+        if ((filter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties) {
+            mindex = i;
+        }
+    }
+
+    VkMemoryAllocateInfo alloc_info = {};
+    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.allocationSize = memory_requirements.size;
+    alloc_info.memoryTypeIndex = mindex;
+
+    VkDeviceMemory vertex_buffer_memory;
+
+    if (vkAllocateMemory(device.get_handle(), &alloc_info, nullptr, &vertex_buffer_memory)) {
+        throw std::runtime_error { "Failed to alloc strand data!" };
+    }
+
+    vkBindBufferMemory(device.get_handle(), vertex_buffer, vertex_buffer_memory, 0);
+
+    void* memory_map;
+    vkMapMemory(device.get_handle(), vertex_buffer_memory, 0, buffer_info.size, 0, &memory_map);
+    memcpy(memory_map, vertices.data(), static_cast<size_t>(buffer_info.size));
+    vkUnmapMemory(device.get_handle(), vertex_buffer_memory);
 
     fixed_functions.disable_depth_testing(); // soon(tm)
 
@@ -133,8 +198,8 @@ int main(int argc, char** argv) {
 
     std::vector<vk::ShaderModule> shading_stages;
 
-    shading_stages.emplace_back(device, SPIRV("simple.vert"));
-    shading_stages.emplace_back(device, SPIRV("simple.frag"));
+    shading_stages.emplace_back(device, SPIRV("strand.vert"));
+    shading_stages.emplace_back(device, SPIRV("strand.frag"));
 
     // Just the empty layout now.
     vk::Pipeline::Layout layout {
@@ -163,12 +228,14 @@ int main(int argc, char** argv) {
         command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                              { 1.0f, 1.0f, 1.0f, 1.0f });
         command_buffers[i].bind_pipeline(graphics_pipeline);
-        command_buffers[i].draw(3, 1, 0, 0);
+
+        vkCmdBindVertexBuffers(command_buffers[i].get_handle(), 0, 1,
+                               &vertex_buffer, &vertex_offset);
+
+        command_buffers[i].draw(vertices.size(), 1, 0, 0);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
     }
-
-    vkhr::HairStyle curly_hair { STYLE("wCurly.hair") };
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
@@ -188,6 +255,11 @@ int main(int argc, char** argv) {
 
         window.poll_events();
     }
+
+    device.wait_idle();
+
+    vkDestroyBuffer(device.get_handle(), vertex_buffer, nullptr);
+    vkFreeMemory(device.get_handle(), vertex_buffer_memory, nullptr);
 
     return 0;
 }

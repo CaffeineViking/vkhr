@@ -1,7 +1,7 @@
-all: simple.vert.spv simple.frag.spv
+all: strand.vert.spv strand.frag.spv
 
-simple.vert.spv: simple.vert
-	glslc -O -Os -c simple.vert
+strand.vert.spv: strand.vert
+	glslc -O -Os -c strand.vert
 
-simple.frag.spv: simple.frag
-	glslc -O -Os -c simple.frag
+strand.frag.spv: strand.frag strand.glsl
+	glslc -O -Os -c strand.frag

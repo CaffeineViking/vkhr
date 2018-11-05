@@ -1114,10 +1114,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\share\shaders\simple.frag">
+    <None Include="..\share\shaders\strand.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\simple.vert">
+    <None Include="..\share\shaders\strand.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\strand.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

@@ -443,8 +443,9 @@
     <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\share\shaders\simple.frag" />
-    <None Include="..\share\shaders\simple.vert" />
+    <None Include="..\share\shaders\strand.frag" />
+    <None Include="..\share\shaders\strand.glsl" />
+    <None Include="..\share\shaders\strand.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
