@@ -120,18 +120,10 @@ int main(int argc, char** argv) {
     };
 
     const std::vector<Vertex> vertices {
-        { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
-        { {  0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f } },
-        { {  0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } },
-        { { -0.5f,  0.5f }, { 1.0f, 1.0f, 1.0f } }
+        { {  0.0f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
+        { {  0.5f,  0.5f }, { 0.0f, 1.0f, 0.0f } },
+        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } }
     };
-
-    const std::vector<std::uint16_t> indices {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    vk::CommandPool command_pool { device, device.get_graphics_queue() };
 
     vk::Buffer staging_buffer {
         device,
@@ -165,59 +157,6 @@ int main(int argc, char** argv) {
     };
 
     vertex_buffer.bind(vertex_buffer_memory);
-
-    {
-        auto command_buffer = command_pool.allocate();
-
-        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-        command_buffer.copy_buffer(staging_buffer, vertex_buffer);
-        command_buffer.end();
-
-        device.get_transfer_queue().submit(command_buffer).wait_idle();
-    }
-
-    staging_buffer = vk::Buffer {
-        device,
-        sizeof(indices[0]) * indices.size(),
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-    };
-
-    staging_memory_requirements = staging_buffer.get_memory_requirements();
-
-    staging_buffer_memory = vk::DeviceMemory {
-        device,
-        staging_memory_requirements,
-        vk::DeviceMemory::Type::HostVisible
-    };
-
-    staging_buffer.bind(staging_buffer_memory);
-    staging_buffer_memory.copy(indices, 0ul);
-
-    vk::Buffer index_buffer {
-        device,
-        sizeof(indices[0]) * indices.size(),
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
-    };
-
-    auto index_memory_requirements = index_buffer.get_memory_requirements();
-
-    vk::DeviceMemory index_buffer_memory {
-        device,
-        index_memory_requirements,
-        vk::DeviceMemory::Type::DeviceLocal
-    };
-
-    index_buffer.bind(index_buffer_memory);
-
-    {
-        auto command_buffer = command_pool.allocate();
-
-        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-        command_buffer.copy_buffer(staging_buffer, index_buffer);
-        command_buffer.end();
-
-        device.get_transfer_queue().submit(command_buffer).wait_idle();
-    }
 
     std::vector<vk::VertexBinding> vertex_bindings {
         {
@@ -280,6 +219,18 @@ int main(int argc, char** argv) {
     vk::Semaphore image_available { device };
     vk::Semaphore render_complete { device };
 
+    vk::CommandPool command_pool { device, device.get_graphics_queue() };
+
+    {
+        auto command_buffer = command_pool.allocate();
+
+        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        command_buffer.copy_buffer(staging_buffer, vertex_buffer);
+        command_buffer.end();
+
+        device.get_transfer_queue().submit(command_buffer).wait_idle();
+    }
+
     auto command_buffers = command_pool.allocate(2);
 
     for (std::size_t i { 0 }; i < command_buffers.size(); ++i) {
@@ -288,8 +239,7 @@ int main(int argc, char** argv) {
                                              { 1.0f, 1.0f, 1.0f, 1.0f });
         command_buffers[i].bind_pipeline(graphics_pipeline);
         command_buffers[i].bind_vertex_buffer(0, 1, vertex_buffer);
-        command_buffers[i].bind_index_buffer(index_buffer, VK_INDEX_TYPE_UINT16);
-        command_buffers[i].draw_indexed(indices.size(), 1, 0);
+        command_buffers[i].draw(vertices.size(), 1, 0);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
     }
