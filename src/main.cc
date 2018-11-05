@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     input_map.bind("fullscreen", vkhr::Input::Key::F);
 
     vk::append(window.get_vulkan_surface_extensions(),
-               required_extensions);
+               required_extensions); // VK_surface_KHR
 
     vk::Instance instance {
         application_information,
@@ -125,6 +125,22 @@ int main(int argc, char** argv) {
         { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } }
     };
 
+    vk::Buffer vertex_buffer {
+        device,
+        sizeof(vertices[0]) * vertices.size(),
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+    };
+
+    auto memory_requirements = vertex_buffer.get_memory_requirements();
+
+    vk::DeviceMemory vertex_buffer_memory {
+        device,
+        memory_requirements
+    };
+
+    vertex_buffer.bind(vertex_buffer_memory);
+    vertex_buffer_memory.copy(vertices, 0ul);
+
     std::vector<vk::VertexBinding> vertex_bindings {
         {
             0,
@@ -153,23 +169,7 @@ int main(int argc, char** argv) {
     fixed_functions.set_vertex_bindings(vertex_bindings);
     fixed_functions.set_vertex_attributes(vertex_attributes);
 
-    vk::Buffer vertex_buffer {
-        device,
-        sizeof(vertices[0]) * vertices.size(),
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
-    };
-
-    auto memory_requirements = vertex_buffer.get_memory_requirements();
-
-    vk::DeviceMemory vertex_buffer_memory {
-        device,
-        memory_requirements
-    };
-
-    vertex_buffer.bind(vertex_buffer_memory);
-    vertex_buffer_memory.copy(vertices, 0ul);
-
-    fixed_functions.disable_depth_testing(); // soon(tm)
+    fixed_functions.disable_depth_testing();
 
     fixed_functions.set_scissor({ 0, 0, window.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
@@ -211,8 +211,8 @@ int main(int argc, char** argv) {
         command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                              { 1.0f, 1.0f, 1.0f, 1.0f });
         command_buffers[i].bind_pipeline(graphics_pipeline);
-        command_buffers[i].bind_vertex_buffer(0, 1, vertex_buffer, 0);
-        command_buffers[i].draw(vertices.size(), 1, 0, 0);
+        command_buffers[i].bind_vertex_buffer(0, 1, vertex_buffer);
+        command_buffers[i].draw(vertices.size(), 1, 0);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
     }

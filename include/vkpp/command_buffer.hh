@@ -40,7 +40,7 @@ namespace vkpp {
         void bind_vertex_buffer(std::uint32_t first_binding,
                                 std::uint32_t binding_count,
                                 Buffer& vertex_buffer,
-                                VkDeviceSize vertex_offset);
+                                VkDeviceSize vertex_offset = 0);
 
         void end_render_pass();
 
