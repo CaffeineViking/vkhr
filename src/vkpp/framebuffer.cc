@@ -4,6 +4,8 @@
 
 #include <vkpp/exception.hh>
 
+#include <utility>
+
 namespace vkpp {
     Framebuffer::Framebuffer(VkDevice& device,
                              RenderPass& render_pass,

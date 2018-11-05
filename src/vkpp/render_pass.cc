@@ -10,7 +10,7 @@ namespace vkpp {
     RenderPass::RenderPass(Device& logical_device,
                            const std::vector<Attachment>& attachments,
                            const std::vector<Subpass>& subpasses,
-                           const std::vector<Dependency>& dependencies)
+                           const std::vector<SubpassDependency>& dependencies)
                           : device { logical_device.get_handle() } {
         VkRenderPassCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -121,17 +121,17 @@ namespace vkpp {
 
     RenderPass::RenderPass(Device& device,
                            const std::vector<Attachment>& attachments,
-                           Subpass& subpass, Dependency& dependency)
+                           Subpass& subpass, SubpassDependency& dependency)
                           : RenderPass { device, attachments,
                             std::vector<Subpass> { subpass },
-                            std::vector<Dependency> { dependency } } {  }
+                            std::vector<SubpassDependency> { dependency } } {  }
 
     RenderPass::RenderPass(Device& device, Attachment& attachment,
-                           Subpass& subpass, Dependency& dependency)
+                           Subpass& subpass, SubpassDependency& dependency)
                           : RenderPass { device,
                             std::vector<Attachment> { attachment },
                             std::vector<Subpass> { subpass },
-                            std::vector<Dependency> { dependency } } {  }
+                            std::vector<SubpassDependency> { dependency } } {  }
 
     RenderPass::~RenderPass() noexcept {
         if (handle != VK_NULL_HANDLE) {

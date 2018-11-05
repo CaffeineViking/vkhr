@@ -1,9 +1,9 @@
 #version 450 core
 
-#include "strand.glsl"
+layout(location = 0) in  vec3 vs_color;
 
-layout(location = 0) out vec4 color;
+layout(location = 0) out vec4 fs_color;
 
 void main() {
-    color = vec4(get_strand_color(), 0.4);
+    fs_color = vec4(vs_color, 1.0);
 }

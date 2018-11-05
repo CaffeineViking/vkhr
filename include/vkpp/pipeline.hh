@@ -75,6 +75,11 @@ namespace vkpp {
 
     };
 
+    using VertexBinding   = VkVertexInputBindingDescription;
+    using VertexAttribute = VkVertexInputAttributeDescription;
+    using VertexAttributes  = std::vector<VertexAttribute>;
+    using VertexBindings    = std::vector<VertexBinding>;
+
     class GraphicsPipeline final : public Pipeline {
     public:
         GraphicsPipeline() = default;
@@ -82,6 +87,16 @@ namespace vkpp {
         VkPipelineBindPoint get_bind_point() const override;
 
         struct FixedFunction {
+            std::vector<VertexBinding>   vertex_bindings;
+            std::vector<VertexAttribute> vertex_attributes;
+
+            const VertexBindings& get_vertex_bindings() const;
+            void set_vertex_bindings(const VertexBindings& bindings);
+            void set_vertex_attributes(const VertexAttributes& attributes);
+            const VertexAttributes& get_vertex_attributes() const;
+            void add_vertex_attribute(VertexAttribute& attribute);
+            void add_vertex_binding(VertexBinding& binding);
+
             VkPipelineVertexInputStateCreateInfo   vertex_input_state {
                 VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
                 nullptr,
@@ -103,8 +118,8 @@ namespace vkpp {
                 VK_FALSE // primitiveRestartEnable
             };
 
-            std::uint32_t get_patch_control_points() const;
-            void set_patch_control_points(std::uint32_t n);
+            std::uint32_t get_patch_vertices() const;
+            void set_patch_vertices(std::uint32_t n);
 
             VkPipelineTessellationStateCreateInfo  tessellation_state {
                 VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
@@ -113,13 +128,13 @@ namespace vkpp {
                 3 // patchControlPoints
             };
 
+            VkRect2D   scissor;
+            VkViewport viewport;
+
             const VkViewport& get_viewport() const;
             void set_viewport(const VkViewport& viewport);
             void set_scissor(const VkRect2D& scissor);
             const VkRect2D& get_scissor() const;
-
-            VkRect2D   scissor;
-            VkViewport viewport;
 
             VkPipelineViewportStateCreateInfo      viewport_state {
                 VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
@@ -140,6 +155,16 @@ namespace vkpp {
             void set_front_face(VkFrontFace front_face);
             VkFrontFace get_front_face() const;
 
+            void enable_depth_clamp();
+            void disable_depth_clamp();
+            void disable_discarding();
+            void enable_discarding();
+
+            void enable_depth_bias(float constant_factor,
+                                   float clamp,
+                                   float slope_factor);
+            void disable_depth_bias();
+
             VkPipelineRasterizationStateCreateInfo rasterization_state {
                 VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
                 nullptr,
@@ -155,6 +180,11 @@ namespace vkpp {
                 0.0, // depthBiasSlopeFactor
                 1.0 // lineWidth
             };
+
+            void set_samples(VkSampleCountFlagBits);
+            VkSampleCountFlagBits get_samples() const;
+            void enable_sample_shading(float minimum);
+            void disable_sample_shading();
 
             VkPipelineMultisampleStateCreateInfo   multisample_state {
                 VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
@@ -186,10 +216,10 @@ namespace vkpp {
                 1.0 // maxDepthBounds
             };
 
+            std::vector<VkPipelineColorBlendAttachmentState> attachments;
+
             void disable_alpha_blending_for(std::uint32_t attachment);
             void enable_alpha_blending_for(std::uint32_t  attachment);
-
-            std::vector<VkPipelineColorBlendAttachmentState> attachments;
 
             VkPipelineColorBlendStateCreateInfo    color_blending_state {
                 VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
@@ -205,9 +235,9 @@ namespace vkpp {
                   0.0 } // blendConstants
             };
 
-            void add_dynamic_state(VkDynamicState dynamic_state);
-
             std::vector<VkDynamicState> dynamic_states;
+
+            void add_dynamic_state(VkDynamicState dynamic_state);
 
             VkPipelineDynamicStateCreateInfo       dynamic_state {
                 VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,

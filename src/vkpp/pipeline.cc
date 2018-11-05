@@ -219,6 +219,38 @@ namespace vkpp {
         return VK_PIPELINE_BIND_POINT_GRAPHICS;
     }
 
+    const VertexBindings& GraphicsPipeline::FixedFunction::get_vertex_bindings() const {
+        return vertex_bindings;
+    }
+
+    void GraphicsPipeline::FixedFunction::set_vertex_bindings(const VertexBindings& binds) {
+        vertex_bindings = binds;
+        vertex_input_state.vertexBindingDescriptionCount = vertex_bindings.size();
+        vertex_input_state.pVertexBindingDescriptions = vertex_bindings.data();
+    }
+
+    void GraphicsPipeline::FixedFunction::set_vertex_attributes(const VertexAttributes& a) {
+        vertex_attributes = a;
+        vertex_input_state.vertexAttributeDescriptionCount = vertex_attributes.size();
+        vertex_input_state.pVertexAttributeDescriptions = vertex_attributes.data();
+    }
+
+    const VertexAttributes& GraphicsPipeline::FixedFunction::get_vertex_attributes() const {
+        return vertex_attributes;
+    }
+
+    void GraphicsPipeline::FixedFunction::add_vertex_attribute(VertexAttribute& attribute) {
+        vertex_attributes.push_back(attribute);
+        vertex_input_state.vertexAttributeDescriptionCount = vertex_attributes.size();
+        vertex_input_state.pVertexAttributeDescriptions = vertex_attributes.data();
+    }
+
+    void GraphicsPipeline::FixedFunction::add_vertex_binding(VertexBinding& binding) {
+        vertex_bindings.push_back(binding);
+        vertex_input_state.vertexBindingDescriptionCount = vertex_bindings.size();
+        vertex_input_state.pVertexBindingDescriptions = vertex_bindings.data();
+    }
+
     VkPrimitiveTopology GraphicsPipeline::FixedFunction::get_topology() const {
         return input_assembly_state.topology;
     }
@@ -227,11 +259,11 @@ namespace vkpp {
         input_assembly_state.topology = topology;
     }
 
-    std::uint32_t GraphicsPipeline::FixedFunction::get_patch_control_points() const {
+    std::uint32_t GraphicsPipeline::FixedFunction::get_patch_vertices() const {
         return tessellation_state.patchControlPoints;
     }
 
-    void GraphicsPipeline::FixedFunction::set_patch_control_points(std::uint32_t n) {
+    void GraphicsPipeline::FixedFunction::set_patch_vertices(std::uint32_t n) {
         tessellation_state.patchControlPoints = n;
     }
 
@@ -286,7 +318,38 @@ namespace vkpp {
         rasterization_state.frontFace = front_face;
     }
 
-    void GraphicsPipeline::FixedFunction::enable_depth_testing() {
+    void GraphicsPipeline::FixedFunction::enable_depth_clamp() {
+        rasterization_state.depthClampEnable = VK_TRUE;
+    }
+
+    void GraphicsPipeline::FixedFunction::disable_depth_clamp() {
+        rasterization_state.depthClampEnable = VK_FALSE;
+    }
+
+    void GraphicsPipeline::FixedFunction::disable_discarding() {
+        rasterization_state.rasterizerDiscardEnable = VK_FALSE;
+    }
+
+    void GraphicsPipeline::FixedFunction::enable_discarding() {
+        rasterization_state.rasterizerDiscardEnable = VK_TRUE;
+    }
+
+    void GraphicsPipeline::FixedFunction::enable_depth_bias(float constant_factor,
+                                                            float clamp,
+                                                            float slope_factor) {
+        rasterization_state.depthBiasEnable = VK_TRUE;
+        rasterization_state.depthBiasConstantFactor = constant_factor;
+        rasterization_state.depthBiasClamp = clamp;
+        rasterization_state.depthBiasSlopeFactor = slope_factor;
+    }
+    void GraphicsPipeline::FixedFunction::disable_depth_bias() {
+        rasterization_state.depthBiasEnable = VK_FALSE;
+        rasterization_state.depthBiasConstantFactor = 0.0;
+        rasterization_state.depthBiasClamp = 0.0;
+        rasterization_state.depthBiasSlopeFactor = 0.0;
+    }
+
+    void GraphicsPipeline::FixedFunction::FixedFunction::enable_depth_testing() {
         depth_stencil_state.depthWriteEnable = VK_TRUE;
         depth_stencil_state.depthTestEnable  = VK_TRUE;
     }
@@ -294,6 +357,24 @@ namespace vkpp {
     void GraphicsPipeline::FixedFunction::disable_depth_testing() {
         depth_stencil_state.depthWriteEnable = VK_FALSE;
         depth_stencil_state.depthTestEnable  = VK_FALSE;
+    }
+
+    void GraphicsPipeline::FixedFunction::set_samples(VkSampleCountFlagBits samples) {
+        multisample_state.rasterizationSamples = samples;
+    }
+
+    VkSampleCountFlagBits GraphicsPipeline::FixedFunction::get_samples() const {
+        return multisample_state.rasterizationSamples;
+    }
+
+    void GraphicsPipeline::FixedFunction::enable_sample_shading(float minimum) {
+        multisample_state.sampleShadingEnable = VK_TRUE;
+        multisample_state.minSampleShading = minimum;
+    }
+
+    void GraphicsPipeline::FixedFunction::disable_sample_shading() {
+        multisample_state.sampleShadingEnable = VK_FALSE;
+        multisample_state.minSampleShading = 1.0;
     }
 
     void GraphicsPipeline::FixedFunction::disable_alpha_blending_for(std::uint32_t a) {

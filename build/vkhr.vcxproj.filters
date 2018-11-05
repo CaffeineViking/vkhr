@@ -930,6 +930,9 @@
     <ClInclude Include="..\include\vkpp\application.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\buffer.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\command_buffer.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -940,6 +943,9 @@
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\device.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkpp\device_memory.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\exception.hh">
@@ -1052,6 +1058,9 @@
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkpp\buffer.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkpp\command_buffer.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
@@ -1062,6 +1071,9 @@
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\device.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\device_memory.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\exception.cc">
@@ -1115,9 +1127,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\share\shaders\strand.frag">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\strand.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\strand.vert">

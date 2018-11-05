@@ -1,6 +1,7 @@
 #ifndef VKPP_COMMAND_BUFFER_HH
 #define VKPP_COMMAND_BUFFER_HH
 
+#include <vkpp/buffer.hh>
 #include <vkpp/pipeline.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/framebuffer.hh>
@@ -35,6 +36,11 @@ namespace vkpp {
                   std::uint32_t instance_count,
                   std::uint32_t first_vertex   = 0,
                   std::uint32_t first_instance = 0);
+
+        void bind_vertex_buffer(std::uint32_t first_binding,
+                                std::uint32_t binding_count,
+                                Buffer& vertex_buffer,
+                                VkDeviceSize vertex_offset);
 
         void end_render_pass();
 

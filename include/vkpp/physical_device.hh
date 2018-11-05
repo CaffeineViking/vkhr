@@ -38,6 +38,18 @@ namespace vkpp {
         std::uint32_t get_device_memory_heap() const;
         VkDeviceSize  get_device_memory_size() const;
 
+        static constexpr VkMemoryPropertyFlagBits HostVisibleMemory {
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+        };
+
+        static constexpr VkMemoryPropertyFlagBits HostCoherentMemory {
+            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        };
+
+        std::uint32_t find_memory(const VkMemoryRequirements& requirements,
+                                  std::uint32_t properties = HostVisibleMemory |
+                                                             HostCoherentMemory);
+
         const VkPhysicalDeviceFeatures& get_features() const;
         const VkPhysicalDeviceMemoryProperties& get_memory_properties() const;
         const std::vector<VkQueueFamilyProperties>& get_queue_family_properties() const;

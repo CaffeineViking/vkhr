@@ -108,6 +108,17 @@ namespace vkpp {
         return memory_properties.memoryHeaps[heap].size;
     }
 
+    std::uint32_t PhysicalDevice::find_memory(const VkMemoryRequirements& requirements,
+                                              std::uint32_t property_flags) {
+        for (std::uint32_t i { 0 }; i < memory_properties.memoryTypeCount; ++i) {
+            auto flags = memory_properties.memoryTypes[i].propertyFlags & property_flags;
+            if ((requirements.memoryTypeBits &  (1 << i)) && flags == property_flags)
+                return i;
+        }
+
+        return 0;
+    }
+
     const VkPhysicalDeviceFeatures& PhysicalDevice::get_features() const {
         return features;
     }

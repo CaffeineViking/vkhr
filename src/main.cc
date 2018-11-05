@@ -79,112 +79,95 @@ int main(int argc, char** argv) {
         window.get_extent()
     };
 
-    vk::RenderPass::Attachment attachment {
-        swap_chain.get_format(),
-        swap_chain.get_sample_count(),
-        swap_chain.get_layout()
-    };
-
-    vk::RenderPass::Subpass subpass {
+    std::vector<vk::RenderPass::Attachment> attachments {
         {
-            { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL }
+            swap_chain.get_format(),
+            swap_chain.get_sample_count(),
+            swap_chain.get_layout()
         }
     };
 
-    vk::RenderPass::Dependency dependency {
-        0,
-        VK_SUBPASS_EXTERNAL,
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        0,
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
-        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+    std::vector<vk::RenderPass::Subpass> subpasses {
+        {
+            {
+                { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL }
+            }
+        }
+    };
+
+    std::vector<vk::RenderPass::SubpassDependency> dependencies {
+        {
+            0,
+            VK_SUBPASS_EXTERNAL,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            0,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+        }
     };
 
     vk::RenderPass render_pass {
         device,
-        attachment,
-        subpass,
-        dependency
+        attachments,
+        subpasses,
+        dependencies
     };
 
-    vkhr::HairStyle curly_hair { STYLE("ponytail.hair") };
+    struct Vertex {
+        glm::vec2 position;
+        glm::vec3 color;
+    };
 
-    auto& vertices = curly_hair.vertices;
+    const std::vector<Vertex> vertices {
+        { {  0.0f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
+        { {  0.5f,  0.5f }, { 0.0f, 1.0f, 0.0f } },
+        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } }
+    };
 
-    VkVertexInputBindingDescription binding_description { };
+    std::vector<vk::VertexBinding> vertex_bindings {
+        {
+            0,
+            sizeof(Vertex),
+            VK_VERTEX_INPUT_RATE_VERTEX
+        }
+    };
 
-    binding_description.binding = 0;
-
-    binding_description.stride = sizeof(glm::vec2);
-    binding_description.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-    VkVertexInputAttributeDescription attribute_description { };
-
-    attribute_description.binding = 0;
-    attribute_description.location = 0;
-    attribute_description.format = VK_FORMAT_R32G32_SFLOAT;
-    attribute_description.offset = 0;
-
-    VkDeviceSize vertex_offset { 0 };
+    std::vector<vk::VertexAttribute> vertex_attributes {
+        {
+            0,
+            0,
+            VK_FORMAT_R32G32_SFLOAT,
+            offsetof(Vertex, position)
+        },
+        {
+            1,
+            0,
+            VK_FORMAT_R32G32B32_SFLOAT,
+            offsetof(Vertex, color)
+        }
+    };
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
-    fixed_functions.set_line_width(2.0);
+    fixed_functions.set_vertex_bindings(vertex_bindings);
+    fixed_functions.set_vertex_attributes(vertex_attributes);
 
-    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+    vk::Buffer vertex_buffer {
+        device,
+        sizeof(vertices[0]) * vertices.size(),
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+    };
 
-    fixed_functions.vertex_input_state.vertexBindingDescriptionCount = 1;
-    fixed_functions.vertex_input_state.pVertexBindingDescriptions = &binding_description;
-    fixed_functions.vertex_input_state.vertexAttributeDescriptionCount = 1;
-    fixed_functions.vertex_input_state.pVertexAttributeDescriptions = &attribute_description;
+    auto memory_requirements = vertex_buffer.get_memory_requirements();
 
-    VkBufferCreateInfo buffer_info = {};
-    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    buffer_info.size = sizeof(vertices[0]) * vertices.size();
+    vk::DeviceMemory vertex_buffer_memory {
+        device,
+        memory_requirements
+    };
 
-    buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-
-    buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    VkBuffer vertex_buffer;
-
-    if (vkCreateBuffer(device.get_handle(), &buffer_info, nullptr, &vertex_buffer)) {
-        throw std::runtime_error { "Failed to create the hair strand buffer data!" };
-    }
-
-    VkMemoryRequirements memory_requirements;
-    vkGetBufferMemoryRequirements(device.get_handle(), vertex_buffer, &memory_requirements);
-
-    VkPhysicalDeviceMemoryProperties memory_properties;
-    vkGetPhysicalDeviceMemoryProperties(physical_device.get_handle(), &memory_properties);
-
-    std::uint32_t mindex;
-    std::uint32_t filter { memory_requirements.memoryTypeBits };
-    std::uint32_t properties { VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
-    for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++) {
-        if ((filter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties) {
-            mindex = i;
-        }
-    }
-
-    VkMemoryAllocateInfo alloc_info = {};
-    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    alloc_info.allocationSize = memory_requirements.size;
-    alloc_info.memoryTypeIndex = mindex;
-
-    VkDeviceMemory vertex_buffer_memory;
-
-    if (vkAllocateMemory(device.get_handle(), &alloc_info, nullptr, &vertex_buffer_memory)) {
-        throw std::runtime_error { "Failed to alloc strand data!" };
-    }
-
-    vkBindBufferMemory(device.get_handle(), vertex_buffer, vertex_buffer_memory, 0);
-
-    void* memory_map;
-    vkMapMemory(device.get_handle(), vertex_buffer_memory, 0, buffer_info.size, 0, &memory_map);
-    memcpy(memory_map, vertices.data(), static_cast<size_t>(buffer_info.size));
-    vkUnmapMemory(device.get_handle(), vertex_buffer_memory);
+    vertex_buffer.bind(vertex_buffer_memory);
+    vertex_buffer_memory.copy(vertices, 0ul);
 
     fixed_functions.disable_depth_testing(); // soon(tm)
 
@@ -228,10 +211,7 @@ int main(int argc, char** argv) {
         command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                              { 1.0f, 1.0f, 1.0f, 1.0f });
         command_buffers[i].bind_pipeline(graphics_pipeline);
-
-        vkCmdBindVertexBuffers(command_buffers[i].get_handle(), 0, 1,
-                               &vertex_buffer, &vertex_offset);
-
+        command_buffers[i].bind_vertex_buffer(0, 1, vertex_buffer, 0);
         command_buffers[i].draw(vertices.size(), 1, 0, 0);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
@@ -255,11 +235,6 @@ int main(int argc, char** argv) {
 
         window.poll_events();
     }
-
-    device.wait_idle();
-
-    vkDestroyBuffer(device.get_handle(), vertex_buffer, nullptr);
-    vkFreeMemory(device.get_handle(), vertex_buffer_memory, nullptr);
 
     return 0;
 }
