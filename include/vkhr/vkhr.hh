@@ -1,7 +1,6 @@
 #ifndef VKHR_VKHR_HH
 #define VKHR_VKHR_HH
 
-#include <vkhr/argument.hh>
 #include <vkhr/arg_parser.hh>
 #include <vkhr/camera.hh>
 #include <vkhr/hair_style.hh>

@@ -4,6 +4,12 @@
 
 #include <vkpp/exception.hh>
 
+#ifndef   WINDOWS
+#include <cstdlib>
+#else
+#include <windows.h>
+#endif
+
 #include <fstream>
 #include <utility>
 
@@ -88,6 +94,17 @@ namespace vkpp {
 
     VkShaderModule& ShaderModule::get_handle() {
         return handle;
+    }
+
+    void ShaderModule::recompile() {
+        std::string compiler { VKPP_SHADER_MODULE_COMPILER };
+        std::string shader_file { get_file_path() };
+        std::string glslc_compile { compiler + shader_file };
+#ifndef WINDOWS
+        system(glslc_compile.c_str());
+#else
+        WinExec(glslc_compile.c_str(), SW_HIDE);
+#endif
     }
 
     ShaderModule::Type ShaderModule::get_stage() const {

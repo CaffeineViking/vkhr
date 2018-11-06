@@ -1,9 +1,8 @@
 #version 450 core
 
-layout(location = 0) in  vec3 vs_color;
-
-layout(location = 0) out vec4 fs_color;
+layout(location = 0) out vec4 color;
 
 void main() {
-    fs_color = vec4(vs_color, 1.0);
+    vec3 hair_color = vec3(0.8f, 0.57f, 0.32f);
+    color = vec4(hair_color * 0.8, 0.05);
 }

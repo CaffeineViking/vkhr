@@ -11,6 +11,9 @@ int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
 
+    // TODO: start shoveling this code around
+    // to somewhere else. e.g. Rasterizer :-)
+
     vk::Version target_vulkan_loader { 1,1 };
     vk::Application application_information {
         "VKHR", { 1, 0, 0 },
@@ -118,19 +121,9 @@ int main(int argc, char** argv) {
         dependencies
     };
 
-    struct Vertex {
-        glm::vec2 position;
-        glm::vec3 color;
-    };
+    vkhr::HairStyle hair_style { STYLE("ponytail.hair") };
 
-    const std::vector<Vertex> vertices {
-        { {  0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
-        { {  0.5f,  0.5f }, { 0.0f, 1.0f, 0.0f } },
-        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } },
-        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } },
-        { { -0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f } },
-        { {  0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
-    };
+    auto& vertices = hair_style.vertices;
 
     vk::Buffer staging_buffer {
         device,
@@ -168,7 +161,7 @@ int main(int argc, char** argv) {
     std::vector<vk::VertexBinding> vertex_bindings {
         {
             0,
-            sizeof(Vertex),
+            sizeof(vertices[0]),
             VK_VERTEX_INPUT_RATE_VERTEX
         }
     };
@@ -177,23 +170,19 @@ int main(int argc, char** argv) {
         {
             0,
             0,
-            VK_FORMAT_R32G32_SFLOAT,
-            offsetof(Vertex, position)
-        },
-        {
-            1,
-            0,
             VK_FORMAT_R32G32B32_SFLOAT,
-            offsetof(Vertex, color)
+            0
         }
     };
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
+    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+
+    fixed_functions.set_line_width(1.0);
+
     fixed_functions.set_vertex_bindings(vertex_bindings);
     fixed_functions.set_vertex_attributes(vertex_attributes);
-
-    fixed_functions.disable_depth_testing();
 
     fixed_functions.set_scissor({ 0, 0, window.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
@@ -311,13 +300,13 @@ int main(int argc, char** argv) {
 
         mvp.model = glm::rotate(glm::mat4(1.0f),
                                 window.get_current_time() * glm::radians(90.0f),
-                                glm::vec3(0.0f, 0.0f, 1.0f));
-        mvp.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f),
-                               glm::vec3(0.0, 0.0, 0.0),
-                               glm::vec3(0.0, 0.0, 1.0));
+                                glm::vec3(0.0f, 1.0f, 0.0f));
+        mvp.view = glm::lookAt(glm::vec3(200.0f, 35.0f, 200.0f),
+                               glm::vec3(0.0, 60.0, 0.0),
+                               glm::vec3(0.0, 1.0, 0.0));
         mvp.projection = glm::perspective(glm::radians(45.0f),
                                           window.get_aspect_ratio(),
-                                          0.1f, 10.0f);
+                                          0.1f, 100000.0f);
         mvp.projection[1][1] *= -1;
 
         uniform_buffer_memories[next_image].copy(mvp);

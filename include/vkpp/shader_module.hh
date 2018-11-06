@@ -1,6 +1,8 @@
 #ifndef VKPP_SHADER_MODULE_HH
 #define VKPP_SHADER_MODULE_HH
 
+#define VKPP_SHADER_MODULE_COMPILER "glslc -O -Os -c "
+
 #include <vulkan/vulkan.h>
 
 #include <string>
@@ -31,6 +33,8 @@ namespace vkpp {
         friend void swap(ShaderModule& lhs, ShaderModule& rhs);
 
         VkShaderModule& get_handle();
+
+        void recompile();
 
         Type get_stage() const;
         std::size_t get_file_size() const;

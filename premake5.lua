@@ -21,6 +21,9 @@ workspace (name)
 
     floatingpoint "Fast"
 
+    filter { "system:windows" }
+        defines "WINDOWS"
+
     filter { "action:vs*" }
         include "utils/wsdk.lua"
         startproject "vkhr"

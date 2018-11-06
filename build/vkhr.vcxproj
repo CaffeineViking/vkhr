@@ -58,7 +58,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -74,7 +74,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RELEASE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
@@ -363,7 +363,6 @@
     <ClInclude Include="..\foreign\stb\stretchy_buffer.h" />
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h" />
     <ClInclude Include="..\include\vkhr\arg_parser.hh" />
-    <ClInclude Include="..\include\vkhr\argument.hh" />
     <ClInclude Include="..\include\vkhr\camera.hh" />
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
@@ -414,7 +413,6 @@
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
     <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\vkhr\arg_parser.cc" />
-    <ClCompile Include="..\src\vkhr\argument.cc" />
     <ClCompile Include="..\src\vkhr\camera.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\image.cc" />
