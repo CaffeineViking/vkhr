@@ -3,6 +3,10 @@
 
 namespace vk = vkpp;
 
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -120,9 +124,12 @@ int main(int argc, char** argv) {
     };
 
     const std::vector<Vertex> vertices {
-        { {  0.0f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
+        { {  0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
         { {  0.5f,  0.5f }, { 0.0f, 1.0f, 0.0f } },
-        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } }
+        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } },
+        { { -0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f } },
+        { { -0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f } },
+        { {  0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
     };
 
     vk::Buffer staging_buffer {
@@ -201,9 +208,56 @@ int main(int argc, char** argv) {
     shading_stages.emplace_back(device, SPIRV("strand.vert"));
     shading_stages.emplace_back(device, SPIRV("strand.frag"));
 
-    // Just the empty layout now.
+    struct Transform {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+    } mvp;
+
+    std::vector<vk::Buffer> uniform_buffers;
+    std::vector<vk::DeviceMemory> uniform_buffer_memories;
+
+    for (std::size_t i { 0 } ; i < swap_chain.size(); ++i) {
+        uniform_buffers.emplace_back(
+            device,
+            sizeof(mvp),
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
+        );
+
+        auto uniform_memory_requirements = uniform_buffers.back().get_memory_requirements();
+
+        uniform_buffer_memories.emplace_back(
+            device,
+            uniform_memory_requirements,
+            vk::DeviceMemory::Type::HostVisible
+        );
+
+        uniform_buffers.back().bind(uniform_buffer_memories.back());
+    }
+
+    vk::DescriptorSet::Layout descriptor_layout {
+        device,
+        {
+            { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
+        }
+    };
+
+    vk::DescriptorPool descriptor_pool {
+        device,
+        {
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, swap_chain.size() }
+        }
+    };
+
+    auto descriptor_sets = descriptor_pool.allocate(swap_chain.size(), descriptor_layout);
+
+    for (std::size_t i { 0 }; i < descriptor_sets.size(); ++i) {
+        descriptor_sets[i].write(0, uniform_buffers[i]);
+    }
+
     vk::Pipeline::Layout layout {
-        device
+        device,
+        descriptor_layout
     };
 
     vk::GraphicsPipeline graphics_pipeline {
@@ -231,13 +285,15 @@ int main(int argc, char** argv) {
         device.get_transfer_queue().submit(command_buffer).wait_idle();
     }
 
-    auto command_buffers = command_pool.allocate(2);
+    auto command_buffers = command_pool.allocate(framebuffers.size());
 
-    for (std::size_t i { 0 }; i < command_buffers.size(); ++i) {
+    for (std::size_t i { 0 }; i < framebuffers.size(); ++i) {
         command_buffers[i].begin();
         command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                              { 1.0f, 1.0f, 1.0f, 1.0f });
         command_buffers[i].bind_pipeline(graphics_pipeline);
+        command_buffers[i].bind_descriptor_set(descriptor_sets[i],
+                                               graphics_pipeline);
         command_buffers[i].bind_vertex_buffer(0, 1, vertex_buffer);
         command_buffers[i].draw(vertices.size(), 1, 0);
         command_buffers[i].end_render_pass();
@@ -252,6 +308,19 @@ int main(int argc, char** argv) {
         }
 
         auto next_image = swap_chain.acquire_next_image(image_available);
+
+        mvp.model = glm::rotate(glm::mat4(1.0f),
+                                window.get_current_time() * glm::radians(90.0f),
+                                glm::vec3(0.0f, 0.0f, 1.0f));
+        mvp.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f),
+                               glm::vec3(0.0, 0.0, 0.0),
+                               glm::vec3(0.0, 0.0, 1.0));
+        mvp.projection = glm::perspective(glm::radians(45.0f),
+                                          window.get_aspect_ratio(),
+                                          0.1f, 10.0f);
+        mvp.projection[1][1] *= -1;
+
+        uniform_buffer_memories[next_image].copy(mvp);
 
         device.get_graphics_queue().submit(command_buffers[next_image],
                                            image_available,

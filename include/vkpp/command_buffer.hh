@@ -3,6 +3,7 @@
 
 #include <vkpp/buffer.hh>
 #include <vkpp/pipeline.hh>
+#include <vkpp/descriptor_set.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/framebuffer.hh>
 
@@ -46,6 +47,9 @@ namespace vkpp {
                                VkClearValue clear_color);
 
         void bind_pipeline(Pipeline& pipeline);
+
+        void bind_descriptor_set(DescriptorSet& descriptor_set,
+                                 Pipeline& pipeline);
 
         void bind_vertex_buffer(std::uint32_t first_binding,
                                 std::uint32_t binding_count,

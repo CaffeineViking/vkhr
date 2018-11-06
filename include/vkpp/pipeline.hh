@@ -35,6 +35,10 @@ namespace vkpp {
                    const std::vector<VkPushConstantRange>& push_constants = {  });
 
             Layout(Device& logical_device,
+                   DescriptorSet::Layout& descriptor_layout,
+                   const std::vector<VkPushConstantRange>& push_constants = {  });
+
+            Layout(Device& logical_device,
                    const std::vector<VkPushConstantRange>& push_constants = {  });
 
             ~Layout() noexcept;
@@ -173,7 +177,7 @@ namespace vkpp {
                 VK_FALSE, // rasterizerDiscardEnable
                 VK_POLYGON_MODE_FILL, // polygonMode
                 VK_CULL_MODE_BACK_BIT, // cullMode
-                VK_FRONT_FACE_CLOCKWISE, // frontFace
+                VK_FRONT_FACE_COUNTER_CLOCKWISE, // frontFace
                 VK_FALSE, // depthBiasEnable
                 0.0, // depthBiasConstantFactor
                 0.0, // depthBiasClamp

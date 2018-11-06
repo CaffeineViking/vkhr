@@ -98,6 +98,14 @@ namespace vkpp {
         vkCmdBindPipeline(handle, pipeline.get_bind_point(), pipeline.get_handle());
     }
 
+    void CommandBuffer::bind_descriptor_set(DescriptorSet& descriptor_set,
+                                            Pipeline& pipeline) {
+        vkCmdBindDescriptorSets(handle, pipeline.get_bind_point(),
+                                pipeline.get_layout().get_handle(),
+                                0, 1, &descriptor_set.get_handle(),
+                                0, nullptr);
+    }
+
     void CommandBuffer::bind_vertex_buffer(std::uint32_t first_binding,
                                            std::uint32_t binding_count,
                                            Buffer& vertex_buffer,

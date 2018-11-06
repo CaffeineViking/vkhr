@@ -61,9 +61,6 @@ namespace vkhr {
         glfwSetWindowPos(handle, monitor_center_x, monitor_center_y);
         if (fullscreen) toggle_fullscreen();
         glfwShowWindow(handle);
-
-        float elapsed {  get_current_time()  };
-        last_frame_time = fps_update = elapsed;
     }
 
     Window::~Window() noexcept {
@@ -190,6 +187,9 @@ namespace vkhr {
     }
 
     void Window::poll_events() {
+        if (frame_time == -1)
+            set_time(0);
+
         float elapsed_time = get_current_time();
         frame_time = elapsed_time - last_frame_time;
         last_frame_time = elapsed_time;

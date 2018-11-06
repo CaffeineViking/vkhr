@@ -199,8 +199,8 @@ namespace vkpp {
         return presentation_mode;
     }
 
-    std::size_t SwapChain::size() const {
-        return image_views.size();
+    std::uint32_t SwapChain::size() const {
+        return static_cast<std::uint32_t>(image_views.size());
     }
 
     void SwapChain::create_swapchain_images() {

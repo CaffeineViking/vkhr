@@ -1,6 +1,8 @@
 #ifndef VKPP_DESCRIPTOR_SET_HH
 #define VKPP_DESCRIPTOR_SET_HH
 
+#include <vkpp/buffer.hh>
+
 #include <vulkan/vulkan.h>
 
 #include <vector>
@@ -14,7 +16,24 @@ namespace vkpp {
             std::uint32_t id;
             VkDescriptorType type;
             std::uint32_t count { 1 };
+            VkShaderStageFlagBits stages { VK_SHADER_STAGE_ALL };
         };
+
+        DescriptorSet() = default;
+
+        ~DescriptorSet() noexcept;
+
+        DescriptorSet(DescriptorSet&& pool) noexcept;
+        DescriptorSet& operator=(DescriptorSet&& pool) noexcept;
+
+        friend void swap(DescriptorSet& lhs, DescriptorSet& rhs);
+
+        VkDescriptorSet& get_handle();
+
+        void write(std::uint32_t binding,
+                   Buffer& buffer,
+                   VkDeviceSize offset = 0,
+                   VkDeviceSize size = VK_WHOLE_SIZE);
 
         class Layout final {
         public:
@@ -33,6 +52,8 @@ namespace vkpp {
 
             const std::vector<DescriptorSet::Binding>& get_bindings() const;
 
+            DescriptorSet::Binding& get_binding(std::uint32_t binding);
+
         private:
             VkDevice device { VK_NULL_HANDLE };
 
@@ -40,7 +61,47 @@ namespace vkpp {
 
             VkDescriptorSetLayout handle { VK_NULL_HANDLE };
         };
+
+        DescriptorSet(VkDescriptorSet& descriptor_set,
+                      VkDescriptorPool& descriptor_pool,
+                      Layout* descriptor_set_layout,
+                      VkDevice& device);
+
+        Layout& get_layout();
+
     private:
+        VkDescriptorSet  handle { VK_NULL_HANDLE };
+        VkDescriptorPool pool   { VK_NULL_HANDLE };
+        Layout*          layout { nullptr };
+        VkDevice         device { VK_NULL_HANDLE };
+    };
+
+    class DescriptorPool final {
+    public:
+        DescriptorPool() = default;
+
+        DescriptorPool(Device& device, const std::vector<VkDescriptorPoolSize>& pools);
+
+        ~DescriptorPool() noexcept;
+
+        DescriptorPool(DescriptorPool&& pool) noexcept;
+        DescriptorPool& operator=(DescriptorPool&& pool) noexcept;
+
+        friend void swap(DescriptorPool& lhs, DescriptorPool& rhs);
+
+        VkDescriptorPool& get_handle();
+
+        const std::vector<VkDescriptorPoolSize>& get_pool_sizes() const;
+
+        DescriptorSet allocate(DescriptorSet::Layout& layout);
+        std::vector<DescriptorSet> allocate(std::uint32_t num,
+                                            DescriptorSet::Layout& layout);
+
+    private:
+        std::vector<VkDescriptorPoolSize> pool_sizes;
+
+        VkDevice         device { VK_NULL_HANDLE };
+        VkDescriptorPool handle { VK_NULL_HANDLE };
     };
 }
 

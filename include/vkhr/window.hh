@@ -78,9 +78,9 @@ namespace vkhr {
 
         std::size_t frames { 0 };
 
-        float frame_time,
-              last_frame_time,
-              fps_update;
+        float frame_time { -1 },
+              last_frame_time { 0 },
+              fps_update { 0 };
     };
 }
 

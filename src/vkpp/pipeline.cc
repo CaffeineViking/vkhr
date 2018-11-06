@@ -70,6 +70,22 @@ namespace vkpp {
     }
 
     Pipeline::Layout::Layout(Device& logical_device,
+                             DescriptorSet::Layout& descriptor_layout,
+                             const std::vector<VkPushConstantRange>& push_constants)
+                            : push_constants { push_constants },
+                              device { logical_device.get_handle() } {
+        auto create_info = create_partial_info();
+
+        create_info.setLayoutCount = 1;
+
+        this->descriptor_layouts.reserve(1);
+        this->descriptor_layouts.push_back(descriptor_layout.get_handle());
+        create_info.pSetLayouts = this->descriptor_layouts.data();
+
+        create(create_info);
+    }
+
+    Pipeline::Layout::Layout(Device& logical_device,
                              const std::vector<VkPushConstantRange>& push_constants)
                             : push_constants { push_constants },
                               device { logical_device.get_handle() } {

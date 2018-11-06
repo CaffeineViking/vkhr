@@ -59,7 +59,7 @@ namespace vkpp {
 
         const VkSurfaceFormatKHR& get_surface_format() const;
 
-        std::size_t size() const;
+        std::uint32_t size() const;
 
     private:
         void create_swapchain_images();
