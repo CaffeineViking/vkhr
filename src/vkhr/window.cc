@@ -187,8 +187,9 @@ namespace vkhr {
     }
 
     void Window::poll_events() {
-        if (frame_time == -1)
-            set_time(0);
+        if (frame_time == -1) { // First frame of program
+            fps_update = frame_time = get_current_time();
+        }
 
         float elapsed_time = get_current_time();
         frame_time = elapsed_time - last_frame_time;

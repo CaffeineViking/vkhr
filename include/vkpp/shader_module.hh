@@ -1,7 +1,7 @@
 #ifndef VKPP_SHADER_MODULE_HH
 #define VKPP_SHADER_MODULE_HH
 
-#define VKPP_SHADER_MODULE_COMPILER "glslc -O -Os -c "
+#define VKPP_SHADER_MODULE_COMPILER "glslc -O -Os -c"
 
 #include <vulkan/vulkan.h>
 
@@ -43,12 +43,13 @@ namespace vkpp {
         std::uint32_t get_hash() const;
 
     private:
+        std::vector<char> load(const std::string& sbinary);
         std::uint32_t djb2a(const std::vector<char>& data);
 
         Type shader_type;
         std::string file_path;
         std::size_t file_size { 0 };
-        std::uint32_t hashed_data;
+        std::uint32_t hashed_spirv;
         std::vector<char> spirv;
 
         // TODO: eventually also support this :-)

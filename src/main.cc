@@ -194,8 +194,8 @@ int main(int argc, char** argv) {
 
     std::vector<vk::ShaderModule> shading_stages;
 
-    shading_stages.emplace_back(device, SPIRV("strand.vert"));
-    shading_stages.emplace_back(device, SPIRV("strand.frag"));
+    shading_stages.emplace_back(device, SHADER("strand.vert"));
+    shading_stages.emplace_back(device, SHADER("strand.frag"));
 
     struct Transform {
         glm::mat4 model;
