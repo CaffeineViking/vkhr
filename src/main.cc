@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 
     vkhr::HairStyle hair_style { STYLE("ponytail.hair") };
 
-    hair_style.generate_tangents();
+    hair_style.generate_tangents(); // TODO: pre-bake this
 
     vk::VertexBuffer vertex_buffer {
         device,
