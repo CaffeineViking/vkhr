@@ -27,12 +27,14 @@ namespace vkhr {
             ReadingThickness,
             ReadingTransparency,
             ReadingColor,
+            ReadingTangents,
 
             WritingSegments,
             WritingVertices,
             WritingThickness,
             WritingTransparency,
             WritingColor,
+            WritingTangents,
 
             InvalidFormat
         };
@@ -52,6 +54,7 @@ namespace vkhr {
         bool has_thickness() const;
         bool has_transparency() const;
         bool has_color() const;
+        bool has_tangents() const;
 
         unsigned get_default_segment_count() const;
         void set_default_segment_count(const unsigned default_segment_count);
@@ -65,6 +68,8 @@ namespace vkhr {
         std::string get_information() const;
         void set_information(const std::string& information);
 
+        void generate_tangents();
+
         // Let the user do what he pleases with the hair data.
         // Consistency with arrays is checked upon file write.
 
@@ -73,6 +78,7 @@ namespace vkhr {
         std::vector<float> thickness;
         std::vector<float> transparency;
         std::vector<glm::vec3> color;
+        std::vector<glm::vec3> tangents;
 
     private:
         mutable struct FileHeader {
@@ -87,7 +93,8 @@ namespace vkhr {
                          has_thickness    : 1,
                          has_transparency : 1,
                          has_color        : 1,
-                         future_extension : 27;
+                         has_tangents     : 1,
+                         future_extension : 26;
 
             } field;
 
@@ -115,6 +122,7 @@ namespace vkhr {
         bool read_thickness(std::ifstream& file);
         bool read_transparancy(std::ifstream& file);
         bool read_color(std::ifstream& file);
+        bool read_tangents(std::ifstream& file);
 
         template<typename T>
         bool write_field(std::ofstream& file, const std::vector<T>& field) const;
@@ -124,6 +132,7 @@ namespace vkhr {
         bool write_thickness(std::ofstream& file) const;
         bool write_transparancy(std::ofstream& file) const;
         bool write_color(std::ofstream& file) const;
+        bool write_tangents(std::ofstream& file) const;
 
         mutable Error error_state { Error::None };
     };

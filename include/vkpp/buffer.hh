@@ -60,7 +60,7 @@ namespace vkpp {
         struct Attribute {
             std::uint32_t location;
             VkFormat format;
-            std::uint32_t offset;
+            std::uint32_t offset { 0 };
         };
 
         using Bindings   = std::vector<VkVertexInputBindingDescription>;

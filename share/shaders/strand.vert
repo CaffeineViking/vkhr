@@ -11,9 +11,13 @@ out gl_PerVertex {
 };
 
 layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 tangents;
+
+layout(location = 0) out vec3 tangent;
 
 void main() {
-    gl_Position = transform.projection *
-                  transform.view *
-                  transform.model * vec4(position, 1.0);
+    mat4 projection = transform.projection;
+    mat4 model_view = transform.view * transform.model;
+    gl_Position = projection * model_view * vec4(position, 1.0);
+    tangent = (model_view * vec4(tangents, 0.0)).xyz;
 }

@@ -32,6 +32,7 @@ namespace vkhr {
         if (!read_thickness(file)) return set_error_state(Error::ReadingThickness);
         if (!read_transparancy(file)) return set_error_state(Error::ReadingTransparency);
         if (!read_color(file)) return set_error_state(Error::ReadingColor);
+        if (!read_tangents(file)) return set_error_state(Error::ReadingTangents);
 
         if (!format_is_valid()) return set_error_state(Error::InvalidFormat);
 
@@ -55,6 +56,7 @@ namespace vkhr {
         if (!write_thickness(file)) return set_error_state(Error::WritingThickness);
         if (!write_transparancy(file)) return set_error_state(Error::WritingTransparency);
         if (!write_color(file)) return set_error_state(Error::WritingColor);
+        if (!write_tangents(file)) return set_error_state(Error::WritingTangents);
 
         // Signature is already set, so we don't need to check for validity.
 
@@ -83,6 +85,7 @@ namespace vkhr {
     bool HairStyle::has_thickness() const { return thickness.size(); }
     bool HairStyle::has_transparency() const { return transparency.size(); }
     bool HairStyle::has_color() const { return color.size(); }
+    bool HairStyle::has_tangents() const { return tangents.size(); }
 
     // Below follows boilerplate for writing to the header.
 
@@ -133,6 +136,36 @@ namespace vkhr {
         std::strncpy(file_header.information, information.c_str(), copy_size);
     }
 
+    void HairStyle::generate_tangents() {
+        std::size_t vertex { 0 };
+        tangents.reserve(get_vertex_count());
+        for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
+            unsigned segment_count { get_default_segment_count() };
+            if (has_segments()) {
+                segment_count = segments[strand];
+            }
+
+            // Special tangent (at the start of an segment).
+            tangents.push_back(glm::vec3 { 0.0, 0.0, 0.0 });
+
+            ++vertex; // That first one is a vertex in this.
+
+            for (std::size_t segment { 1 }; segment < segment_count; ++segment) {
+                const auto& current_vertex { vertices[vertex + 0] };
+                const auto& next_vertex    { vertices[vertex + 1] };
+                const auto tangent { next_vertex - current_vertex };
+
+                tangents.push_back(glm::normalize(tangent));
+                ++vertex;
+            }
+
+            // Special tangent (at the end of the segments).
+            tangents.push_back(glm::vec3 { 0.0, 0.0, 0.0 });
+
+            ++vertex; // The last segment is also an vertex.
+        }
+    }
+
     bool HairStyle::valid_signature() const {
         return file_header.signature[0] == 'H' &&
                file_header.signature[1] == 'A' &&
@@ -146,6 +179,7 @@ namespace vkhr {
         if (has_thickness() && thickness.size() != vertices.size()) return false;
         if (has_transparency() && transparency.size() != vertices.size()) return false;
         if (has_color() && color.size() != vertices.size()) return false;
+        if (has_tangents() && tangents.size() != vertices.size()) return false;
         return true; // The rest we assume is right. It's hard to verify.
     }
 
@@ -167,6 +201,7 @@ namespace vkhr {
         file_header.field.has_thickness = has_thickness();
         file_header.field.has_transparency = has_transparency();
         file_header.field.has_color = has_color();
+        file_header.field.has_tangents = has_tangents();
         file_header.field.future_extension = 0;
     }
 
@@ -212,6 +247,13 @@ namespace vkhr {
         } return true;
     }
 
+    bool HairStyle::read_tangents(std::ifstream& file) {
+        if (file_header.field.has_tangents) {
+            tangents.resize(file_header.vertex_count);
+            return read_field(file, tangents);
+        } return true;
+    }
+
     bool HairStyle::write_segments(std::ofstream& file) const {
         if (file_header.field.has_segments) {
             return write_field(file, segments);
@@ -239,6 +281,12 @@ namespace vkhr {
     bool HairStyle::write_color(std::ofstream& file) const {
         if (file_header.field.has_color) {
             return write_field(file, color);
+        } return true;
+    }
+
+    bool HairStyle::write_tangents(std::ofstream& file) const {
+        if (file_header.field.has_tangents) {
+            return write_field(file, tangents);
         } return true;
     }
 }

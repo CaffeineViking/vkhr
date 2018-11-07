@@ -129,23 +129,32 @@ int main(int argc, char** argv) {
 
     vkhr::HairStyle hair_style { STYLE("ponytail.hair") };
 
+    hair_style.generate_tangents();
+
     vk::VertexBuffer vertex_buffer {
         device,
         graphics_pool,
         hair_style.vertices,
-        0, // binding number
+        0,
         {
-            {
-                0, // location
-                VK_FORMAT_R32G32B32_SFLOAT,
-                0 // attribute
-            }
+            { 0, VK_FORMAT_R32G32B32_SFLOAT }
+        }
+    };
+
+    vk::VertexBuffer normal_buffer {
+        device,
+        graphics_pool,
+        hair_style.tangents,
+        1,
+        {
+            { 1, VK_FORMAT_R32G32B32_SFLOAT }
         }
     };
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
     fixed_functions.add_vertex_input(vertex_buffer);
+    fixed_functions.add_vertex_input(normal_buffer);
 
     fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 
@@ -238,6 +247,7 @@ int main(int argc, char** argv) {
         command_buffers[i].bind_descriptor_set(descriptor_sets[i],
                                                graphics_pipeline);
         command_buffers[i].bind_vertex_buffer(vertex_buffer);
+        command_buffers[i].bind_vertex_buffer(normal_buffer);
         command_buffers[i].draw(vertex_buffer.elements(), 1);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
