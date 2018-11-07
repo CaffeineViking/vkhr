@@ -15,12 +15,14 @@ namespace vkhr {
 
     void Camera::rotate(const glm::vec3& around_axis, const float angle) {
         auto look_at_vector = look_at_point - position;
-        glm::rotate(look_at_vector, angle, around_axis);
+        look_at_vector = glm::rotate(look_at_vector, angle, around_axis);
         set_look_at_point(position + look_at_vector);
     }
 
     void Camera::translate(const glm::vec3& translation) {
-        set_position(this->position + translation);
+        this->look_at_point += translation;
+        this->position += translation;
+        recalculate_view_matrix();
     }
 
     void  Camera::set_aspect_ratio(const float aspect_ratio) {
@@ -39,6 +41,22 @@ namespace vkhr {
 
     float Camera::get_field_of_view() const {
         return field_of_view;
+    }
+
+    void Camera::set_move_speed(float speed) {
+        move_speed = speed;
+    }
+
+    float Camera::get_move_speed() const {
+        return move_speed;
+    }
+
+    float Camera::get_look_speed() const {
+        return look_speed;
+    }
+
+    void Camera::set_look_speed(float speed) {
+        look_speed = speed;
     }
 
     const glm::vec3& Camera::get_position() const {
@@ -68,6 +86,14 @@ namespace vkhr {
         return up_direction;
     }
 
+    void Camera::look_at(const glm::vec3& point, const glm::vec3& eye,
+                         const glm::vec3& up) {
+        this->position = eye;
+        this->up_direction = glm::normalize(up);
+        this->look_at_point = point;
+        recalculate_view_matrix();
+    }
+
     const glm::mat4& Camera::get_view_matrix() const {
         return view_matrix;
     }
@@ -77,17 +103,18 @@ namespace vkhr {
     }
 
     glm::vec3 Camera::get_left_direction() const {
-        return glm::cross(get_forward_direction(),
-                          get_up_direction());
+        return glm::cross(get_up_direction(),
+                          get_forward_direction());
     }
 
     glm::vec3 Camera::get_forward_direction() const {
-        return glm::normalize(position - look_at_point);
+        return glm::normalize(look_at_point - position);
     }
 
     void Camera::recalculate_projection_matrix() {
         projection_matrix = glm::perspective(field_of_view, aspect_ratio,
                                              near_distance, far_distance);
+        projection_matrix[1][1] *= -1; // Since Vulkan uses RHS coord-sys.
     }
 
     void Camera::recalculate_view_matrix() {

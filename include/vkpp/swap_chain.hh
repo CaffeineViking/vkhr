@@ -50,6 +50,8 @@ namespace vkpp {
         std::uint32_t get_width()  const;
         std::uint32_t get_height() const;
 
+        float get_aspect_ratio() const;
+
         VkImageLayout get_layout() const;
         const VkExtent2D& get_extent() const;
         VkSampleCountFlagBits get_sample_count();

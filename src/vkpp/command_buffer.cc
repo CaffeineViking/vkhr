@@ -115,6 +115,12 @@ namespace vkpp {
                                &vertex_offset);
     }
 
+    void CommandBuffer::bind_vertex_buffer(VertexBuffer& vertex_buffer,
+                                           VkDeviceSize vertex_offset) {
+        bind_vertex_buffer(vertex_buffer.get_binding_id(),
+                           1, vertex_buffer, vertex_offset);
+    }
+
     void CommandBuffer::draw(std::uint32_t index_count, std::uint32_t instance_count,
                              std::uint32_t first_vertex, std::uint32_t first_instance) {
         vkCmdDraw(handle, index_count, instance_count, first_vertex, first_instance);

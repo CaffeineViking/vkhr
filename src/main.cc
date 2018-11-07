@@ -4,6 +4,9 @@
 namespace vk = vkpp;
 
 #define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -75,6 +78,8 @@ int main(int argc, char** argv) {
         device_features
     };
 
+    vk::CommandPool graphics_pool { device, device.get_graphics_queue() };
+
     vk::SwapChain swap_chain {
         device,
         window_surface,
@@ -123,72 +128,33 @@ int main(int argc, char** argv) {
 
     vkhr::HairStyle hair_style { STYLE("ponytail.hair") };
 
-    auto& vertices = hair_style.vertices;
-
-    vk::Buffer staging_buffer {
+    vk::VertexBuffer vertex_buffer {
         device,
-        sizeof(vertices[0]) * vertices.size(),
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-    };
-
-    auto staging_memory_requirements = staging_buffer.get_memory_requirements();
-
-    vk::DeviceMemory staging_buffer_memory {
-        device,
-        staging_memory_requirements,
-        vk::DeviceMemory::Type::HostVisible
-    };
-
-    staging_buffer.bind(staging_buffer_memory);
-    staging_buffer_memory.copy(vertices, 0ul);
-
-    vk::Buffer vertex_buffer {
-        device,
-        sizeof(vertices[0]) * vertices.size(),
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
-    };
-
-    auto vertex_memory_requirements = vertex_buffer.get_memory_requirements();
-
-    vk::DeviceMemory vertex_buffer_memory {
-        device,
-        vertex_memory_requirements,
-        vk::DeviceMemory::Type::DeviceLocal
-    };
-
-    vertex_buffer.bind(vertex_buffer_memory);
-
-    std::vector<vk::VertexBinding> vertex_bindings {
+        graphics_pool,
+        hair_style.vertices,
+        0, // binding number
         {
-            0,
-            sizeof(vertices[0]),
-            VK_VERTEX_INPUT_RATE_VERTEX
-        }
-    };
-
-    std::vector<vk::VertexAttribute> vertex_attributes {
-        {
-            0,
-            0,
-            VK_FORMAT_R32G32B32_SFLOAT,
-            0
+            {
+                0, // location
+                VK_FORMAT_R32G32B32_SFLOAT,
+                0 // attribute
+            }
         }
     };
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
+    fixed_functions.add_vertex_input(vertex_buffer);
+
     fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
-
-    fixed_functions.set_line_width(1.0);
-
-    fixed_functions.set_vertex_bindings(vertex_bindings);
-    fixed_functions.set_vertex_attributes(vertex_attributes);
 
     fixed_functions.set_scissor({ 0, 0, window.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
                                    static_cast<float>(window.get_width()),
                                    static_cast<float>(window.get_height()),
                                    0.0, 1.0 });
+
+    fixed_functions.set_line_width(1.0);
 
     fixed_functions.enable_alpha_blending_for(0);
 
@@ -240,9 +206,8 @@ int main(int argc, char** argv) {
 
     auto descriptor_sets = descriptor_pool.allocate(swap_chain.size(), descriptor_layout);
 
-    for (std::size_t i { 0 }; i < descriptor_sets.size(); ++i) {
+    for (std::size_t i { 0 }; i < descriptor_sets.size(); ++i)
         descriptor_sets[i].write(0, uniform_buffers[i]);
-    }
 
     vk::Pipeline::Layout layout {
         device,
@@ -262,19 +227,7 @@ int main(int argc, char** argv) {
     vk::Semaphore image_available { device };
     vk::Semaphore render_complete { device };
 
-    vk::CommandPool command_pool { device, device.get_graphics_queue() };
-
-    {
-        auto command_buffer = command_pool.allocate();
-
-        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-        command_buffer.copy_buffer(staging_buffer, vertex_buffer);
-        command_buffer.end();
-
-        device.get_transfer_queue().submit(command_buffer).wait_idle();
-    }
-
-    auto command_buffers = command_pool.allocate(framebuffers.size());
+    auto command_buffers = graphics_pool.allocate(framebuffers.size());
 
     for (std::size_t i { 0 }; i < framebuffers.size(); ++i) {
         command_buffers[i].begin();
@@ -283,11 +236,16 @@ int main(int argc, char** argv) {
         command_buffers[i].bind_pipeline(graphics_pipeline);
         command_buffers[i].bind_descriptor_set(descriptor_sets[i],
                                                graphics_pipeline);
-        command_buffers[i].bind_vertex_buffer(0, 1, vertex_buffer);
-        command_buffers[i].draw(vertices.size(), 1, 0);
+        command_buffers[i].bind_vertex_buffer(vertex_buffer);
+        command_buffers[i].draw(vertex_buffer.elements(), 1);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
     }
+
+    vkhr::Camera camera { glm::radians(45.0f), swap_chain.get_aspect_ratio() };
+
+    camera.look_at({ 0.000f, 60.0f, 0.000f },
+                   { 200.0f, 35.0f, 200.0f });
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
@@ -299,15 +257,10 @@ int main(int argc, char** argv) {
         auto next_image = swap_chain.acquire_next_image(image_available);
 
         mvp.model = glm::rotate(glm::mat4(1.0f),
-                                window.get_current_time() * glm::radians(90.0f),
+                                window.get_current_time() * glm::radians(45.0f),
                                 glm::vec3(0.0f, 1.0f, 0.0f));
-        mvp.view = glm::lookAt(glm::vec3(200.0f, 35.0f, 200.0f),
-                               glm::vec3(0.0, 60.0, 0.0),
-                               glm::vec3(0.0, 1.0, 0.0));
-        mvp.projection = glm::perspective(glm::radians(45.0f),
-                                          window.get_aspect_ratio(),
-                                          0.1f, 100000.0f);
-        mvp.projection[1][1] *= -1;
+        mvp.projection = camera.get_projection_matrix();
+        mvp.view = camera.get_view_matrix();
 
         uniform_buffer_memories[next_image].copy(mvp);
 

@@ -1,9 +1,8 @@
 #include <vkpp/buffer.hh>
 
 #include <vkpp/queue.hh>
-
 #include <vkpp/exception.hh>
-
+#include <vkpp/command_buffer.hh>
 #include <vkpp/device.hh>
 
 #include <utility>
@@ -124,5 +123,55 @@ namespace vkpp {
     void Buffer::bind(DeviceMemory& device_memory, std::uint32_t offset) {
         memory = device_memory.get_handle();
         vkBindBufferMemory(device, handle, memory, offset);
+    }
+
+    void swap(VertexBuffer& lhs, VertexBuffer& rhs) {
+        using std::swap;
+
+        swap(static_cast<Buffer&>(lhs), static_cast<Buffer&>(rhs));
+
+        swap(lhs.element_count, rhs.element_count);
+        swap(lhs.device_memory, rhs.device_memory);
+        swap(lhs.binding,       rhs.binding);
+        swap(lhs.attributes,    rhs.attributes);
+    }
+
+    VertexBuffer& VertexBuffer::operator=(VertexBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+        return *this;
+    }
+
+    VertexBuffer::VertexBuffer(VertexBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+    }
+
+    void VertexBuffer::copy(Buffer& staged_buffer, CommandPool& pool) {
+        auto command_buffer = pool.allocate();
+
+        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        command_buffer.copy_buffer(staged_buffer, *this);
+        command_buffer.end();
+
+        pool.get_queue().submit(command_buffer).wait_idle();
+    }
+
+    const VertexBuffer::Attributes& VertexBuffer::get_attributes() const {
+        return attributes;
+    }
+
+    std::uint32_t VertexBuffer::get_binding_id() const {
+        return binding.binding;
+    }
+
+    const VkVertexInputBindingDescription& VertexBuffer::get_binding() const {
+        return binding;
+    }
+
+    DeviceMemory& VertexBuffer::get_device_memory() {
+        return device_memory;
+    }
+
+    VkDeviceSize VertexBuffer::elements() const {
+        return element_count;
     }
 }

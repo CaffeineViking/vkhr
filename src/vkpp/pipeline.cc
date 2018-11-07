@@ -254,10 +254,21 @@ namespace vkpp {
         vertex_input_state.pVertexAttributeDescriptions = vertex_attributes.data();
     }
 
-    void GraphicsPipeline::FixedFunction::add_vertex_binding(VertexBinding& binding) {
+    void GraphicsPipeline::FixedFunction::add_vertex_attributes(const VertexAttributes& a) {
+        vertex_attributes.insert(vertex_attributes.end(), a.cbegin(), a.cend());
+        vertex_input_state.vertexAttributeDescriptionCount = vertex_attributes.size();
+        vertex_input_state.pVertexAttributeDescriptions = vertex_attributes.data();
+    }
+
+    void GraphicsPipeline::FixedFunction::add_vertex_binding(const VertexBinding& binding) {
         vertex_bindings.push_back(binding);
         vertex_input_state.vertexBindingDescriptionCount = vertex_bindings.size();
         vertex_input_state.pVertexBindingDescriptions = vertex_bindings.data();
+    }
+
+    void GraphicsPipeline::FixedFunction::add_vertex_input(VertexBuffer& vertex_buffer) {
+        add_vertex_attributes(vertex_buffer.get_attributes());
+        add_vertex_binding(vertex_buffer.get_binding());
     }
 
     VkPrimitiveTopology GraphicsPipeline::FixedFunction::get_topology() const {

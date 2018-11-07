@@ -1,6 +1,7 @@
 #ifndef VKPP_PIPELINE_HH
 #define VKPP_PIPELINE_HH
 
+#include <vkpp/buffer.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/descriptor_set.hh>
 #include <vkpp/shader_module.hh>
@@ -11,6 +12,7 @@
 
 namespace vkpp {
     class Device;
+
     class Pipeline {
     public:
         Pipeline() = default;
@@ -79,10 +81,10 @@ namespace vkpp {
 
     };
 
-    using VertexBinding   = VkVertexInputBindingDescription;
-    using VertexAttribute = VkVertexInputAttributeDescription;
-    using VertexAttributes  = std::vector<VertexAttribute>;
-    using VertexBindings    = std::vector<VertexBinding>;
+    using VertexBinding    = VkVertexInputBindingDescription;
+    using VertexAttribute  = VkVertexInputAttributeDescription;
+    using VertexAttributes = std::vector<VertexAttribute>;
+    using VertexBindings   = std::vector<VertexBinding>;
 
     class GraphicsPipeline final : public Pipeline {
     public:
@@ -99,7 +101,10 @@ namespace vkpp {
             void set_vertex_attributes(const VertexAttributes& attributes);
             const VertexAttributes& get_vertex_attributes() const;
             void add_vertex_attribute(VertexAttribute& attribute);
-            void add_vertex_binding(VertexBinding& binding);
+            void add_vertex_attributes(const VertexAttributes& attributes);
+            void add_vertex_binding(const VertexBinding& binding);
+
+            void add_vertex_input(VertexBuffer& vertex_buffer);
 
             VkPipelineVertexInputStateCreateInfo   vertex_input_state {
                 VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,

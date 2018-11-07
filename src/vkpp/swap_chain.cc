@@ -175,6 +175,10 @@ namespace vkpp {
         return current_extent.height;
     }
 
+    float SwapChain::get_aspect_ratio() const {
+        return get_width() / static_cast<float>(get_height());
+    }
+
     const VkFormat& SwapChain::get_format() const {
         return format.format;
     }
