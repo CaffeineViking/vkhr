@@ -53,14 +53,15 @@ int main(int argc, char** argv) {
 
     // Find physical devices that seem most promising of the lot.
     auto score = [&](const vk::PhysicalDevice& physical_device) {
-        return physical_device.is_discrete_gpu() *
-               physical_device.has_every_queue() *
+        short gpu_suitable = physical_device.is_discrete_gpu()*2+
+                             physical_device.is_integrated_gpu();
+        return physical_device.has_every_queue() * gpu_suitable *
                physical_device.has_present_queue(window_surface);
     };
 
     auto physical_device = instance.find_physical_devices(score);
 
-    window.append_string(physical_device.get_details());
+    window.append_string(physical_device.get_name());
 
     physical_device.assign_present_queue_indices(window_surface);
 
