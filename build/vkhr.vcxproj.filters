@@ -894,6 +894,9 @@
     <ClInclude Include="..\include\vkhr\input_map.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\interface.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\logger.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -927,6 +930,9 @@
     <ClInclude Include="..\include\vkpp\application.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\barrier.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\buffer.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -958,9 +964,6 @@
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\image.hh">
-      <Filter>include\vkpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkpp\image_view.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\instance.hh">
@@ -1040,6 +1043,9 @@
     <ClCompile Include="..\src\vkhr\input_map.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\interface.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\logger.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
@@ -1057,6 +1063,9 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkpp\barrier.cc">
+      <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\buffer.cc">
       <Filter>src\vkpp</Filter>
@@ -1089,9 +1098,6 @@
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\image.cc">
-      <Filter>src\vkpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkpp\image_view.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\instance.cc">

@@ -139,6 +139,25 @@ namespace vkpp {
         std::vector<VkVertexInputAttributeDescription> attributes;
     };
 
+    class IndexBuffer : public DeviceBuffer {
+    public:
+        IndexBuffer() = default;
+
+        friend void swap(IndexBuffer& lhs, IndexBuffer& rhs);
+        IndexBuffer& operator=(IndexBuffer&& buffer) noexcept;
+        IndexBuffer(IndexBuffer&& buffer) noexcept;
+
+        template<typename T>
+        IndexBuffer(Device& device,
+                     CommandPool& pool,
+                     std::vector<T>& indices);
+
+        VkDeviceSize elements() const;
+
+    private:
+        VkDeviceSize element_count;
+    };
+
     class UniformBuffer : public HostBuffer {
     public:
         UniformBuffer() = default;
@@ -251,6 +270,17 @@ namespace vkpp {
         this->element_count = vertices.size();
 
         this->binding  = { binding, sizeof(vertices[0]), VK_VERTEX_INPUT_RATE_VERTEX };
+    }
+
+    template<typename T>
+    IndexBuffer::IndexBuffer(Device& device,
+                             CommandPool& pool,
+                             std::vector<T>& indices)
+                            : DeviceBuffer { device,
+                                               pool,
+                                               indices,
+                                               VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
+        this->element_count = indices.size();
     }
 
     template<typename T>

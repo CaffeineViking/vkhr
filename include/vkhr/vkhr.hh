@@ -6,6 +6,7 @@
 #include <vkhr/hair_style.hh>
 #include <vkhr/image.hh>
 #include <vkhr/input_map.hh>
+#include <vkhr/interface.hh>
 #include <vkhr/logger.hh>
 #include <vkhr/model.hh>
 #include <vkhr/paths.hh>

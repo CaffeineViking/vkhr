@@ -61,6 +61,7 @@ namespace vkpp {
             throw Exception { error, "failed to start recording command buffer!" };
         }
     }
+
     void CommandBuffer::copy_buffer(Buffer& source, Buffer& destination,
                                     std::uint32_t source_offset,
                                     std::uint32_t destination_offset) {

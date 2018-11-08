@@ -212,6 +212,27 @@ namespace vkpp {
         return element_count;
     }
 
+    void swap(IndexBuffer& lhs, IndexBuffer& rhs) {
+        using std::swap;
+
+        swap(static_cast<DeviceBuffer&>(lhs), static_cast<DeviceBuffer&>(rhs));
+
+        swap(lhs.element_count, rhs.element_count);
+    }
+
+    IndexBuffer& IndexBuffer::operator=(IndexBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+        return *this;
+    }
+
+    IndexBuffer::IndexBuffer(IndexBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+    }
+
+    VkDeviceSize IndexBuffer::elements() const {
+        return element_count;
+    }
+
     void swap(UniformBuffer& lhs, UniformBuffer& rhs) {
         using std::swap;
         swap(static_cast<HostBuffer&>(lhs), static_cast<HostBuffer&>(rhs));

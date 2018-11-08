@@ -57,6 +57,7 @@ project (name)
     -- For header-only libraries.
     includedirs "foreign/include"
     includedirs "foreign/imgui"
+    includedirs "foreign/examples/"
     files { "foreign/imgui/*.h",
             "foreign/imgui/imgui_draw.cpp",
             "foreign/imgui/imgui_widgets.cpp",

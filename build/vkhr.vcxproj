@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>DEBUG;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\examples;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -75,7 +75,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>RELEASE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\examples;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -367,6 +367,7 @@
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
     <ClInclude Include="..\include\vkhr\input_map.hh" />
+    <ClInclude Include="..\include\vkhr\interface.hh" />
     <ClInclude Include="..\include\vkhr\logger.hh" />
     <ClInclude Include="..\include\vkhr\model.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />
@@ -378,6 +379,7 @@
     <ClInclude Include="..\include\vkhr\window.hh" />
     <ClInclude Include="..\include\vkpp\append.hh" />
     <ClInclude Include="..\include\vkpp\application.hh" />
+    <ClInclude Include="..\include\vkpp\barrier.hh" />
     <ClInclude Include="..\include\vkpp\buffer.hh" />
     <ClInclude Include="..\include\vkpp\command_buffer.hh" />
     <ClInclude Include="..\include\vkpp\debug_messenger.hh" />
@@ -389,7 +391,6 @@
     <ClInclude Include="..\include\vkpp\fence.hh" />
     <ClInclude Include="..\include\vkpp\framebuffer.hh" />
     <ClInclude Include="..\include\vkpp\image.hh" />
-    <ClInclude Include="..\include\vkpp\image_view.hh" />
     <ClInclude Include="..\include\vkpp\instance.hh" />
     <ClInclude Include="..\include\vkpp\layer.hh" />
     <ClInclude Include="..\include\vkpp\physical_device.hh" />
@@ -417,12 +418,14 @@
     <ClCompile Include="..\src\vkhr\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\image.cc" />
     <ClCompile Include="..\src\vkhr\input_map.cc" />
+    <ClCompile Include="..\src\vkhr\interface.cc" />
     <ClCompile Include="..\src\vkhr\logger.cc" />
     <ClCompile Include="..\src\vkhr\model.cc" />
     <ClCompile Include="..\src\vkhr\rasterizer.cc" />
     <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
     <ClCompile Include="..\src\vkhr\scene_graph.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
+    <ClCompile Include="..\src\vkpp\barrier.cc" />
     <ClCompile Include="..\src\vkpp\buffer.cc" />
     <ClCompile Include="..\src\vkpp\command_buffer.cc" />
     <ClCompile Include="..\src\vkpp\debug_messenger.cc" />
@@ -436,7 +439,6 @@
     <ClCompile Include="..\src\vkpp\image.cc">
       <ObjectFileName>$(IntDir)\image1.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\src\vkpp\image_view.cc" />
     <ClCompile Include="..\src\vkpp\instance.cc" />
     <ClCompile Include="..\src\vkpp\layer.cc" />
     <ClCompile Include="..\src\vkpp\physical_device.cc" />
