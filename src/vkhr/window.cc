@@ -60,7 +60,6 @@ namespace vkhr {
 
         glfwSetWindowPos(handle, monitor_center_x, monitor_center_y);
         if (fullscreen) toggle_fullscreen();
-        glfwShowWindow(handle);
     }
 
     Window::~Window() noexcept {

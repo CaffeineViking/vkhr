@@ -242,6 +242,8 @@ int main(int argc, char** argv) {
     camera.look_at({ 0.000f, 60.0f, 0.000f },
                    { 200.0f, 35.0f, 200.0f });
 
+    window.show();
+
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();
