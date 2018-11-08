@@ -1,7 +1,7 @@
 #ifndef VKPP_FRAMEBUFFER_HH
 #define VKPP_FRAMEBUFFER_HH
 
-#include <vkpp/image_view.hh>
+#include <vkpp/image.hh>
 #include <vkpp/render_pass.hh>
 
 #include <vector>

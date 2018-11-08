@@ -60,10 +60,10 @@ project (name)
     files { "foreign/imgui/*.h",
             "foreign/imgui/imgui_draw.cpp",
             "foreign/imgui/imgui_widgets.cpp",
-            "foreign/imgui/examples/imgui_impl_vulkan.h",
-            "foreign/imgui/examples/imgui_impl_vulkan.cpp",
             "foreign/imgui/examples/imgui_impl_glfw.cpp",
             "foreign/imgui/examples/imgui_impl_glfw.h",
+            "foreign/imgui/examples/imgui_impl_vulkan.h",
+            "foreign/imgui/examples/imgui_impl_vulkan.cpp",
             "foreign/imgui/imgui.cpp" }
     includedirs "foreign/imgui/examples"
     includedirs "foreign/json/include"

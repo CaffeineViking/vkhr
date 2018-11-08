@@ -1,7 +1,7 @@
 #ifndef VKPP_SWAP_CHAIN_HH
 #define VKPP_SWAP_CHAIN_HH
 
-#include <vkpp/image_view.hh>
+#include <vkpp/image.hh>
 #include <vkpp/semaphore.hh>
 #include <vkpp/framebuffer.hh>
 #include <vkpp/render_pass.hh>

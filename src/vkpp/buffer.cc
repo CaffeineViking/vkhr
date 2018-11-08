@@ -125,13 +125,64 @@ namespace vkpp {
         vkBindBufferMemory(device, handle, memory, offset);
     }
 
-    void swap(VertexBuffer& lhs, VertexBuffer& rhs) {
+    void swap(DeviceBuffer& lhs, DeviceBuffer& rhs) {
         using std::swap;
 
         swap(static_cast<Buffer&>(lhs), static_cast<Buffer&>(rhs));
 
-        swap(lhs.element_count, rhs.element_count);
         swap(lhs.device_memory, rhs.device_memory);
+    }
+
+    DeviceBuffer& DeviceBuffer::operator=(DeviceBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+        return *this;
+    }
+
+    DeviceBuffer::DeviceBuffer(DeviceBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+    }
+
+    void DeviceBuffer::copy(Buffer& staged_buffer, CommandPool& pool) {
+        auto command_buffer = pool.allocate();
+
+        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        command_buffer.copy_buffer(staged_buffer, *this);
+        command_buffer.end();
+
+        pool.get_queue().submit(command_buffer).wait_idle();
+    }
+
+    DeviceMemory& DeviceBuffer::get_device_memory() {
+        return device_memory;
+    }
+
+    void swap(HostBuffer& lhs, HostBuffer& rhs) {
+        using std::swap;
+
+        swap(static_cast<Buffer&>(lhs), static_cast<Buffer&>(rhs));
+
+        swap(lhs.device_memory, rhs.device_memory);
+    }
+
+    HostBuffer& HostBuffer::operator=(HostBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+        return *this;
+    }
+
+    HostBuffer::HostBuffer(HostBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+    }
+
+    DeviceMemory& HostBuffer::get_device_memory() {
+        return device_memory;
+    }
+
+    void swap(VertexBuffer& lhs, VertexBuffer& rhs) {
+        using std::swap;
+
+        swap(static_cast<DeviceBuffer&>(lhs), static_cast<DeviceBuffer&>(rhs));
+
+        swap(lhs.element_count, rhs.element_count);
         swap(lhs.binding,       rhs.binding);
         swap(lhs.attributes,    rhs.attributes);
     }
@@ -143,16 +194,6 @@ namespace vkpp {
 
     VertexBuffer::VertexBuffer(VertexBuffer&& buffer) noexcept {
         swap(*this, buffer);
-    }
-
-    void VertexBuffer::copy(Buffer& staged_buffer, CommandPool& pool) {
-        auto command_buffer = pool.allocate();
-
-        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-        command_buffer.copy_buffer(staged_buffer, *this);
-        command_buffer.end();
-
-        pool.get_queue().submit(command_buffer).wait_idle();
     }
 
     const VertexBuffer::Attributes& VertexBuffer::get_attributes() const {
@@ -167,20 +208,13 @@ namespace vkpp {
         return binding;
     }
 
-    DeviceMemory& VertexBuffer::get_device_memory() {
-        return device_memory;
-    }
-
     VkDeviceSize VertexBuffer::elements() const {
         return element_count;
     }
 
     void swap(UniformBuffer& lhs, UniformBuffer& rhs) {
         using std::swap;
-
-        swap(static_cast<Buffer&>(lhs), static_cast<Buffer&>(rhs));
-
-        swap(lhs.device_memory, rhs.device_memory);
+        swap(static_cast<HostBuffer&>(lhs), static_cast<HostBuffer&>(rhs));
     }
 
     UniformBuffer& UniformBuffer::operator=(UniformBuffer&& buffer) noexcept {

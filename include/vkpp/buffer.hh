@@ -55,7 +55,53 @@ namespace vkpp {
         VkBuffer handle { VK_NULL_HANDLE };
     };
 
-    class VertexBuffer : public Buffer {
+    class DeviceBuffer : public Buffer {
+    public:
+        DeviceBuffer() = default;
+
+        friend void swap(DeviceBuffer& lhs, DeviceBuffer& rhs);
+        DeviceBuffer& operator=(DeviceBuffer&& buffer) noexcept;
+        DeviceBuffer(DeviceBuffer&& buffer) noexcept;
+
+        template<typename T>
+        DeviceBuffer(Device& device,
+                     CommandPool& pool,
+                     std::vector<T>& data,
+                     VkBufferUsageFlags usage);
+
+        DeviceMemory& get_device_memory();
+
+    protected:
+        void copy(Buffer& staged, CommandPool& pool);
+
+        DeviceMemory device_memory;
+    };
+
+    class HostBuffer : public Buffer {
+    public:
+        HostBuffer() = default;
+
+        friend void swap(HostBuffer& lhs, HostBuffer& rhs);
+        HostBuffer& operator=(HostBuffer&& buffer) noexcept;
+        HostBuffer(HostBuffer&& buffer) noexcept;
+
+        template<typename T>
+        HostBuffer(Device& device,
+                   std::vector<T>& data,
+                   VkBufferUsageFlags usage);
+
+        template<typename T>
+        HostBuffer(Device& device,
+                   T& data_object,
+                   VkBufferUsageFlags usage);
+
+        DeviceMemory& get_device_memory();
+
+    protected:
+        DeviceMemory device_memory;
+    };
+
+    class VertexBuffer : public DeviceBuffer {
     public:
         struct Attribute {
             std::uint32_t location;
@@ -79,8 +125,6 @@ namespace vkpp {
                      std::uint32_t binding,
                      const std::vector<Attribute> attributes);
 
-        DeviceMemory& get_device_memory();
-
         std::uint32_t get_binding_id() const;
 
         const VkVertexInputBindingDescription& get_binding() const;
@@ -90,15 +134,12 @@ namespace vkpp {
         VkDeviceSize elements() const;
 
     private:
-        void copy(Buffer& staged, CommandPool& command_pool);
-
         VkDeviceSize element_count;
-        DeviceMemory device_memory;
         VkVertexInputBindingDescription binding;
         std::vector<VkVertexInputAttributeDescription> attributes;
     };
 
-    class UniformBuffer : public Buffer {
+    class UniformBuffer : public HostBuffer {
     public:
         UniformBuffer() = default;
 
@@ -112,36 +153,19 @@ namespace vkpp {
 
         template<typename T>
         void update(T& update_object);
-
-    private:
-        DeviceMemory device_memory;
     };
 
     template<typename T>
-    VertexBuffer::VertexBuffer(Device& device,
+    DeviceBuffer::DeviceBuffer(Device& device,
                                CommandPool& pool,
-                               std::vector<T>& vertices,
-                               std::uint32_t binding,
-                               const std::vector<Attribute> attributes)
+                               std::vector<T>& buffer,
+                               VkBufferUsageFlags usage)
                               : Buffer { device,
-                                         sizeof(vertices[0]) * vertices.size(),
-                                         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-                                         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT } {
-        this->attributes.reserve(attributes.size());
-        for (const auto& attribute : attributes) {
-            this->attributes.push_back({ attribute.location,
-                                         binding,
-                                         attribute.format,
-                                         attribute.offset });
-        }
-
-        this->element_count = vertices.size();
-
-        this->binding  = { binding, sizeof(vertices[0]), VK_VERTEX_INPUT_RATE_VERTEX };
-
+                                         sizeof(buffer[0]) * buffer.size(),
+                                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage } {
         Buffer staging_buffer {
             device,
-            sizeof(vertices[0]) * vertices.size(),
+            sizeof(buffer[0]) * buffer.size(),
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT
         };
 
@@ -154,26 +178,47 @@ namespace vkpp {
         };
 
         staging_buffer.bind(staging_memory);
-        staging_memory.copy(vertices, 0);
+        staging_memory.copy(buffer, 0);
 
-        auto vertex_memory_requirements = get_memory_requirements();
+        auto buffer_memory_requirements = get_memory_requirements();
 
         device_memory = DeviceMemory {
             device,
-            vertex_memory_requirements,
+            buffer_memory_requirements,
             DeviceMemory::Type::DeviceLocal
         };
 
         bind(device_memory);
         copy(staging_buffer,
              pool);
-
     }
 
     template<typename T>
-    UniformBuffer::UniformBuffer(Device& device, T& data_object)
-                                : Buffer { device,  sizeof(data_object),
-                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT} {
+    HostBuffer::HostBuffer(Device& device,
+                           std::vector<T>& buffer,
+                           VkBufferUsageFlags usage)
+                          : Buffer { device,
+                                     sizeof(buffer[0]) * buffer.size(),
+                                     usage } {
+        auto memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        bind(device_memory);
+        device_memory.copy(buffer, 0);
+    }
+
+    template<typename T>
+    HostBuffer::HostBuffer(Device& device,
+                           T& data_object,
+                           VkBufferUsageFlags usage)
+                          : Buffer { device,
+                                     sizeof(data_object),
+                                     usage } {
         auto memory_requirements = get_memory_requirements();
         device_memory = DeviceMemory {
             device,
@@ -182,7 +227,36 @@ namespace vkpp {
         };
 
         bind(device_memory);
+        device_memory.copy(data_object, 0);
     }
+
+    template<typename T>
+    VertexBuffer::VertexBuffer(Device& device,
+                               CommandPool& pool,
+                               std::vector<T>& vertices,
+                               std::uint32_t binding,
+                               const std::vector<Attribute> attributes)
+                              : DeviceBuffer { device,
+                                               pool,
+                                               vertices,
+                                               VK_BUFFER_USAGE_VERTEX_BUFFER_BIT } {
+        this->attributes.reserve(attributes.size());
+        for (const auto& attribute : attributes) {
+            this->attributes.push_back({ attribute.location,
+                                         binding,
+                                         attribute.format,
+                                         attribute.offset });
+        }
+
+        this->element_count = vertices.size();
+
+        this->binding  = { binding, sizeof(vertices[0]), VK_VERTEX_INPUT_RATE_VERTEX };
+    }
+
+    template<typename T>
+    UniformBuffer::UniformBuffer(Device& device, T& data_object)
+                                : HostBuffer { device,  data_object,
+                                               VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT } { }
 
     template<typename T>
     void UniformBuffer::update(T& update_object) {

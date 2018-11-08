@@ -157,7 +157,7 @@ namespace vkpp {
         VkCommandPoolCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
         create_info.pNext = nullptr;
-        create_info.flags = 0;
+        create_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
         create_info.queueFamilyIndex = queue.get_family_index();
 
