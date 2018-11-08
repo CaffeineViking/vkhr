@@ -98,6 +98,25 @@ namespace vkpp {
         std::vector<VkVertexInputAttributeDescription> attributes;
     };
 
+    class UniformBuffer : public Buffer {
+    public:
+        UniformBuffer() = default;
+
+        friend void swap(UniformBuffer& lhs, UniformBuffer& rhs);
+        UniformBuffer& operator=(UniformBuffer&& buffer) noexcept;
+        UniformBuffer(UniformBuffer&& buffer) noexcept;
+
+        template<typename T>
+        UniformBuffer(Device& device,
+                      T& data_object);
+
+        template<typename T>
+        void update(T& update_object);
+
+    private:
+        DeviceMemory device_memory;
+    };
+
     template<typename T>
     VertexBuffer::VertexBuffer(Device& device,
                                CommandPool& pool,
@@ -149,6 +168,25 @@ namespace vkpp {
         copy(staging_buffer,
              pool);
 
+    }
+
+    template<typename T>
+    UniformBuffer::UniformBuffer(Device& device, T& data_object)
+                                : Buffer { device,  sizeof(data_object),
+                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT} {
+        auto memory_requirements = get_memory_requirements();
+        device_memory = DeviceMemory {
+            device,
+            memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        bind(device_memory);
+    }
+
+    template<typename T>
+    void UniformBuffer::update(T& update_object) {
+        device_memory.copy(update_object);
     }
 }
 

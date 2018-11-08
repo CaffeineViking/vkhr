@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
         device_features
     };
 
-    vk::CommandPool graphics_pool { device, device.get_graphics_queue() };
+    vk::CommandPool command_pool { device, device.get_graphics_queue() };
 
     vk::SwapChain swap_chain {
         device,
@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
 
     vk::VertexBuffer vertex_buffer {
         device,
-        graphics_pool,
+        command_pool,
         hair_style.vertices,
         0,
         {
@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 
     vk::VertexBuffer normal_buffer {
         device,
-        graphics_pool,
+        command_pool,
         hair_style.tangents,
         1,
         {
@@ -179,26 +179,10 @@ int main(int argc, char** argv) {
         glm::mat4 projection;
     } mvp;
 
-    std::vector<vk::Buffer> uniform_buffers;
-    std::vector<vk::DeviceMemory> uniform_buffer_memories;
+    std::vector<vk::UniformBuffer> uniform_buffers;
 
-    for (std::size_t i { 0 } ; i < swap_chain.size(); ++i) {
-        uniform_buffers.emplace_back(
-            device,
-            sizeof(mvp),
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
-        );
-
-        auto uniform_memory_requirements = uniform_buffers.back().get_memory_requirements();
-
-        uniform_buffer_memories.emplace_back(
-            device,
-            uniform_memory_requirements,
-            vk::DeviceMemory::Type::HostVisible
-        );
-
-        uniform_buffers.back().bind(uniform_buffer_memories.back());
-    }
+    for (std::size_t i { 0 } ; i < swap_chain.size(); ++i)
+        uniform_buffers.emplace_back(device, mvp);
 
     vk::DescriptorSet::Layout descriptor_layout {
         device,
@@ -237,7 +221,7 @@ int main(int argc, char** argv) {
     vk::Semaphore image_available { device };
     vk::Semaphore render_complete { device };
 
-    auto command_buffers = graphics_pool.allocate(framebuffers.size());
+    auto command_buffers = command_pool.allocate(framebuffers.size());
 
     for (std::size_t i { 0 }; i < framebuffers.size(); ++i) {
         command_buffers[i].begin();
@@ -273,7 +257,7 @@ int main(int argc, char** argv) {
         mvp.projection = camera.get_projection_matrix();
         mvp.view = camera.get_view_matrix();
 
-        uniform_buffer_memories[next_image].copy(mvp);
+        uniform_buffers[next_image].update(mvp);
 
         device.get_graphics_queue().submit(command_buffers[next_image],
                                            image_available,

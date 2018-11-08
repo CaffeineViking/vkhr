@@ -174,4 +174,21 @@ namespace vkpp {
     VkDeviceSize VertexBuffer::elements() const {
         return element_count;
     }
+
+    void swap(UniformBuffer& lhs, UniformBuffer& rhs) {
+        using std::swap;
+
+        swap(static_cast<Buffer&>(lhs), static_cast<Buffer&>(rhs));
+
+        swap(lhs.device_memory, rhs.device_memory);
+    }
+
+    UniformBuffer& UniformBuffer::operator=(UniformBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+        return *this;
+    }
+
+    UniformBuffer::UniformBuffer(UniformBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+    }
 }
