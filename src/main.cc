@@ -182,7 +182,8 @@ int main(int argc, char** argv) {
     std::vector<vk::UniformBuffer> uniform_buffers;
 
     for (std::size_t i { 0 } ; i < swap_chain.size(); ++i)
-        uniform_buffers.emplace_back(device, mvp);
+        uniform_buffers.emplace_back(device, mvp,
+                                     sizeof(mvp));
 
     vk::DescriptorSet::Layout descriptor_layout {
         device,

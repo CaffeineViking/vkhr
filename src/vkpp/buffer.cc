@@ -125,6 +125,44 @@ namespace vkpp {
         vkBindBufferMemory(device, handle, memory, offset);
     }
 
+    DeviceBuffer::DeviceBuffer(Device& device,
+                               CommandPool& pool,
+                               const void* buffer,
+                               VkDeviceSize size,
+                               VkBufferUsageFlags usage)
+                              : Buffer { device,
+                                         size,
+                                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage } {
+        Buffer staging_buffer {
+            device,
+            size,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        DeviceMemory staging_memory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+        staging_memory.copy(size, buffer);
+
+        auto buffer_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            buffer_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
+        copy(staging_buffer,
+             pool);
+    }
+
     void swap(DeviceBuffer& lhs, DeviceBuffer& rhs) {
         using std::swap;
 
@@ -154,6 +192,25 @@ namespace vkpp {
 
     DeviceMemory& DeviceBuffer::get_device_memory() {
         return device_memory;
+    }
+
+    HostBuffer::HostBuffer(Device& device,
+                           const void* buffer,
+                           VkDeviceSize size,
+                           VkBufferUsageFlags usage)
+                          : Buffer { device,
+                                     size,
+                                     usage } {
+        auto memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        bind(device_memory);
+        device_memory.copy(size, buffer);
     }
 
     void swap(HostBuffer& lhs, HostBuffer& rhs) {
@@ -244,6 +301,20 @@ namespace vkpp {
     }
 
     UniformBuffer::UniformBuffer(UniformBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+    }
+
+    void swap(StorageBuffer& lhs, StorageBuffer& rhs) {
+        using std::swap;
+        swap(static_cast<DeviceBuffer&>(lhs), static_cast<DeviceBuffer&>(rhs));
+    }
+
+    StorageBuffer& StorageBuffer::operator=(StorageBuffer&& buffer) noexcept {
+        swap(*this, buffer);
+        return *this;
+    }
+
+    StorageBuffer::StorageBuffer(StorageBuffer&& buffer) noexcept {
         swap(*this, buffer);
     }
 }

@@ -42,12 +42,6 @@ namespace vkpp {
 
         void copy(VkDeviceSize size, const void* data, VkDeviceSize offset = 0);
 
-        template<typename T>
-        void copy(const std::vector<T>&, VkDeviceSize offset = 0);
-
-        template<typename T>
-        void copy(T, VkDeviceSize offset = 0);
-
     private:
         std::uint32_t type;
         VkDeviceSize  size;
@@ -55,16 +49,6 @@ namespace vkpp {
         VkDevice device       { VK_NULL_HANDLE };
         VkDeviceMemory handle { VK_NULL_HANDLE };
     };
-
-    template<typename T>
-    void DeviceMemory::copy(const std::vector<T>& container, VkDeviceSize offset) {
-        copy(sizeof(container[0]) * container.size(), container.data(), offset);
-    }
-
-    template<typename T>
-    void DeviceMemory::copy(T object, VkDeviceSize offset) {
-        copy(sizeof(T), reinterpret_cast<void*>(&object), offset);
-    }
 }
 
 #endif

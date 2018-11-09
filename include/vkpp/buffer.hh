@@ -24,7 +24,7 @@ namespace vkpp {
         Buffer(Device& device,
                VkDeviceSize size,
                VkBufferUsageFlags usage,
-               std::vector<Queue>& queue_families);
+               std::vector<Queue>& fam);
 
         virtual ~Buffer() noexcept;
 
@@ -42,7 +42,8 @@ namespace vkpp {
         VkSharingMode get_sharing_mode() const;
         VkBufferUsageFlags get_usage() const;
 
-        void bind(DeviceMemory& device_memory, std::uint32_t offset = 0);
+        void bind(DeviceMemory& device_memory,
+                  std::uint32_t offset = 0);
 
     protected:
         VkDeviceSize size;
@@ -63,41 +64,17 @@ namespace vkpp {
         DeviceBuffer& operator=(DeviceBuffer&& buffer) noexcept;
         DeviceBuffer(DeviceBuffer&& buffer) noexcept;
 
-        template<typename T>
         DeviceBuffer(Device& device,
                      CommandPool& pool,
-                     std::vector<T>& data,
+                     const void* buffer,
+                     VkDeviceSize size,
                      VkBufferUsageFlags usage);
 
         DeviceMemory& get_device_memory();
 
     protected:
-        void copy(Buffer& staged, CommandPool& pool);
+        void copy(Buffer& staged_buffer, CommandPool& cmd_pool);
 
-        DeviceMemory device_memory;
-    };
-
-    class HostBuffer : public Buffer {
-    public:
-        HostBuffer() = default;
-
-        friend void swap(HostBuffer& lhs, HostBuffer& rhs);
-        HostBuffer& operator=(HostBuffer&& buffer) noexcept;
-        HostBuffer(HostBuffer&& buffer) noexcept;
-
-        template<typename T>
-        HostBuffer(Device& device,
-                   std::vector<T>& data,
-                   VkBufferUsageFlags usage);
-
-        template<typename T>
-        HostBuffer(Device& device,
-                   T& data_object,
-                   VkBufferUsageFlags usage);
-
-        DeviceMemory& get_device_memory();
-
-    protected:
         DeviceMemory device_memory;
     };
 
@@ -121,7 +98,7 @@ namespace vkpp {
         template<typename T>
         VertexBuffer(Device& device,
                      CommandPool& pool,
-                     std::vector<T>& vertices,
+                     const std::vector<T>& vertices,
                      std::uint32_t binding,
                      const std::vector<Attribute> attributes);
 
@@ -149,13 +126,46 @@ namespace vkpp {
 
         template<typename T>
         IndexBuffer(Device& device,
-                     CommandPool& pool,
-                     std::vector<T>& indices);
+                    CommandPool& pool,
+                    const std::vector<T>& indices);
 
         VkDeviceSize elements() const;
 
     private:
         VkDeviceSize element_count;
+    };
+
+    class StorageBuffer : public DeviceBuffer {
+    public:
+        StorageBuffer() = default;
+
+        friend void swap(StorageBuffer& lhs, StorageBuffer& rhs);
+        StorageBuffer& operator=(StorageBuffer&& buffer) noexcept;
+        StorageBuffer(StorageBuffer&& buffer) noexcept;
+
+        template<typename T>
+        StorageBuffer(Device& device,
+                      const T& buffer,
+                      VkDeviceSize size);
+    };
+
+    class HostBuffer : public Buffer {
+    public:
+        HostBuffer() = default;
+
+        friend void swap(HostBuffer& lhs, HostBuffer& rhs);
+        HostBuffer& operator=(HostBuffer&& buffer) noexcept;
+        HostBuffer(HostBuffer&& buffer) noexcept;
+
+        HostBuffer(Device& device,
+                   const void* buffer,
+                   VkDeviceSize size,
+                   VkBufferUsageFlags usage);
+
+        DeviceMemory& get_device_memory();
+
+    protected:
+        DeviceMemory device_memory;
     };
 
     class UniformBuffer : public HostBuffer {
@@ -168,96 +178,23 @@ namespace vkpp {
 
         template<typename T>
         UniformBuffer(Device& device,
-                      T& data_object);
+                      const T& buffer,
+                      VkDeviceSize size);
 
         template<typename T>
-        void update(T& update_object);
+        void update(T& uniform_data_obj);
     };
-
-    template<typename T>
-    DeviceBuffer::DeviceBuffer(Device& device,
-                               CommandPool& pool,
-                               std::vector<T>& buffer,
-                               VkBufferUsageFlags usage)
-                              : Buffer { device,
-                                         sizeof(buffer[0]) * buffer.size(),
-                                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage } {
-        Buffer staging_buffer {
-            device,
-            sizeof(buffer[0]) * buffer.size(),
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-        };
-
-        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
-
-        DeviceMemory staging_memory {
-            device,
-            staging_memory_requirements,
-            DeviceMemory::Type::HostVisible
-        };
-
-        staging_buffer.bind(staging_memory);
-        staging_memory.copy(buffer, 0);
-
-        auto buffer_memory_requirements = get_memory_requirements();
-
-        device_memory = DeviceMemory {
-            device,
-            buffer_memory_requirements,
-            DeviceMemory::Type::DeviceLocal
-        };
-
-        bind(device_memory);
-        copy(staging_buffer,
-             pool);
-    }
-
-    template<typename T>
-    HostBuffer::HostBuffer(Device& device,
-                           std::vector<T>& buffer,
-                           VkBufferUsageFlags usage)
-                          : Buffer { device,
-                                     sizeof(buffer[0]) * buffer.size(),
-                                     usage } {
-        auto memory_requirements = get_memory_requirements();
-
-        device_memory = DeviceMemory {
-            device,
-            memory_requirements,
-            DeviceMemory::Type::HostVisible
-        };
-
-        bind(device_memory);
-        device_memory.copy(buffer, 0);
-    }
-
-    template<typename T>
-    HostBuffer::HostBuffer(Device& device,
-                           T& data_object,
-                           VkBufferUsageFlags usage)
-                          : Buffer { device,
-                                     sizeof(data_object),
-                                     usage } {
-        auto memory_requirements = get_memory_requirements();
-        device_memory = DeviceMemory {
-            device,
-            memory_requirements,
-            DeviceMemory::Type::HostVisible
-        };
-
-        bind(device_memory);
-        device_memory.copy(data_object, 0);
-    }
 
     template<typename T>
     VertexBuffer::VertexBuffer(Device& device,
                                CommandPool& pool,
-                               std::vector<T>& vertices,
+                               const std::vector<T>& vertices,
                                std::uint32_t binding,
                                const std::vector<Attribute> attributes)
                               : DeviceBuffer { device,
                                                pool,
-                                               vertices,
+                                               vertices.data(),
+                                               sizeof(vertices[0]) * vertices.size(),
                                                VK_BUFFER_USAGE_VERTEX_BUFFER_BIT } {
         this->attributes.reserve(attributes.size());
         for (const auto& attribute : attributes) {
@@ -275,22 +212,33 @@ namespace vkpp {
     template<typename T>
     IndexBuffer::IndexBuffer(Device& device,
                              CommandPool& pool,
-                             std::vector<T>& indices)
+                             const std::vector<T>& indices)
                             : DeviceBuffer { device,
                                                pool,
-                                               indices,
+                                               indices.data(),
+                                               sizeof(indices[0]) * indices.size(),
                                                VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
         this->element_count = indices.size();
     }
 
     template<typename T>
-    UniformBuffer::UniformBuffer(Device& device, T& data_object)
-                                : HostBuffer { device,  data_object,
+    StorageBuffer::StorageBuffer(Device& device,
+                                 const T& buffer,
+                                 VkDeviceSize size_in_bytes)
+                                : DeviceBuffer { device, &buffer, size_in_bytes,
+                                                 VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {  }
+
+    template<typename T>
+    UniformBuffer::UniformBuffer(Device& device,
+                                 const T& buffer,
+                                 VkDeviceSize size_in_bytes)
+                                : HostBuffer { device, &buffer, size_in_bytes,
                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT } { }
 
     template<typename T>
-    void UniformBuffer::update(T& update_object) {
-        device_memory.copy(update_object);
+    void UniformBuffer::update(T& data_object) {
+        void* data = reinterpret_cast<void*>(&data_object);
+        device_memory.copy(device_memory.get_size(), data);
     }
 }
 
