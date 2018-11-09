@@ -897,7 +897,7 @@
     <ClInclude Include="..\include\vkhr\interface.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\logger.hh">
+    <ClInclude Include="..\include\vkhr\light_source.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\model.hh">
@@ -1046,7 +1046,7 @@
     <ClCompile Include="..\src\vkhr\interface.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\logger.cc">
+    <ClCompile Include="..\src\vkhr\light_source.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\model.cc">

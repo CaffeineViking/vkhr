@@ -243,6 +243,11 @@ int main(int argc, char** argv) {
     camera.look_at({ 0.000f, 60.0f, 0.000f },
                    { 200.0f, 35.0f, 200.0f });
 
+    _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+    _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+
+    RTCDevice rtc_device { rtcNewDevice("verbose=1") };
+
     window.show();
 
     while (window.is_open()) {
@@ -271,6 +276,8 @@ int main(int argc, char** argv) {
 
         window.poll_events();
     }
+
+    rtcReleaseDevice(rtc_device);
 
     return 0;
 }
