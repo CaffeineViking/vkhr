@@ -7,7 +7,7 @@
 #include <vkhr/image.hh>
 #include <vkhr/input_map.hh>
 #include <vkhr/interface.hh>
-#include <vkhr/logger.hh>
+#include <vkhr/light_source.hh>
 #include <vkhr/model.hh>
 #include <vkhr/paths.hh>
 #include <vkhr/rasterizer.hh>

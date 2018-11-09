@@ -158,10 +158,10 @@ int main(int argc, char** argv) {
 
     fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 
-    fixed_functions.set_scissor({ 0, 0, window.get_extent() });
+    fixed_functions.set_scissor({ 0, 0, swap_chain.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
-                                   static_cast<float>(window.get_width()),
-                                   static_cast<float>(window.get_height()),
+                                   static_cast<float>(swap_chain.get_width()),
+                                   static_cast<float>(swap_chain.get_height()),
                                    0.0, 1.0 });
 
     fixed_functions.set_line_width(1.0);
