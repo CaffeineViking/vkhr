@@ -81,6 +81,13 @@ int main(int argc, char** argv) {
 
     vk::CommandPool command_pool { device, device.get_graphics_queue() };
 
+    vkhr::Image texture { IMAGE("texture.jpg") };
+
+    vk::DeviceImage device_texture {
+        device, command_pool,
+        texture
+    };
+
     vk::SwapChain swap_chain {
         device,
         window_surface,

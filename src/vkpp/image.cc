@@ -11,8 +11,10 @@
 namespace vkpp {
     Image::Image(Device& logical_device, std::uint32_t width, std::uint32_t height,
                  VkFormat format, VkImageUsageFlags usage, std::uint32_t mip_levels,
-                 VkSampleCountFlagBits samples)
-                : device { logical_device.get_handle() } {
+                 VkSampleCountFlagBits samples, VkImageTiling tiling_mode)
+                : tiling_mode { VK_IMAGE_TILING_OPTIMAL },
+                  sharing_mode { VK_SHARING_MODE_EXCLUSIVE },
+                  device { logical_device.get_handle() } {
         VkImageCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         create_info.pNext = nullptr;
@@ -21,7 +23,7 @@ namespace vkpp {
         create_info.imageType = VK_IMAGE_TYPE_2D;
 
         create_info.format = format;
-        this->format = format;
+        this->format       = format;
 
         create_info.extent.width  = width;
         create_info.extent.height = height;
@@ -29,18 +31,18 @@ namespace vkpp {
 
         this->extent = { width, height };
 
-        this->mip_levels = mip_levels;
+        this->mip_levels      = mip_levels;
         create_info.mipLevels = mip_levels;
         create_info.arrayLayers = 1;
 
         create_info.samples = samples;
-        this->samples = samples;
+        this->samples       = samples;
 
-        create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
-        create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        create_info.tiling      = tiling_mode;
+        create_info.sharingMode = sharing_mode;
 
         create_info.usage = usage;
-        this->usage = usage;
+        this->usage       = usage;
 
         create_info.queueFamilyIndexCount = 0;
         create_info.pQueueFamilyIndices = nullptr;
@@ -97,6 +99,14 @@ namespace vkpp {
         return usage;
     }
 
+    VkSharingMode Image::get_sharing_mode() const {
+        return sharing_mode;
+    }
+
+    VkImageTiling Image::get_tiling_mode() const {
+        return tiling_mode;
+    }
+
     std::uint32_t Image::get_mip_levels() const {
         return mip_levels;
     }
@@ -137,14 +147,48 @@ namespace vkpp {
         swap(*this, image);
     }
 
-    DeviceImage::DeviceImage(Device& device, CommandPool& pool, vkhr::Image& image,
-                             VkImageUsageFlags usage, std::uint32_t mip_levels,
-                             VkSampleCountFlagBits samples)
+    DeviceImage::DeviceImage(Device& device, CommandPool& pool,
+                             vkhr::Image& image,
+                             std::uint32_t mip_levels)
                             : Image { device,
                                       static_cast<std::uint32_t>(image.get_width()),
                                       static_cast<std::uint32_t>(image.get_height()),
-                                      VK_FORMAT_R8G8B8A8_UNORM, usage, mip_levels,
-                                      samples } {
+                                      VK_FORMAT_R8G8B8A8_UNORM,
+                                      VK_IMAGE_USAGE_SAMPLED_BIT |
+                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                                      mip_levels,
+                                      VK_SAMPLE_COUNT_1_BIT,
+                                      VK_IMAGE_TILING_OPTIMAL } {
+        Buffer staging_buffer {
+            device,
+            static_cast<VkDeviceSize>(image.get_size_in_bytes()),
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+
+        auto size = image.get_size_in_bytes();
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        auto buffer = image.get_data();
+
+        DeviceMemory staging_memory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+        staging_memory.copy(size, buffer);
+
+        auto image_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            image_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
     }
 
     DeviceMemory& DeviceImage::get_device_memory() {

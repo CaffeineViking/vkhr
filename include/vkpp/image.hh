@@ -23,7 +23,8 @@ namespace vkpp {
         Image(Device& device, std::uint32_t width, std::uint32_t height,
               VkFormat format, VkImageUsageFlags usage,
               std::uint32_t mip_levels = 1,
-              VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT);
+              VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT,
+              VkImageTiling tiling_mode = VK_IMAGE_TILING_OPTIMAL);
 
         Image(Image&& image) noexcept;
         Image& operator=(Image&& image) noexcept;
@@ -37,10 +38,13 @@ namespace vkpp {
         VkImageUsageFlags get_usage() const;
         std::uint32_t get_mip_levels() const;
         VkSampleCountFlagBits get_samples() const;
+        VkSharingMode get_sharing_mode() const;
+        VkImageTiling get_tiling_mode() const;
 
         VkDeviceMemory& get_bound_memory();
         VkMemoryRequirements get_memory_requirements() const;
-        void bind(DeviceMemory& device_memory, std::uint32_t offset = 0);
+        void bind(DeviceMemory& device_memory,
+                  std::uint32_t offset = 0);
 
     private:
         VkExtent2D extent;
@@ -48,6 +52,10 @@ namespace vkpp {
         VkImageUsageFlags usage;
         std::uint32_t mip_levels;
         VkSampleCountFlagBits samples;
+
+        VkImageTiling tiling_mode;
+
+        VkSharingMode sharing_mode;
 
         VkDeviceMemory  memory { VK_NULL_HANDLE };
 
@@ -63,9 +71,9 @@ namespace vkpp {
         DeviceImage& operator=(DeviceImage&& image) noexcept;
         DeviceImage(DeviceImage&& image) noexcept;
 
-        DeviceImage(Device& device, CommandPool& pool, vkhr::Image& image,
-                    VkImageUsageFlags usage, std::uint32_t mip_levels = 1,
-                    VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT);
+        DeviceImage(Device& device, CommandPool& pool,
+                    vkhr::Image& image,
+                    std::uint32_t mip_levels = 1);
 
         DeviceMemory& get_device_memory();
 
