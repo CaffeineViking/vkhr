@@ -17,6 +17,7 @@ namespace vkpp {
     Queue& Queue::submit(CommandBuffer& command_buffer) {
         VkSubmitInfo submit_info {  };
         submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.pNext = nullptr;
 
         submit_info.waitSemaphoreCount = 0;
         submit_info.pWaitSemaphores = nullptr;
@@ -42,6 +43,7 @@ namespace vkpp {
                          Semaphore& signal) {
         VkSubmitInfo submit_info {  };
         submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.pNext = nullptr;
 
         submit_info.waitSemaphoreCount = 1;
         submit_info.pWaitSemaphores = &wait.get_handle();
