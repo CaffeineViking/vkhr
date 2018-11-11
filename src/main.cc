@@ -108,10 +108,10 @@ int main(int argc, char** argv) {
         }
     };
 
-    std::vector<vk::RenderPass::SubpassDependency> dependencies {
+    std::vector<vk::RenderPass::Dependency> dependencies {
         {
-            0,
             VK_SUBPASS_EXTERNAL,
+            0,
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             0,
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,

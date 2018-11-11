@@ -26,7 +26,7 @@ namespace vkpp {
             std::vector<VkAttachmentReference> input_attachments { };
         };
 
-        struct SubpassDependency {
+        struct Dependency {
             std::uint32_t source_subpass;
             std::uint32_t destination_subpass;
             VkPipelineStageFlags source_stages;
@@ -40,7 +40,7 @@ namespace vkpp {
         RenderPass(Device& logical_device,
                    const std::vector<Attachment>& attachments,
                    const std::vector<Subpass>& subpasses,
-                   const std::vector<SubpassDependency>& dependencies = { });
+                   const std::vector<Dependency>& dependencies = { });
 
         RenderPass(Device& logical_device,
                    const std::vector<Attachment>& attachments,
@@ -50,9 +50,9 @@ namespace vkpp {
                    Subpass& subpass);
         RenderPass(Device& logical_device,
                    const std::vector<Attachment>& attachments,
-                   Subpass& subpass, SubpassDependency& dependency);
+                   Subpass& subpass, Dependency& dependency);
         RenderPass(Device& logical_device, Attachment& attachment,
-                   Subpass& subpass, SubpassDependency& dependency);
+                   Subpass& subpass, Dependency& dependency);
 
         ~RenderPass() noexcept;
 
