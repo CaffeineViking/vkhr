@@ -1,7 +1,7 @@
-all: strand.vert.spv strand.frag.spv
+all: kajiya-kay.vert.spv kajiya-kay.frag.spv
 
-strand.vert.spv: strand.vert
-	glslc -O -Os -c strand.vert
+kajiya-kay.vert.spv: kajiya-kay.vert
+	glslc -O -Os -c kajiya-kay.vert
 
-strand.frag.spv: strand.frag
-	glslc -O -Os -c strand.frag
+kajiya-kay.frag.spv: kajiya-kay.frag
+	glslc -O -Os -c kajiya-kay.frag

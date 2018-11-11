@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
         }
     };
 
-    vk::VertexBuffer normal_buffer {
+    vk::VertexBuffer tangent_buffer {
         device,
         command_pool,
         hair_style.tangents,
@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
     fixed_functions.add_vertex_input(vertex_buffer);
-    fixed_functions.add_vertex_input(normal_buffer);
+    fixed_functions.add_vertex_input(tangent_buffer);
 
     fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 
@@ -170,8 +170,8 @@ int main(int argc, char** argv) {
 
     std::vector<vk::ShaderModule> shading_stages;
 
-    shading_stages.emplace_back(device, SHADER("strand.vert"));
-    shading_stages.emplace_back(device, SHADER("strand.frag"));
+    shading_stages.emplace_back(device, SHADER("kajiya-kay.vert"));
+    shading_stages.emplace_back(device, SHADER("kajiya-kay.frag"));
 
     struct Transform {
         glm::mat4 model;
@@ -232,7 +232,7 @@ int main(int argc, char** argv) {
         command_buffers[i].bind_descriptor_set(descriptor_sets[i],
                                                graphics_pipeline);
         command_buffers[i].bind_vertex_buffer(vertex_buffer);
-        command_buffers[i].bind_vertex_buffer(normal_buffer);
+        command_buffers[i].bind_vertex_buffer(tangent_buffer);
         command_buffers[i].draw(vertex_buffer.elements(), 1);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
@@ -242,11 +242,6 @@ int main(int argc, char** argv) {
 
     camera.look_at({ 0.000f, 60.0f, 0.000f },
                    { 200.0f, 35.0f, 200.0f });
-
-    _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-    _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-
-    RTCDevice rtc_device { rtcNewDevice("verbose=1") };
 
     window.show();
 
@@ -276,8 +271,6 @@ int main(int argc, char** argv) {
 
         window.poll_events();
     }
-
-    rtcReleaseDevice(rtc_device);
 
     return 0;
 }
