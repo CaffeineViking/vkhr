@@ -1,12 +1,12 @@
 #version 460 core
 
 layout(location = 0) in PipelineData {
-    vec3 tangent;
+    vec2 texture_coordinate;
 } fs_in;
 
 layout(location = 0) out vec4 color;
 
 void main() {
-    float transparency = length(fs_in.tangent) * 0.2;
-    color = vec4(fs_in.tangent, transparency);
+    color = vec4(fs_in.texture_coordinate,
+                 0.0f, 1.0f); // To debug.
 }

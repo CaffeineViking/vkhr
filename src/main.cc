@@ -153,10 +153,7 @@ int main(int argc, char** argv) {
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
 
-    fixed_functions.add_vertex_input(vertex_buffer);
-    fixed_functions.add_vertex_input(tangent_buffer);
-
-    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 
     fixed_functions.set_scissor({ 0, 0, swap_chain.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
@@ -170,13 +167,13 @@ int main(int argc, char** argv) {
 
     std::vector<vk::ShaderModule> shading_stages;
 
-    shading_stages.emplace_back(device, SHADER("kajiya-kay.vert"));
-    shading_stages.emplace_back(device, SHADER("kajiya-kay.frag"));
+    shading_stages.emplace_back(device, SHADER("billboards.vert"));
+    shading_stages.emplace_back(device, SHADER("billboards.frag"));
 
     struct Transform {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 projection;
+        glm::mat4 model      { 1.0f };
+        glm::mat4 view       { 1.0f };
+        glm::mat4 projection { 1.0f };
     } mvp;
 
     std::vector<vk::UniformBuffer> uniform_buffers;
@@ -231,9 +228,7 @@ int main(int argc, char** argv) {
         command_buffers[i].bind_pipeline(graphics_pipeline);
         command_buffers[i].bind_descriptor_set(descriptor_sets[i],
                                                graphics_pipeline);
-        command_buffers[i].bind_vertex_buffer(vertex_buffer);
-        command_buffers[i].bind_vertex_buffer(tangent_buffer);
-        command_buffers[i].draw(vertex_buffer.elements(), 1);
+        command_buffers[i].draw(6, 1);
         command_buffers[i].end_render_pass();
         command_buffers[i].end();
     }
@@ -253,12 +248,6 @@ int main(int argc, char** argv) {
         }
 
         auto next_image = swap_chain.acquire_next_image(image_available);
-
-        mvp.model = glm::rotate(glm::mat4(1.0f),
-                                window.get_current_time() * glm::radians(45.0f),
-                                glm::vec3(0.0f, 1.0f, 0.0f));
-        mvp.projection = camera.get_projection_matrix();
-        mvp.view = camera.get_view_matrix();
 
         uniform_buffers[next_image].update(mvp);
 

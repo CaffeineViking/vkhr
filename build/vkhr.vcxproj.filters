@@ -1138,10 +1138,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\share\shaders\strand.frag">
+    <None Include="..\share\shaders\billboards.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\strand.vert">
+    <None Include="..\share\shaders\billboards.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\kajiya-kay.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\kajiya-kay.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
