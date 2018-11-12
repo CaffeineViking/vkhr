@@ -2,6 +2,8 @@
 #define VKPP_DESCRIPTOR_SET_HH
 
 #include <vkpp/buffer.hh>
+#include <vkpp/sampler.hh>
+#include <vkpp/image.hh>
 
 #include <vulkan/vulkan.h>
 
@@ -15,8 +17,8 @@ namespace vkpp {
         struct Binding {
             std::uint32_t id;
             VkDescriptorType type;
-            std::uint32_t count { 1 };
             VkShaderStageFlagBits stages { VK_SHADER_STAGE_ALL };
+            std::uint32_t count { 1 };
         };
 
         DescriptorSet() = default;
@@ -34,6 +36,10 @@ namespace vkpp {
                    Buffer& buffer,
                    VkDeviceSize offset = 0,
                    VkDeviceSize size = VK_WHOLE_SIZE);
+
+        void write(std::uint32_t binding,
+                   ImageView& image_view,
+                   Sampler& sampler);
 
         class Layout final {
         public:

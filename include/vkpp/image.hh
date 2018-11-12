@@ -33,13 +33,16 @@ namespace vkpp {
 
         VkImage& get_handle();
 
-        const VkExtent2D& get_extent() const;
+        const VkExtent3D& get_extent() const;
         VkFormat get_format() const;
         VkImageUsageFlags get_usage() const;
         std::uint32_t get_mip_levels() const;
         VkSampleCountFlagBits get_samples() const;
         VkSharingMode get_sharing_mode() const;
         VkImageTiling get_tiling_mode() const;
+        VkImageLayout get_layout() const;
+
+        void transition(CommandPool& pool, VkImageLayout from, VkImageLayout to);
 
         VkDeviceMemory& get_bound_memory();
         VkMemoryRequirements get_memory_requirements() const;
@@ -47,14 +50,14 @@ namespace vkpp {
                   std::uint32_t offset = 0);
 
     private:
-        VkExtent2D extent;
+        VkExtent3D extent;
         VkFormat format;
         VkImageUsageFlags usage;
         std::uint32_t mip_levels;
         VkSampleCountFlagBits samples;
 
+        VkImageLayout layout;
         VkImageTiling tiling_mode;
-
         VkSharingMode sharing_mode;
 
         VkDeviceMemory  memory { VK_NULL_HANDLE };
@@ -88,6 +91,8 @@ namespace vkpp {
         ImageView() = default;
         ImageView(VkDevice& device, VkImageView& image_view);
 
+        ImageView(Device& device, Image& image);
+
         ~ImageView() noexcept;
 
         ImageView(ImageView&& image_view) noexcept;
@@ -95,9 +100,12 @@ namespace vkpp {
 
         friend void swap(ImageView& lhs, ImageView& rhs);
 
+        VkImage& get_image();
+
         VkImageView& get_handle();
 
     private:
+        VkImage image      { VK_NULL_HANDLE };
         VkDevice device    { VK_NULL_HANDLE };
         VkImageView handle { VK_NULL_HANDLE };
     };

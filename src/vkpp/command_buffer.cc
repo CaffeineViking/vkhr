@@ -62,6 +62,33 @@ namespace vkpp {
         }
     }
 
+    void CommandBuffer::pipeline_barrier(VkPipelineStageFlags source_stage_mask,
+                                         VkPipelineStageFlags destination_stage_mask,
+                                         VkMemoryBarrier memory_barrier) {
+        vkCmdPipelineBarrier(handle, source_stage_mask, destination_stage_mask, 0,
+                             1, &memory_barrier,
+                             0, nullptr,
+                             0, nullptr);
+    }
+
+    void CommandBuffer::pipeline_barrier(VkPipelineStageFlags source_stage_mask,
+                                         VkPipelineStageFlags destination_stage_mask,
+                                         VkBufferMemoryBarrier buffer_memory_barrier) {
+        vkCmdPipelineBarrier(handle, source_stage_mask, destination_stage_mask, 0,
+                             0, nullptr,
+                             1, &buffer_memory_barrier,
+                             0, nullptr);
+    }
+
+    void CommandBuffer::pipeline_barrier(VkPipelineStageFlags source_stage_mask,
+                                         VkPipelineStageFlags destination_stage_mask,
+                                         VkImageMemoryBarrier image_memory_barrier) {
+        vkCmdPipelineBarrier(handle, source_stage_mask, destination_stage_mask, 0,
+                             0, nullptr,
+                             0, nullptr,
+                             1, &image_memory_barrier);
+    }
+
     void CommandBuffer::copy_buffer(Buffer& source, Buffer& destination,
                                     std::uint32_t source_offset,
                                     std::uint32_t destination_offset) {
@@ -75,6 +102,27 @@ namespace vkpp {
         vkCmdCopyBuffer(handle,
                         source.get_handle(), destination.get_handle(),
                         1, &buffer_copy);
+    }
+
+    void CommandBuffer::copy_buffer_image(Buffer& source, Image& destination) {
+        VkBufferImageCopy region;
+
+        region.bufferOffset = 0;
+        region.bufferRowLength = 0;
+        region.bufferImageHeight = 0;
+
+        region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        region.imageSubresource.mipLevel = 0;
+        region.imageSubresource.baseArrayLayer = 0;
+        region.imageSubresource.layerCount = 1;
+
+        region.imageOffset = { 0, 0, 0 };
+        region.imageExtent = destination.get_extent();
+
+        vkCmdCopyBufferToImage(handle,
+                               source.get_handle(), destination.get_handle(),
+                               destination.get_layout(),
+                               1, &region);
     }
 
     void CommandBuffer::begin_render_pass(RenderPass& render_pass,
@@ -219,6 +267,12 @@ namespace vkpp {
         }
 
         return CommandBuffer { cmd_handle, handle, device, queue_family };
+    }
+
+    CommandBuffer CommandPool::allocate_and_begin(VkCommandBufferUsageFlags with_usage) {
+        auto command_buffer = allocate(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+        command_buffer.begin(with_usage);
+        return std::move(command_buffer);
     }
 
     std::vector<CommandBuffer> CommandPool::allocate(std::uint32_t amount,

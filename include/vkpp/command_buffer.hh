@@ -34,13 +34,28 @@ namespace vkpp {
 
         Queue& get_queue();
 
+        static constexpr auto SingleSubmit = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
         static constexpr auto Simultaneous = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 
         void begin(VkCommandBufferUsageFlags = Simultaneous);
 
+        void pipeline_barrier(VkPipelineStageFlags source_stage_mask,
+                              VkPipelineStageFlags destination_stage_mask,
+                              VkMemoryBarrier memory_barrier);
+
+        void pipeline_barrier(VkPipelineStageFlags source_stage_mask,
+                              VkPipelineStageFlags destination_stage_mask,
+                              VkBufferMemoryBarrier buffer_memory_barrier);
+
+        void pipeline_barrier(VkPipelineStageFlags source_stage_mask,
+                              VkPipelineStageFlags destination_stage_mask,
+                              VkImageMemoryBarrier image_memory_barrier);
+
         void copy_buffer(Buffer& source, Buffer& destination,
                          std::uint32_t source_offset = 0,
                          std::uint32_t destination_offset = 0);
+
+        void copy_buffer_image(Buffer& source, Image& destination);
 
         void begin_render_pass(RenderPass& render_pass,
                                Framebuffer& framebuffer,
@@ -106,6 +121,11 @@ namespace vkpp {
         void reset();
 
         CommandBuffer allocate(VkCommandBufferLevel = VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+
+        static constexpr auto SingleSubmit = CommandBuffer::SingleSubmit;
+        static constexpr auto Simultaneous = CommandBuffer::Simultaneous;
+
+        CommandBuffer allocate_and_begin(VkCommandBufferUsageFlags = SingleSubmit);
 
         std::vector<CommandBuffer>
         allocate(std::uint32_t amount,

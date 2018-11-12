@@ -181,13 +181,11 @@ namespace vkpp {
     }
 
     void DeviceBuffer::copy(Buffer& staged_buffer, CommandPool& pool) {
-        auto command_buffer = pool.allocate();
-
-        command_buffer.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        auto command_buffer = pool.allocate_and_begin();
         command_buffer.copy_buffer(staged_buffer, *this);
         command_buffer.end();
-
-        pool.get_queue().submit(command_buffer).wait_idle();
+        pool.get_queue().submit(command_buffer)
+                        .wait_idle();
     }
 
     DeviceMemory& DeviceBuffer::get_device_memory() {

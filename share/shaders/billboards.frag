@@ -1,12 +1,13 @@
 #version 460 core
 
 layout(location = 0) in PipelineData {
-    vec2 texture_coordinate;
+    vec2 coordinate;
 } fs_in;
+
+layout(binding = 1) uniform sampler2D image_sampler;
 
 layout(location = 0) out vec4 color;
 
 void main() {
-    color = vec4(fs_in.texture_coordinate,
-                 0.0f, 1.0f); // To debug.
+    color = texture(image_sampler, fs_in.coordinate);
 }
