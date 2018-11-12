@@ -261,7 +261,7 @@ int main(int argc, char** argv) {
         auto next_image = swap_chain.acquire_next_image(image_available);
 
         mvp.model = glm::rotate(glm::mat4(1.0f),
-                                window.get_current_time() * glm::radians(45.0f),
+                                (window.get_current_time() + 0.5f) * glm::radians(45.0f),
                                 glm::vec3(0.0f, 1.0f, 0.0f));
         mvp.projection = camera.get_projection_matrix();
         mvp.view = camera.get_view_matrix();
