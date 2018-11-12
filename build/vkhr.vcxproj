@@ -456,6 +456,7 @@
     <None Include="..\share\shaders\billboards.frag" />
     <None Include="..\share\shaders\billboards.vert" />
     <None Include="..\share\shaders\kajiya-kay.frag" />
+    <None Include="..\share\shaders\kajiya-kay.glsl" />
     <None Include="..\share\shaders\kajiya-kay.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

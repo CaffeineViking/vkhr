@@ -1147,6 +1147,9 @@
     <None Include="..\share\shaders\kajiya-kay.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\kajiya-kay.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\kajiya-kay.vert">
       <Filter>shaders</Filter>
     </None>
