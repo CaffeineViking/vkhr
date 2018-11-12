@@ -84,6 +84,7 @@ namespace vkpp {
         }
 
         create_swapchain_images();
+        create_swapchain_depths(logical_device);
     }
 
     SwapChain::~SwapChain() noexcept {
@@ -146,10 +147,18 @@ namespace vkpp {
         framebuffers.reserve(image_views.size());
 
         for (auto& image_attachment : image_views) {
-            framebuffers.emplace_back(device,
-                                      render_pass,
-                                      image_attachment,
-                                      get_extent());
+            if (render_pass.has_depth_attachment()) {
+                framebuffers.emplace_back(device,
+                                          render_pass,
+                                          image_attachment,
+                                          depth_buffer_view,
+                                          get_extent());
+            } else {
+                framebuffers.emplace_back(device,
+                                          render_pass,
+                                          image_attachment,
+                                          get_extent());
+            }
         }
 
         return framebuffers;
@@ -179,10 +188,6 @@ namespace vkpp {
         return get_width() / static_cast<float>(get_height());
     }
 
-    const VkFormat& SwapChain::get_format() const {
-        return format.format;
-    }
-
     const VkSurfaceFormatKHR& SwapChain::get_surface_format() const {
         return format;
     }
@@ -191,12 +196,28 @@ namespace vkpp {
         return format.colorSpace;
     }
 
-    VkImageLayout SwapChain::get_layout() const {
+    VkImageLayout SwapChain::get_khr_presentation_layout() const {
         return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     }
 
+    VkImageLayout SwapChain::get_color_attachment_layout() const {
+        return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    }
+
+    VkFormat SwapChain::get_color_attachment_format() const {
+        return format.format;
+    }
+
+    VkImageLayout SwapChain::get_depth_attachment_layout() const {
+        return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    }
+
+    VkFormat SwapChain::get_depth_attachment_format() const {
+        return VK_FORMAT_D32_SFLOAT;
+    }
+
     VkSampleCountFlagBits SwapChain::get_sample_count() {
-        return VK_SAMPLE_COUNT_1_BIT; // TODO: MSAA.
+        return VK_SAMPLE_COUNT_1_BIT; // TODO: 8x MSAA.
     }
 
     const SwapChain::PresentationMode& SwapChain::get_presentation_mode() const {
@@ -244,6 +265,27 @@ namespace vkpp {
 
             image_views.emplace_back(ImageView { device, view });
         }
+    }
+
+    void SwapChain::create_swapchain_depths(Device& device) {
+        depth_buffer_image = Image {
+            device,
+            get_width(), get_height(),
+            VK_FORMAT_D32_SFLOAT,
+            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+        };
+
+        depth_buffer_memory = DeviceMemory {
+            device,
+            depth_buffer_image.get_memory_requirements(),
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        depth_buffer_image.bind(depth_buffer_memory);
+
+        depth_buffer_view = ImageView {
+            device, depth_buffer_image
+        };
     }
 
     void SwapChain::choose_extent(const VkExtent2D& window_extent) {

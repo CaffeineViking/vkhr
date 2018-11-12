@@ -45,35 +45,44 @@ namespace vkpp {
 
         this->subpasses.resize(subpasses.size());
 
-        for (std::size_t i { 0 }; i < subpasses.size(); ++i) {
-            const auto& subpass = subpasses[i];
+        subpass_color_references.resize(subpasses.size());
+        subpass_depth_references.resize(subpasses.size());
 
+        for (std::size_t i { 0 }; i < subpasses.size(); ++i) {
             this->subpasses[i].flags = 0;
             this->subpasses[i].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
-            this->subpasses[i].inputAttachmentCount = subpass.input_attachments.size();
+            subpass_color_references.reserve(subpasses[i].size());
 
-            if (subpass.input_attachments.size() != 0) {
-                this->subpasses[i].pInputAttachments = subpass.input_attachments.data();
-            } else {
-                this->subpasses[i].pInputAttachments = nullptr;
+            for (const auto& attachment : subpasses[i]) {
+                if (attachment.layout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL ||
+                    attachment.layout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+                    subpass_color_references[i].push_back(attachment);
+                if (attachment.layout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL ||
+                    attachment.layout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL)
+                    subpass_depth_references[i].push_back(attachment);
             }
 
-            this->subpasses[i].colorAttachmentCount = subpass.color_attachments.size();
+            this->subpasses[i].inputAttachmentCount = 0;
+            this->subpasses[i].pInputAttachments = nullptr;
 
-            if (subpass.color_attachments.size() != 0) {
-                this->subpasses[i].pColorAttachments = subpass.color_attachments.data();
+            this->subpasses[i].colorAttachmentCount = subpass_color_references[i].size();
+
+            if (subpass_color_references[i].size() != 0) {
+                this->subpasses[i].pColorAttachments = subpass_color_references[i].data();
             } else {
                 this->subpasses[i].pColorAttachments = nullptr;
             }
 
             this->subpasses[i].pResolveAttachments = nullptr;
 
-            if (subpass.depth_attachment.first) {
-                const auto& depth = &subpass.depth_attachment.second;
-                this->subpasses[i].pDepthStencilAttachment = depth;
+            if (subpass_depth_references[i].size() != 0) {
+                VkAttachmentReference& depth = subpass_depth_references[i][0];
+                depth_attachment_binding = depth.attachment;
+                this->subpasses[i].pDepthStencilAttachment = &depth;
             } else {
                 this->subpasses[i].pDepthStencilAttachment = nullptr;
+                depth_attachment_binding = -1;
             }
 
             this->subpasses[i].preserveAttachmentCount = 0;
@@ -155,6 +164,10 @@ namespace vkpp {
         swap(lhs.subpasses,    rhs.subpasses);
         swap(lhs.dependencies, rhs.dependencies);
 
+        swap(lhs.subpass_color_references, rhs.subpass_color_references);
+        swap(lhs.subpass_depth_references, rhs.subpass_depth_references);
+        swap(lhs.depth_attachment_binding, rhs.depth_attachment_binding);
+
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
     }
@@ -173,5 +186,9 @@ namespace vkpp {
 
     const std::vector<VkSubpassDependency>& RenderPass::get_subpass_dependencies() const {
         return dependencies;
+    }
+
+    bool RenderPass::has_depth_attachment() const {
+        return depth_attachment_binding != -1;
     }
 }

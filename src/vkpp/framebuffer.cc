@@ -58,6 +58,30 @@ namespace vkpp {
         }
     }
 
+    Framebuffer::Framebuffer(VkDevice& device,
+                             RenderPass& render_pass,
+                             ImageView& color_attachment,
+                             ImageView& depth_attachment,
+                             const VkExtent2D& extent)
+                            : extent { extent },
+                              render_pass { render_pass.get_handle() },
+                              device { device } {
+        auto create_info = partially_create_info();
+
+        create_info.attachmentCount = 2;
+
+        this->image_views.reserve(2);
+
+        this->image_views.push_back(color_attachment.get_handle());
+        this->image_views.push_back(depth_attachment.get_handle());
+
+        create_info.pAttachments = this->image_views.data();
+
+        if (VkResult error = vkCreateFramebuffer(device, &create_info, nullptr, &handle)) {
+            throw Exception { error, "couldn't create framebuffer!" };
+        }
+    }
+
     Framebuffer::~Framebuffer() noexcept {
         if (handle != VK_NULL_HANDLE) {
             vkDestroyFramebuffer(device, handle, nullptr);

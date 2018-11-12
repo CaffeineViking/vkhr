@@ -36,13 +36,19 @@ namespace vkpp {
         const VkExtent3D& get_extent() const;
         VkFormat get_format() const;
         VkImageUsageFlags get_usage() const;
+
         std::uint32_t get_mip_levels() const;
         VkSampleCountFlagBits get_samples() const;
+
         VkSharingMode get_sharing_mode() const;
         VkImageTiling get_tiling_mode() const;
         VkImageLayout get_layout() const;
 
+        VkImageAspectFlags get_aspect_mask() const;
+
         void transition(CommandPool& pool, VkImageLayout from, VkImageLayout to);
+
+        void transition(CommandPool& pool, VkImageLayout to);
 
         VkDeviceMemory& get_bound_memory();
         VkMemoryRequirements get_memory_requirements() const;
@@ -55,6 +61,8 @@ namespace vkpp {
         VkImageUsageFlags usage;
         std::uint32_t mip_levels;
         VkSampleCountFlagBits samples;
+
+        VkImageAspectFlags aspect_mask;
 
         VkImageLayout layout;
         VkImageTiling tiling_mode;

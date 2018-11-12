@@ -137,8 +137,16 @@ namespace vkpp {
         begin_info.renderArea.extent = framebuffer.get_extent();
         begin_info.renderArea.offset = { 0, 0 };
 
-        begin_info.pClearValues = &clear_color;
-        begin_info.clearValueCount = 1;
+        std::vector<VkClearValue> clear_values { clear_color };
+
+        if (render_pass.has_depth_attachment()) {
+            VkClearValue depth_clear_value {  };
+            depth_clear_value.depthStencil = { 1.0, 0 };
+            clear_values.push_back(depth_clear_value);
+        }
+
+        begin_info.pClearValues    = clear_values.data();
+        begin_info.clearValueCount = clear_values.size();
 
         vkCmdBeginRenderPass(handle, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
     }

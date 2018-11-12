@@ -207,8 +207,8 @@ namespace vkpp {
                 VK_FALSE // alphaToOneEnable
             };
 
-            void enable_depth_testing();
-            void disable_depth_testing();
+            void enable_depth_test();
+            void disable_depth_test();
 
             VkPipelineDepthStencilStateCreateInfo  depth_stencil_state {
                 VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,

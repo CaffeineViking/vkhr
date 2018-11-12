@@ -94,17 +94,19 @@ int main(int argc, char** argv) {
 
     std::vector<vk::RenderPass::Attachment> attachments {
         {
-            swap_chain.get_format(),
-            swap_chain.get_sample_count(),
-            swap_chain.get_layout()
+            swap_chain.get_color_attachment_format(),
+            swap_chain.get_khr_presentation_layout()
+        },
+        {
+            swap_chain.get_depth_attachment_format(),
+            swap_chain.get_depth_attachment_layout()
         }
     };
 
     std::vector<vk::RenderPass::Subpass> subpasses {
         {
-            {
-                { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL }
-            }
+            { 0, swap_chain.get_color_attachment_layout() },
+            { 1, swap_chain.get_depth_attachment_layout() }
         }
     };
 
@@ -165,6 +167,10 @@ int main(int argc, char** argv) {
                                    0.0, 1.0 });
 
     fixed_functions.set_line_width(1.0);
+
+    if (render_pass.has_depth_attachment()) {
+        fixed_functions.enable_depth_test();
+    }
 
     fixed_functions.enable_alpha_blending_for(0);
 

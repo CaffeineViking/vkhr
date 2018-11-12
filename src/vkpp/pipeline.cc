@@ -369,12 +369,12 @@ namespace vkpp {
         rasterization_state.depthBiasSlopeFactor = 0.0;
     }
 
-    void GraphicsPipeline::FixedFunction::FixedFunction::enable_depth_testing() {
+    void GraphicsPipeline::FixedFunction::FixedFunction::enable_depth_test() {
         depth_stencil_state.depthWriteEnable = VK_TRUE;
         depth_stencil_state.depthTestEnable  = VK_TRUE;
     }
 
-    void GraphicsPipeline::FixedFunction::disable_depth_testing() {
+    void GraphicsPipeline::FixedFunction::disable_depth_test() {
         depth_stencil_state.depthWriteEnable = VK_FALSE;
         depth_stencil_state.depthTestEnable  = VK_FALSE;
     }

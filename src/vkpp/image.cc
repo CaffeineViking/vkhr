@@ -26,6 +26,12 @@ namespace vkpp {
         create_info.format = format;
         this->format       = format;
 
+        if (usage == VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+            this->aspect_mask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        } else {
+            this->aspect_mask = VK_IMAGE_ASPECT_COLOR_BIT;
+        }
+
         create_info.extent.width  = width;
         create_info.extent.height = height;
         create_info.extent.depth  = 1;
@@ -80,6 +86,8 @@ namespace vkpp {
         swap(lhs.usage,  rhs.usage);
         swap(lhs.format, rhs.format);
 
+        swap(lhs.aspect_mask, rhs.aspect_mask);
+
         swap(lhs.mip_levels, rhs.mip_levels);
         swap(lhs.samples,    rhs.samples);
 
@@ -118,6 +126,10 @@ namespace vkpp {
         return layout;
     }
 
+    VkImageAspectFlags Image::get_aspect_mask() const {
+        return aspect_mask;
+    }
+
     std::uint32_t Image::get_mip_levels() const {
         return mip_levels;
     }
@@ -141,39 +153,51 @@ namespace vkpp {
         vkBindImageMemory(device, handle, memory, offset);
     }
 
+    void Image::transition(CommandPool& pool, VkImageLayout to) {
+        transition(pool, VK_IMAGE_LAYOUT_UNDEFINED, to);
+    }
+
     void Image::transition(CommandPool& pool, VkImageLayout from, VkImageLayout to) {
-        VkImageMemoryBarrier image_memory_barrier;
-        image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        image_memory_barrier.pNext = nullptr;
+        VkImageMemoryBarrier barrier;
+        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier.pNext = nullptr;
 
-        image_memory_barrier.oldLayout = from;
-        image_memory_barrier.newLayout = to;
+        barrier.oldLayout = from;
+        barrier.newLayout = to;
 
-        image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-        image_memory_barrier.image = get_handle();
+        barrier.image = get_handle();
 
-        image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        image_memory_barrier.subresourceRange.baseMipLevel = 0;
-        image_memory_barrier.subresourceRange.levelCount = 1;
-        image_memory_barrier.subresourceRange.baseArrayLayer = 0;
-        image_memory_barrier.subresourceRange.layerCount = 1;
+        barrier.subresourceRange.aspectMask = get_aspect_mask();
+
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.baseArrayLayer = 0;
+        barrier.subresourceRange.layerCount = 1;
 
         VkPipelineStageFlags src_stage, dst_stage;
 
         if (from == VK_IMAGE_LAYOUT_UNDEFINED &&
             to   == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-            image_memory_barrier.srcAccessMask = 0;
-            image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            barrier.srcAccessMask = 0;
+            barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
             src_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
             dst_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
         } else if (from == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL &&
                    to   == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-            image_memory_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
             src_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
             dst_stage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+        } else if (from == VK_IMAGE_LAYOUT_UNDEFINED  &&
+                   to   == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+            barrier.srcAccessMask = 0;
+            barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            dst_stage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+            src_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
         } else {
             throw Exception { "couldn't transition image layout!",
                               "unknown image layout transition!" };
@@ -181,7 +205,7 @@ namespace vkpp {
 
         auto command_buffer = pool.allocate_and_begin();
         command_buffer.pipeline_barrier(src_stage, dst_stage,
-                                        image_memory_barrier);
+                                        barrier);
         command_buffer.end();
         pool.get_queue().submit(command_buffer)
                         .wait_idle();
@@ -291,7 +315,7 @@ namespace vkpp {
         create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
         create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 
-        create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        create_info.subresourceRange.aspectMask = real_image.get_aspect_mask();
         create_info.subresourceRange.baseMipLevel = 0;
         create_info.subresourceRange.levelCount = 1;
         create_info.subresourceRange.baseArrayLayer = 0;

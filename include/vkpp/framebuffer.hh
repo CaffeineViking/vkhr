@@ -26,7 +26,13 @@ namespace vkpp {
 
         Framebuffer(VkDevice& device,
                     RenderPass& render_pass,
-                    ImageView& attachments,
+                    ImageView& attachment,
+                    const VkExtent2D& extent);
+
+        Framebuffer(VkDevice& device,
+                    RenderPass& render_pass,
+                    ImageView& color_attachment,
+                    ImageView& depth_attachment,
                     const VkExtent2D& extent);
 
         ~Framebuffer() noexcept;
