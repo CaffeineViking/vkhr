@@ -9,5 +9,5 @@ kajiya-kay.vert.spv: kajiya-kay.vert
 billboards.frag.spv: billboards.frag
 	glslc -O -Os -c billboards.frag
 
-kajiya-kay.frag.spv: kajiya-kay.frag
+kajiya-kay.frag.spv: kajiya-kay.frag kajiya-kay.glsl
 	glslc -O -Os -c kajiya-kay.frag
