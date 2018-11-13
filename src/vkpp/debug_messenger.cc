@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace vkpp {
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debug_messenger_callback(
+    static VKAPI_ATTR VkBool32 VKAPI_CALL vulkan_debug_callback(
                       VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
                       VkDebugUtilsMessageTypeFlagsEXT,
                       const VkDebugUtilsMessengerCallbackDataEXT* message_data,
@@ -36,7 +36,7 @@ namespace vkpp {
                                       VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
                                       VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
         if (callback == nullptr) {
-            create_info.pfnUserCallback = debug_messenger_callback;
+            create_info.pfnUserCallback = vulkan_debug_callback;
         } else {
             create_info.pfnUserCallback = callback;
         }

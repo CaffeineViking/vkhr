@@ -9,7 +9,22 @@ namespace vkhr {
     class Raytracer final : public Renderer {
     public:
         Raytracer();
+
         void draw(const SceneGraph& scene) override;
+
+        ~Raytracer() noexcept;
+
+        Raytracer(Raytracer&& raytracer) noexcept;
+        Raytracer& operator=(Raytracer&& raytracer) noexcept;
+        friend void swap(Raytracer& lhs, Raytracer& rhs);
+
+    private:
+        void set_flush_to_zero();
+        void set_denormal_zero();
+
+        RTCScene scene;
+
+        RTCDevice device;
     };
 }
 
