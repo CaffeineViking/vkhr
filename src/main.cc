@@ -247,8 +247,6 @@ int main(int argc, char** argv) {
 
     window.show();
 
-    vkhr::Raytracer raytracer { camera, hair_style };
-
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();
