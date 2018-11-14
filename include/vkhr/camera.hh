@@ -13,14 +13,20 @@ namespace vkhr {
     class Camera final {
     public:
         Camera() = default;
-        Camera(const float field_of_view, const float aspect_ratio,
-               const float znear = 0.1, const float zfar = 100000);
+        Camera(const float field_of_view,
+               const unsigned width, const unsigned height,
+               const float znear = 0.01,
+               const float zfar = 1000);
 
         void rotate(const glm::vec3& around_axis, const float angle);
         void translate(const glm::vec3& translation);
 
+        unsigned get_width() const;
+        void set_width(unsigned width);
+        void set_height(unsigned height);
+        unsigned get_height() const;
+
         float get_aspect_ratio() const;
-        void  set_aspect_ratio(const float aspect_ratio);
         void  set_field_of_view(const float field_of_view);
         float get_field_of_view() const;
 
@@ -42,30 +48,45 @@ namespace vkhr {
         glm::vec3 get_left_direction() const;
         glm::vec3 get_forward_direction() const;
 
-        // TODO: convert to Embree-based camera.
+        struct ViewingPlane {
+            glm::vec3 x;
+            glm::vec3 y;
+            glm::vec3 z;
+            glm::vec3 point;
+        };
+
+        const ViewingPlane& get_viewing_plane() const;
 
         const glm::mat4& get_view_matrix() const;
         const glm::mat4& get_projection_matrix() const;
 
     private:
-        void recalculate_projection_matrix();
-        void recalculate_view_matrix();
+        void recalculate_view_matrix() const;
+        void recalculate_projection_matrix() const;
+        void recalculate_viewing_plane() const;
 
         float move_speed { 4.0 };
         float look_speed { 0.2 };
 
-        float near_distance { 0.1 };
+        float near_distance { .01 };
         float far_distance { 1000 };
 
-        float aspect_ratio { 16.0 / 9.0 };
+        unsigned width { 1280 }, height { 720 };
+
         float field_of_view { glm::quarter_pi<float>() };
 
         glm::vec3 position      { 0.0, 0.0, 4.0 };
         glm::vec3 look_at_point { 0.0, 0.0, 0.0 };
         glm::vec3 up_direction  { 0.0, 1.0, 0.0 };
 
-        glm::mat4 view_matrix;
-        glm::mat4 projection_matrix;
+        mutable ViewingPlane viewing_plane;
+
+        mutable bool view_matrix_dirty { true };
+        mutable bool projection_matrix_dirty { true };
+        mutable bool viewing_plane_dirty { true };
+
+        mutable glm::mat4 view_matrix;
+        mutable glm::mat4 projection_matrix;
     };
 }
 

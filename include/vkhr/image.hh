@@ -12,8 +12,8 @@ namespace vkhr {
     class Image final {
     public:
         Image() = default;
-        Image(const int width,
-              const int height);
+        Image(const unsigned width,
+              const unsigned height);
         Image(const std::string& file_path);
         ~Image(); // deletes/stb_image_free.
 
@@ -39,9 +39,9 @@ namespace vkhr {
 
         void set_quality(int quality); // saving JPEG.
 
-        int get_width() const;
-        int get_pixel_count() const;
-        int get_height() const;
+        unsigned get_width() const;
+        unsigned get_pixel_count() const;
+        unsigned get_height() const;
 
         float get_aspect_ratio() const;
 
@@ -60,14 +60,14 @@ namespace vkhr {
         void clear(const Color& color);
 
         // TODO: support bilinear and bicubic interpolation later.
-        void resize(const int width, const int height);
+        void resize(const unsigned width, const unsigned height);
 
         template<typename F> void filter_neighborhood(F functor);
         template<typename F> void filter(F functor);
 
     private:
         void free_image_buffers();
-        int width { 0 }, height { 0 };
+        unsigned width { 0 }, height { 0 };
         bool is_stb_image { false };
         int save_jpg_quality { 90 };
         unsigned char* image_data { nullptr };

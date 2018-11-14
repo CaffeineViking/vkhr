@@ -3,8 +3,8 @@
 
 #include <vkhr/image.hh>
 #include <vkhr/model.hh>
+#include <vkhr/light_source.hh>
 #include <vkhr/hair_style.hh>
-
 #include <vkhr/camera.hh>
 
 #include <nlohmann/json.hpp>
@@ -94,6 +94,7 @@ namespace vkhr {
     private:
         Node root;
         Camera camera;
+        std::list<LightSource> lights;
         std::list<HairStyle> hair_styles;
         std::list<Model> models;
     };

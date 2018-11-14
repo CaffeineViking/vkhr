@@ -241,10 +241,9 @@ int main(int argc, char** argv) {
         command_buffers[i].end();
     }
 
-    vkhr::Camera camera { glm::radians(45.0f), swap_chain.get_aspect_ratio() };
-
-    camera.look_at({ 0.000f, 60.0f, 0.000f },
-                   { 200.0f, 35.0f, 200.0f });
+    vkhr::Camera camera { glm::radians(45.0f), swap_chain.get_width(),
+                                               swap_chain.get_height() };
+    camera.look_at({ 0.000f, 60.0f, 0.000f }, { 200.0f, 35.0f, 200.0f });
 
     window.show();
 

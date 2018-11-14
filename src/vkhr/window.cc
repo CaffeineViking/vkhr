@@ -169,8 +169,8 @@ namespace vkhr {
     void Window::set_icon(const Image& icon) {
         auto corrected_icon = icon;
         corrected_icon.resize(48, 48); // Default size.
-        GLFWimage new_icon { corrected_icon.get_width(),
-                             corrected_icon.get_height(),
+        GLFWimage new_icon { static_cast<int>(corrected_icon.get_width()),
+                             static_cast<int>(corrected_icon.get_height()),
                              corrected_icon.get_data() };
         glfwSetWindowIcon(handle, 1, &new_icon);
 

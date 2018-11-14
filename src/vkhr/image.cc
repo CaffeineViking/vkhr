@@ -9,7 +9,7 @@
 #include <cstring>
 
 namespace vkhr {
-    Image::Image(const int width, const int height)
+    Image::Image(const unsigned width, const unsigned height)
                 : width { width }, height { height } {
         image_data = new unsigned char[get_size_in_bytes()];
         is_stb_image = false; // We handle memory ourselves.
@@ -69,8 +69,8 @@ namespace vkhr {
         if (image_data == nullptr)
             return false;
 
-        this->width = width;
-        this->height = height;
+        this->width  = static_cast<unsigned>(width);
+        this->height = static_cast<unsigned>(height);
         is_stb_image = true;
 
         return true;
@@ -103,11 +103,11 @@ namespace vkhr {
         save_jpg_quality = quality;
     }
 
-    int Image::get_width() const {
+    unsigned Image::get_width() const {
         return width;
     }
 
-    int Image::get_pixel_count() const {
+    unsigned Image::get_pixel_count() const {
         return width * height;
     }
 
@@ -115,7 +115,7 @@ namespace vkhr {
         return width / static_cast<float>(height);
     }
 
-    int Image::get_height() const {
+    unsigned Image::get_height() const {
         return height;
     }
 
@@ -155,12 +155,12 @@ namespace vkhr {
 
     void Image::clear(const Color& color) {
         // Not very smart... set bigger chunks?
-        for (int j { 0 }; j < get_height(); ++j)
-        for (int i { 0 }; i < get_width();  ++i)
+        for (unsigned j { 0 }; j < get_height(); ++j)
+        for (unsigned i { 0 }; i < get_width();  ++i)
             set_pixel(i, j, color);
     }
 
-    void Image::resize(const int width, const int height) {
+    void Image::resize(const unsigned width, const unsigned height) {
         if (width == this->width && height == this->height)
             return; // We're done here folks!
 
@@ -169,8 +169,8 @@ namespace vkhr {
         const float x_ratio { width  / static_cast<float>(this->width) },
                     y_ratio { height / static_cast<float>(this->height) };
 
-        for (int j { 0 }; j < height; ++j)
-        for (int i { 0 }; i < width;  ++i) {
+        for (unsigned j { 0 }; j < height; ++j)
+        for (unsigned i { 0 }; i < width;  ++i) {
             int nearest_i = static_cast<int>(i / y_ratio),
                 nearest_j = static_cast<int>(j / x_ratio);
             auto nearest_pixel = get_pixel(nearest_i, nearest_j);
