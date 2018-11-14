@@ -8,7 +8,7 @@
 namespace vkhr {
     class Raytracer final : public Renderer {
     public:
-        Raytracer();
+        Raytracer(const Camera& camera, const HairStyle& hair_style);
 
         void draw(const SceneGraph& scene) override;
 

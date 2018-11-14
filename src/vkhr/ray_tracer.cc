@@ -8,6 +8,7 @@
 #include <string>
 
 #include <limits>
+#include <vector>
 #include <cmath>
 
 namespace vkhr {
@@ -22,85 +23,7 @@ namespace vkhr {
         }
     }
 
-    glm::vec3* face_colors   = nullptr;
-    glm::vec3* vertex_colors = nullptr;
-
-    unsigned int addCube(RTCDevice device, RTCScene scene_i) {
-        /* create a triangulated cube with 12 triangles and 8 vertices */
-        RTCGeometry mesh = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);
-
-        /* create face and vertex color arrays */
-        face_colors   = new glm::vec3[12];
-        vertex_colors = new glm::vec3[8];
-
-        /* set vertices and vertex colors */
-        glm::vec3* vertices = (glm::vec3*) rtcSetNewGeometryBuffer(mesh,RTC_BUFFER_TYPE_VERTEX,0,RTC_FORMAT_FLOAT3,sizeof(glm::vec3),8);
-        vertex_colors[0] = glm::vec3(0,0,0); vertices[0][0] = -1; vertices[0][1] = -1; vertices[0][2] = -1;
-        vertex_colors[1] = glm::vec3(0,0,1); vertices[1][0] = -1; vertices[1][1] = -1; vertices[1][2] = +1;
-        vertex_colors[2] = glm::vec3(0,1,0); vertices[2][0] = -1; vertices[2][1] = +1; vertices[2][2] = -1;
-        vertex_colors[3] = glm::vec3(0,1,1); vertices[3][0] = -1; vertices[3][1] = +1; vertices[3][2] = +1;
-        vertex_colors[4] = glm::vec3(1,0,0); vertices[4][0] = +1; vertices[4][1] = -1; vertices[4][2] = -1;
-        vertex_colors[5] = glm::vec3(1,0,1); vertices[5][0] = +1; vertices[5][1] = -1; vertices[5][2] = +1;
-        vertex_colors[6] = glm::vec3(1,1,0); vertices[6][0] = +1; vertices[6][1] = +1; vertices[6][2] = -1;
-        vertex_colors[7] = glm::vec3(1,1,1); vertices[7][0] = +1; vertices[7][1] = +1; vertices[7][2] = +1;
-
-        /* set triangles and face colors */
-        int tri = 0;
-        glm::uvec3* triangles = (glm::uvec3*) rtcSetNewGeometryBuffer(mesh,RTC_BUFFER_TYPE_INDEX,0,RTC_FORMAT_UINT3,sizeof(glm::uvec3),12);
-
-        // left side
-        face_colors[tri] = glm::vec3(1,0,0); triangles[tri][0] = 0; triangles[tri][1] = 1; triangles[tri][2] = 2; tri++;
-        face_colors[tri] = glm::vec3(1,0,0); triangles[tri][0] = 1; triangles[tri][1] = 3; triangles[tri][2] = 2; tri++;
-
-        // right side
-        face_colors[tri] = glm::vec3(0,1,0); triangles[tri][0] = 4; triangles[tri][1] = 6; triangles[tri][2] = 5; tri++;
-        face_colors[tri] = glm::vec3(0,1,0); triangles[tri][0] = 5; triangles[tri][1] = 6; triangles[tri][2] = 7; tri++;
-
-        // bottom side
-        face_colors[tri] = glm::vec3(0.5f);  triangles[tri][0] = 0; triangles[tri][1] = 4; triangles[tri][2] = 1; tri++;
-        face_colors[tri] = glm::vec3(0.5f);  triangles[tri][0] = 1; triangles[tri][1] = 4; triangles[tri][2] = 5; tri++;
-
-        // top side
-        face_colors[tri] = glm::vec3(1.0f);  triangles[tri][0] = 2; triangles[tri][1] = 3; triangles[tri][2] = 6; tri++;
-        face_colors[tri] = glm::vec3(1.0f);  triangles[tri][0] = 3; triangles[tri][1] = 7; triangles[tri][2] = 6; tri++;
-
-        // front side
-        face_colors[tri] = glm::vec3(0,0,1); triangles[tri][0] = 0; triangles[tri][1] = 2; triangles[tri][2] = 4; tri++;
-        face_colors[tri] = glm::vec3(0,0,1); triangles[tri][0] = 2; triangles[tri][1] = 6; triangles[tri][2] = 4; tri++;
-
-        // back side
-        face_colors[tri] = glm::vec3(1,1,0); triangles[tri][0] = 1; triangles[tri][1] = 5; triangles[tri][2] = 3; tri++;
-        face_colors[tri] = glm::vec3(1,1,0); triangles[tri][0] = 3; triangles[tri][1] = 5; triangles[tri][2] = 7; tri++;
-
-        rtcSetGeometryVertexAttributeCount(mesh,1);
-        rtcSetSharedGeometryBuffer(mesh,RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE,0,RTC_FORMAT_FLOAT3,vertex_colors,0,sizeof(glm::vec3),8);
-
-        rtcCommitGeometry(mesh);
-        unsigned int geomID = rtcAttachGeometry(scene_i,mesh);
-        rtcReleaseGeometry(mesh);
-        return geomID;
-    }
-
-    unsigned int addGroundPlane(RTCDevice device, RTCScene scene_i) {
-        RTCGeometry mesh = rtcNewGeometry (device, RTC_GEOMETRY_TYPE_TRIANGLE);
-
-        glm::vec3* vertices = (glm::vec3*) rtcSetNewGeometryBuffer(mesh,RTC_BUFFER_TYPE_VERTEX,0,RTC_FORMAT_FLOAT3,sizeof(glm::vec3),4);
-        vertices[0][0] = -10; vertices[0][1] = -2; vertices[0][2] = -10;
-        vertices[1][0] = -10; vertices[1][1] = -2; vertices[1][2] = +10;
-        vertices[2][0] = +10; vertices[2][1] = -2; vertices[2][2] = -10;
-        vertices[3][0] = +10; vertices[3][1] = -2; vertices[3][2] = +10;
-
-        glm::uvec3* triangles = (glm::uvec3*) rtcSetNewGeometryBuffer(mesh,RTC_BUFFER_TYPE_INDEX,0,RTC_FORMAT_UINT3,sizeof(glm::uvec3),2);
-        triangles[0][0] = 0; triangles[0][1] = 1; triangles[0][2] = 2;
-        triangles[1][0] = 1; triangles[1][1] = 3; triangles[1][2] = 2;
-
-        rtcCommitGeometry(mesh);
-        unsigned int geomID = rtcAttachGeometry(scene_i,mesh);
-        rtcReleaseGeometry(mesh);
-        return geomID;
-    }
-
-    Raytracer::Raytracer() {
+    Raytracer::Raytracer(const Camera& camera, const vkhr::HairStyle& hair_style) {
         set_flush_to_zero();
         set_denormal_zero();
 
@@ -110,17 +33,56 @@ namespace vkhr {
 
         scene = rtcNewScene(device);
 
-        addCube(device, scene);
+        std::vector<glm::vec4> hair_vertices;
 
-        addGroundPlane(device, scene);
+        hair_vertices.reserve(hair_style.get_vertex_count());
+
+        std::vector<unsigned> hair_indices;
+
+        hair_indices.reserve(hair_style.get_vertex_count());
+
+        glm::vec4 hair_color = glm::vec4(0.8f, 0.57f, 0.32f, 1.0f);
+
+        std::size_t vertex { 0 }, index { 0 };
+        for (std::size_t strand { 0 }; strand < hair_style.get_strand_count(); ++strand) {
+            unsigned segment_count { hair_style.get_default_segment_count() };
+            if (hair_style.has_segments()) {
+                segment_count = hair_style.segments[strand];
+            }
+
+            ++vertex;
+
+            for (std::size_t segment { 1 }; segment < segment_count; ++segment) {
+                const auto& current_vertex { hair_style.vertices[vertex + 0] };
+                const auto& next_vertex    { hair_style.vertices[vertex + 1] };
+
+                hair_vertices.push_back({ current_vertex, 0.1 });
+                hair_indices.push_back(++index);
+                hair_vertices.push_back({ next_vertex,    0.1 });
+                hair_indices.push_back(++index);
+
+                ++vertex;
+            }
+
+            ++vertex;
+        }
+
+        RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
+
+        rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT4,
+                                   hair_vertices.data(), 0, sizeof(hair_vertices[0]),
+                                   hair_vertices.size());
+        rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_INDEX, 0, RTC_FORMAT_UINT,
+                                   hair_indices.data(), 0, sizeof(hair_indices[0]),
+                                   hair_indices.size());
+
+        rtcCommitGeometry(hair);
+        rtcAttachGeometry(scene, hair);
+        rtcReleaseGeometry(hair);
 
         rtcCommitScene(scene);
 
         vkhr::Image framebuffer { 1280, 720 };
-
-        vkhr::Camera camera { glm::radians(100.0f), framebuffer.get_width(),
-                                                   framebuffer.get_height()};
-        camera.look_at({ +0.00f, +0.00f, +0.00f }, { +1.5f, +1.5f, -1.5f });
 
         for (float y { 0.0f }; y < framebuffer.get_height(); ++y) {
             for (float x { 0.0f }; x < framebuffer.get_width(); ++x) {
@@ -152,26 +114,25 @@ namespace vkhr {
 
                 rtcIntersect1(scene, &context, &ray);
 
-                glm::vec3 color { 0.0, 0.0, 0.0 };
+                glm::vec4 color { 0.0, 0.0, 0.0, 1.0 };
 
                 if (ray.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
-                    glm::vec3 diffuse = face_colors[ray.hit.primID];
-                    color += diffuse*0.5f;
+                    color += hair_color * 0.5f;
 
-                    glm::vec3 light = glm::normalize(glm::vec3 { -1, -1, -1 });
-
-                    RTCRay shadow_ray;
+                    glm::vec3 light = glm::normalize(glm::vec3 { 1.0f, 2.0f, 1.0f });
 
                     auto intersection = viewing_plane.point + ray_direction * ray.ray.tfar;
+
+                    RTCRay shadow_ray;
 
                     shadow_ray.org_x = intersection.x;
                     shadow_ray.org_y = intersection.y;
                     shadow_ray.org_z = intersection.z;
                     shadow_ray.tnear = 0.001f;
 
-                    shadow_ray.dir_x = -light.x;
-                    shadow_ray.dir_y = -light.y;
-                    shadow_ray.dir_z = -light.z;
+                    shadow_ray.dir_x = light.x;
+                    shadow_ray.dir_y = light.y;
+                    shadow_ray.dir_z = light.z;
 
                     shadow_ray.flags = 0;
                     shadow_ray.tfar = std::numeric_limits<float>::infinity();
@@ -179,14 +140,16 @@ namespace vkhr {
                     rtcOccluded1(scene, &context, &shadow_ray);
 
                     if (shadow_ray.tfar >= 0.0f) {
-                        color += diffuse * std::clamp(-glm::dot(light, glm::normalize(glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z })), 0.0f, 1.0f);
+                        auto n = glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z };
+                        n = glm::normalize(n);
+                        color += hair_color * std::clamp(glm::dot(light,n), 0.0f, 1.0f);
                     }
                 }
 
                 framebuffer.set_pixel(x, y, { std::clamp(color.r, 0.0f, 1.0f) * 255,
                                               std::clamp(color.g, 0.0f, 1.0f) * 255,
                                               std::clamp(color.b, 0.0f, 1.0f) * 255,
-                                              255 });
+                                              std::clamp(color.a, 0.0f, 1.0f) * 255 });
             }
         }
 
