@@ -14,9 +14,6 @@ int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
 
-    // TODO: start shoveling this code around
-    // to somewhere else. e.g. Rasterizer :-)
-
     vk::Version target_vulkan_loader { 1,1 };
     vk::Application application_information {
         "VKHR", { 1, 0, 0 },
@@ -198,7 +195,8 @@ int main(int argc, char** argv) {
     vk::DescriptorPool descriptor_pool {
         device,
         {
-            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, swap_chain.size() }
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, swap_chain.size() },
+            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 } // ImGUI
         }
     };
 
@@ -223,23 +221,19 @@ int main(int argc, char** argv) {
     auto framebuffers = swap_chain.create_framebuffers(render_pass);
 
     vk::Semaphore image_available { device };
+    vk::Fence command_buffer_done { device };
     vk::Semaphore render_complete { device };
 
-    auto command_buffers = command_pool.allocate(framebuffers.size());
+    vkhr::Interface imgui {
+        window,
+        instance,
+        device,
+        descriptor_pool,
+        render_pass,
+        command_pool
+    };
 
-    for (std::size_t i { 0 }; i < framebuffers.size(); ++i) {
-        command_buffers[i].begin();
-        command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
-                                             { 1.0f, 1.0f, 1.0f, 1.0f });
-        command_buffers[i].bind_pipeline(graphics_pipeline);
-        command_buffers[i].bind_descriptor_set(descriptor_sets[i],
-                                               graphics_pipeline);
-        command_buffers[i].bind_vertex_buffer(vertex_buffer);
-        command_buffers[i].bind_vertex_buffer(tangent_buffer);
-        command_buffers[i].draw(vertex_buffer.elements(), 1);
-        command_buffers[i].end_render_pass();
-        command_buffers[i].end();
-    }
+    auto command_buffers = command_pool.allocate(framebuffers.size());
 
     vkhr::Camera camera { glm::radians(45.0f), swap_chain.get_width(),
                                                swap_chain.get_height() };
@@ -254,7 +248,26 @@ int main(int argc, char** argv) {
             window.toggle_fullscreen();
         }
 
+        imgui.update();
+
         auto next_image = swap_chain.acquire_next_image(image_available);
+
+        command_buffer_done.wait_and_reset();
+
+        for (std::size_t i = 0; i < framebuffers.size(); ++i) {
+            command_buffers[i].begin();
+            command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
+                                                 { 1.0f, 1.0f, 1.0f, 1.0f });
+            command_buffers[i].bind_pipeline(graphics_pipeline);
+            command_buffers[i].bind_descriptor_set(descriptor_sets[i],
+                                                   graphics_pipeline);
+            command_buffers[i].bind_vertex_buffer(vertex_buffer);
+            command_buffers[i].bind_vertex_buffer(tangent_buffer);
+            command_buffers[i].draw(vertex_buffer.elements(), 1);
+            imgui.render(command_buffers[i]); // Re-uploads data.
+            command_buffers[i].end_render_pass();
+            command_buffers[i].end();
+        }
 
         mvp.model = glm::rotate(glm::mat4(1.0f),
                                 (window.get_current_time() + 0.5f) * glm::radians(45.0f),
@@ -267,7 +280,7 @@ int main(int argc, char** argv) {
         device.get_graphics_queue().submit(command_buffers[next_image],
                                            image_available,
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                           render_complete);
+                                           render_complete, command_buffer_done);
 
         device.get_present_queue().present(swap_chain, next_image, render_complete);
 

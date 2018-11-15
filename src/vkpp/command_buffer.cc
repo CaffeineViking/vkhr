@@ -225,7 +225,6 @@ namespace vkpp {
 
     CommandPool::~CommandPool() noexcept {
         if (handle != VK_NULL_HANDLE) {
-            queue_family->wait_idle();
             vkDestroyCommandPool(device, handle, nullptr);
         }
     }

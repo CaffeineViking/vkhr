@@ -28,6 +28,12 @@ namespace vkpp {
                       VkPipelineStageFlags wait_stage,
                       Semaphore& signal);
 
+        Queue& submit(CommandBuffer& command_buffer,
+                      Semaphore& wait,
+                      VkPipelineStageFlags wait_stage,
+                      Semaphore& signal,
+                      Fence& fence);
+
         Queue& wait_idle();
 
         Queue& present(SwapChain& swap_chain,

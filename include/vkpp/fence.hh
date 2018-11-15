@@ -21,11 +21,13 @@ namespace vkpp {
 
         VkFence& get_handle();
 
-        bool await(std::uint64_t);
+        bool wait(std::uint64_t);
 
-        bool get_status() const;
+        bool is_signaled() const;
 
         void reset();
+
+        bool wait_and_reset();
 
     private:
         VkDevice device { VK_NULL_HANDLE };

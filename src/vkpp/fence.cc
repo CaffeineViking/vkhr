@@ -5,6 +5,7 @@
 #include <vkpp/exception.hh>
 
 #include <utility>
+#include <limits>
 
 namespace vkpp {
     Fence::~Fence() noexcept {
@@ -17,7 +18,7 @@ namespace vkpp {
         VkFenceCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
         create_info.pNext = nullptr;
-        create_info.flags = 0;
+        create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         if (VkResult error = vkCreateFence(device, &create_info, nullptr, &handle)) {
             throw Exception { error, "couldn't create fence!" };
@@ -44,15 +45,22 @@ namespace vkpp {
         return handle;
     }
 
-    bool Fence::await(std::uint64_t time) {
+    bool Fence::wait(std::uint64_t time) {
         return vkWaitForFences(device, 1, &handle, true, time) == VK_SUCCESS;
     }
 
-    bool Fence::get_status() const {
+    bool Fence::is_signaled() const {
         return vkGetFenceStatus(device, handle) == VK_SUCCESS;
     }
 
     void Fence::reset() {
         vkResetFences(device, 1, &handle);
+    }
+
+    bool Fence::wait_and_reset() {
+        auto forever { std::numeric_limits<std::uint64_t>::max() };
+        bool result { wait(forever) };
+        reset(); // Put into signaled.
+        return result;
     }
 }
