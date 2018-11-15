@@ -31,9 +31,16 @@ namespace vkhr {
 
         ~Interface() noexcept;
 
+        void hide();
+        void toggle_visibility(unsigned);
+        void show();
+
         void render(vkpp::CommandBuffer& command_buffer);
 
         void update();
+
+    private:
+        bool hidden { false };
     };
 }
 

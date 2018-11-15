@@ -47,6 +47,18 @@ namespace vkhr {
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
     }
 
+    void Interface::hide() {
+        hidden = true;
+    }
+
+    void Interface::toggle_visibility(unsigned) {
+        hidden = !hidden;
+    }
+
+    void Interface::show() {
+        hidden = false;
+    }
+
     Interface::~Interface() noexcept {
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -54,16 +66,22 @@ namespace vkhr {
     }
 
     void Interface::render(vkpp::CommandBuffer& command_buffer) {
-        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), command_buffer.get_handle());
+        auto command_buffer_list { command_buffer.get_handle() };
+        if (!hidden) {
+            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                            command_buffer_list);
+        }
     }
 
     void Interface::update() {
-        ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        if (!hidden) {
+            ImGui_ImplVulkan_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow();
+            ImGui::ShowDemoWindow();
 
-        ImGui::Render();
+            ImGui::Render();
+        }
     }
 }

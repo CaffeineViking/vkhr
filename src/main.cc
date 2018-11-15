@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
 
     input_map.bind("quit",       vkhr::Input::Key::Escape);
     input_map.bind("fullscreen", vkhr::Input::Key::F);
+    input_map.bind("hide",       vkhr::Input::Key::H);
 
     vk::append(window.get_vulkan_surface_extensions(),
                required_extensions); // VK_surface_KHR
@@ -248,6 +249,8 @@ int main(int argc, char** argv) {
             window.close();
         } else if (input_map.just_pressed("fullscreen")) {
             window.toggle_fullscreen();
+        } else if (input_map.just_pressed("hide")) {
+            imgui.toggle_visibility(1);
         }
 
         imgui.update();
