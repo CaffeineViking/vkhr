@@ -72,6 +72,7 @@ distclean: clean
 	rm -f ${name}.zip
 	rm -f cscope.out
 	rm -f tags
+	rm -f imgui.ini
 	rm -rf bin/share
 	find bin/ -type f ! -name "*.dll" -delete
 FORCE:
