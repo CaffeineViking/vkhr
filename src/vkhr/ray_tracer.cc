@@ -41,9 +41,6 @@ namespace vkhr {
 
         glm::vec4 hair_color = glm::vec4(0.8f, 0.57f, 0.32f, 1.0f);
 
-        for (std::size_t vertex { 0 }; vertex < hair_style.get_vertex_count(); ++vertex)
-            hair_vertices.push_back({ hair_style.vertices[vertex], 0.1});
-
         RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
 
         rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT4,
