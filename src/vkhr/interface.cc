@@ -47,19 +47,6 @@ namespace vkhr {
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
     }
 
-    Interface::Interface(Interface&& interface) noexcept {
-        swap(*this, interface);
-    }
-
-    Interface& Interface::operator=(Interface&& interface) noexcept {
-        swap(*this, interface);
-        return *this;
-    }
-
-    void swap(Interface& lhs, Interface& rhs) {
-        using std::swap;
-    }
-
     Interface::~Interface() noexcept {
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();

@@ -277,8 +277,7 @@ int main(int argc, char** argv) {
 
         uniform_buffers[next_image].update(mvp);
 
-        device.get_graphics_queue().submit(command_buffers[next_image],
-                                           image_available,
+        device.get_graphics_queue().submit(command_buffers[next_image], image_available,
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                            render_complete, command_buffer_done);
 

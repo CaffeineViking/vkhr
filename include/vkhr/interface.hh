@@ -29,10 +29,6 @@ namespace vkhr {
                   vkpp::RenderPass& render_pass,
                   vkpp::CommandPool& command_pool);
 
-        Interface(Interface&& interface) noexcept;
-        Interface& operator=(Interface&& interface) noexcept;
-        friend void swap(Interface& lhs, Interface& rhs);
-
         ~Interface() noexcept;
 
         void render(vkpp::CommandBuffer& command_buffer);
