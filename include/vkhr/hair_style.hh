@@ -70,6 +70,15 @@ namespace vkhr {
 
         void generate_tangents();
 
+        enum class CurveType {
+            Line, CubicBezier
+        };
+
+        void generate_control_points_for(CurveType curve_types);
+
+        std::vector<glm::vec4> create_position_thickness_data();
+        std::vector<glm::vec4> create_color_transparency_data();
+
         // Let the user do what he pleases with the hair data.
         // Consistency with arrays is checked upon file write.
 
@@ -79,6 +88,7 @@ namespace vkhr {
         std::vector<float> transparency;
         std::vector<glm::vec3> color;
         std::vector<glm::vec3> tangents;
+        std::vector<unsigned> control_points;
 
     private:
         mutable struct FileHeader {

@@ -166,6 +166,67 @@ namespace vkhr {
         }
     }
 
+    void HairStyle::generate_control_points_for(CurveType curve_type) {
+        std::size_t degree;
+
+        switch (curve_type) {
+        case CurveType::Line:        degree = 2; break;
+        case CurveType::CubicBezier: degree = 4; break;
+        default: return;
+        }
+
+        control_points.reserve(get_vertex_count() / (degree - 1));
+
+        std::size_t vertex { 0 };
+        for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
+            unsigned segment_count { get_default_segment_count() };
+            if (has_segments()) {
+                segment_count = this->segments[strand];
+            }
+
+            for (std::size_t segment { 0 }; segment < segment_count; ++segment) {
+                control_points.push_back(vertex);
+                vertex += degree - 1;
+            }
+
+            ++vertex;
+        }
+    }
+
+    std::vector<glm::vec4> HairStyle::create_position_thickness_data() {
+        std::vector<glm::vec4> position_thicknesses(get_vertex_count());
+        for (std::size_t i { 0 }; i < get_vertex_count(); ++i) {
+            float thickness { get_default_thickness() };
+            if (has_thickness()) {
+                thickness = this->thickness[i];
+            }
+
+            position_thicknesses[i] = glm::vec4 {
+                vertices[i],
+                thickness
+            };
+        }
+
+        return position_thicknesses;
+    }
+
+    std::vector<glm::vec4> HairStyle::create_color_transparency_data() {
+        std::vector<glm::vec4> color_transparencies(get_vertex_count());
+        for (std::size_t i { 0 }; i < get_vertex_count(); ++i) {
+            float transparency { get_default_transparency() };
+            if (has_transparency()) {
+                transparency = this->transparency[i];
+            }
+
+            color_transparencies[i] = glm::vec4 {
+                color[i],
+                transparency
+            };
+        }
+
+        return color_transparencies;
+    }
+
     bool HairStyle::valid_signature() const {
         return file_header.signature[0] == 'H' &&
                file_header.signature[1] == 'A' &&

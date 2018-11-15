@@ -23,7 +23,7 @@ namespace vkhr {
         }
     }
 
-    Raytracer::Raytracer(const Camera& camera, const vkhr::HairStyle& hair_style) {
+    Raytracer::Raytracer(const Camera& camera, vkhr::HairStyle& hair_style) {
         set_flush_to_zero();
         set_denormal_zero();
 
@@ -33,39 +33,16 @@ namespace vkhr {
 
         scene = rtcNewScene(device);
 
-        std::vector<glm::vec4> hair_vertices;
+        auto hair_vertices = hair_style.create_position_thickness_data();
 
-        hair_vertices.reserve(hair_style.get_vertex_count());
+        hair_style.generate_control_points_for(HairStyle::CurveType::Line);
 
-        std::vector<unsigned> hair_indices;
-
-        hair_indices.reserve(hair_style.get_vertex_count());
+        auto& hair_indices = hair_style.control_points;
 
         glm::vec4 hair_color = glm::vec4(0.8f, 0.57f, 0.32f, 1.0f);
 
-        std::size_t vertex { 0 }, index { 0 };
-        for (std::size_t strand { 0 }; strand < hair_style.get_strand_count(); ++strand) {
-            unsigned segment_count { hair_style.get_default_segment_count() };
-            if (hair_style.has_segments()) {
-                segment_count = hair_style.segments[strand];
-            }
-
-            ++vertex;
-
-            for (std::size_t segment { 1 }; segment < segment_count; ++segment) {
-                const auto& current_vertex { hair_style.vertices[vertex + 0] };
-                const auto& next_vertex    { hair_style.vertices[vertex + 1] };
-
-                hair_vertices.push_back({ current_vertex, 0.1 });
-                hair_indices.push_back(++index);
-                hair_vertices.push_back({ next_vertex,    0.1 });
-                hair_indices.push_back(++index);
-
-                ++vertex;
-            }
-
-            ++vertex;
-        }
+        for (std::size_t vertex { 0 }; vertex < hair_style.get_vertex_count(); ++vertex)
+            hair_vertices.push_back({ hair_style.vertices[vertex], 0.1});
 
         RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
 
@@ -160,6 +137,7 @@ namespace vkhr {
     }
 
     Raytracer::~Raytracer() noexcept {
+        rtcReleaseScene(scene);
         rtcReleaseDevice(device);
     }
 
