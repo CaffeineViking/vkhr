@@ -4,8 +4,6 @@ build/
 docs/build/
 vkhr.zip
 
-imgui.ini
-
 # Compiled Object files
 *.slo
 *.lo

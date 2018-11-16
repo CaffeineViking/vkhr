@@ -33,13 +33,11 @@ namespace vkhr {
 
         scene = rtcNewScene(device);
 
-        auto hair_vertices = hair_style.create_position_thickness_data();
-
+        auto hair_vertices  =  hair_style.create_position_thickness_data();
         hair_style.generate_control_points_for(HairStyle::CurveType::Line);
 
         auto& hair_indices = hair_style.control_points;
-
-        glm::vec4 hair_color = glm::vec4(0.8f, 0.57f, 0.32f, 1.0f);
+        glm::vec4 hair_color { 0.8f, 0.57f, 0.32f, 1 };
 
         RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
 
@@ -58,69 +56,74 @@ namespace vkhr {
 
         vkhr::Image framebuffer { 1280, 720 };
 
-        for (float y { 0.0f }; y < framebuffer.get_height(); ++y) {
-            for (float x { 0.0f }; x < framebuffer.get_width(); ++x) {
-                RTCIntersectContext context;
+        framebuffer.clear({ 255, 255, 255, 255 });
 
-                rtcInitIntersectContext(&context);
+        #pragma omp parallel for collapse(2) schedule(dynamic)
+        for (unsigned j = 0; j < framebuffer.get_height(); ++j)
+        for (unsigned i = 0; i < framebuffer.get_width();  ++i) {
+            RTCIntersectContext context;
 
-                RTCRayHit ray;
+            rtcInitIntersectContext(&context);
 
-                auto viewing_plane = camera.get_viewing_plane();
+            RTCRayHit ray;
 
-                ray.ray.org_x = viewing_plane.point.x;
-                ray.ray.org_y = viewing_plane.point.y;
-                ray.ray.org_z = viewing_plane.point.z;
-                ray.ray.tnear = 0.0f;
+            auto viewing_plane = camera.get_viewing_plane();
 
-                auto ray_direction = glm::normalize(x * viewing_plane.x +
-                                                    y * viewing_plane.y +
-                                                        viewing_plane.z);
+            ray.ray.org_x = viewing_plane.point.x;
+            ray.ray.org_y = viewing_plane.point.y;
+            ray.ray.org_z = viewing_plane.point.z;
+            ray.ray.tnear = 0.0f;
 
-                ray.ray.dir_x = ray_direction.x;
-                ray.ray.dir_y = ray_direction.y;
-                ray.ray.dir_z = ray_direction.z;
+            const float x { static_cast<float>(i) },
+                        y { static_cast<float>(j) };
 
-                ray.ray.flags  = 0;
-                ray.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+            auto ray_direction = glm::normalize(x * viewing_plane.x +
+                                                y * viewing_plane.y +
+                                                    viewing_plane.z);
 
-                ray.ray.tfar = std::numeric_limits<float>::infinity();
+            ray.ray.dir_x = ray_direction.x;
+            ray.ray.dir_y = ray_direction.y;
+            ray.ray.dir_z = ray_direction.z;
 
-                rtcIntersect1(scene, &context, &ray);
+            ray.ray.flags  = 0;
+            ray.hit.geomID = RTC_INVALID_GEOMETRY_ID;
 
+            ray.ray.tfar = std::numeric_limits<float>::infinity();
+
+            rtcIntersect1(scene, &context, &ray);
+
+            if (ray.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
                 glm::vec4 color { 0.0, 0.0, 0.0, 1.0 };
 
-                if (ray.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
-                    color += hair_color * 0.5f;
+                color += hair_color * 0.5f;
 
-                    glm::vec3 light = glm::normalize(glm::vec3 { 1.0f, 2.0f, 1.0f });
+                glm::vec3 light = glm::normalize(glm::vec3 { 1.0f, 2.0f, 1.0f });
 
-                    auto intersection = viewing_plane.point + ray_direction * ray.ray.tfar;
+                auto intersection = viewing_plane.point + ray_direction * ray.ray.tfar;
 
-                    RTCRay shadow_ray;
+                RTCRay shadow_ray;
 
-                    shadow_ray.org_x = intersection.x;
-                    shadow_ray.org_y = intersection.y;
-                    shadow_ray.org_z = intersection.z;
-                    shadow_ray.tnear = 0.001f;
+                shadow_ray.org_x = intersection.x;
+                shadow_ray.org_y = intersection.y;
+                shadow_ray.org_z = intersection.z;
+                shadow_ray.tnear = 0.001f;
 
-                    shadow_ray.dir_x = light.x;
-                    shadow_ray.dir_y = light.y;
-                    shadow_ray.dir_z = light.z;
+                shadow_ray.dir_x = light.x;
+                shadow_ray.dir_y = light.y;
+                shadow_ray.dir_z = light.z;
 
-                    shadow_ray.flags = 0;
-                    shadow_ray.tfar = std::numeric_limits<float>::infinity();
+                shadow_ray.flags = 0;
+                shadow_ray.tfar = std::numeric_limits<float>::infinity();
 
-                    rtcOccluded1(scene, &context, &shadow_ray);
+                rtcOccluded1(scene, &context, &shadow_ray);
 
-                    if (shadow_ray.tfar >= 0.0f) {
-                        auto n = glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z };
-                        n = glm::normalize(n);
-                        color += hair_color * std::clamp(glm::dot(light,n), 0.0f, 1.0f);
-                    }
+                if (shadow_ray.tfar >= 0.0f) {
+                    auto n = glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z };
+                    n = glm::normalize(n);
+                    color += hair_color * std::clamp(glm::dot(light,n), 0.0f, 1.0f);
                 }
 
-                framebuffer.set_pixel(x, y, { std::clamp(color.r, 0.0f, 1.0f) * 255,
+                framebuffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
                                               std::clamp(color.g, 0.0f, 1.0f) * 255,
                                               std::clamp(color.b, 0.0f, 1.0f) * 255,
                                               std::clamp(color.a, 0.0f, 1.0f) * 255 });

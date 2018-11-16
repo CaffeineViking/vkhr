@@ -20,6 +20,8 @@ namespace vkhr {
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForVulkan(window.get_handle(), false);
 
+        ImGui::GetIO().IniFilename = nullptr;
+
         auto& physical_device = device.get_physical_device();
 
         ImGui_ImplVulkan_InitInfo init_info;

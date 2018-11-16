@@ -82,7 +82,9 @@ project (name)
         includedirs { EMBREE.."/include" }
         includedirs { GLFW.."/include" }
 
-        linkoptions { STATIC_LINK, "-mwindows" }
+        buildoptions { "-fopenmp" }
+
+        linkoptions { STATIC_LINK, "-fopenmp", "-mwindows" }
 
         links { SDK.."/lib/vulkan-1" }
         links { GLFW.."/lib/glfw3dll" }
@@ -92,6 +94,8 @@ project (name)
         includedirs { EMBREE.."/include" }
         includedirs { GLFW.."/include" }
 
+        buildoptions { "/openmp" }
+
         files { GLFW.."/include/GLFW/*.h" }
         files { EMBREE.."/include/embree3/*.h" }
 
@@ -100,3 +104,5 @@ project (name)
         links { EMBREE.."/lib/embree3.lib" }
     filter "system:linux or bsd or solaris"
         links { "embree3", "glfw",  "vulkan" }
+        linkoptions  { "-fopenmp" } -- libgomp
+        buildoptions { "-fopenmp" }
