@@ -58,9 +58,9 @@ namespace vkhr {
 
         framebuffer.clear({ 255, 255, 255, 255 });
 
-        #pragma omp parallel for collapse(2) schedule(dynamic)
-        for (unsigned j = 0; j < framebuffer.get_height(); ++j)
-        for (unsigned i = 0; i < framebuffer.get_width();  ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < framebuffer.get_height(); ++j)
+        for (int i = 0; i < framebuffer.get_width();  ++i) {
             RTCIntersectContext context;
 
             rtcInitIntersectContext(&context);

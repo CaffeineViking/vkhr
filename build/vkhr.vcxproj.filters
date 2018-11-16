@@ -1016,6 +1016,9 @@
     <ClCompile Include="..\foreign\imgui\imgui.cpp">
       <Filter>foreign\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\foreign\imgui\imgui_demo.cpp">
+      <Filter>foreign\imgui</Filter>
+    </ClCompile>
     <ClCompile Include="..\foreign\imgui\imgui_draw.cpp">
       <Filter>foreign\imgui</Filter>
     </ClCompile>

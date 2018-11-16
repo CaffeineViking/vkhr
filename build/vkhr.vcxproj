@@ -62,6 +62,7 @@
       <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\examples;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -83,6 +84,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -409,6 +411,7 @@
     <ClCompile Include="..\foreign\imgui\examples\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\foreign\imgui\examples\imgui_impl_vulkan.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui.cpp" />
+    <ClCompile Include="..\foreign\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
