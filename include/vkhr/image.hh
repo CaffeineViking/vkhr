@@ -27,7 +27,7 @@ namespace vkhr {
 
         const char* get_failure_reason() const;
 
-        static constexpr int ClearColor { 0x00 };
+        static constexpr int ClearColor { 0xFF };
         static constexpr int Channels { 4 };
         static constexpr int BytesPerChannel { 1 };
         static constexpr int BytesPerPixel {

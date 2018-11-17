@@ -37,7 +37,6 @@ namespace vkhr {
         hair_style.generate_control_points_for(HairStyle::CurveType::Line);
 
         auto& hair_indices = hair_style.control_points;
-        glm::vec4 hair_color { 0.8f, 0.57f, 0.32f, 1 };
 
         RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
 
@@ -56,11 +55,15 @@ namespace vkhr {
 
         vkhr::Image framebuffer { 1280, 720 };
 
-        framebuffer.clear({ 255, 255, 255, 255 });
+        framebuffer.clear();
+
+        auto hair_color = glm::vec3(0.80f, 0.57f, 0.32f) * 0.40f;
+        auto light = glm::normalize(glm::vec3(1.0f, 2.0f, 1.0f));
+        auto light_color = glm::vec3(1.0f, 0.77f, 0.56f) * 0.20f;
 
         #pragma omp parallel for schedule(dynamic)
-        for (int j = 0; j < framebuffer.get_height(); ++j)
-        for (int i = 0; i < framebuffer.get_width();  ++i) {
+        for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)
+        for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
             RTCIntersectContext context;
 
             rtcInitIntersectContext(&context);
@@ -88,20 +91,16 @@ namespace vkhr {
             ray.ray.flags  = 0;
             ray.hit.geomID = RTC_INVALID_GEOMETRY_ID;
 
-            ray.ray.tfar = std::numeric_limits<float>::infinity();
+            ray.ray.tfar = std::numeric_limits<float>::max();
 
             rtcIntersect1(scene, &context, &ray);
 
             if (ray.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
                 glm::vec4 color { 0.0, 0.0, 0.0, 1.0 };
 
-                color += hair_color * 0.5f;
-
-                glm::vec3 light = glm::normalize(glm::vec3 { 1.0f, 2.0f, 1.0f });
+                RTCRay shadow_ray;
 
                 auto intersection = viewing_plane.point + ray_direction * ray.ray.tfar;
-
-                RTCRay shadow_ray;
 
                 shadow_ray.org_x = intersection.x;
                 shadow_ray.org_y = intersection.y;
@@ -117,10 +116,13 @@ namespace vkhr {
 
                 rtcOccluded1(scene, &context, &shadow_ray);
 
+                auto tangent = glm::vec3 { hair_style.tangents[ray.hit.primID] };
+
                 if (shadow_ray.tfar >= 0.0f) {
-                    auto n = glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z };
-                    n = glm::normalize(n);
-                    color += hair_color * std::clamp(glm::dot(light,n), 0.0f, 1.0f);
+                    auto shading = kajiya_kay(hair_color, light_color, 80.0f,
+                                              glm::normalize(tangent), light,
+                                              glm::vec3(0.00f, 0.0f, 0.00f));
+                    color = glm::vec4 { shading, 1.0f };
                 }
 
                 framebuffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
@@ -161,5 +163,29 @@ namespace vkhr {
 
     void Raytracer::set_denormal_zero() {
         _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+    }
+
+    glm::vec3 Raytracer::kajiya_kay(const glm::vec3& diffuse,
+                                    const glm::vec3& specular,
+                                    float p,
+                                    const glm::vec3& tangent,
+                                    const glm::vec3& light,
+                                    const glm::vec3& eye) {
+        float cosTL = glm::dot(tangent, light);
+        float cosTE = glm::dot(tangent, eye);
+
+        float cosTL_squared = cosTL*cosTL;
+        float cosTE_squared = cosTE*cosTE;
+
+        float one_minus_cosTL_squared = 1.0f - cosTL_squared;
+        float one_minus_cosTE_squared = 1.0f - cosTE_squared;
+
+        float sinTL = one_minus_cosTL_squared / std::sqrt(one_minus_cosTL_squared);
+        float sinTE = one_minus_cosTE_squared / std::sqrt(one_minus_cosTE_squared);
+
+        glm::vec3 diffuse_colors = diffuse  * sinTL;
+        glm::vec3 specular_color = specular * std::pow((cosTL * cosTE + sinTL * sinTE), p);
+
+        return diffuse_colors + specular_color;
     }
 }

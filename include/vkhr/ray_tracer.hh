@@ -22,6 +22,13 @@ namespace vkhr {
         void set_flush_to_zero();
         void set_denormal_zero();
 
+        glm::vec3 kajiya_kay(const glm::vec3& diffuse,
+                             const glm::vec3& specular,
+                             float p,
+                             const glm::vec3& tangent,
+                             const glm::vec3& light,
+                             const glm::vec3& eye);
+
         RTCScene scene;
 
         RTCDevice device;
