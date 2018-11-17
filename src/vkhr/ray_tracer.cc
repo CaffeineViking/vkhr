@@ -1,11 +1,11 @@
 #include <vkhr/ray_tracer.hh>
 
-#include <xmmintrin.h>
-#include <pmmintrin.h>
-
 #include <utility>
 #include <iostream>
 #include <string>
+
+#include <xmmintrin.h>
+#include <pmmintrin.h>
 
 #include <limits>
 #include <vector>
