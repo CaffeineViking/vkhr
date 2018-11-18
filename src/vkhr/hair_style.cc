@@ -33,6 +33,7 @@ namespace vkhr {
         if (!read_transparancy(file)) return set_error_state(Error::ReadingTransparency);
         if (!read_color(file)) return set_error_state(Error::ReadingColor);
         if (!read_tangents(file)) return set_error_state(Error::ReadingTangents);
+        if (!read_indices(file)) return set_error_state(Error::ReadingIndices);
 
         if (!format_is_valid()) return set_error_state(Error::InvalidFormat);
 
@@ -57,6 +58,7 @@ namespace vkhr {
         if (!write_transparancy(file)) return set_error_state(Error::WritingTransparency);
         if (!write_color(file)) return set_error_state(Error::WritingColor);
         if (!write_tangents(file)) return set_error_state(Error::WritingTangents);
+        if (!write_indices(file)) return set_error_state(Error::WritingIndices);
 
         // Signature is already set, so we don't need to check for validity.
 
@@ -70,6 +72,10 @@ namespace vkhr {
             // Use the manually defined one.
             return file_header.strand_count;
         }
+    }
+
+    unsigned HairStyle::get_segment_count() const {
+        return get_vertex_count() - get_strand_count();
     }
 
     void HairStyle::set_strand_count(const unsigned strand_count) {
@@ -86,6 +92,7 @@ namespace vkhr {
     bool HairStyle::has_transparency() const { return transparency.size(); }
     bool HairStyle::has_color() const { return color.size(); }
     bool HairStyle::has_tangents() const { return tangents.size(); }
+    bool HairStyle::has_indices() const { return indices.size(); }
 
     // Below follows boilerplate for writing to the header.
 
@@ -167,6 +174,18 @@ namespace vkhr {
     }
 
     void HairStyle::generate_indices() {
+        indices.reserve(get_segment_count() * 2);
+
+        std::size_t vertex { 0 };
+        for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
+            unsigned segment_count { get_default_segment_count() };
+
+            if (has_segments()) segment_count = this->segments[strand];
+
+            for (std::size_t segment { 0 }; segment < segment_count; ++segment)
+                indices.push_back(vertex++);
+            ++vertex; // Skips the last one.
+        }
     }
 
     void HairStyle::generate_control_points_for(CurveType curve_type) {
@@ -242,6 +261,26 @@ namespace vkhr {
         return tangents;
     }
 
+    const std::vector<float>& HairStyle::get_thickness() const {
+        return thickness;
+    }
+
+    const std::vector<glm::vec3>& HairStyle::get_vertices() const {
+        return vertices;
+    }
+
+    const std::vector<unsigned short>& HairStyle::get_segments() const {
+        return segments;
+    }
+
+    const std::vector<float>& HairStyle::get_transparency() const {
+        return transparency;
+    }
+
+    const std::vector<glm::vec3>& HairStyle::get_color() const {
+        return color;
+    }
+
     bool HairStyle::valid_signature() const {
         return file_header.signature[0] == 'H' &&
                file_header.signature[1] == 'A' &&
@@ -255,7 +294,6 @@ namespace vkhr {
         if (has_thickness() && thickness.size() != vertices.size()) return false;
         if (has_transparency() && transparency.size() != vertices.size()) return false;
         if (has_color() && color.size() != vertices.size()) return false;
-        if (has_tangents() && tangents.size() != vertices.size()) return false;
         return true; // The rest we assume is right. It's hard to verify.
     }
 
@@ -278,6 +316,7 @@ namespace vkhr {
         file_header.field.has_transparency = has_transparency();
         file_header.field.has_color = has_color();
         file_header.field.has_tangents = has_tangents();
+        file_header.field.has_indices = has_indices();
         file_header.field.future_extension = 0;
     }
 
@@ -330,6 +369,13 @@ namespace vkhr {
         } return true;
     }
 
+    bool HairStyle::read_indices(std::ifstream& file) {
+        if (file_header.field.has_indices) {
+            indices.resize(get_segment_count() * 2);
+            return read_field(file, indices);
+        } return true;
+    }
+
     bool HairStyle::write_segments(std::ofstream& file) const {
         if (file_header.field.has_segments) {
             return write_field(file, segments);
@@ -363,6 +409,12 @@ namespace vkhr {
     bool HairStyle::write_tangents(std::ofstream& file) const {
         if (file_header.field.has_tangents) {
             return write_field(file, tangents);
+        } return true;
+    }
+
+    bool HairStyle::write_indices(std::ofstream& file) const {
+        if (file_header.field.has_indices) {
+            return write_field(file, indices);
         } return true;
     }
 }

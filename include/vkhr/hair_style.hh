@@ -28,6 +28,7 @@ namespace vkhr {
             ReadingTransparency,
             ReadingColor,
             ReadingTangents,
+            ReadingIndices,
 
             WritingSegments,
             WritingVertices,
@@ -35,6 +36,7 @@ namespace vkhr {
             WritingTransparency,
             WritingColor,
             WritingTangents,
+            WritingIndices,
 
             InvalidFormat
         };
@@ -47,6 +49,7 @@ namespace vkhr {
 
         unsigned get_strand_count() const;
         void set_strand_count(const unsigned strand_count);
+        unsigned get_segment_count() const;
         unsigned get_vertex_count() const;
 
         bool has_segments() const;
@@ -55,6 +58,7 @@ namespace vkhr {
         bool has_transparency() const;
         bool has_color() const;
         bool has_tangents() const;
+        bool has_indices() const;
 
         unsigned get_default_segment_count() const;
         void set_default_segment_count(const unsigned default_segment_count);
@@ -94,6 +98,12 @@ namespace vkhr {
         std::vector<float> transparency;
         std::vector<glm::vec3> color;
 
+        const std::vector<float>& get_thickness() const;
+        const std::vector<glm::vec3>& get_vertices() const;
+        const std::vector<unsigned short>& get_segments() const;
+        const std::vector<float>& get_transparency() const;
+        const std::vector<glm::vec3>& get_color() const;
+
     private:
         std::vector<glm::vec3> tangents;
         std::vector<unsigned> control_points;
@@ -112,7 +122,8 @@ namespace vkhr {
                          has_transparency : 1,
                          has_color        : 1,
                          has_tangents     : 1,
-                         future_extension : 26;
+                         has_indices      : 1,
+                         future_extension : 25;
 
             } field;
 
@@ -141,6 +152,7 @@ namespace vkhr {
         bool read_transparancy(std::ifstream& file);
         bool read_color(std::ifstream& file);
         bool read_tangents(std::ifstream& file);
+        bool read_indices(std::ifstream& file);
 
         template<typename T>
         bool write_field(std::ofstream& file, const std::vector<T>& field) const;
@@ -151,6 +163,7 @@ namespace vkhr {
         bool write_transparancy(std::ofstream& file) const;
         bool write_color(std::ofstream& file) const;
         bool write_tangents(std::ofstream& file) const;
+        bool write_indices(std::ofstream& file) const;
 
         mutable Error error_state { Error::None };
     };

@@ -129,17 +129,17 @@ int main(int argc, char** argv) {
 
     vkhr::HairStyle hair_style { STYLE("ponytail.hair") };
 
-    hair_style.generate_tangents(); // TODO: pre-bake this
-
     vk::VertexBuffer vertex_buffer {
         device,
         command_pool,
-        hair_style.vertices,
+        hair_style.get_vertices(),
         0,
         {
             { 0, VK_FORMAT_R32G32B32_SFLOAT }
         }
     };
+
+    hair_style.generate_tangents();
 
     vk::VertexBuffer tangent_buffer {
         device,
@@ -149,6 +149,14 @@ int main(int argc, char** argv) {
         {
             { 1, VK_FORMAT_R32G32B32_SFLOAT }
         }
+    };
+
+    hair_style.generate_indices();
+
+    vk::IndexBuffer index_buffer {
+        device,
+        command_pool,
+        hair_style.get_indices()
     };
 
     vk::GraphicsPipeline::FixedFunction fixed_functions;
