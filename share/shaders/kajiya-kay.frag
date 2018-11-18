@@ -17,5 +17,5 @@ void main() {
                               normalize(fs_in.tangent), light,
                               vec3(0, 0, 0)); // in view space
 
-    color = vec4(normalize(fs_in.tangent), 1.0f);
+    color = vec4(shading, 1.0f);
 }

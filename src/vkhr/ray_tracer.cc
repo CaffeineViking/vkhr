@@ -66,63 +66,29 @@ namespace vkhr {
         #pragma omp parallel for schedule(dynamic)
         for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)
         for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
-            RTCIntersectContext context;
+            float x { static_cast<float>(i) }, y { static_cast<float>(j) };
 
+            RTCIntersectContext      context;
             rtcInitIntersectContext(&context);
 
-            RTCRayHit ray;
-
-            ray.ray.org_x = viewing_plane.point.x;
-            ray.ray.org_y = viewing_plane.point.y;
-            ray.ray.org_z = viewing_plane.point.z;
-            ray.ray.tnear = 0.0f;
-
-            const float x { static_cast<float>(i) },
-                        y { static_cast<float>(j) };
-
-            auto ray_direction = glm::normalize(x * viewing_plane.x +
+            auto eye_direction = glm::normalize(x * viewing_plane.x +
                                                 y * viewing_plane.y +
                                                     viewing_plane.z);
+            Ray ray { viewing_plane.point, eye_direction , 0.0000f };
 
-            ray.ray.dir_x = ray_direction.x;
-            ray.ray.dir_y = ray_direction.y;
-            ray.ray.dir_z = ray_direction.z;
-
-            ray.ray.flags  = 0;
-            ray.hit.geomID = RTC_INVALID_GEOMETRY_ID;
-
-            ray.ray.tfar = std::numeric_limits<float>::max();
-
-            rtcIntersect1(scene, &context, &ray);
-
-            if (ray.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
+            if (ray.intersects(scene, context)) {
                 glm::vec4 color { 0.0, 0.0, 0.0, 1.0 };
 
-                RTCRay shadow_ray;
+                Ray shadow_ray { ray.get_intersection_point(), light, Ray::Epsilon };
 
-                auto intersection = viewing_plane.point + ray_direction * ray.ray.tfar;
+                auto tangent = glm::vec4 { ray.get_tangent(), 0 };
+                tangent = camera.get_view_matrix() * tangent;
 
-                shadow_ray.org_x = intersection.x;
-                shadow_ray.org_y = intersection.y;
-                shadow_ray.org_z = intersection.z;
-                shadow_ray.tnear = 0.001f;
-
-                shadow_ray.dir_x = light.x;
-                shadow_ray.dir_y = light.y;
-                shadow_ray.dir_z = light.z;
-
-                shadow_ray.flags = 0;
-                shadow_ray.tfar = std::numeric_limits<float>::infinity();
-
-                rtcOccluded1(scene, &context, &shadow_ray);
-
-                auto tangent = glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z };
-
-                // if (shadow_ray.tfar >= 0.0f) {
+                // if (shadow_ray.occluded_by(scene, context)) {
                     auto shading = kajiya_kay(hair_color, light_color, 80.0f,
                                               glm::normalize(tangent), light,
                                               glm::vec3(0.00f, 0.0f, 0.00f));
-                    color = glm::vec4 { glm::normalize(tangent), 1.0f };
+                    color = glm::vec4 { shading, 1.0f };
                 // }
 
                 framebuffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
@@ -188,5 +154,88 @@ namespace vkhr {
         glm::vec3 specular_color = specular * std::pow((cosTL * cosTE + sinTL * sinTE), p);
 
         return diffuse_colors + specular_color;
+    }
+
+    Ray::Ray() {
+    }
+
+    Ray::Ray(const glm::vec3& origin, const glm::vec3& direction, float tnear_plane) {
+        rh.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+
+        rh.ray.org_x = origin.x;
+        rh.ray.org_y = origin.y;
+        rh.ray.org_z = origin.z;
+
+        rh.ray.dir_x = direction.x;
+        rh.ray.dir_y = direction.y;
+        rh.ray.dir_z = direction.z;
+
+        rh.ray.tnear = tnear_plane;
+        rh.ray.tfar  = std::numeric_limits<float>::infinity();
+    }
+
+    RTCRay& Ray::get_ray() {
+        return rh.ray;
+    }
+
+    RTCHit& Ray::get_hit() {
+        return rh.hit;
+    }
+
+    glm::vec3 Ray::get_origin() const {
+        return { rh.ray.org_x,
+                 rh.ray.org_y,
+                 rh.ray.org_z };
+    }
+
+    glm::vec3 Ray::get_direction() const {
+        return { rh.ray.dir_x,
+                 rh.ray.dir_y,
+                 rh.ray.dir_z };
+    }
+
+    bool Ray::hit_surface() const {
+        return rh.hit.geomID != RTC_INVALID_GEOMETRY_ID;
+    }
+
+    bool Ray::is_occluded() const {
+        return rh.ray.tfar >= 0.0;
+    }
+
+    glm::vec2 Ray::get_uv() const {
+        return { rh.hit.u,
+                 rh.hit.v };
+    }
+
+    glm::vec3 Ray::get_normal() const {
+        return { rh.hit.Ng_x,
+                 rh.hit.Ng_y,
+                 rh.hit.Ng_z };
+    }
+
+    glm::vec3 Ray::get_tangent() const {
+        return get_normal();
+    }
+
+    unsigned Ray::get_primitive_id() const {
+        return rh.hit.primID;
+    }
+
+    unsigned Ray::get_geometry_id() const {
+        return rh.hit.geomID;
+    }
+
+    glm::vec3 Ray::get_intersection_point() const {
+        return get_origin() + get_direction() * rh.ray.tfar;
+    }
+
+    bool Ray::intersects(RTCScene& scene,  RTCIntersectContext& context) {
+        rtcIntersect1(scene, &context, &rh);
+        return hit_surface();
+    }
+
+    bool Ray::occluded_by(RTCScene& scene, RTCIntersectContext& context) {
+        rtcOccluded1(scene, &context, &rh.ray);
+        return is_occluded();
     }
 }
