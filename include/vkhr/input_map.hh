@@ -146,7 +146,10 @@ namespace vkhr {
         bool just_released(const std::string& id);
         bool released(const std::string& id) const;
 
-        glm::vec2 mouse_position() const;
+        glm::vec2 get_mouse_position() const;
+
+        void freeze_cursor();
+        void unlock_cursor();
 
         void toggle_mouse_lock();
         bool is_mouse_locked() const;

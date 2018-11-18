@@ -37,13 +37,13 @@ namespace vkhr {
     void Camera::set_width(unsigned width) {
         this->width = width;
         projection_matrix_dirty = true;
-        viewing_plane_dirty  = true;
+        viewing_plane_dirty     = true;
     }
 
     void Camera::set_height(unsigned height) {
         this->height = height;
         projection_matrix_dirty = true;
-        viewing_plane_dirty  = true;
+        viewing_plane_dirty     = true;
     }
 
     unsigned Camera::get_height() const {
@@ -55,7 +55,7 @@ namespace vkhr {
                static_cast<float>(height);
     }
 
-    void  Camera::set_field_of_view(const float field_of_view) {
+    void Camera::set_field_of_view(const float field_of_view) {
         this->field_of_view = field_of_view;
         projection_matrix_dirty = true;
         viewing_plane_dirty     = true;
@@ -63,22 +63,6 @@ namespace vkhr {
 
     float Camera::get_field_of_view() const {
         return field_of_view;
-    }
-
-    void Camera::set_move_speed(float speed) {
-        move_speed = speed;
-    }
-
-    float Camera::get_move_speed() const {
-        return move_speed;
-    }
-
-    float Camera::get_look_speed() const {
-        return look_speed;
-    }
-
-    void Camera::set_look_speed(float speed) {
-        look_speed = speed;
     }
 
     const glm::vec3& Camera::get_position() const {
@@ -89,12 +73,14 @@ namespace vkhr {
         this->position = position;
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
+        update_arcball_reference();
     }
 
     void Camera::set_look_at_point(const glm::vec3& look_at_point) {
         this->look_at_point = look_at_point;
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
+        update_arcball_reference();
     }
 
     const glm::vec3& Camera::get_look_at_point() const {
@@ -111,6 +97,25 @@ namespace vkhr {
         return up_direction;
     }
 
+    void Camera::arcball_by(const glm::vec2& diff) {
+        arcball.x -= diff.x; // Controls yaw radians.
+        arcball.y -= diff.y; // Pitches some radians.
+
+        // Clamp the pitch so it doesn't start getting all spamy.
+        arcball.y = glm::clamp(arcball.y, -glm::half_pi<float>(),
+                                          glm::half_pi<float>());
+
+        auto displacement = arcball_look_vector;
+
+        displacement = glm::rotate(displacement, arcball.x, +get_up_direction());
+        displacement = glm::rotate(displacement, arcball.y, -get_left_direction());
+
+        position = look_at_point + displacement;
+
+        view_matrix_dirty   = true;
+        viewing_plane_dirty = true;
+    }
+
     void Camera::look_at(const glm::vec3& point, const glm::vec3& eye,
                          const glm::vec3& up) {
         this->position = eye;
@@ -118,6 +123,7 @@ namespace vkhr {
         this->look_at_point = point;
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
+        update_arcball_reference();
     }
 
     const Camera::ViewingPlane& Camera::get_viewing_plane() const {
@@ -175,5 +181,9 @@ namespace vkhr {
                            0.5f * height * viewing_plane.z * yfov_scale;
 
         viewing_plane_dirty = false;
+    }
+
+    void Camera::update_arcball_reference() {
+        arcball_look_vector = position - look_at_point;
     }
 }

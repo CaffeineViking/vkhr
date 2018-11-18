@@ -34,9 +34,10 @@ int main(int argc, char** argv) {
 
     vkhr::InputMap input_map { window };
 
-    input_map.bind("quit",       vkhr::Input::Key::Escape);
-    input_map.bind("fullscreen", vkhr::Input::Key::F);
-    input_map.bind("hide",       vkhr::Input::Key::H);
+    input_map.bind("quit", vkhr::Input::Key::Escape);
+    input_map.bind("grab", vkhr::Input::MouseButton::Left);
+    input_map.bind("take_shot", vkhr::Input::Key::S);
+    input_map.bind("hide", vkhr::Input::Key::H);
 
     vk::append(window.get_vulkan_surface_extensions(),
                required_extensions); // VK_surface_KHR
@@ -248,6 +249,10 @@ int main(int argc, char** argv) {
                                                swap_chain.get_height() };
     camera.look_at({ 0.000f, 60.0f, 0.000f }, { 200.0f, 35.0f, 200.0f });
 
+    mvp.projection = camera.get_projection_matrix();
+
+    glm::vec2 previous_mouse_position { input_map.get_mouse_position() };
+
     window.show();
 
     vkhr::Raytracer raytracer { camera, hair_style };
@@ -255,10 +260,21 @@ int main(int argc, char** argv) {
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();
-        } else if (input_map.just_pressed("fullscreen")) {
-            window.toggle_fullscreen();
         } else if (input_map.just_pressed("hide")) {
-            imgui.toggle_visibility(1);
+            imgui.toggle_visibility();
+        }
+
+        glm::vec2 cursor_delta { 0.0f, 0.0f };
+        if (input_map.just_released("grab")) {
+            input_map.unlock_cursor();
+        } else if (input_map.just_pressed("grab")) {
+            input_map.freeze_cursor();
+            previous_mouse_position  = input_map.get_mouse_position();
+        } else if (input_map.pressed("grab")) {
+            glm::vec2 mouse_position = input_map.get_mouse_position();
+            cursor_delta = (mouse_position - previous_mouse_position);
+            previous_mouse_position = mouse_position; // single frame.
+            camera.arcball_by(cursor_delta*window.delta_time()*0.42f);
         }
 
         imgui.update();
@@ -283,13 +299,7 @@ int main(int argc, char** argv) {
             command_buffers[i].end();
         }
 
-        // mvp.model = glm::rotate(glm::mat4(1.0f),
-        //                         (window.get_current_time() + 0.5f) * glm::radians(45.0f),
-        //                         glm::vec3(0.0f, 1.0f, 0.0f));
-
-        mvp.projection = camera.get_projection_matrix();
-        mvp.view = camera.get_view_matrix();
-
+        mvp.view   =   camera.get_view_matrix();
         uniform_buffers[next_image].update(mvp);
 
         device.get_graphics_queue().submit(command_buffers[next_image], image_available,

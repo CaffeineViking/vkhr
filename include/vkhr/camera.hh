@@ -30,17 +30,14 @@ namespace vkhr {
         void  set_field_of_view(const float field_of_view);
         float get_field_of_view() const;
 
-        void set_move_speed(float speed);
-        float get_move_speed() const;
-        float get_look_speed() const;
-        void set_look_speed(float speed);
-
         const glm::vec3& get_position() const;
         void set_position(const glm::vec3& position);
         void set_look_at_point(const glm::vec3& look_at_point);
         const glm::vec3& get_look_at_point() const;
         void set_up_direction(const glm::vec3& up_direction);
         const glm::vec3& get_up_direction() const;
+
+        void arcball_by(const glm::vec2& diff);
 
         void look_at(const glm::vec3& point, const glm::vec3& eye,
                      const glm::vec3& up = { 0.0f, 1.0f, 0.0f });
@@ -65,8 +62,7 @@ namespace vkhr {
         void recalculate_projection_matrix() const;
         void recalculate_viewing_plane() const;
 
-        float move_speed { 4.0 };
-        float look_speed { 0.2 };
+        void update_arcball_reference();
 
         float near_distance { .01 };
         float far_distance { 1000 };
@@ -78,6 +74,10 @@ namespace vkhr {
         glm::vec3 position      { 0.0, 0.0, 4.0 };
         glm::vec3 look_at_point { 0.0, 0.0, 0.0 };
         glm::vec3 up_direction  { 0.0, 1.0, 0.0 };
+
+        glm::vec3 arcball { 0, 0, 0 };
+
+        glm::vec3 arcball_look_vector { 0, 0, 0 };
 
         mutable ViewingPlane viewing_plane;
 

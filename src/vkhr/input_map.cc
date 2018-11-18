@@ -204,6 +204,20 @@ namespace vkhr {
         return false;
     }
 
+    bool InputMap::just_released(const std::string& id) {
+        auto key_range = key_map.equal_range(id);
+        for (auto key_iter = key_range.first; key_iter != key_range.second; ++key_iter)
+            if (just_released(key_iter->second)) return true;
+
+        auto mouse_button_range = mouse_button_map.equal_range(id);
+        for (auto mouse_button_iter = mouse_button_range.first;
+                  mouse_button_iter != mouse_button_range.second;
+                  ++mouse_button_iter)
+            if (just_released(mouse_button_iter->second)) return true;
+
+        return false;
+    }
+
     bool InputMap::released(const std::string& id) const {
         auto key_range = key_map.equal_range(id);
         for (auto key_iter = key_range.first; key_iter != key_range.second; ++key_iter)
@@ -218,10 +232,20 @@ namespace vkhr {
         return false;
     }
 
-    glm::vec2 InputMap::mouse_position() const {
+    glm::vec2 InputMap::get_mouse_position() const {
         glm::dvec2 position;
         glfwGetCursorPos(handle, &position.x, &position.y);
         return position;
+    }
+
+    void InputMap::freeze_cursor() {
+        if (!is_mouse_locked())
+            toggle_mouse_lock();
+    }
+
+    void InputMap::unlock_cursor() {
+        if (is_mouse_locked())
+            toggle_mouse_lock();
     }
 
     void InputMap::toggle_mouse_lock() {

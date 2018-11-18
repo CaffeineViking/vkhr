@@ -53,7 +53,7 @@ namespace vkhr {
         hidden = true;
     }
 
-    void Interface::toggle_visibility(unsigned) {
+    void Interface::toggle_visibility() {
         hidden = !hidden;
     }
 
