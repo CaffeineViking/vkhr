@@ -144,20 +144,15 @@ namespace vkhr {
     }
 
     void HairStyle::generate_tangents() {
-        std::size_t vertex { 0 };
         tangents.reserve(get_vertex_count());
+
+        std::size_t vertex { 0 };
         for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
             unsigned segment_count { get_default_segment_count() };
-            if (has_segments()) {
-                segment_count = segments[strand];
-            }
 
-            // Special tangent (at the start of an segment).
-            tangents.push_back(glm::vec3 { 0.0, 0.0, 0.0 });
+            if (has_segments()) segment_count = segments[strand];
 
-            ++vertex; // That first one is a vertex in this.
-
-            for (std::size_t segment { 1 }; segment < segment_count; ++segment) {
+            for (std::size_t segment { 0 }; segment < segment_count; ++segment) {
                 const auto& current_vertex { vertices[vertex + 0] };
                 const auto& next_vertex    { vertices[vertex + 1] };
                 const auto tangent { next_vertex - current_vertex };
@@ -166,10 +161,8 @@ namespace vkhr {
                 ++vertex;
             }
 
-            // Special tangent (at the end of the segments).
-            tangents.push_back(glm::vec3 { 0.0, 0.0, 0.0 });
-
-            ++vertex; // The last segment is also an vertex.
+            tangents.push_back(tangents.back()); // Special:
+            ++vertex; // must derive tangents from previous.
         }
     }
 
