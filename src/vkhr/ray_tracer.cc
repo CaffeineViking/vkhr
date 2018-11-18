@@ -36,7 +36,7 @@ namespace vkhr {
         auto hair_vertices  =  hair_style.create_position_thickness_data();
         hair_style.generate_control_points_for(HairStyle::CurveType::Line);
 
-        auto& hair_indices = hair_style.control_points;
+        const auto& hair_indices = hair_style.get_control_points();
 
         RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
 
@@ -61,6 +61,8 @@ namespace vkhr {
         auto light = glm::normalize(glm::vec3(1.0f, 2.0f, 1.0f));
         auto light_color = glm::vec3(1.0f, 0.77f, 0.56f) * 0.20f;
 
+        auto viewing_plane = camera.get_viewing_plane();
+
         #pragma omp parallel for schedule(dynamic)
         for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)
         for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
@@ -69,8 +71,6 @@ namespace vkhr {
             rtcInitIntersectContext(&context);
 
             RTCRayHit ray;
-
-            auto viewing_plane = camera.get_viewing_plane();
 
             ray.ray.org_x = viewing_plane.point.x;
             ray.ray.org_y = viewing_plane.point.y;
@@ -116,14 +116,14 @@ namespace vkhr {
 
                 rtcOccluded1(scene, &context, &shadow_ray);
 
-                auto tangent = glm::vec3 { hair_style.tangents[ray.hit.primID] };
+                auto tangent = glm::vec3 { ray.hit.Ng_x, ray.hit.Ng_y, ray.hit.Ng_z };
 
-                if (shadow_ray.tfar >= 0.0f) {
+                // if (shadow_ray.tfar >= 0.0f) {
                     auto shading = kajiya_kay(hair_color, light_color, 80.0f,
                                               glm::normalize(tangent), light,
                                               glm::vec3(0.00f, 0.0f, 0.00f));
-                    color = glm::vec4 { shading, 1.0f };
-                }
+                    color = glm::vec4 { glm::normalize(tangent), 1.0f };
+                // }
 
                 framebuffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
                                               std::clamp(color.g, 0.0f, 1.0f) * 255,
@@ -132,6 +132,7 @@ namespace vkhr {
             }
         }
 
+        framebuffer.horizontal_flip();
         framebuffer.save("render.png");
     }
 
