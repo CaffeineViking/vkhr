@@ -374,6 +374,10 @@ namespace vkpp {
         depth_stencil_state.depthTestEnable  = VK_TRUE;
     }
 
+    void GraphicsPipeline::FixedFunction::set_depth_test_compare(VkCompareOp operation) {
+        depth_stencil_state.depthCompareOp = operation;
+    }
+
     void GraphicsPipeline::FixedFunction::disable_depth_test() {
         depth_stencil_state.depthWriteEnable = VK_FALSE;
         depth_stencil_state.depthTestEnable  = VK_FALSE;

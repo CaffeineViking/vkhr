@@ -166,6 +166,9 @@ namespace vkhr {
         }
     }
 
+    void HairStyle::generate_indices() {
+    }
+
     void HairStyle::generate_control_points_for(CurveType curve_type) {
         std::size_t degree;
 
@@ -225,6 +228,18 @@ namespace vkhr {
         }
 
         return color_transparencies;
+    }
+
+    const std::vector<unsigned>& HairStyle::get_indices() const {
+        return indices;
+    }
+
+    const std::vector<unsigned>& HairStyle::get_control_points() const {
+        return control_points;
+    }
+
+    const std::vector<glm::vec3>& HairStyle::get_tangents() const {
+        return tangents;
     }
 
     bool HairStyle::valid_signature() const {

@@ -74,10 +74,16 @@ namespace vkhr {
             Line, CubicBezier
         };
 
+        void generate_indices();
+
         void generate_control_points_for(CurveType curve_types);
 
         std::vector<glm::vec4> create_position_thickness_data();
         std::vector<glm::vec4> create_color_transparency_data();
+
+        const std::vector<glm::vec3>& get_tangents() const;
+        const std::vector<unsigned>& get_control_points() const;
+        const std::vector<unsigned>& get_indices() const;
 
         // Let the user do what he pleases with the hair data.
         // Consistency with arrays is checked upon file write.
@@ -87,10 +93,12 @@ namespace vkhr {
         std::vector<float> thickness;
         std::vector<float> transparency;
         std::vector<glm::vec3> color;
-        std::vector<glm::vec3> tangents;
-        std::vector<unsigned> control_points;
 
     private:
+        std::vector<glm::vec3> tangents;
+        std::vector<unsigned> control_points;
+        std::vector<unsigned> indices;
+
         mutable struct FileHeader {
             char signature[4]; // H, A, I, R.
             unsigned strand_count,

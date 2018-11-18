@@ -62,6 +62,8 @@ namespace vkhr {
         // TODO: support bilinear and bicubic interpolation later.
         void resize(const unsigned width, const unsigned height);
 
+        void vertical_flip(); void horizontal_flip();
+
         template<typename F> void filter_neighborhood(F functor);
         template<typename F> void filter(F functor);
 

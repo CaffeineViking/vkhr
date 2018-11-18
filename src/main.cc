@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
     vk::VertexBuffer tangent_buffer {
         device,
         command_pool,
-        hair_style.tangents,
+        hair_style.get_tangents(),
         1,
         {
             { 1, VK_FORMAT_R32G32B32_SFLOAT }
@@ -274,9 +274,10 @@ int main(int argc, char** argv) {
             command_buffers[i].end();
         }
 
-        mvp.model = glm::rotate(glm::mat4(1.0f),
-                                (window.get_current_time() + 0.5f) * glm::radians(45.0f),
-                                glm::vec3(0.0f, 1.0f, 0.0f));
+        // mvp.model = glm::rotate(glm::mat4(1.0f),
+        //                         (window.get_current_time() + 0.5f) * glm::radians(45.0f),
+        //                         glm::vec3(0.0f, 1.0f, 0.0f));
+
         mvp.projection = camera.get_projection_matrix();
         mvp.view = camera.get_view_matrix();
 

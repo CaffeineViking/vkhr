@@ -180,6 +180,21 @@ namespace vkhr {
         *this = resized_image;
     }
 
+    void Image::horizontal_flip() {
+        unsigned half_width { width >> 1  };
+        for (unsigned j { 0 }; j < height; ++j) {
+            for (unsigned i { 0 }; i < half_width; ++i) {
+                auto left_color  = get_pixel(i, j);
+                auto right_color = get_pixel(width - i - 1, j);
+                set_pixel(width - i - 1, j, left_color);
+                set_pixel(i, j, right_color);
+            }
+        }
+    }
+
+    void Image::vertical_flip() {
+    }
+
     void Image::free_image_buffers() {
         if (image_data != nullptr) {
             if (!is_stb_image) {

@@ -3,7 +3,7 @@
 #include "kajiya-kay.glsl"
 
 layout(location = 0) in PipelineData {
-    vec3 tangent;
+    flat vec3 tangent;
 } fs_in;
 
 layout(location = 0) out vec4 color;
@@ -21,5 +21,5 @@ void main() {
                               normalize(fs_in.tangent), light,
                               vec3(0, 0, 0)); // in view space
 
-    color = vec4(shading, 1.0f);
+    color = vec4(normalize(fs_in.tangent), 1.0f);
 }
