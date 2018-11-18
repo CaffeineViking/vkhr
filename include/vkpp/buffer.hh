@@ -108,7 +108,7 @@ namespace vkpp {
 
         const Attributes& get_attributes() const;
 
-        VkDeviceSize elements() const;
+        VkDeviceSize count() const;
 
     private:
         VkDeviceSize element_count;
@@ -129,10 +129,13 @@ namespace vkpp {
                     CommandPool& pool,
                     const std::vector<T>& indices);
 
-        VkDeviceSize elements() const;
+        VkIndexType get_type() const;
+
+        VkDeviceSize count() const;
 
     private:
         VkDeviceSize element_count;
+        VkIndexType  index_type;
     };
 
     class StorageBuffer : public DeviceBuffer {
@@ -207,18 +210,6 @@ namespace vkpp {
         this->element_count = vertices.size();
 
         this->binding  = { binding, sizeof(vertices[0]), VK_VERTEX_INPUT_RATE_VERTEX };
-    }
-
-    template<typename T>
-    IndexBuffer::IndexBuffer(Device& device,
-                             CommandPool& pool,
-                             const std::vector<T>& indices)
-                            : DeviceBuffer { device,
-                                               pool,
-                                               indices.data(),
-                                               sizeof(indices[0]) * indices.size(),
-                                               VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
-        this->element_count = indices.size();
     }
 
     template<typename T>

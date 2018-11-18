@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
     fixed_functions.add_vertex_input(vertex_buffer);
     fixed_functions.add_vertex_input(tangent_buffer);
 
-    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+    fixed_functions.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 
     fixed_functions.set_scissor({ 0, 0, swap_chain.get_extent() });
     fixed_functions.set_viewport({ 0.0, 0.0,
@@ -274,9 +274,10 @@ int main(int argc, char** argv) {
             command_buffers[i].bind_pipeline(graphics_pipeline);
             command_buffers[i].bind_descriptor_set(descriptor_sets[i],
                                                    graphics_pipeline);
-            command_buffers[i].bind_vertex_buffer(vertex_buffer);
+            command_buffers[i].bind_index_buffer(index_buffer);
             command_buffers[i].bind_vertex_buffer(tangent_buffer);
-            command_buffers[i].draw(vertex_buffer.elements(), 1);
+            command_buffers[i].bind_vertex_buffer(vertex_buffer);
+            command_buffers[i].draw_indexed(index_buffer.count());
             imgui.render(command_buffers[i]); // Re-uploads data.
             command_buffers[i].end_render_pass();
             command_buffers[i].end();

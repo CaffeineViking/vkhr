@@ -189,6 +189,12 @@ namespace vkpp {
         vkCmdBindIndexBuffer(handle, index_buffer.get_handle(), offset, type);
     }
 
+    void CommandBuffer::bind_index_buffer(IndexBuffer& index_buffer,
+                                          VkDeviceSize offset) {
+        vkCmdBindIndexBuffer(handle, index_buffer.get_handle(),
+                             offset, index_buffer.get_type());
+    }
+
     void CommandBuffer::draw_indexed(std::uint32_t index_count,
                                      std::uint32_t instance_count,
                                      std::uint32_t first_index,

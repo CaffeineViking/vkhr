@@ -182,8 +182,11 @@ namespace vkhr {
 
             if (has_segments()) segment_count = this->segments[strand];
 
-            for (std::size_t segment { 0 }; segment < segment_count; ++segment)
+            for (std::size_t segment { 0 }; segment < segment_count; ++segment) {
                 indices.push_back(vertex++);
+                indices.push_back(vertex);
+            }
+
             ++vertex; // Skips the last one.
         }
     }
