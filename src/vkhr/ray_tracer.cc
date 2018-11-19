@@ -61,6 +61,9 @@ namespace vkhr {
         back_buffer.clear();
     }
 
+    void Raytracer::load(const SceneGraph&) {
+    }
+
     void Raytracer::draw(const SceneGraph&) {
         // TODO: use the actual scene graphs!
     }
@@ -95,12 +98,12 @@ namespace vkhr {
                 auto tangent = glm::vec4 { ray.get_tangent(), 0 };
                 tangent = camera.get_view_matrix() * tangent;
 
-                if (shadow_ray.not_occluded(scene, context) || no_shadows) {
+                if (shadow_ray.occluded_by(scene, context) || shadows_off) {
                     auto shading = kajiya_kay(hair_color, light_color, 80.0f,
                                               glm::normalize(tangent), light,
                                               glm::vec3(0.00f, 0.0f, 0.00f));
-                    if (no_shadows) color = glm::vec4 { shading, 1 };
-                    else color += glm::vec4 { shading * 0.5f, 0.0f };
+                    if (shadows_off) color = glm::vec4 { shading, 1 };
+                    else color += glm::vec4 { shading * 0.5f, 0.00f };
                 }
 
                 back_buffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
@@ -166,11 +169,7 @@ namespace vkhr {
     }
 
     void Raytracer::toggle_shadows() {
-        no_shadows = !no_shadows;
-    }
-
-    Ray::Ray() {
-        // FIXME: later
+        shadows_off = !shadows_off;
     }
 
     Ray::Ray(const glm::vec3& origin, const glm::vec3& direction, float tnear_plane) {
@@ -212,8 +211,8 @@ namespace vkhr {
         return rh.hit.geomID != RTC_INVALID_GEOMETRY_ID;
     }
 
-    bool Ray::not_occluded() const {
-        return rh.ray.tfar >= 0.0;
+    bool Ray::is_occluded() const {
+        return rh.ray.tfar < 0.0;
     }
 
     glm::vec2 Ray::get_uv() const {
@@ -248,8 +247,8 @@ namespace vkhr {
         return hit_surface();
     }
 
-    bool Ray::not_occluded(RTCScene& scene, RTCIntersectContext& context) {
+    bool Ray::occluded_by(RTCScene& scene, RTCIntersectContext& context) {
         rtcOccluded1(scene, &context, &rh.ray);
-        return not_occluded();
+        return is_occluded();
     }
 }

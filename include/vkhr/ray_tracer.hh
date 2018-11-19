@@ -6,44 +6,13 @@
 #include <embree3/rtcore.h>
 
 namespace vkhr {
-    class Ray final {
-    public:
-        Ray();
-        Ray(const glm::vec3& origin, const glm::vec3& direction, float tnear_plane);
-
-        static constexpr float Epsilon { 0.000001 };
-
-        glm::vec3 get_origin() const;
-        glm::vec3 get_direction() const;
-
-        RTCRay& get_ray();
-        RTCHit& get_hit();
-
-        bool hit_surface()  const;
-        bool not_occluded() const;
-
-        glm::vec2 get_uv() const;
-        glm::vec3 get_tangent() const;
-        glm::vec3 get_normal() const;
-
-        unsigned get_primitive_id() const;
-        unsigned get_geometry_id() const;
-
-        glm::vec3 get_intersection_point() const;
-
-        bool intersects(RTCScene&   scene, RTCIntersectContext& context);
-        bool not_occluded(RTCScene& scene, RTCIntersectContext& context);
-
-    private:
-        RTCRayHit rh { };
-    };
-
     class Raytracer final : public Renderer {
     public:
         Raytracer(const Camera& camera, HairStyle& hair_style);
 
         void draw(const Camera& camera);
 
+        void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;
 
         ~Raytracer() noexcept;
@@ -65,7 +34,7 @@ namespace vkhr {
                              const glm::vec3& light,
                              const glm::vec3& eye);
 
-        bool no_shadows { true };
+        bool shadows_off { true };
 
         Image back_buffer;
 
@@ -77,6 +46,40 @@ namespace vkhr {
 
         RTCDevice device;
     };
+
+    class Ray final {
+    public:
+        Ray(const glm::vec3& origin,
+            const glm::vec3& direction,
+            float near_plane_t_value);
+
+        static constexpr float Epsilon { 0.000001 };
+
+        glm::vec3 get_origin() const;
+        glm::vec3 get_direction() const;
+
+        RTCRay& get_ray();
+        RTCHit& get_hit();
+
+        bool hit_surface() const;
+        bool is_occluded() const;
+
+        glm::vec2 get_uv() const;
+        glm::vec3 get_tangent() const;
+        glm::vec3 get_normal() const;
+
+        unsigned get_primitive_id() const;
+        unsigned get_geometry_id() const;
+
+        glm::vec3 get_intersection_point() const;
+
+        bool intersects(RTCScene& scene,  RTCIntersectContext& context);
+        bool occluded_by(RTCScene& scene, RTCIntersectContext& context);
+
+    private:
+        RTCRayHit rh { };
+    };
+
 }
 
 #endif

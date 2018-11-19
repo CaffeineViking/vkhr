@@ -6,7 +6,12 @@
 namespace vkhr {
     class Rasterizer final : public Renderer {
     public:
+        Rasterizer();
+
+        void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;
+
+    private:
     };
 }
 
