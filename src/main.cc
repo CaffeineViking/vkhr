@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     input_map.bind("quit", vkhr::Input::Key::Escape);
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
-    input_map.bind("take_shot", vkhr::Input::Key::S);
+    input_map.bind("screenshot", vkhr::Input::Key::S);
     input_map.bind("hide", vkhr::Input::Key::H);
 
     vk::append(window.get_vulkan_surface_extensions(),
@@ -249,19 +249,21 @@ int main(int argc, char** argv) {
                                                swap_chain.get_height() };
     camera.look_at({ 0.000f, 60.0f, 0.000f }, { 200.0f, 35.0f, 200.0f });
 
-    mvp.projection = camera.get_projection_matrix();
+    mvp.projection  = camera.get_projection_matrix();
 
     glm::vec2 previous_mouse_position { input_map.get_mouse_position() };
 
-    window.show();
-
     vkhr::Raytracer raytracer { camera, hair_style };
+
+    window.show();
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();
         } else if (input_map.just_pressed("hide")) {
             imgui.toggle_visibility();
+        } else if (input_map.just_pressed("screenshot")) {
+            raytracer.draw(camera);
         }
 
         glm::vec2 cursor_delta { 0.0f, 0.0f };
@@ -274,7 +276,7 @@ int main(int argc, char** argv) {
             glm::vec2 mouse_position = input_map.get_mouse_position();
             cursor_delta = (mouse_position - previous_mouse_position);
             previous_mouse_position = mouse_position; // single frame.
-            camera.arcball_by(cursor_delta*window.delta_time()*0.42f);
+            camera.arcball_by(cursor_delta*window.delta_time()*0.32f);
         }
 
         imgui.update();

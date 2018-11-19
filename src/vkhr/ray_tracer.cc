@@ -33,12 +33,12 @@ namespace vkhr {
 
         scene = rtcNewScene(device);
 
-        auto hair_vertices  =  hair_style.create_position_thickness_data();
+        hair_vertices = hair_style.create_position_thickness_data();
         hair_style.generate_control_points_for(HairStyle::CurveType::Line);
 
         const auto& hair_indices = hair_style.get_control_points();
 
-        RTCGeometry hair { rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE) };
+        hair = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE);
 
         rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT4,
                                    hair_vertices.data(), 0, sizeof(hair_vertices[0]),
@@ -53,19 +53,30 @@ namespace vkhr {
 
         rtcCommitScene(scene);
 
-        vkhr::Image framebuffer { 1280, 720 };
+        back_buffer = Image {
+            camera.get_width(),
+            camera.get_height()
+        };
 
-        framebuffer.clear();
+        back_buffer.clear();
+    }
 
+    void Raytracer::draw(const SceneGraph&) {
+        // TODO: use the actual scene graphs!
+    }
+
+    void Raytracer::draw(const Camera& camera) {
         auto hair_color = glm::vec3(0.80f, 0.57f, 0.32f) * 0.40f;
         auto light = glm::normalize(glm::vec3(1.0f, 2.0f, 1.0f));
         auto light_color = glm::vec3(1.0f, 0.77f, 0.56f) * 0.20f;
 
         auto viewing_plane = camera.get_viewing_plane();
 
+        back_buffer.clear();
+
         #pragma omp parallel for schedule(dynamic)
-        for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)
-        for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
+        for (int j = 0; j < static_cast<int>(back_buffer.get_height()); ++j)
+        for (int i = 0; i < static_cast<int>(back_buffer.get_width()); ++i) {
             float x { static_cast<float>(i) }, y { static_cast<float>(j) };
 
             RTCIntersectContext      context;
@@ -84,25 +95,19 @@ namespace vkhr {
                 auto tangent = glm::vec4 { ray.get_tangent(), 0 };
                 tangent = camera.get_view_matrix() * tangent;
 
-                // if (shadow_ray.occluded_by(scene, context)) {
+                if (shadow_ray.occluded_by(scene, context)) {
                     auto shading = kajiya_kay(hair_color, light_color, 80.0f,
                                               glm::normalize(tangent), light,
                                               glm::vec3(0.00f, 0.0f, 0.00f));
                     color = glm::vec4 { shading, 1.0f };
-                // }
+                }
 
-                framebuffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
+                back_buffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
                                               std::clamp(color.g, 0.0f, 1.0f) * 255,
                                               std::clamp(color.b, 0.0f, 1.0f) * 255,
                                               std::clamp(color.a, 0.0f, 1.0f) * 255 });
             }
         }
-
-        framebuffer.horizontal_flip();
-        framebuffer.save("render.png");
-    }
-
-    void Raytracer::draw(const SceneGraph&) {
     }
 
     Raytracer::~Raytracer() noexcept {

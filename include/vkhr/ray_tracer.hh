@@ -42,7 +42,10 @@ namespace vkhr {
     public:
         Raytracer(const Camera& camera, HairStyle& hair_style);
 
+        void draw(const Camera& camera);
+
         void draw(const SceneGraph& scene) override;
+
 
         ~Raytracer() noexcept;
 
@@ -60,6 +63,12 @@ namespace vkhr {
                              const glm::vec3& tangent,
                              const glm::vec3& light,
                              const glm::vec3& eye);
+
+        Image back_buffer;
+
+        RTCGeometry hair;
+
+        std::vector<glm::vec4> hair_vertices;
 
         RTCScene scene;
 

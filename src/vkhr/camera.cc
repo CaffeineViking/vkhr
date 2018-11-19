@@ -101,13 +101,13 @@ namespace vkhr {
         arcball.x -= diff.x; // Controls yaw radians.
         arcball.y -= diff.y; // Pitches some radians.
 
-        // Clamp the pitch so it doesn't start getting all spamy.
-        arcball.y = glm::clamp(arcball.y, -glm::half_pi<float>(),
-                                          glm::half_pi<float>());
+        // Clamp the pitch so it doesn't start getting all spasmy...
+        arcball.y = glm::clamp(arcball.y, -glm::quarter_pi<float>(),
+                                          glm::quarter_pi<float>());
 
         auto displacement = arcball_look_vector;
 
-        displacement = glm::rotate(displacement, arcball.x, +get_up_direction());
+        displacement = glm::rotate(displacement, arcball.x, +(get_up_direction()));
         displacement = glm::rotate(displacement, arcball.y, -get_left_direction());
 
         position = look_at_point + displacement;
