@@ -266,30 +266,30 @@ namespace vkpp {
     VkDeviceSize VertexBuffer::count() const {
         return element_count;
     }
-    template<> IndexBuffer::IndexBuffer<unsigned>(Device& device,
-                                       CommandPool& pool,
-                                       const std::vector<unsigned>& indices)
-                                      : DeviceBuffer { device,
-                                                       pool,
-                                                       indices.data(),
-                                                       sizeof(indices[0]) * indices.size(),
-                                                       VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
+
+    IndexBuffer::IndexBuffer(Device& device,
+                             CommandPool& pool,
+                             const std::vector<unsigned>& indices)
+                            : DeviceBuffer { device,
+                                             pool,
+                                             indices.data(),
+                                             sizeof(indices[0]) * indices.size(),
+                                             VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
         this->element_count = indices.size();
         this->index_type    = VK_INDEX_TYPE_UINT32;
     }
 
-    template<> IndexBuffer::IndexBuffer<unsigned short>(Device& device,
-                                       CommandPool& pool,
-                                       const std::vector<unsigned short>& indices)
-                                      : DeviceBuffer { device,
-                                                       pool,
-                                                       indices.data(),
-                                                       sizeof(indices[0]) * indices.size(),
-                                                       VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
+    IndexBuffer::IndexBuffer(Device& device,
+                             CommandPool& pool,
+                             const std::vector<unsigned short>& indices)
+                            : DeviceBuffer { device,
+                                             pool,
+                                             indices.data(),
+                                             sizeof(indices[0]) * indices.size(),
+                                             VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
         this->element_count = indices.size();
         this->index_type    = VK_INDEX_TYPE_UINT16;
     }
-
 
     void swap(IndexBuffer& lhs, IndexBuffer& rhs) {
         using std::swap;

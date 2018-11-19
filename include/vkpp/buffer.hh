@@ -124,10 +124,13 @@ namespace vkpp {
         IndexBuffer& operator=(IndexBuffer&& buffer) noexcept;
         IndexBuffer(IndexBuffer&& buffer) noexcept;
 
-        template<typename T>
         IndexBuffer(Device& device,
                     CommandPool& pool,
-                    const std::vector<T>& indices);
+                    const std::vector<unsigned short>& indices);
+
+        IndexBuffer(Device& device,
+                    CommandPool& pool,
+                    const std::vector<unsigned>& indices);
 
         VkIndexType get_type() const;
 
