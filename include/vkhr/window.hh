@@ -38,8 +38,8 @@ namespace vkhr {
 
         int get_refresh_rate() const;
 
-        std::vector<vkpp::Extension> get_vulkan_surface_extensions()  const;
-        vkpp::Surface create_vulkan_surface(vkpp::Instance& instance) const;
+        std::vector<vkpp::Extension> get_vulkan_surface_extensions() const;
+        vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance) const;
 
         void resize(const int width, const int height);
 
@@ -48,7 +48,7 @@ namespace vkhr {
         void set_icon(const Image& icon);
 
         void change_title(const std::string& title);
-        void append_string(const std::string& text);
+        void append_string(const std::string& text) const;
 
         void poll_events(); // Called once per frame.
 
@@ -74,7 +74,7 @@ namespace vkhr {
         float horizontal_dpi,
               vertical_dpi;
 
-        std::string append;
+        mutable std::string append;
 
         std::size_t frames { 0 };
 

@@ -115,6 +115,10 @@ namespace vkpp {
         swap(lhs.format, rhs.format);
         swap(lhs.presentation_mode, rhs.presentation_mode);
         swap(lhs.current_extent, rhs.current_extent);
+
+        swap(lhs.depth_buffer_image, rhs.depth_buffer_image);
+        swap(lhs.depth_buffer_memory, rhs.depth_buffer_memory);
+        swap(lhs.depth_buffer_view, rhs.depth_buffer_view);
     }
 
     VkSwapchainKHR& SwapChain::get_handle() {

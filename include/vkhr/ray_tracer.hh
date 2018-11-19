@@ -69,7 +69,7 @@ namespace vkhr {
         glm::vec3 get_normal() const;
 
         unsigned get_primitive_id() const;
-        unsigned get_geometry_id() const;
+        unsigned get_geometry_id()  const;
 
         glm::vec3 get_intersection_point() const;
 
@@ -77,7 +77,7 @@ namespace vkhr {
         bool occluded_by(RTCScene& scene, RTCIntersectContext& context);
 
     private:
-        RTCRayHit rh { };
+        RTCRayHit ray_hit { };
     };
 
 }

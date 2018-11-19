@@ -105,6 +105,7 @@ namespace vkpp {
         swap(lhs.application_info, rhs.application_info);
         swap(lhs.enabled_layers, rhs.enabled_layers);
         swap(lhs.enabled_extensions, rhs.enabled_extensions);
+        swap(lhs.physical_devices, rhs.physical_devices);
         swap(lhs.handle, rhs.handle);
         swap(lhs.debug_utils_messenger,
              rhs.debug_utils_messenger);

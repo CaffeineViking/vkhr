@@ -173,57 +173,57 @@ namespace vkhr {
     }
 
     Ray::Ray(const glm::vec3& origin, const glm::vec3& direction, float tnear_plane) {
-        rh.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+        ray_hit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
 
-        rh.ray.org_x = origin.x;
-        rh.ray.org_y = origin.y;
-        rh.ray.org_z = origin.z;
+        ray_hit.ray.org_x = origin.x;
+        ray_hit.ray.org_y = origin.y;
+        ray_hit.ray.org_z = origin.z;
 
-        rh.ray.dir_x = direction.x;
-        rh.ray.dir_y = direction.y;
-        rh.ray.dir_z = direction.z;
+        ray_hit.ray.dir_x = direction.x;
+        ray_hit.ray.dir_y = direction.y;
+        ray_hit.ray.dir_z = direction.z;
 
-        rh.ray.tnear = tnear_plane;
-        rh.ray.tfar  = std::numeric_limits<float>::infinity();
+        ray_hit.ray.tnear = tnear_plane;
+        ray_hit.ray.tfar  = std::numeric_limits<float>::infinity();
     }
 
     RTCRay& Ray::get_ray() {
-        return rh.ray;
+        return ray_hit.ray;
     }
 
     RTCHit& Ray::get_hit() {
-        return rh.hit;
+        return ray_hit.hit;
     }
 
     glm::vec3 Ray::get_origin() const {
-        return { rh.ray.org_x,
-                 rh.ray.org_y,
-                 rh.ray.org_z };
+        return { ray_hit.ray.org_x,
+                 ray_hit.ray.org_y,
+                 ray_hit.ray.org_z };
     }
 
     glm::vec3 Ray::get_direction() const {
-        return { rh.ray.dir_x,
-                 rh.ray.dir_y,
-                 rh.ray.dir_z };
+        return { ray_hit.ray.dir_x,
+                 ray_hit.ray.dir_y,
+                 ray_hit.ray.dir_z };
     }
 
     bool Ray::hit_surface() const {
-        return rh.hit.geomID != RTC_INVALID_GEOMETRY_ID;
+        return ray_hit.hit.geomID != RTC_INVALID_GEOMETRY_ID;
     }
 
     bool Ray::is_occluded() const {
-        return rh.ray.tfar < 0.0;
+        return ray_hit.ray.tfar < 0.0;
     }
 
     glm::vec2 Ray::get_uv() const {
-        return { rh.hit.u,
-                 rh.hit.v };
+        return { ray_hit.hit.u,
+                 ray_hit.hit.v };
     }
 
     glm::vec3 Ray::get_normal() const {
-        return { rh.hit.Ng_x,
-                 rh.hit.Ng_y,
-                 rh.hit.Ng_z };
+        return { ray_hit.hit.Ng_x,
+                 ray_hit.hit.Ng_y,
+                 ray_hit.hit.Ng_z };
     }
 
     glm::vec3 Ray::get_tangent() const {
@@ -231,24 +231,24 @@ namespace vkhr {
     }
 
     unsigned Ray::get_primitive_id() const {
-        return rh.hit.primID;
+        return ray_hit.hit.primID;
     }
 
     unsigned Ray::get_geometry_id() const {
-        return rh.hit.geomID;
+        return ray_hit.hit.geomID;
     }
 
     glm::vec3 Ray::get_intersection_point() const {
-        return get_origin() + get_direction() * rh.ray.tfar;
+        return get_origin() + get_direction() * ray_hit.ray.tfar;
     }
 
     bool Ray::intersects(RTCScene& scene,  RTCIntersectContext& context) {
-        rtcIntersect1(scene, &context, &rh);
+        rtcIntersect1(scene, &context, &ray_hit);
         return hit_surface();
     }
 
     bool Ray::occluded_by(RTCScene& scene, RTCIntersectContext& context) {
-        rtcOccluded1(scene, &context, &rh.ray);
+        rtcOccluded1(scene, &context, &ray_hit.ray);
         return is_occluded();
     }
 }

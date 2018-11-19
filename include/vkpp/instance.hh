@@ -16,6 +16,7 @@
 namespace vkpp {
     class Instance final {
     public:
+        Instance() = default;
         Instance(const Application& application_information,
                  const std::vector<Layer> required_layers,
                  const std::vector<Extension> required_extensions,
@@ -40,7 +41,7 @@ namespace vkpp {
         const std::vector<Extension>& get_enabled_extensions() const;
 
         // Finds physical devices which evaluates to true when 'suitable' is checked on it.
-        template<typename F> const PhysicalDevice& find_physical_devices(F suitable) const;
+        template<typename F> const PhysicalDevice& find_physical_devices_with(F fun) const;
 
         const std::vector<PhysicalDevice>& get_physical_devices() const;
 
@@ -93,7 +94,7 @@ namespace vkpp {
     }
 
     template<typename F>
-    const PhysicalDevice& Instance::find_physical_devices(F score) const {
+    const PhysicalDevice& Instance::find_physical_devices_with(F score) const {
         std::vector<int> scores;
         for (const auto& physical_device : physical_devices)
             scores.push_back(score(physical_device));

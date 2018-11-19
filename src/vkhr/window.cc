@@ -144,7 +144,7 @@ namespace vkhr {
         return surface_extensions;
     }
 
-    vkpp::Surface Window::create_vulkan_surface(vkpp::Instance& instance) const {
+    vkpp::Surface Window::create_vulkan_surface_with(vkpp::Instance& instance) const {
         auto instance_handle = instance.get_handle();
         VkSurfaceKHR surface_handle;
 
@@ -181,7 +181,7 @@ namespace vkhr {
         glfwSetWindowTitle(handle, title.c_str());
     }
 
-    void Window::append_string(const std::string& text) {
+    void Window::append_string(const std::string& text) const {
         append = text;
     }
 
