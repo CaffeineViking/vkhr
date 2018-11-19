@@ -21,7 +21,7 @@
 namespace vkhr {
     class Rasterizer final : public Renderer {
     public:
-        Rasterizer(const Window& window);
+        Rasterizer(const Window& window, const SceneGraph& scene_graph);
 
         void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;

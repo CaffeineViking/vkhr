@@ -50,7 +50,7 @@ namespace vkhr {
     }
 
     bool Interface::want_focus() {
-        return ImGui::GetIO().WantCaptureMouse;
+        return ImGui::GetIO().WantCaptureMouse && !hidden;
     }
 
     void Interface::hide() {

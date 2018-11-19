@@ -65,7 +65,9 @@ namespace vkhr {
     }
 
     const Argument& ArgParser::operator[](const std::string& name) const {
-        return arguments.at(name);
+        if (name == "x")      return arguments.at("width");
+        else if (name == "y") return arguments.at("height");
+        else                  return arguments.at(name);
     }
 
     bool ArgParser::add_argument(const Argument& argument) {
@@ -176,8 +178,7 @@ namespace vkhr {
         { "vsync",      Argument::Type::Boolean, Argument::make_boolean(true),  "" },
         { "profile",    Argument::Type::Boolean, Argument::make_boolean(false), "" },
         { "gui",        Argument::Type::Boolean, Argument::make_boolean(true),  "" },
-        { "anti-alias", Argument::Type::Boolean, Argument::make_boolean(true),  "" },
-        { "logging",    Argument::Type::Boolean, Argument::make_boolean(false), "" },
+        { "anti-alias", Argument::Type::Boolean, Argument::make_boolean(false), "" },
 
         { "device",     Argument::Type::String,  Argument::make_string("auto"), "" },
         { "assets",     Argument::Type::String,  Argument::make_string("auto"), "" }

@@ -9,7 +9,7 @@
 namespace vk = vkpp;
 
 namespace vkhr {
-    Rasterizer::Rasterizer(const Window& window) {
+    Rasterizer::Rasterizer(const Window& window, const SceneGraph& scene_graph) {
         vk::Version target_vulkan_loader { 1,1 };
         vk::Application application_information {
             "VKHR", { 1, 0, 0 },
@@ -94,7 +94,7 @@ namespace vkhr {
         command_buffers = graphics_pool.allocate(framebuffers.size());
     }
 
-    void Rasterizer::load(const SceneGraph&) {
+    void Rasterizer::load(const SceneGraph& scene_graph) {
         // TODO: use the actual scene graph!
     }
 

@@ -1,0 +1,30 @@
+{
+    "camera": {
+        "fieldOfView": 45.0,
+        "origin": [ 0.0, 60, 0.0 ],
+        "lookAt": [ 200, 35, 200 ],
+        "upward": [ 0.0,  1, 0.0 ]
+    },
+
+    "lights": [
+        {
+            "type": "point",
+            "position": [1, 2, 1],
+            "intensity": [ 1.000,
+                           0.772,
+                           0.560 ]
+        }
+    ],
+
+    "nodes": [
+        {
+            "scale":     [1, 1, 1],
+            "translate": [0, 0, 0],
+            "rotate": [0, 0, 0, 1],
+
+            "styles": [
+                "../styles/ponytail.hair"
+            ]
+        }
+    ]
+}

@@ -7,8 +7,14 @@ int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
 
-    const vkhr::Image vulkan_icon { IMAGE("vulkan.icon") };
-    vkhr::Window window { 1280, 720, "VKHR", vulkan_icon };
+    int width  = argp["x"].value.integer,
+        height = argp["y"].value.integer;
+
+    const vkhr::Image vulkan_icon { IMAGE("vulkan-icon.png") };
+    vkhr::Window window { width, height, "VKHR", vulkan_icon };
+
+    if (argp["fullscreen"].value.boolean)
+        window.toggle_fullscreen();
 
     vkhr::InputMap input_map { window };
 
@@ -18,7 +24,9 @@ int main(int argc, char** argv) {
     input_map.bind("toggle_ui", vkhr::Input::Key::H);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
-    vkhr::Rasterizer rasterizer { window };
+    vkhr::SceneGraph scene_graph { scene_file };
+
+    vkhr::Rasterizer rasterizer { window, scene_graph };
 
     vkhr::HairStyle hair_style { STYLE("ponytail.hair") };
 

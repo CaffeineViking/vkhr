@@ -45,4 +45,9 @@ package() {
 	install -Dm644 share/models/woman/woman.obj       "$pkgdir"/usr/share/vkhr/models/woman/woman.obj
 	install -Dm644 share/models/ponytail/ponytail.obj "$pkgdir"/usr/share/vkhr/models/ponytail/ponytail.obj
 	install -Dm644 share/models/bear/bear.obj         "$pkgdir"/usr/share/vkhr/models/bear/bear.obj
+
+	install -Dm644 share/shaders/kajiya-kay.vert.spv  "$pkgdir"/usr/share/vkhr/shaders/kajiya-kay.vert.spv
+	install -Dm644 share/shaders/kajiya-kay.frag.spv  "$pkgdir"/usr/share/vkhr/shaders/kajiya-kay.frag.spv
+	install -Dm644 share/shaders/billboards.frag.spv  "$pkgdir"/usr/share/vkhr/shaders/billboards.frag.spv
+	install -Dm644 share/shaders/billboards.vert.spv  "$pkgdir"/usr/share/vkhr/shaders/billboards.vert.spv
 }
