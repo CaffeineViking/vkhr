@@ -49,6 +49,10 @@ namespace vkhr {
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
     }
 
+    bool Interface::want_focus() {
+        return ImGui::GetIO().WantCaptureMouse;
+    }
+
     void Interface::hide() {
         hidden = true;
     }

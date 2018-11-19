@@ -88,18 +88,19 @@ namespace vkhr {
             Ray ray { viewing_plane.point, eye_direction , 0.0000f };
 
             if (ray.intersects(scene, context)) {
-                glm::vec4 color { 0.0, 0.0, 0.0, 1.0 };
+                glm::vec4 color { hair_color * 0.5f, 1.0 };
 
                 Ray shadow_ray { ray.get_intersection_point(), light, Ray::Epsilon };
 
                 auto tangent = glm::vec4 { ray.get_tangent(), 0 };
                 tangent = camera.get_view_matrix() * tangent;
 
-                if (shadow_ray.occluded_by(scene, context)) {
+                if (shadow_ray.not_occluded(scene, context) || no_shadows) {
                     auto shading = kajiya_kay(hair_color, light_color, 80.0f,
                                               glm::normalize(tangent), light,
                                               glm::vec3(0.00f, 0.0f, 0.00f));
-                    color = glm::vec4 { shading, 1.0f };
+                    if (no_shadows) color = glm::vec4 { shading, 1 };
+                    else color += glm::vec4 { shading * 0.5f, 0.0f };
                 }
 
                 back_buffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
@@ -108,6 +109,9 @@ namespace vkhr {
                                               std::clamp(color.a, 0.0f, 1.0f) * 255 });
             }
         }
+
+        back_buffer.horizontal_flip();
+        back_buffer.save("render.png");
     }
 
     Raytracer::~Raytracer() noexcept {
@@ -203,7 +207,7 @@ namespace vkhr {
         return rh.hit.geomID != RTC_INVALID_GEOMETRY_ID;
     }
 
-    bool Ray::is_occluded() const {
+    bool Ray::not_occluded() const {
         return rh.ray.tfar >= 0.0;
     }
 
@@ -239,8 +243,8 @@ namespace vkhr {
         return hit_surface();
     }
 
-    bool Ray::occluded_by(RTCScene& scene, RTCIntersectContext& context) {
+    bool Ray::not_occluded(RTCScene& scene, RTCIntersectContext& context) {
         rtcOccluded1(scene, &context, &rh.ray);
-        return is_occluded();
+        return not_occluded();
     }
 }

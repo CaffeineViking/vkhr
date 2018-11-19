@@ -19,8 +19,8 @@ namespace vkhr {
         RTCRay& get_ray();
         RTCHit& get_hit();
 
-        bool hit_surface() const;
-        bool is_occluded() const;
+        bool hit_surface()  const;
+        bool not_occluded() const;
 
         glm::vec2 get_uv() const;
         glm::vec3 get_tangent() const;
@@ -31,8 +31,8 @@ namespace vkhr {
 
         glm::vec3 get_intersection_point() const;
 
-        bool intersects(RTCScene&  scene, RTCIntersectContext& context);
-        bool occluded_by(RTCScene& scene, RTCIntersectContext& context);
+        bool intersects(RTCScene&   scene, RTCIntersectContext& context);
+        bool not_occluded(RTCScene& scene, RTCIntersectContext& context);
 
     private:
         RTCRayHit rh { };
@@ -45,7 +45,6 @@ namespace vkhr {
         void draw(const Camera& camera);
 
         void draw(const SceneGraph& scene) override;
-
 
         ~Raytracer() noexcept;
 
@@ -63,6 +62,8 @@ namespace vkhr {
                              const glm::vec3& tangent,
                              const glm::vec3& light,
                              const glm::vec3& eye);
+
+        bool no_shadows { true };
 
         Image back_buffer;
 

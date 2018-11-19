@@ -272,7 +272,7 @@ int main(int argc, char** argv) {
         } else if (input_map.just_pressed("grab")) {
             input_map.freeze_cursor();
             previous_mouse_position  = input_map.get_mouse_position();
-        } else if (input_map.pressed("grab")) {
+        } else if (input_map.pressed("grab") && !imgui.want_focus()) {
             glm::vec2 mouse_position = input_map.get_mouse_position();
             cursor_delta = (mouse_position - previous_mouse_position);
             previous_mouse_position = mouse_position; // single frame.

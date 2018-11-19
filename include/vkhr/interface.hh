@@ -31,6 +31,8 @@ namespace vkhr {
 
         ~Interface() noexcept;
 
+        bool want_focus();
+
         void hide();
         void toggle_visibility();
         void show();
