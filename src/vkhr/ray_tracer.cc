@@ -165,7 +165,12 @@ namespace vkhr {
         return diffuse_colors + specular_color;
     }
 
+    void Raytracer::toggle_shadows() {
+        no_shadows = !no_shadows;
+    }
+
     Ray::Ray() {
+        // FIXME: later
     }
 
     Ray::Ray(const glm::vec3& origin, const glm::vec3& direction, float tnear_plane) {

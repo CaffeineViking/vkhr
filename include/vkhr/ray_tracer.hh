@@ -52,6 +52,8 @@ namespace vkhr {
         Raytracer& operator=(Raytracer&& raytracer) noexcept;
         friend void swap(Raytracer& lhs, Raytracer& rhs);
 
+        void toggle_shadows();
+
     private:
         void set_flush_to_zero();
         void set_denormal_zero();
