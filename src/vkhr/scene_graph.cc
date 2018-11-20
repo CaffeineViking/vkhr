@@ -128,10 +128,6 @@ namespace vkhr {
         return true;
     }
 
-    bool SceneGraph::save(const std::string& file_path) const {
-        return true;
-    }
-
     Model& SceneGraph::add(Model&& model, const std::string& id) {
         models[id] = std::move(model);
         return models[id];

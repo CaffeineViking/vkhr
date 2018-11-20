@@ -31,7 +31,6 @@ namespace vkhr {
                       RenderHairFunction  render_hair) const;
 
         bool load(const std::string& file_path);
-        bool save(const std::string& file_path) const;
 
         Model& add(Model&& model, const std::string& id);
         Model& add(const Model& model, const std::string& id);
@@ -114,18 +113,10 @@ namespace vkhr {
             OpeningFolder,
 
             ReadingGraphs,
-
             ReadingCamera,
             ReadingLights,
             ReadingStyles,
             ReadingModels,
-
-            WritingGraphs,
-
-            WritingCamera,
-            WritingLights,
-            WritingStyles,
-            WritingModels
         };
 
         operator bool() const;
