@@ -4,7 +4,6 @@
 using json = nlohmann::json;
 
 #include <fstream>
-#include <iostream>
 
 namespace vkhr {
     SceneGraph::SceneGraph(const std::string& file_path) {

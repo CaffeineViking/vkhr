@@ -10,6 +10,7 @@
 
 namespace vkpp {
     SwapChain::SwapChain(Device& logical_device, Surface& surface,
+                         CommandPool& command_pool, // @ transition
                          const VkSurfaceFormatKHR& preferred_format,
                          const PresentationMode& preferred_present_mode,
                          const VkExtent2D& preferred_window_extent)
@@ -84,7 +85,7 @@ namespace vkpp {
         }
 
         create_swapchain_images();
-        create_swapchain_depths(logical_device);
+        create_swapchain_depths(logical_device, command_pool);
     }
 
     SwapChain::~SwapChain() noexcept {
@@ -221,7 +222,7 @@ namespace vkpp {
     }
 
     VkSampleCountFlagBits SwapChain::get_sample_count() {
-        return VK_SAMPLE_COUNT_1_BIT; // TODO: 8x MSAA.
+        return VK_SAMPLE_COUNT_1_BIT;
     }
 
     const SwapChain::PresentationMode& SwapChain::get_presentation_mode() const {
@@ -271,11 +272,11 @@ namespace vkpp {
         }
     }
 
-    void SwapChain::create_swapchain_depths(Device& device) {
+    void SwapChain::create_swapchain_depths(Device& device, CommandPool& p) {
         depth_buffer_image = Image {
             device,
             get_width(), get_height(),
-            VK_FORMAT_D32_SFLOAT,
+            get_depth_attachment_format(),
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
         };
 
@@ -286,6 +287,8 @@ namespace vkpp {
         };
 
         depth_buffer_image.bind(depth_buffer_memory);
+
+        depth_buffer_image.transition(p, get_depth_attachment_layout());
 
         depth_buffer_view = ImageView {
             device, depth_buffer_image

@@ -38,7 +38,7 @@ namespace vkhr {
 
         // Find physical devices that seem most promising of the lot.
         auto score = [&](const vk::PhysicalDevice& physical_device) {
-            short gpu_suitable = physical_device.is_discrete_gpu()*2+
+            short gpu_suitable = 2*physical_device.is_discrete_gpu()+
                                  physical_device.is_integrated_gpu();
             return physical_device.has_every_queue() * gpu_suitable *
                    physical_device.has_present_queue(window_surface);
@@ -67,6 +67,7 @@ namespace vkhr {
         swap_chain = vk::SwapChain {
             device,
             window_surface,
+            graphics_pool,
             {
                 VK_FORMAT_B8G8R8A8_UNORM,
                 VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
