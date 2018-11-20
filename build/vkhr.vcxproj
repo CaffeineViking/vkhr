@@ -456,6 +456,7 @@
     <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\billboards.frag" />
     <None Include="..\share\shaders\billboards.vert" />
     <None Include="..\share\shaders\kajiya-kay.frag" />

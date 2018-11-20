@@ -61,6 +61,9 @@
     <Filter Include="include\vkpp">
       <UniqueIdentifier>{99D7E369-853A-730E-2EC0-ABC41A023F91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scenes">
+      <UniqueIdentifier>{A602591B-92A4-83F1-7B5F-974567A00A42}</UniqueIdentifier>
+    </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{0F45D591-7B24-542D-843C-DF03F09ABA8E}</UniqueIdentifier>
     </Filter>
@@ -1141,6 +1144,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\share\scenes\ponytail.vkhr">
+      <Filter>scenes</Filter>
+    </None>
     <None Include="..\share\shaders\billboards.frag">
       <Filter>shaders</Filter>
     </None>
