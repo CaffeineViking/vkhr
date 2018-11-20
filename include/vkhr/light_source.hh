@@ -16,6 +16,8 @@ namespace vkhr {
             glm::vec4 intensity;
         };
 
+        LightSource() = default;
+
         LightSource(const glm::vec3& vector, Type type,
                     const glm::vec3& intensity,
                     float cutoff = 0.0);

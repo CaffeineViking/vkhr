@@ -19,7 +19,53 @@ namespace vkhr {
 
         if (auto camera = parser.find("camera"); camera != parser.end()) {
             this->camera.set_field_of_view(camera->value("fieldOfView", 45.0));
+            if (auto origin = camera->find("origin"); origin != camera->end()) {
+                this->camera.set_position({ origin->at(0),
+                                            origin->at(1),
+                                            origin->at(2) });
+            } else return set_error_state(Error::ReadingCamera);
+
+            if (auto look_at = camera->find("lookAt"); look_at != camera->end()) {
+                this->camera.set_look_at_point({ look_at->at(0),
+                                                 look_at->at(1),
+                                                 look_at->at(2) });
+            } else return set_error_state(Error::ReadingCamera);
+
+            if (auto upward = camera->find("upward"); upward != camera->end()) {
+                this->camera.set_up_direction({ upward->at(0),
+                                                upward->at(1),
+                                                upward->at(2) });
+            } else this->camera.set_up_direction({ 0, +1.0, 0 });
         } else return set_error_state(Error::ReadingCamera);
+
+        if (auto lights = parser.find("lights"); lights != parser.end()) {
+            for (auto& light : *lights) {
+                this->lights.push_back(LightSource {/* uninitialized */});
+
+                if (auto position = light.find("position"); position != light.end()) {
+                    this->lights.back().set_position({ position->at(0),
+                                                       position->at(1),
+                                                       position->at(2) });
+                } else if (auto direction = light.find("direction"); direction != light.end()) {
+                    this->lights.back().set_direction({ direction->at(0),
+                                                        direction->at(1),
+                                                        direction->at(2) });
+                } else return set_error_state(Error::ReadingLights);
+
+                if (auto intensity = light.find("intensity"); intensity != light.end()) {
+                    this->lights.back().set_intensity({ intensity->at(0),
+                                                        intensity->at(1),
+                                                        intensity->at(2) });
+                } else return set_error_state(Error::ReadingLights);
+
+                this->lights.back().set_cutoff(light.value("cutoff", 0.0));
+            }
+        }
+
+        if (auto nodes = parser.find("nodes"); nodes != parser.end()) {
+            for (auto& node : *nodes) {
+            }
+        }
 
         return true;
     }
