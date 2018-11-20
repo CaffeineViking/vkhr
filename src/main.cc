@@ -7,6 +7,8 @@ int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
 
+    if (scene_file.empty()) scene_file = SCENE("ponytail.vkhr");
+
     int width  = argp["x"].value.integer,
         height = argp["y"].value.integer;
 

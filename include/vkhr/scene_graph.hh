@@ -7,8 +7,6 @@
 #include <vkhr/hair_style.hh>
 #include <vkhr/camera.hh>
 
-#include <nlohmann/json.hpp>
-
 #include <glm/glm.hpp>
 
 #include <list>
@@ -91,12 +89,37 @@ namespace vkhr {
 
         Node& get_root_node();
 
+        enum class Error {
+            None,
+
+            OpeningFolder,
+
+            ReadingMatrix,
+            ReadingCamera,
+            ReadingLights,
+            ReadingStyles,
+            ReadingModels,
+
+            WritingMatrix,
+            WritingCamera,
+            WritingLights,
+            WritingStyles,
+            WritingModels
+        };
+
+        operator bool() const;
+        bool set_error_state(const Error error_state) const;
+        Error get_last_error_state() const;
+
     private:
         Node root;
         Camera camera;
         std::list<LightSource> lights;
         std::list<HairStyle> hair_styles;
         std::list<Model> models;
+        mutable Error error_state {
+            Error::None
+        };
     };
 
     template<typename RenderModelFunction, typename RenderHairFunction>

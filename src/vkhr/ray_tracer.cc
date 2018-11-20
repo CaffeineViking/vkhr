@@ -106,10 +106,10 @@ namespace vkhr {
                     else color += glm::vec4 { shading * 0.5f, 0.00f };
                 }
 
-                back_buffer.set_pixel(i, j, { std::clamp(color.r, 0.0f, 1.0f) * 255,
-                                              std::clamp(color.g, 0.0f, 1.0f) * 255,
-                                              std::clamp(color.b, 0.0f, 1.0f) * 255,
-                                              std::clamp(color.a, 0.0f, 1.0f) * 255 });
+                back_buffer.set_pixel(i, j, { glm::clamp(color.r, 0.0f, 1.0f) * 255,
+                                              glm::clamp(color.g, 0.0f, 1.0f) * 255,
+                                              glm::clamp(color.b, 0.0f, 1.0f) * 255,
+                                              glm::clamp(color.a, 0.0f, 1.0f) * 255 });
             }
         }
 

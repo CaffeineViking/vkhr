@@ -1,11 +1,27 @@
 #include <vkhr/scene_graph.hh>
 
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+#include <fstream>
+#include <iostream>
+
 namespace vkhr {
     SceneGraph::SceneGraph(const std::string& file_path) {
         load(file_path);
     }
 
     bool SceneGraph::load(const std::string& file_path) {
+        std::ifstream file { file_path };
+
+        if (!file) return set_error_state(Error::OpeningFolder);
+
+        auto parser = json::parse(file);
+
+        if (auto camera = parser.find("camera"); camera != parser.end()) {
+            this->camera.set_field_of_view(camera->value("fieldOfView", 45.0));
+        } else return set_error_state(Error::ReadingCamera);
+
         return true;
     }
 
@@ -127,5 +143,20 @@ namespace vkhr {
 
     SceneGraph::Node& SceneGraph::get_root_node() {
         return root;
+    }
+
+    SceneGraph::operator bool() const {
+        return error_state == Error::None;
+    }
+
+    bool SceneGraph::set_error_state(const Error error_state) const {
+        this->error_state = error_state;
+        if (error_state == Error::None) {
+            return true;
+        } else return false;
+    }
+
+    SceneGraph::Error SceneGraph::get_last_error_state() const {
+        return error_state;
     }
 }
