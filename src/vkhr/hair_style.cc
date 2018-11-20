@@ -176,8 +176,8 @@ namespace vkhr {
             if (has_segments()) segment_count = this->segments[strand];
 
             for (std::size_t segment { 0 }; segment < segment_count; ++segment) {
-                indices.push_back(vertex++);
-                indices.push_back(vertex);
+                indices.push_back(static_cast<unsigned>(vertex++));
+                indices.push_back(static_cast<unsigned>(vertex));
             }
 
             ++vertex; // Skips the last one.
@@ -203,7 +203,7 @@ namespace vkhr {
             }
 
             for (std::size_t segment { 0 }; segment < segment_count; ++segment) {
-                control_points.push_back(vertex);
+                control_points.push_back(static_cast<unsigned>(vertex));
                 vertex += degree - 1;
             }
 

@@ -17,6 +17,8 @@ namespace vkhr {
 
         auto parser = json::parse(file);
 
+        scene_path = file_path.substr(0, file_path.find_last_of("\\/") + 1);
+
         if (auto camera = parser.find("camera"); camera != parser.end()) {
             this->camera.set_field_of_view(camera->value("fieldOfView", 45.0));
             if (auto origin = camera->find("origin"); origin != camera->end()) {
@@ -87,6 +89,22 @@ namespace vkhr {
                 } else current_node.set_translation({ 0, 0, 0 });
 
                 current_node.set_node_name(node.value("name", "None"));
+
+                if (auto styles = node.find("styles"); styles != node.end()) {
+                    for (auto& style_path : *styles) {
+                        if (auto& style = add_hair_style(style_path)) {
+                            current_node.add(&style);
+                        } else return set_error_state(Error::ReadingStyles);
+                    }
+                }
+
+                if (auto models = node.find("models"); models != node.end()) {
+                    for (auto& model_path : *models) {
+                        if (auto& model = add_model(model_path)) {
+                            current_node.add(&model);
+                        } else return set_error_state(Error::ReadingModels);
+                    }
+                }
             }
         } else return set_error_state(Error::ReadingGraphs);
 
@@ -104,6 +122,9 @@ namespace vkhr {
             }
         }
 
+        auto root = parser.value("root", 0);
+        this->root = &nodes[root];
+
         return true;
     }
 
@@ -111,22 +132,42 @@ namespace vkhr {
         return true;
     }
 
-    Model& SceneGraph::add(Model&& model) {
-        return models.emplace_back(std::move(model));
+    Model& SceneGraph::add(Model&& model, const std::string& id) {
+        models[id] = std::move(model);
+        return models[id];
     }
 
-    Model& SceneGraph::add(const Model& model) {
-        models.push_back(model);
-        return models.back();
+    Model& SceneGraph::add(const Model& model, const std::string& id) {
+        models[id] = model;
+        return models[id];
     }
 
-    HairStyle& SceneGraph::add(const HairStyle& hair_style) {
-        hair_styles.push_back(hair_style);
-        return hair_styles.back();
+    HairStyle& SceneGraph::add(const HairStyle& hair_style, const std::string& id) {
+        hair_styles[id] = hair_style;
+        return hair_styles[id];
     }
 
-    HairStyle& SceneGraph::add(HairStyle&& hair_style) {
-        return hair_styles.emplace_back(std::move(hair_style));
+    HairStyle& SceneGraph::add(HairStyle&& hair_style, const std::string& id) {
+        hair_styles[id] = std::move(hair_style);
+        return hair_styles[id];
+    }
+
+    HairStyle& SceneGraph::add_hair_style(const std::string& file_path) {
+        auto real_path = scene_path + file_path;
+
+        if (hair_styles.find(real_path) == hair_styles.end())
+            hair_styles[real_path] = HairStyle { real_path };
+
+        return hair_styles[real_path];
+    }
+
+    Model& SceneGraph::add_model(const std::string& file_path) {
+        auto real_path = scene_path + file_path;
+
+        if (models.find(real_path) == models.end())
+            models[real_path] = Model { real_path };
+
+        return models[real_path];
     }
 
     void SceneGraph::clear() {
@@ -135,11 +176,11 @@ namespace vkhr {
         nodes.clear();
     }
 
-    bool SceneGraph::remove(std::list<Model>::iterator model) {
+    bool SceneGraph::remove(ModelMap::iterator model) {
         return models.erase(model) != models.end();
     }
 
-    bool SceneGraph::remove(std::list<HairStyle>::iterator hair_style) {
+    bool SceneGraph::remove(HairStyleMap::iterator hair_style) {
         return hair_styles.erase(hair_style) != hair_styles.end();
     }
 
@@ -163,11 +204,11 @@ namespace vkhr {
         return hair_styles.erase(hair_style) != hair_styles.end();
     }
 
-    const std::list<HairStyle>& SceneGraph::get_hair_styles() const {
+    const SceneGraph::HairStyleMap& SceneGraph::get_hair_styles() const {
         return hair_styles;
     }
 
-    const std::list<Model>& SceneGraph::get_models() const {
+    const SceneGraph::ModelMap& SceneGraph::get_models() const {
         return models;
     }
 

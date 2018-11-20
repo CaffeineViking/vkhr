@@ -13,6 +13,7 @@
 
 #include <string>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 namespace vkhr {
@@ -32,18 +33,24 @@ namespace vkhr {
         bool load(const std::string& file_path);
         bool save(const std::string& file_path) const;
 
-        Model& add(Model&& model);
-        Model& add(const Model& model);
-        HairStyle& add(const HairStyle& hair_style);
-        HairStyle& add(HairStyle&& hair_style);
+        Model& add(Model&& model, const std::string& id);
+        Model& add(const Model& model, const std::string& id);
+        HairStyle& add(const HairStyle& hair_style, const std::string& id);
+        HairStyle& add(HairStyle&& hair_style, const std::string& id);
+
+        HairStyle& add_hair_style(const std::string& file_path);
+        Model& add_model(const std::string& file_path);
 
         void clear();
 
-        bool remove(std::list<Model>::iterator model);
-        bool remove(std::list<HairStyle>::iterator hair_style);
+        using ModelMap     = std::unordered_map<std::string, Model>;
+        using HairStyleMap = std::unordered_map<std::string, HairStyle>;
 
-        const std::list<HairStyle>& get_hair_styles() const;
-        const std::list<Model>& get_models() const;
+        bool remove(ModelMap::iterator model);
+        bool remove(HairStyleMap::iterator hair_style);
+
+        const HairStyleMap& get_hair_styles() const;
+        const ModelMap& get_models() const;
 
         const Camera& get_camera() const;
         Camera& get_camera();
@@ -130,9 +137,13 @@ namespace vkhr {
         Camera camera;
         std::vector<Node> nodes;
         std::list<LightSource> lights;
-        std::list<HairStyle> hair_styles;
-        std::list<Model> models;
-        mutable Error error_state {
+        HairStyleMap hair_styles;
+        ModelMap models;
+
+        std::string scene_path { "" };
+
+        mutable
+        Error error_state {
             Error::None
         };
     };
