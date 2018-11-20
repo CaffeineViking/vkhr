@@ -32,10 +32,10 @@ namespace vkhr {
         bool load(const std::string& file_path);
         bool save(const std::string& file_path) const;
 
-        void add(Model&& model);
-        void add(const Model& model);
-        void add(const HairStyle& hair_style);
-        void add(HairStyle&& hair_style);
+        Model& add(Model&& model);
+        Model& add(const Model& model);
+        HairStyle& add(const HairStyle& hair_style);
+        HairStyle& add(HairStyle&& hair_style);
 
         void clear();
 
@@ -50,42 +50,54 @@ namespace vkhr {
 
         class Node final {
         public:
-            void add(const Node& node);
-            void add(Node&& node);
             void add(Model* model);
             void add(HairStyle* hair_style);
-
-            Node& create_child_node();
-
-            void destroy();
+            void reserve_nodes(std::size_t);
+            void add(Node* node);
 
             bool remove(std::vector<Model*>::iterator model);
             bool remove(std::vector<HairStyle*>::iterator hair_style);
-            bool remove(std::vector<Node>::iterator child);
+            bool remove(std::vector<Node*>::iterator child);
 
-            const std::vector<Node>& get_children() const;
+            const std::vector<Node*>& get_children() const;
             const std::vector<HairStyle*>& get_hair_styles() const;
             const std::vector<Model*>& get_models() const;
 
-            // TODO: add functions to do transformations.
+            void set_rotation(const glm::vec4& rotation);
+            void set_translation(const glm::vec3& translation);
+            void set_scale(const glm::vec3& scale);
 
-            const glm::mat4& get_rotation() const;
-            const glm::mat4& get_translation() const;
-            const glm::mat4& get_scale() const;
+            const glm::vec4& get_rotation() const;
+            const glm::vec3& get_translation() const;
+            const glm::vec3& get_scale() const;
 
+            const glm::mat4& get_matrix() const;
+
+            void set_node_name(const std::string& n);
             const std::string& get_node_name() const;
 
         private:
-            glm::mat4 rotation;
-            glm::mat4 translation;
-            glm::mat4 scale;
+            void recompute_matrix() const;
 
-            std::vector<Node> children;
+            glm::vec4 rotation;
+            glm::vec3 translation;
+            glm::vec3 scale;
+
+            mutable glm::mat4 matrix;
+            bool recalculate_matrix { true };
+
+            std::vector<Node*> children;
             std::vector<HairStyle*> hair_styles;
             std::vector<Model*> models;
 
             std::string node_name;
         };
+
+        const std::vector<Node>& get_nodes() const;
+
+        Node& push_back_node();
+        Node& add(const Node& node);
+        Node& add(Node&& node);
 
         Node& get_root_node();
 
@@ -94,13 +106,15 @@ namespace vkhr {
 
             OpeningFolder,
 
-            ReadingMatrix,
+            ReadingGraphs,
+
             ReadingCamera,
             ReadingLights,
             ReadingStyles,
             ReadingModels,
 
-            WritingMatrix,
+            WritingGraphs,
+
             WritingCamera,
             WritingLights,
             WritingStyles,
@@ -112,8 +126,9 @@ namespace vkhr {
         Error get_last_error_state() const;
 
     private:
-        Node root;
+        Node* root;
         Camera camera;
+        std::vector<Node> nodes;
         std::list<LightSource> lights;
         std::list<HairStyle> hair_styles;
         std::list<Model> models;

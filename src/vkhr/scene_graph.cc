@@ -60,10 +60,47 @@ namespace vkhr {
 
                 this->lights.back().set_cutoff(light.value("cutoff", 0.0));
             }
-        }
+        } else return set_error_state(Error::ReadingLights);
 
         if (auto nodes = parser.find("nodes"); nodes != parser.end()) {
+            this->nodes.reserve(nodes->size());
             for (auto& node : *nodes) {
+                auto& current_node = push_back_node();
+
+                if (auto scale = node.find("scale"); scale != node.end()) {
+                    current_node.set_scale({ scale->at(0),
+                                             scale->at(1),
+                                             scale->at(2) });
+                } else current_node.set_scale({ 1, 1, 1 });
+
+                if (auto rotation = node.find("rotation"); rotation != node.end()) {
+                    current_node.set_rotation({ rotation->at(0),
+                                                rotation->at(1),
+                                                rotation->at(2),
+                                                rotation->at(3) });
+                } else current_node.set_rotation({ 0, 0, 0, 1 });
+
+                if (auto translation = node.find("translation"); translation != node.end()) {
+                    current_node.set_translation({ translation->at(0),
+                                                   translation->at(1),
+                                                   translation->at(2) });
+                } else current_node.set_translation({ 0, 0, 0 });
+
+                current_node.set_node_name(node.value("name", "None"));
+            }
+        } else return set_error_state(Error::ReadingGraphs);
+
+        // As a post-process step, link the child nodes together too.
+        if (auto nodes = parser.find("nodes"); nodes != parser.end()) {
+            std::size_t node_id { 0 };
+            for (auto& node : *nodes) {
+                auto& current_node = this->nodes[node_id++];
+
+                if (auto children = node.find("children"); children != node.end()) {
+                    current_node.reserve_nodes(children->size());
+                    for (auto& child : *children)
+                        current_node.add(&this->nodes[child]);
+                }
             }
         }
 
@@ -74,26 +111,28 @@ namespace vkhr {
         return true;
     }
 
-    void SceneGraph::add(Model&& model) {
-        models.emplace_back(std::move(model));
+    Model& SceneGraph::add(Model&& model) {
+        return models.emplace_back(std::move(model));
     }
 
-    void SceneGraph::add(const Model& model) {
+    Model& SceneGraph::add(const Model& model) {
         models.push_back(model);
+        return models.back();
     }
 
-    void SceneGraph::add(const HairStyle& hair_style) {
+    HairStyle& SceneGraph::add(const HairStyle& hair_style) {
         hair_styles.push_back(hair_style);
+        return hair_styles.back();
     }
 
-    void SceneGraph::add(HairStyle&& hair_style) {
-        hair_styles.emplace_back(std::move(hair_style));
+    HairStyle& SceneGraph::add(HairStyle&& hair_style) {
+        return hair_styles.emplace_back(std::move(hair_style));
     }
 
     void SceneGraph::clear() {
         models.clear();
         hair_styles.clear();
-        root.destroy();
+        nodes.clear();
     }
 
     bool SceneGraph::remove(std::list<Model>::iterator model) {
@@ -104,16 +143,8 @@ namespace vkhr {
         return hair_styles.erase(hair_style) != hair_styles.end();
     }
 
-    SceneGraph::Node& SceneGraph::Node::create_child_node() {
-        return children.emplace_back(Node {  });
-    }
-
-    void SceneGraph::Node::add(const Node& node) {
+    void SceneGraph::Node::add(Node* node) {
         children.push_back(node);
-    }
-
-    void SceneGraph::Node::add(Node&& node) {
-        children.emplace_back(std::move(node));
     }
 
     void SceneGraph::Node::add(Model* model) {
@@ -122,12 +153,6 @@ namespace vkhr {
 
     void SceneGraph::Node::add(HairStyle* hair_style) {
         hair_styles.push_back(hair_style);
-    }
-
-    void SceneGraph::Node::destroy() {
-        models.clear();
-        hair_styles.clear();
-        children.clear();
     }
 
     bool SceneGraph::Node::remove(std::vector<Model*>::iterator model) {
@@ -158,11 +183,11 @@ namespace vkhr {
         return hair_styles;
     }
 
-    bool SceneGraph::Node::remove(std::vector<Node>::iterator child) {
+    bool SceneGraph::Node::remove(std::vector<Node*>::iterator child) {
         return children.erase(child) != children.end();
     }
 
-    const std::vector<SceneGraph::Node>& SceneGraph::Node::get_children() const {
+    const std::vector<SceneGraph::Node*>& SceneGraph::Node::get_children() const {
         return children;
     }
 
@@ -170,24 +195,70 @@ namespace vkhr {
         return models;
     }
 
-    const glm::mat4& SceneGraph::Node::get_translation() const {
+    void SceneGraph::Node::set_rotation(const glm::vec4& rotation) {
+        this->rotation = rotation;
+    }
+
+    void SceneGraph::Node::set_translation(const glm::vec3& translation) {
+        this->translation = translation;
+    }
+
+    void SceneGraph::Node::set_scale(const glm::vec3& scale) {
+        this->scale = scale;
+    }
+
+    const glm::vec3& SceneGraph::Node::get_translation() const {
         return translation;
     }
 
-    const glm::mat4& SceneGraph::Node::get_rotation() const {
+    const glm::vec4& SceneGraph::Node::get_rotation() const {
         return rotation;
     }
 
-    const glm::mat4& SceneGraph::Node::get_scale() const {
+    const glm::vec3& SceneGraph::Node::get_scale() const {
         return scale;
+    }
+
+    void SceneGraph::Node::recompute_matrix() const {
+    }
+
+    const glm::mat4& SceneGraph::Node::get_matrix() const {
+        if (recalculate_matrix)
+            recompute_matrix();
+        return matrix;
+    }
+
+    void SceneGraph::Node::set_node_name(const std::string& name) {
+        node_name = name;
+    }
+
+    void SceneGraph::Node::reserve_nodes(std::size_t count) {
+        children.reserve(count);
     }
 
     const std::string& SceneGraph::Node::get_node_name() const {
         return node_name;
     }
 
+    const std::vector<SceneGraph::Node>& SceneGraph::get_nodes() const {
+        return nodes;
+    }
+
+    SceneGraph::Node& SceneGraph::add(const Node& node) {
+        nodes.push_back(node);
+        return nodes.back();
+    }
+
+    SceneGraph::Node& SceneGraph::add(Node&& node) {
+        return nodes.emplace_back(std::move(node));
+    }
+
+    SceneGraph::Node& SceneGraph::push_back_node() {
+        return nodes.emplace_back();
+    }
+
     SceneGraph::Node& SceneGraph::get_root_node() {
-        return root;
+        return *root;
     }
 
     SceneGraph::operator bool() const {
