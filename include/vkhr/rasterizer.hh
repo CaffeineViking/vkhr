@@ -3,7 +3,12 @@
 
 #include <vkhr/renderer.hh>
 #include <vkhr/scene_graph.hh>
+#include <vkhr/hair_style.hh>
 #include <vkhr/window.hh>
+
+#include <vkhr/vulkan/pipeline.hh>
+#include <vkhr/vulkan/hair_style.hh>
+#include <vkhr/vulkan/model.hh>
 
 #include <vkpp/instance.hh>
 #include <vkpp/physical_device.hh>
@@ -16,34 +21,50 @@
 #include <vkpp/semaphore.hh>
 #include <vkpp/fence.hh>
 
-#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <string>
+
+namespace vk = vkpp;
 
 namespace vkhr {
+    // Forward declaration for friending.
+    namespace vulkan { class HairStyle; }
+    namespace embree { class HairStyle; }
+
     class Rasterizer final : public Renderer {
     public:
         Rasterizer(const Window& window, const SceneGraph& scene_graph);
 
+        void build_pipelines();
+
         void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;
 
-        vkpp::Instance instance;
-        vkpp::PhysicalDevice physical_device;
-        vkpp::Device device;
+        vk::Instance instance;
+        vk::PhysicalDevice physical_device;
+        vk::Device device;
 
-        vkpp::CommandPool graphics_pool;
+        vk::CommandPool command_pool;
 
-        vkpp::Surface window_surface;
-        vkpp::SwapChain swap_chain;
-        vkpp::RenderPass default_render_pass();
-        vkpp::RenderPass render_pass;
+        vk::Surface window_surface;
+        vk::SwapChain swap_chain;
+        vk::RenderPass default_render_pass();
+        vk::RenderPass render_pass;
 
-        vkpp::DescriptorPool descriptor_pool;
+        vk::DescriptorPool descriptor_pool;
 
         std::vector<vkpp::Framebuffer> framebuffers;
-        vkpp::Semaphore image_available, render_complete;
-        vkpp::Fence command_buffer_done;
+        vk::Semaphore image_available, render_complete;
+        vk::Fence command_buffer_done;
 
-        std::vector<vkpp::CommandBuffer> command_buffers;
+        std::vector<vk::CommandBuffer> command_buffers;
+
+        vulkan::Pipeline hair_style_pipeline;
+
+        std::unordered_map<std::string, vulkan::HairStyle> hair_styles;
+
+        friend class vulkan::HairStyle;
     };
 }
 

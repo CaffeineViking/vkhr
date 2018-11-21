@@ -60,6 +60,8 @@ namespace vkhr {
         bool has_tangents() const;
         bool has_indices() const;
 
+        bool has_control_points() const;
+
         unsigned get_default_segment_count() const;
         void set_default_segment_count(const unsigned default_segment_count);
         void set_default_thickness(const float default_thickness);

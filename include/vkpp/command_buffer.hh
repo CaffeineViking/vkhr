@@ -72,6 +72,9 @@ namespace vkpp {
                                 VkDeviceSize vertex_offset = 0);
         void bind_vertex_buffer(VertexBuffer& vertex_buffer,
                                 VkDeviceSize vertex_offset = 0);
+        void bind_vertex_buffer(std::uint32_t binding_identifier,
+                                VertexBuffer& vertex_buffer,
+                                VkDeviceSize vertex_offset = 0);
 
         void draw(std::uint32_t index_count,
                   std::uint32_t instance_count = 1,

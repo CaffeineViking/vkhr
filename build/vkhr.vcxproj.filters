@@ -58,6 +58,12 @@
     <Filter Include="include\vkhr">
       <UniqueIdentifier>{93D6E369-7F39-730E-28BF-ABC414013F91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\vkhr\embree">
+      <UniqueIdentifier>{92A0BAD3-FE01-98E1-876F-DE93F3CFCEA0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\vkhr\vulkan">
+      <UniqueIdentifier>{D374F8FB-3FD6-D509-C843-1CBC34A40CC9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="include\vkpp">
       <UniqueIdentifier>{99D7E369-853A-730E-2EC0-ABC41A023F91}</UniqueIdentifier>
     </Filter>
@@ -72,6 +78,12 @@
     </Filter>
     <Filter Include="src\vkhr">
       <UniqueIdentifier>{B7B838CF-A385-93DA-CC9E-8182B8CAC868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vkhr\embree">
+      <UniqueIdentifier>{3632BFC9-A2BD-2C8E-ABCE-AF8217D9888E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vkhr\vulkan">
+      <UniqueIdentifier>{7706FDF1-E391-6AB6-ECA2-EDAA58ADC6B6}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\vkpp">
       <UniqueIdentifier>{BDB938CF-A986-93DA-D29F-8182BECBC868}</UniqueIdentifier>
@@ -888,6 +900,12 @@
     <ClInclude Include="..\include\vkhr\camera.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\embree\hair_style.hh">
+      <Filter>include\vkhr\embree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\embree\model.hh">
+      <Filter>include\vkhr\embree</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\hair_style.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -923,6 +941,15 @@
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
       <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh">
+      <Filter>include\vkhr\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\vulkan\model.hh">
+      <Filter>include\vkhr\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\vulkan\pipeline.hh">
+      <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
@@ -1040,6 +1067,12 @@
     <ClCompile Include="..\src\vkhr\camera.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\embree\hair_style.cc">
+      <Filter>src\vkhr\embree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\embree\model.cc">
+      <Filter>src\vkhr\embree</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\hair_style.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
@@ -1066,6 +1099,12 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\scene_graph.cc">
       <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
+      <Filter>src\vkhr\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\vulkan\model.cc">
+      <Filter>src\vkhr\vulkan</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>

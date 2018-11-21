@@ -11,7 +11,7 @@ namespace vkpp {
     Buffer::Buffer(Device& logical_device,
                    VkDeviceSize size_in_bytes,
                    VkBufferUsageFlags usage)
-                  : size { size_in_bytes },
+                  : size_in_bytes { size_in_bytes },
                     sharing_mode { VK_SHARING_MODE_EXCLUSIVE },
                     usage { usage },
                     device { logical_device.get_handle() } {
@@ -38,7 +38,7 @@ namespace vkpp {
                    VkDeviceSize size_in_bytes,
                    VkBufferUsageFlags usage,
                    std::vector<Queue>& queue_families)
-                  : size { size_in_bytes },
+                  : size_in_bytes { size_in_bytes },
                     sharing_mode { VK_SHARING_MODE_CONCURRENT },
                     usage { usage },
                     device { logical_device.get_handle() } {
@@ -89,7 +89,7 @@ namespace vkpp {
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
 
-        swap(lhs.size, rhs.size);
+        swap(lhs.size_in_bytes, rhs.size_in_bytes);
         swap(lhs.sharing_mode, rhs.sharing_mode);
         swap(lhs.usage, rhs.usage);
     }
@@ -105,7 +105,7 @@ namespace vkpp {
     }
 
     VkDeviceSize Buffer::get_size() const {
-        return size;
+        return size_in_bytes;
     }
 
     VkSharingMode Buffer::get_sharing_mode() const {
@@ -263,8 +263,8 @@ namespace vkpp {
         return binding;
     }
 
-    VkDeviceSize VertexBuffer::count() const {
-        return element_count;
+    std::uint32_t VertexBuffer::count() const {
+        return static_cast<std::uint32_t>(element_count);
     }
 
     IndexBuffer::IndexBuffer(Device& device,
@@ -308,8 +308,8 @@ namespace vkpp {
         swap(*this, buffer);
     }
 
-    VkDeviceSize IndexBuffer::count() const {
-        return element_count;
+    std::uint32_t IndexBuffer::count() const {
+        return static_cast<std::uint32_t>(element_count);
     }
 
     VkIndexType IndexBuffer::get_type() const {

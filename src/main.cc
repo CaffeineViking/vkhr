@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
     vk::VertexBuffer vertex_buffer {
         rasterizer.device,
-        rasterizer.graphics_pool,
+        rasterizer.command_pool,
         hair_style.get_vertices(),
         0,
         {
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 
     vk::VertexBuffer tangent_buffer {
         rasterizer.device,
-        rasterizer.graphics_pool,
+        rasterizer.command_pool,
         hair_style.get_tangents(),
         1,
         {
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 
     vk::IndexBuffer index_buffer {
         rasterizer.device,
-        rasterizer.graphics_pool,
+        rasterizer.command_pool,
         hair_style.get_indices()
     };
 
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     fixed_functions.set_line_width(1.0);
     fixed_functions.enable_depth_test();
 
-    fixed_functions.enable_alpha_blending_for(0);
+    fixed_functions.enable_alpha_mix(0);
 
     std::vector<vk::ShaderModule> shading_stages;
 
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
         rasterizer.device,
         rasterizer.descriptor_pool,
         rasterizer.render_pass,
-        rasterizer.graphics_pool
+        rasterizer.command_pool
     };
 
     vkhr::Camera camera { glm::radians(45.0f), rasterizer.swap_chain.get_width(),

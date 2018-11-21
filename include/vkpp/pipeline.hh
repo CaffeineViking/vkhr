@@ -86,6 +86,12 @@ namespace vkpp {
     using VertexAttributes = std::vector<VertexAttribute>;
     using VertexBindings   = std::vector<VertexBinding>;
 
+    struct VertexAttributeBinding {
+        std::uint32_t binding;
+        std::uint32_t attribute;
+        VkFormat format;
+    };
+
     class GraphicsPipeline final : public Pipeline {
     public:
         GraphicsPipeline() = default;
@@ -100,11 +106,13 @@ namespace vkpp {
             void set_vertex_bindings(const VertexBindings& bindings);
             void set_vertex_attributes(const VertexAttributes& attributes);
             const VertexAttributes& get_vertex_attributes() const;
-            void add_vertex_attribute(VertexAttribute& attribute);
+            void add_vertex_attribute(VertexAttribute attribute);
             void add_vertex_attributes(const VertexAttributes& attributes);
-            void add_vertex_binding(const VertexBinding& binding);
+            void add_vertex_binding(const VertexBinding binding);
 
             void add_vertex_input(VertexBuffer& vertex_buffer);
+
+            void add_vertex_attribute_binding(const VertexAttributeBinding&);
 
             VkPipelineVertexInputStateCreateInfo   vertex_input_state {
                 VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
@@ -228,8 +236,8 @@ namespace vkpp {
 
             std::vector<VkPipelineColorBlendAttachmentState> attachments;
 
-            void disable_alpha_blending_for(std::uint32_t attachment);
-            void enable_alpha_blending_for(std::uint32_t  attachment);
+            void disable_alpha_mix(std::uint32_t attachment);
+            void enable_alpha_mix(std::uint32_t  attachment);
 
             VkPipelineColorBlendStateCreateInfo    color_blending_state {
                 VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,

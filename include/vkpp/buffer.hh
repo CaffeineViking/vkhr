@@ -46,7 +46,7 @@ namespace vkpp {
                   std::uint32_t offset = 0);
 
     protected:
-        VkDeviceSize size;
+        VkDeviceSize size_in_bytes;
         VkSharingMode sharing_mode;
         VkBufferUsageFlags usage;
 
@@ -99,8 +99,8 @@ namespace vkpp {
         VertexBuffer(Device& device,
                      CommandPool& pool,
                      const std::vector<T>& vertices,
-                     std::uint32_t binding,
-                     const std::vector<Attribute> attributes);
+                     std::uint32_t binding = 0,
+                     const std::vector<Attribute> attributes = {});
 
         std::uint32_t get_binding_id() const;
 
@@ -108,7 +108,7 @@ namespace vkpp {
 
         const Attributes& get_attributes() const;
 
-        VkDeviceSize count() const;
+        std::uint32_t count() const;
 
     private:
         VkDeviceSize element_count;
@@ -134,7 +134,7 @@ namespace vkpp {
 
         VkIndexType get_type() const;
 
-        VkDeviceSize count() const;
+        std::uint32_t count() const;
 
     private:
         VkDeviceSize element_count;

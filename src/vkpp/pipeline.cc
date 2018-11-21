@@ -248,7 +248,7 @@ namespace vkpp {
         return vertex_attributes;
     }
 
-    void GraphicsPipeline::FixedFunction::add_vertex_attribute(VertexAttribute& attribute) {
+    void GraphicsPipeline::FixedFunction::add_vertex_attribute(VertexAttribute attribute) {
         vertex_attributes.push_back(attribute);
         vertex_input_state.vertexAttributeDescriptionCount = vertex_attributes.size();
         vertex_input_state.pVertexAttributeDescriptions = vertex_attributes.data();
@@ -260,7 +260,7 @@ namespace vkpp {
         vertex_input_state.pVertexAttributeDescriptions = vertex_attributes.data();
     }
 
-    void GraphicsPipeline::FixedFunction::add_vertex_binding(const VertexBinding& binding) {
+    void GraphicsPipeline::FixedFunction::add_vertex_binding(const VertexBinding binding) {
         vertex_bindings.push_back(binding);
         vertex_input_state.vertexBindingDescriptionCount = vertex_bindings.size();
         vertex_input_state.pVertexBindingDescriptions = vertex_bindings.data();
@@ -269,6 +269,13 @@ namespace vkpp {
     void GraphicsPipeline::FixedFunction::add_vertex_input(VertexBuffer& vertex_buffer) {
         add_vertex_attributes(vertex_buffer.get_attributes());
         add_vertex_binding(vertex_buffer.get_binding());
+    }
+
+    void GraphicsPipeline::FixedFunction::add_vertex_attribute_binding(const VertexAttributeBinding& attribute) {
+        add_vertex_binding({ attribute.binding, 0, VK_VERTEX_INPUT_RATE_VERTEX });
+        add_vertex_attribute(VertexAttribute { attribute.attribute,
+                                               attribute.binding,
+                                               attribute.format, 0 });
     }
 
     VkPrimitiveTopology GraphicsPipeline::FixedFunction::get_topology() const {
@@ -401,7 +408,7 @@ namespace vkpp {
         multisample_state.minSampleShading = 1.0;
     }
 
-    void GraphicsPipeline::FixedFunction::disable_alpha_blending_for(std::uint32_t a) {
+    void GraphicsPipeline::FixedFunction::disable_alpha_mix(std::uint32_t a) {
         if (attachments.size() <= a) {
             attachments.resize(a + 1);
         }
@@ -412,15 +419,15 @@ namespace vkpp {
         color_blending_state.pAttachments    = attachments.data();
     }
 
-    void GraphicsPipeline::FixedFunction::enable_alpha_blending_for(std::uint32_t a) {
+    void GraphicsPipeline::FixedFunction::enable_alpha_mix(std::uint32_t a) {
         if (attachments.size() <= a) {
             attachments.resize(a + 1);
         }
 
         attachments[a].colorWriteMask =  VK_COLOR_COMPONENT_R_BIT |
-                                                  VK_COLOR_COMPONENT_G_BIT |
-                                                  VK_COLOR_COMPONENT_B_BIT |
-                                                  VK_COLOR_COMPONENT_A_BIT;
+                                         VK_COLOR_COMPONENT_G_BIT |
+                                         VK_COLOR_COMPONENT_B_BIT |
+                                         VK_COLOR_COMPONENT_A_BIT;
         attachments[a].blendEnable = VK_TRUE;
         attachments[a].srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
         attachments[a].dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;

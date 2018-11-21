@@ -94,6 +94,8 @@ namespace vkhr {
     bool HairStyle::has_tangents() const { return tangents.size(); }
     bool HairStyle::has_indices() const { return indices.size(); }
 
+    bool HairStyle::has_control_points() const { return control_points.size(); }
+
     // Below follows boilerplate for writing to the header.
 
     unsigned HairStyle::get_default_segment_count() const {

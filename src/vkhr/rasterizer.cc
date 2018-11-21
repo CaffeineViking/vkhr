@@ -62,12 +62,12 @@ namespace vkhr {
             device_features
         };
 
-        graphics_pool = vk::CommandPool { device, device.get_graphics_queue() };
+        command_pool = vk::CommandPool { device, device.get_graphics_queue() };
 
         swap_chain = vk::SwapChain {
             device,
             window_surface,
-            graphics_pool,
+            command_pool,
             {
                 VK_FORMAT_B8G8R8A8_UNORM,
                 VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
@@ -92,14 +92,23 @@ namespace vkhr {
         render_complete = vk::Semaphore { device };
         command_buffer_done = vk::Fence { device };
 
-        command_buffers = graphics_pool.allocate(framebuffers.size());
+        load(scene_graph);
+
+        // build_pipelines();
+
+        command_buffers = command_pool.allocate(framebuffers.size());
     }
 
     void Rasterizer::load(const SceneGraph& scene_graph) {
-        // TODO: use the actual scene graph!
+        for (const auto& hair_style : scene_graph.get_hair_styles()) {
+            hair_styles[hair_style.first] = vulkan::HairStyle {
+                hair_style.second,
+                *this
+            };
+        }
     }
 
-    void Rasterizer::draw(const SceneGraph&) {
+    void Rasterizer::draw(const SceneGraph& scene_graph) {
         auto next_image = swap_chain.acquire_next_image(image_available);
 
         command_buffer_done.wait_and_reset();
@@ -109,6 +118,10 @@ namespace vkhr {
                                            render_complete, command_buffer_done);
 
         device.get_present_queue().present(swap_chain, next_image, render_complete);
+    }
+
+    void Rasterizer::build_pipelines() {
+        hair_style_pipeline = vulkan::HairStyle::build_pipeline(*this);
     }
 
     vk::RenderPass Rasterizer::default_render_pass() {

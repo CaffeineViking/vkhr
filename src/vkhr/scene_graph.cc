@@ -151,8 +151,14 @@ namespace vkhr {
     HairStyle& SceneGraph::add_hair_style(const std::string& file_path) {
         auto real_path = scene_path + file_path;
 
-        if (hair_styles.find(real_path) == hair_styles.end())
+        if (hair_styles.find(real_path) == hair_styles.end()) {
             hair_styles[real_path] = HairStyle { real_path };
+
+            if (!hair_styles[real_path].has_tangents())
+                hair_styles[real_path].generate_tangents();
+            if (!hair_styles[real_path].has_indices())
+                hair_styles[real_path].generate_indices();
+        }
 
         return hair_styles[real_path];
     }
@@ -234,14 +240,17 @@ namespace vkhr {
 
     void SceneGraph::Node::set_rotation(const glm::vec4& rotation) {
         this->rotation = rotation;
+        recalculate_matrix = true;
     }
 
     void SceneGraph::Node::set_translation(const glm::vec3& translation) {
         this->translation = translation;
+        recalculate_matrix = true;
     }
 
     void SceneGraph::Node::set_scale(const glm::vec3& scale) {
         this->scale = scale;
+        recalculate_matrix = true;
     }
 
     const glm::vec3& SceneGraph::Node::get_translation() const {
@@ -257,6 +266,11 @@ namespace vkhr {
     }
 
     void SceneGraph::Node::recompute_matrix() const {
+        matrix = glm::mat4 { 1.0 };
+        matrix = glm::translate(matrix, translation);
+        auto axis = glm::vec3 { rotation };
+        matrix = glm::rotate(matrix, rotation.w, axis);
+        matrix = glm::scale(matrix, scale);
     }
 
     const glm::mat4& SceneGraph::Node::get_matrix() const {
