@@ -314,6 +314,7 @@ namespace vkpp {
         swap(static_cast<DeviceBuffer&>(lhs), static_cast<DeviceBuffer&>(rhs));
 
         swap(lhs.element_count, rhs.element_count);
+        swap(lhs.index_type, rhs.index_type);
     }
 
     IndexBuffer& IndexBuffer::operator=(IndexBuffer&& buffer) noexcept {
