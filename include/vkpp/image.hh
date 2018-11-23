@@ -3,11 +3,13 @@
 
 #include <vkhr/image.hh>
 #include <vkpp/device_memory.hh>
+#include <vkpp/sampler.hh>
 #include <vkpp/buffer.hh>
 
 #include <vulkan/vulkan.h>
 
 #include <cstdint>
+#include <utility>
 
 namespace vkpp {
     class Queue;
@@ -117,6 +119,8 @@ namespace vkpp {
         VkDevice device    { VK_NULL_HANDLE };
         VkImageView handle { VK_NULL_HANDLE };
     };
+
+    using CombinedImageSampler = std::pair<ImageView, Sampler>;
 }
 
 #endif

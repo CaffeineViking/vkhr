@@ -211,6 +211,23 @@ namespace vkpp {
         device_memory.copy(size, buffer);
     }
 
+    HostBuffer::HostBuffer(Device& device,
+                           VkDeviceSize size,
+                           VkBufferUsageFlags usage)
+                          : Buffer { device,
+                                     size,
+                                     usage } {
+        auto memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        bind(device_memory);
+    }
+
     void swap(HostBuffer& lhs, HostBuffer& rhs) {
         using std::swap;
 
@@ -315,6 +332,10 @@ namespace vkpp {
     VkIndexType IndexBuffer::get_type() const {
         return index_type;
     }
+
+    UniformBuffer::UniformBuffer(Device& device,
+                                 VkDeviceSize size)
+        : HostBuffer { device, size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT } {  }
 
     void swap(UniformBuffer& lhs, UniformBuffer& rhs) {
         using std::swap;

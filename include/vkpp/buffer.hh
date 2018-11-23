@@ -168,6 +168,10 @@ namespace vkpp {
                    VkDeviceSize size,
                    VkBufferUsageFlags usage);
 
+        HostBuffer(Device& device,
+                   VkDeviceSize size,
+                   VkBufferUsageFlags usage);
+
         DeviceMemory& get_device_memory();
 
     protected:
@@ -185,6 +189,9 @@ namespace vkpp {
         template<typename T>
         UniformBuffer(Device& device,
                       const T& buffer,
+                      VkDeviceSize size);
+
+        UniformBuffer(Device& device,
                       VkDeviceSize size);
 
         template<typename T>

@@ -39,7 +39,7 @@ namespace vkhr {
         int get_refresh_rate() const;
 
         std::vector<vkpp::Extension> get_vulkan_surface_extensions() const;
-        vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance) const;
+        vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance);
 
         void resize(const int width, const int height);
 

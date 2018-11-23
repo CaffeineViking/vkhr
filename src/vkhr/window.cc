@@ -98,6 +98,7 @@ namespace vkhr {
 
     void Window::show() {
         glfwShowWindow(handle);
+        glfwFocusWindow(handle);
     }
 
     void Window::hide() {
@@ -144,14 +145,18 @@ namespace vkhr {
         return surface_extensions;
     }
 
-    vkpp::Surface Window::create_vulkan_surface_with(vkpp::Instance& instance) const {
+    vkpp::Surface Window::create_vulkan_surface_with(vkpp::Instance& instance) {
         auto instance_handle = instance.get_handle();
         VkSurfaceKHR surface_handle;
 
         if (glfwCreateWindowSurface(instance_handle, handle, nullptr, &surface_handle))
             throw std::runtime_error { "Failed to create a Vulkan window surface!" };
 
-        return vkpp::Surface { instance_handle, surface_handle };
+        vkpp::Surface surface { instance_handle, surface_handle };
+
+        surface.set_hwnd(*this);
+
+        return surface;
     }
 
     void Window::resize(const int width, const int height) {

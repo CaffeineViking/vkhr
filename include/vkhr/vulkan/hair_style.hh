@@ -3,6 +3,8 @@
 
 #include <vkhr/hair_style.hh>
 #include <vkhr/vulkan/pipeline.hh>
+#include <vkhr/vulkan/drawable.hh>
+#include <vkhr/camera.hh>
 #include <vkhr/paths.hh>
 
 #include <vkpp/buffer.hh>
@@ -15,20 +17,23 @@ namespace vk = vkpp;
 namespace vkhr {
     class Rasterizer;
     namespace vulkan {
-        class HairStyle final {
+        class HairStyle final : public Drawable {
         public:
             HairStyle() = default;
             HairStyle(const vkhr::HairStyle& hair_style,
-                      vkhr::Rasterizer& vulkan_renderer);
+                      vkhr::Rasterizer& vulkan_renderer,
+                      Pipeline& hair_style_pipeline);
 
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& vulkan_renderer);
+            void update(MVP& mvp, std::size_t fb_index);
+            void draw(vk::CommandBuffer& command_buffer,
+                      std::size_t framebuffer) override;
 
-            void draw(vkpp::CommandBuffer& command_list,
-                      vkpp::DescriptorSet& descriptors,
-                      vkpp::GraphicsPipeline& pipeline);
+            Pipeline* pipeline { nullptr };
 
-            static Pipeline build_pipeline(Rasterizer&);
+            static void build_pipeline(Pipeline& pipeline_reference,
+                                       Rasterizer& vulkan_renderer);
 
         private:
             vk::IndexBuffer  vertices;

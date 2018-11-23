@@ -7,6 +7,9 @@
 #include <vkhr/hair_style.hh>
 #include <vkhr/camera.hh>
 
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 #include <glm/glm.hpp>
 
 #include <list>
@@ -22,34 +25,26 @@ namespace vkhr {
         SceneGraph() = default;
         SceneGraph(const std::string& file_path);
 
-        // Idea: scene graph traversal is done over here, but the renderers
-        // specity how they will render each primitive that is found within
-        // the scene graph. They provide a rendering function for each, and
-        // each function is called: render_thing(thing, transform, camera).
-        template<typename RenderModelFunction, typename RenderHairFunction>
-        void traverse(RenderModelFunction render_model,
-                      RenderHairFunction  render_hair) const;
+        void traverse_nodes();
 
-        bool load(const std::string& file_path);
+        bool load(const std::string& scene_path);
 
-        Model& add(Model&& model, const std::string& id);
-        Model& add(const Model& model, const std::string& id);
-        HairStyle& add(const HairStyle& hair_style, const std::string& id);
-        HairStyle& add(HairStyle&& hair_style, const std::string& id);
+        HairStyle& add_style(const std::string& asset_path);
+        Model&     add_model(const std::string& asset_path);
 
-        HairStyle& add_hair_style(const std::string& file_path);
-        Model& add_model(const std::string& file_path);
+        std::string get_uuid();
+
+        Model& add(Model&& model);
+        HairStyle& add(HairStyle&& hair_style);
+        HairStyle& add(const HairStyle& hair_style);
+        Model& add(const Model& model);
 
         void clear();
 
-        using ModelMap     = std::unordered_map<std::string, Model>;
-        using HairStyleMap = std::unordered_map<std::string, HairStyle>;
-
-        bool remove(ModelMap::iterator model);
-        bool remove(HairStyleMap::iterator hair_style);
-
-        const HairStyleMap& get_hair_styles() const;
-        const ModelMap& get_models() const;
+        bool remove(std::unordered_map<std::string, Model>::iterator model);
+        bool remove(std::unordered_map<std::string, HairStyle>::iterator hair_style);
+        const std::unordered_map<std::string, HairStyle>& get_hair_styles() const;
+        const std::unordered_map<std::string, Model>& get_models() const;
 
         const Camera& get_camera() const;
         Camera& get_camera();
@@ -65,6 +60,9 @@ namespace vkhr {
             bool remove(std::vector<HairStyle*>::iterator hair_style);
             bool remove(std::vector<Node*>::iterator child);
 
+            void  set_parent_node(Node* node);
+            Node* get_parent_node() const;
+
             const std::vector<Node*>& get_children() const;
             const std::vector<HairStyle*>& get_hair_styles() const;
             const std::vector<Model*>& get_models() const;
@@ -77,33 +75,52 @@ namespace vkhr {
             const glm::vec3& get_translation() const;
             const glm::vec3& get_scale() const;
 
-            const glm::mat4& get_matrix() const;
+            const glm::mat4& get_local_transform() const;
+
+            void set_model_matrix(const glm::mat4& m);
+            const glm::mat4& get_model_matrix() const;
+
+            const glm::mat4& get_m() const;
 
             void set_node_name(const std::string& n);
             const std::string& get_node_name() const;
 
         private:
-            void recompute_matrix() const;
+            void recompute_transform() const;
 
             glm::vec4 rotation;
             glm::vec3 translation;
-            glm::vec3 scale;
+            glm::vec3 scaling;
 
-            mutable glm::mat4 matrix;
-            bool recalculate_matrix { true };
+            mutable glm::mat4 transform;
+
+            mutable bool recalculate_transform { true };
+
+            mutable glm::mat4 model_matrix;
 
             std::vector<Node*> children;
             std::vector<HairStyle*> hair_styles;
             std::vector<Model*> models;
 
+            Node* parent { nullptr };
+
             std::string node_name;
         };
+
+        Node* find_node_by_name(const std::string& name);
+
+        const std::vector<Node*>& get_nodes_with_models() const;
+        const std::vector<Node*>& get_nodes_with_hair_styles() const;
+
+        const std::unordered_map<std::string, Node*>& get_named_nodes() const;
 
         const std::vector<Node>& get_nodes() const;
 
         Node& push_back_node();
         Node& add(const Node& node);
         Node& add(Node&& node);
+
+        bool remove(std::vector<Node>::iterator node);
 
         Node& get_root_node();
 
@@ -112,11 +129,11 @@ namespace vkhr {
 
             OpeningFolder,
 
-            ReadingGraphs,
             ReadingCamera,
-            ReadingLights,
-            ReadingStyles,
-            ReadingModels,
+            ReadingLight,
+            ReadingNode,
+            ReadingStyle,
+            ReadingModel,
         };
 
         operator bool() const;
@@ -124,26 +141,36 @@ namespace vkhr {
         Error get_last_error_state() const;
 
     private:
+        void traverse(Node& node, const glm::mat4& parent_matrix);
+
+        void link_nodes(nlohmann::json& parser);
+
+        bool parse_camera(nlohmann::json& parser, Camera& camera);
+        bool parse_light(nlohmann::json& parser,  LightSource& light);
+        bool parse_node(nlohmann::json& parser,   Node& node);
+
+        void build_node_cache(Node& chnode);
+        void destroy_previous_node_caches();
+
+        std::vector<Node*> hair_style_cache;
+        std::vector<Node*> model_node_cache;
+
         Node* root;
         Camera camera;
         std::vector<Node> nodes;
         std::list<LightSource> lights;
-        HairStyleMap hair_styles;
-        ModelMap models;
 
+        std::unordered_map<std::string, Node*> nodes_by_name;
+        std::unordered_map<std::string, HairStyle> hair_styles;
+        std::unordered_map<std::string, Model> models;
+
+        std::size_t unique_name { 0 };
         std::string scene_path { "" };
 
-        mutable
-        Error error_state {
+        mutable Error error_state {
             Error::None
         };
     };
-
-    template<typename RenderModelFunction, typename RenderHairFunction>
-    void SceneGraph::traverse(RenderModelFunction render_model,
-                              RenderHairFunction  render_hair) const {
-        // TODO: do scene graph traversal over here, hopefully.
-    }
 }
 
 #endif

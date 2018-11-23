@@ -6,12 +6,13 @@ namespace vkhr {
         callback_map[handle] = this;
         glfwSetKeyCallback(handle, &key_callback);
         glfwSetMouseButtonCallback(handle, &mouse_button_callback);
+        glfwSetScrollCallback(handle, &scroll_callback);
     }
 
     std::unordered_map<GLFWwindow*, InputMap*> InputMap::callback_map;
 
     void InputMap::mouse_button_callback(GLFWwindow* window, int button,
-                                            int action, int) {
+                                            int action, int mods) {
         InputMap* mapper { callback_map[window] };
         Input::MouseButton mouse_button { static_cast<Input::MouseButton>(button) };
 
@@ -31,9 +32,11 @@ namespace vkhr {
             mapper->mouse_button_state[mouse_button] = Input::State::JustReleased;
         else
             mapper->mouse_button_state[mouse_button] = static_cast<Input::State>(action);
+
+        ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     }
 
-    void InputMap::key_callback(GLFWwindow* window, int keyid, int, int action, int) {
+    void InputMap::key_callback(GLFWwindow* window, int keyid, int scanid, int action, int mods) {
         InputMap* mapper { callback_map[window] };
         Input::Key key { static_cast<Input::Key>(keyid) };
 
@@ -53,6 +56,12 @@ namespace vkhr {
             mapper->key_state_map[key] = Input::State::JustReleased;
         else
             mapper->key_state_map[key] = static_cast<Input::State>(action);
+
+        ImGui_ImplGlfw_KeyCallback(window, keyid, scanid, action, mods);
+    }
+
+    void InputMap::scroll_callback(GLFWwindow* window, double scroll_x, double scroll_y) {
+        ImGui_ImplGlfw_ScrollCallback(window, scroll_x, scroll_y);
     }
 
     void InputMap::unbind(const std::string& id) {

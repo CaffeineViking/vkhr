@@ -28,10 +28,19 @@ namespace vkpp {
 
         swap(lhs.handle, rhs.handle);
         swap(lhs.instance, rhs.instance);
+        swap(lhs.window, rhs.window);
     }
 
     VkSurfaceKHR& Surface::get_handle() {
         return handle;
+    }
+
+    void Surface::set_hwnd(vkhr::Window& window) {
+        this->window = &window;
+    }
+
+    vkhr::Window& Surface::get_hwnd() const {
+        return *this->window;
     }
 
     void Surface::set_capabilities(const VkSurfaceCapabilitiesKHR& capabilities) {

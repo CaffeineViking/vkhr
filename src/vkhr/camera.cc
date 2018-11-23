@@ -144,6 +144,13 @@ namespace vkhr {
         return projection_matrix;
     }
 
+    MVP& Camera::get_mvp(const glm::mat4& mdl) const {
+        mvp_matrix.view = get_view_matrix();
+        mvp_matrix.projection = get_projection_matrix();
+        mvp_matrix.model = mdl;
+        return mvp_matrix;
+    }
+
     glm::vec3 Camera::get_left_direction() const {
         return glm::cross(get_up_direction(),
                           get_forward_direction());

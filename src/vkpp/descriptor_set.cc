@@ -109,7 +109,7 @@ namespace vkpp {
         using std::swap;
 
         swap(lhs.handle, rhs.handle);
-        swap(lhs.pool, rhs.pool);
+        swap(lhs.pool,   rhs.pool);
         swap(lhs.layout, rhs.layout);
         swap(lhs.device, rhs.device);
     }

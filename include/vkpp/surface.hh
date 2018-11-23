@@ -5,6 +5,8 @@
 
 #include <vector>
 
+namespace vkhr { class Window; }
+
 namespace vkpp {
     class Surface final {
     public:
@@ -22,6 +24,9 @@ namespace vkpp {
         void set_presentation_modes(const std::vector<VkPresentModeKHR>& present_modes);
         void set_formats(const std::vector<VkSurfaceFormatKHR>& formats);
 
+        void set_hwnd(vkhr::Window& window);
+        vkhr::Window& get_hwnd() const;
+
         const VkSurfaceCapabilitiesKHR& get_capabilities() const;
         const std::vector<VkPresentModeKHR>& get_presentation_modes() const;
         const std::vector<VkSurfaceFormatKHR>& get_formats() const;
@@ -32,6 +37,8 @@ namespace vkpp {
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkPresentModeKHR> present_modes;
         std::vector<VkSurfaceFormatKHR> formats;
+
+        vkhr::Window* window { nullptr };
 
         VkInstance instance { VK_NULL_HANDLE };
         VkSurfaceKHR handle { VK_NULL_HANDLE };

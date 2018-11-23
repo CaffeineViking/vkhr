@@ -177,10 +177,7 @@ namespace vkhr {
         { "fullscreen", Argument::Type::Boolean, Argument::make_boolean(false), "" },
         { "vsync",      Argument::Type::Boolean, Argument::make_boolean(true),  "" },
         { "profile",    Argument::Type::Boolean, Argument::make_boolean(false), "" },
-        { "gui",        Argument::Type::Boolean, Argument::make_boolean(true),  "" },
+        { "ui",         Argument::Type::Boolean, Argument::make_boolean(true),  "" },
         { "anti-alias", Argument::Type::Boolean, Argument::make_boolean(false), "" },
-
-        { "device",     Argument::Type::String,  Argument::make_string("auto"), "" },
-        { "assets",     Argument::Type::String,  Argument::make_string("auto"), "" }
     };
 }

@@ -1,5 +1,7 @@
 #include <vkhr/vulkan/hair_style.hh>
 
+#include <vkhr/camera.hh>
+#include <vkhr/light_source.hh>
 #include <vkhr/rasterizer.hh>
 
 namespace vk = vkpp;
@@ -7,7 +9,9 @@ namespace vk = vkpp;
 namespace vkhr {
     namespace vulkan {
         HairStyle::HairStyle(const vkhr::HairStyle& hair_style,
-                             vkhr::Rasterizer& vulkan_renderer) {
+                             vkhr::Rasterizer& vulkan_renderer,
+                             Pipeline& hair_style_pipeline)
+                            : pipeline { &hair_style_pipeline } {
             load(hair_style, vulkan_renderer);
         }
 
@@ -32,25 +36,27 @@ namespace vkhr {
             };
         }
 
-        void HairStyle::draw(vk::CommandBuffer& command_list,
-                             vk::DescriptorSet& descriptor_set,
-                             vk::GraphicsPipeline& pipeline) {
-            command_list.bind_pipeline(pipeline);
-
-            command_list.bind_descriptor_set(descriptor_set,
-                                             pipeline);
-
-            command_list.bind_vertex_buffer(positions, 0);
-            command_list.bind_vertex_buffer(tangents,  1);
-
-            command_list.bind_index_buffer(vertices);
-
-            command_list.draw_indexed(vertices.count());
+        void HairStyle::update(MVP& transform, std::size_t i) {
+            pipeline->descriptor_states[i].uniform_buffers[0].update(transform);
         }
 
-        Pipeline HairStyle::build_pipeline(Rasterizer& vulkan_renderer) {
-            Pipeline pipeline;
+        void HairStyle::draw(vk::CommandBuffer& command_lists, std::size_t fb) {
+            command_lists.bind_pipeline(pipeline->pipeline);
 
+            auto& descriptor_sets = pipeline->descriptor_sets[fb];
+
+            command_lists.bind_descriptor_set(descriptor_sets,
+                                              pipeline->pipeline);
+
+            command_lists.bind_vertex_buffer(0, positions, 0);
+            command_lists.bind_vertex_buffer(1, tangents,  0);
+
+            command_lists.bind_index_buffer(vertices);
+
+            command_lists.draw_indexed(vertices.count());
+        }
+
+        void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline.fixed_stages.add_vertex_attribute_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT });
             pipeline.fixed_stages.add_vertex_attribute_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT });
 
@@ -76,8 +82,13 @@ namespace vkhr {
                 }
             };
 
-            pipeline.descriptors = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
-                                                                            pipeline.descriptor_set_layout);
+            pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
+                                                                                pipeline.descriptor_set_layout);
+            pipeline.descriptor_states.resize(pipeline.descriptor_sets.size());
+            for (std::size_t i = 0; i < pipeline.descriptor_sets.size(); ++i) {
+                pipeline.descriptor_states[i].uniform_buffers.emplace_back(vulkan_renderer.device, sizeof(MVP));
+                pipeline.descriptor_sets[i].write(0, pipeline.descriptor_states[i].uniform_buffers.back()); // 0
+            }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
                 vulkan_renderer.device,
@@ -91,8 +102,6 @@ namespace vkhr {
                 pipeline.pipeline_layout,
                 vulkan_renderer.render_pass
             };
-
-            return pipeline;
         }
     }
 }

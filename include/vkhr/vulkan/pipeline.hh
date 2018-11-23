@@ -13,9 +13,17 @@ namespace vkhr {
             vk::GraphicsPipeline::FixedFunction fixed_stages;
             vk::Pipeline::Layout pipeline_layout;
             vk::GraphicsPipeline pipeline;
-            std::vector<vk::DescriptorSet> descriptors;
             vk::DescriptorSet::Layout descriptor_set_layout;
             std::vector<vk::ShaderModule> shader_stages;
+
+            struct DescriptorState {
+                std::vector<vk::UniformBuffer> uniform_buffers;
+                std::vector<vk::StorageBuffer> storage_buffers;
+                std::vector<vk::CombinedImageSampler> samplers;
+            };
+
+            std::vector<vk::DescriptorSet> descriptor_sets;
+            std::vector<DescriptorState> descriptor_states;
         };
     }
 }

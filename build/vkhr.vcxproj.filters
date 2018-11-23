@@ -897,13 +897,22 @@
     <ClInclude Include="..\include\vkhr\arg_parser.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\billboard.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\camera.hh">
       <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\embree\billboard.hh">
+      <Filter>include\vkhr\embree</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\embree\hair_style.hh">
       <Filter>include\vkhr\embree</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\embree\model.hh">
+      <Filter>include\vkhr\embree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\embree\ray.hh">
       <Filter>include\vkhr\embree</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\hair_style.hh">
@@ -941,6 +950,12 @@
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
       <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\vulkan\billboard.hh">
+      <Filter>include\vkhr\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\vulkan\drawable.hh">
+      <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh">
       <Filter>include\vkhr\vulkan</Filter>
@@ -1064,8 +1079,14 @@
     <ClCompile Include="..\src\vkhr\arg_parser.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\billboard.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\camera.cc">
       <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\embree\billboard.cc">
+      <Filter>src\vkhr\embree</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\embree\hair_style.cc">
       <Filter>src\vkhr\embree</Filter>
@@ -1099,6 +1120,9 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\scene_graph.cc">
       <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
+      <Filter>src\vkhr\vulkan</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
       <Filter>src\vkhr\vulkan</Filter>

@@ -2,6 +2,7 @@
 #define VKHR_INTERFACE_HH
 
 #include <vkhr/window.hh>
+#include <vkhr/scene_graph.hh>
 
 #include <vkpp/instance.hh>
 #include <vkpp/device.hh>
@@ -18,31 +19,32 @@
 #include <imgui_impl_glfw.h>
 
 namespace vkhr {
+    class Rasterizer;
     class Interface final {
     public:
         Interface() = default;
 
-        Interface(vkhr::Window& window,
-                  vkpp::Instance& instance,
-                  vkpp::Device& device,
-                  vkpp::DescriptorPool& descriptor_pool,
-                  vkpp::RenderPass& render_pass,
-                  vkpp::CommandPool& command_pool);
+        Interface(Window& w, Rasterizer& rasterizer);
+
+        Interface(Interface&& interface) noexcept;
+        Interface& operator=(Interface&& interface) noexcept;
+        friend void swap(Interface& lhs, Interface& rhs);
 
         ~Interface() noexcept;
 
-        bool want_focus();
+        void load(vkhr::Rasterizer& vulkan_renderer);
+        void update(const SceneGraph& a_scene_graph);
+        void draw(vkpp::CommandBuffer& command_list);
+
+        bool wants_focus() const;
 
         void hide();
         void toggle_visibility();
         void show();
 
-        void render(vkpp::CommandBuffer& command_buffer);
-
-        void update();
-
     private:
-        bool hidden { true };
+        ImGuiContext* ctx { nullptr };
+        bool gui_visibility { false };
     };
 }
 

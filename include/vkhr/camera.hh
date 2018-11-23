@@ -10,6 +10,12 @@
 #include <glm/glm.hpp>
 
 namespace vkhr {
+    struct MVP {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+    };
+
     class Camera final {
     public:
         Camera() = default;
@@ -57,6 +63,8 @@ namespace vkhr {
         const glm::mat4& get_view_matrix() const;
         const glm::mat4& get_projection_matrix() const;
 
+        MVP& get_mvp(const glm::mat4& model) const;
+
     private:
         void recalculate_view_matrix() const;
         void recalculate_projection_matrix() const;
@@ -76,7 +84,6 @@ namespace vkhr {
         glm::vec3 up_direction  { 0.0, 1.0, 0.0 };
 
         glm::vec3 arcball { 0, 0, 0 };
-
         glm::vec3 arcball_look_vector { 0, 0, 0 };
 
         mutable ViewingPlane viewing_plane;
@@ -84,6 +91,8 @@ namespace vkhr {
         mutable bool view_matrix_dirty { true };
         mutable bool projection_matrix_dirty { true };
         mutable bool viewing_plane_dirty { true };
+
+        mutable MVP mvp_matrix;
 
         mutable glm::mat4 view_matrix;
         mutable glm::mat4 projection_matrix;

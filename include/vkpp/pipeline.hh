@@ -52,9 +52,6 @@ namespace vkpp {
 
             VkPipelineLayout& get_handle();
 
-            const std::vector<VkPushConstantRange>& get_push_constants() const;
-            std::vector<DescriptorSet::Layout>&  get_descriptor_layouts() const;
-
         private:
             VkPipelineLayoutCreateInfo create_partial_info();
 

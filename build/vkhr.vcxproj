@@ -365,9 +365,12 @@
     <ClInclude Include="..\foreign\stb\stretchy_buffer.h" />
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h" />
     <ClInclude Include="..\include\vkhr\arg_parser.hh" />
+    <ClInclude Include="..\include\vkhr\billboard.hh" />
     <ClInclude Include="..\include\vkhr\camera.hh" />
+    <ClInclude Include="..\include\vkhr\embree\billboard.hh" />
     <ClInclude Include="..\include\vkhr\embree\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\embree\model.hh" />
+    <ClInclude Include="..\include\vkhr\embree\ray.hh" />
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
     <ClInclude Include="..\include\vkhr\input_map.hh" />
@@ -380,6 +383,8 @@
     <ClInclude Include="..\include\vkhr\renderer.hh" />
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
+    <ClInclude Include="..\include\vkhr\vulkan\billboard.hh" />
+    <ClInclude Include="..\include\vkhr\vulkan\drawable.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\model.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\pipeline.hh" />
@@ -422,7 +427,11 @@
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
     <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\vkhr\arg_parser.cc" />
+    <ClCompile Include="..\src\vkhr\billboard.cc" />
     <ClCompile Include="..\src\vkhr\camera.cc" />
+    <ClCompile Include="..\src\vkhr\embree\billboard.cc">
+      <ObjectFileName>$(IntDir)\billboard1.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\embree\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\embree\model.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc">
@@ -438,6 +447,9 @@
     <ClCompile Include="..\src\vkhr\rasterizer.cc" />
     <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
     <ClCompile Include="..\src\vkhr\scene_graph.cc" />
+    <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
+      <ObjectFileName>$(IntDir)\billboard2.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
       <ObjectFileName>$(IntDir)\hair_style2.obj</ObjectFileName>
     </ClCompile>

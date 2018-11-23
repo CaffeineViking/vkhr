@@ -4,11 +4,11 @@
 #include <vkhr/renderer.hh>
 #include <vkhr/scene_graph.hh>
 #include <vkhr/hair_style.hh>
+#include <vkhr/interface.hh>
 #include <vkhr/window.hh>
 
 #include <vkhr/vulkan/pipeline.hh>
 #include <vkhr/vulkan/hair_style.hh>
-#include <vkhr/vulkan/model.hh>
 
 #include <vkpp/instance.hh>
 #include <vkpp/physical_device.hh>
@@ -30,17 +30,24 @@ namespace vk = vkpp;
 namespace vkhr {
     // Forward declaration for friending.
     namespace vulkan { class HairStyle; }
-    namespace embree { class HairStyle; }
 
     class Rasterizer final : public Renderer {
     public:
-        Rasterizer(const Window& window, const SceneGraph& scene_graph);
+        Rasterizer(Window& window, const SceneGraph& scene_graph, bool vsync);
 
         void build_pipelines();
 
         void load(const SceneGraph& scene) override;
+        void update(const SceneGraph& scene_graphs);
         void draw(const SceneGraph& scene) override;
 
+        void draw(const SceneGraph::Node* hair_node,
+                  vk::CommandBuffer& command_buffer,
+                  std::size_t fbi, MVP& mvp_matrix);
+
+        Interface& get_imgui();
+
+    private:
         vk::Instance instance;
         vk::PhysicalDevice physical_device;
         vk::Device device;
@@ -58,13 +65,16 @@ namespace vkhr {
         vk::Semaphore image_available, render_complete;
         vk::Fence command_buffer_done;
 
-        std::vector<vk::CommandBuffer> command_buffers;
-
         vulkan::Pipeline hair_style_pipeline;
 
-        std::unordered_map<std::string, vulkan::HairStyle> hair_styles;
+        std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
+
+        Interface imgui;
+
+        std::vector<vk::CommandBuffer> command_buffers;
 
         friend class vulkan::HairStyle;
+        friend class ::vkhr::Interface;
     };
 }
 
