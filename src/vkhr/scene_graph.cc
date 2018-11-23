@@ -67,7 +67,7 @@ namespace vkhr {
 
     bool SceneGraph::parse_camera(nlohmann::json& parser, Camera& camera) {
         if (auto camera = parser.find("camera"); camera != parser.end()) {
-            this->camera.set_field_of_view(camera->value("fieldOfView", 45.0));
+            this->camera.set_field_of_view(glm::radians(camera->value("fieldOfView", 45.0)));
             if (auto origin = camera->find("origin"); origin != camera->end()) {
                 this->camera.set_position({ origin->at(0),
                                             origin->at(1),

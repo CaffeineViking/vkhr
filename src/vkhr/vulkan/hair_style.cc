@@ -57,8 +57,8 @@ namespace vkhr {
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
-            pipeline.fixed_stages.add_vertex_attribute_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT });
-            pipeline.fixed_stages.add_vertex_attribute_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT });
+            pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
+            pipeline.fixed_stages.add_vertex_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
 
             pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 

@@ -1094,6 +1094,9 @@
     <ClCompile Include="..\src\vkhr\embree\model.cc">
       <Filter>src\vkhr\embree</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\embree\ray.cc">
+      <Filter>src\vkhr\embree</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\hair_style.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>

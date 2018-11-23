@@ -87,6 +87,7 @@ namespace vkpp {
         std::uint32_t binding;
         std::uint32_t attribute;
         VkFormat format;
+        std::uint32_t stride;
     };
 
     class GraphicsPipeline final : public Pipeline {
@@ -109,7 +110,7 @@ namespace vkpp {
 
             void add_vertex_input(VertexBuffer& vertex_buffer);
 
-            void add_vertex_attribute_binding(const VertexAttributeBinding&);
+            void add_vertex_binding(const VertexAttributeBinding&);
 
             VkPipelineVertexInputStateCreateInfo   vertex_input_state {
                 VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,

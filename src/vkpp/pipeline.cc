@@ -271,8 +271,8 @@ namespace vkpp {
         add_vertex_binding(vertex_buffer.get_binding());
     }
 
-    void GraphicsPipeline::FixedFunction::add_vertex_attribute_binding(const VertexAttributeBinding& attribute) {
-        add_vertex_binding({ attribute.binding, 0, VK_VERTEX_INPUT_RATE_VERTEX });
+    void GraphicsPipeline::FixedFunction::add_vertex_binding(const VertexAttributeBinding& attribute) {
+        add_vertex_binding({ attribute.binding, attribute.stride, VK_VERTEX_INPUT_RATE_VERTEX });
         add_vertex_attribute(VertexAttribute { attribute.attribute,
                                                attribute.binding,
                                                attribute.format, 0 });

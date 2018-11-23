@@ -59,10 +59,12 @@ int main(int argc, char** argv) {
         } else if (!rasterizer.get_imgui().wants_focus()) {
             if (input_map.just_pressed("grab")) {
                 input_map.freeze_cursor();
+                last_mouse_point = input_map.get_mouse_position();
             } else if (input_map.pressed("grab")) {
                 auto mouse_point = input_map.get_mouse_position();
                 cursor_delta = mouse_point - last_mouse_point;
                 last_mouse_point = mouse_point;
+                cursor_delta *= window.delta_time() * 0.3117f;
                 scene_graph.get_camera().arcball_by(cursor_delta);
             }
         }

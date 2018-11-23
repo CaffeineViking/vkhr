@@ -1,11 +1,5 @@
 #include <vkhr/rasterizer.hh>
 
-#include <vkpp/version.hh>
-#include <vkpp/application.hh>
-#include <vkpp/layer.hh>
-#include <vkpp/extension.hh>
-#include <vkpp/append.hh>
-
 namespace vk = vkpp;
 
 namespace vkhr {

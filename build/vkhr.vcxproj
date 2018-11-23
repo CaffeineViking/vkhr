@@ -434,6 +434,7 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\embree\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\embree\model.cc" />
+    <ClCompile Include="..\src\vkhr\embree\ray.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc">
       <ObjectFileName>$(IntDir)\hair_style1.obj</ObjectFileName>
     </ClCompile>
