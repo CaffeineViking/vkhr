@@ -8,7 +8,7 @@ Compiling and Running
 ---------------------
 
 1. First, make sure you've changed your current directory to `vkhr`
-2. Then, do: `git submodule update --init --recursive --depth 1`
+2. Then do `git submodule update --init --recursive --depth 1`
     * **Description:** fetches submodule dependencies to `foreign`
 3. Since we use [premake](https://premake.github.io/), you'll most likely need to fetch it as well:
     * **Tip:** there's pre-generated Visual Studio solutions in `build`
@@ -31,7 +31,7 @@ Usage and Documents
 
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--width 1280 --height 720` , `--no-fullscreen` , `--no-msaa` , `--no-vsync` , `--no-profiling`  and `--gui`.
+* **Arguments:** `--width 1280 --height 720` , `--no-fullscreen` , `--no-msaa` , `--no-vsync` , `--no-profiling`  and `--ui`.
 * **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **gui** to modify everything else.
 
 System Requirements
