@@ -5,6 +5,7 @@
 #include <vkhr/window.hh>
 #include <vkhr/input_map.hh>
 #include <vkhr/rasterizer.hh>
+#include <vkhr/ray_tracer.hh>
 
 #include <glm/glm.hpp>
 
