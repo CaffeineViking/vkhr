@@ -158,6 +158,10 @@ namespace vkhr {
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
     }
 
+    Interface& Rasterizer::get_imgui() {
+        return imgui;
+    }
+
     vk::RenderPass Rasterizer::default_render_pass() {
         std::vector<vk::RenderPass::Attachment> attachments {
             {
@@ -189,15 +193,13 @@ namespace vkhr {
             }
         };
 
-        return vkpp::RenderPass {
+        vk::RenderPass render_pass {
             device,
             attachments,
             render_subpasses,
             dependencies
         };
-    }
 
-    Interface& Rasterizer::get_imgui() {
-        return imgui;
+        return render_pass;
     }
 }

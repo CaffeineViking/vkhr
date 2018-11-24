@@ -34,9 +34,8 @@ namespace vkhr {
         scene = rtcNewScene(device);
 
         hair_vertices = hair_style.create_position_thickness_data();
-        hair_style.generate_control_points_for(HairStyle::CurveType::Line);
 
-        const auto& hair_indices = hair_style.get_control_points();
+        const auto& hair_indices = hair_style.get_indices();
 
         hair = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE);
 
@@ -44,7 +43,7 @@ namespace vkhr {
                                    hair_vertices.data(), 0, sizeof(hair_vertices[0]),
                                    hair_vertices.size());
         rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_INDEX, 0, RTC_FORMAT_UINT,
-                                   hair_indices.data(), 0, sizeof(hair_indices[0]),
+                                   hair_indices.data(), 0, sizeof(hair_indices[0]*2),
                                    hair_indices.size());
 
         rtcCommitGeometry(hair);

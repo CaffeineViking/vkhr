@@ -94,8 +94,6 @@ namespace vkhr {
     bool HairStyle::has_tangents() const { return tangents.size(); }
     bool HairStyle::has_indices() const { return indices.size(); }
 
-    bool HairStyle::has_control_points() const { return control_points.size(); }
-
     // Below follows boilerplate for writing to the header.
 
     unsigned HairStyle::get_default_segment_count() const {
@@ -186,33 +184,6 @@ namespace vkhr {
         }
     }
 
-    void HairStyle::generate_control_points_for(CurveType curve_type) {
-        std::size_t degree;
-
-        switch (curve_type) {
-        case CurveType::Line:        degree = 2; break;
-        case CurveType::CubicBezier: degree = 4; break;
-        default: return;
-        }
-
-        control_points.reserve(get_vertex_count() / (degree - 1));
-
-        std::size_t vertex { 0 };
-        for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
-            unsigned segment_count { get_default_segment_count() };
-            if (has_segments()) {
-                segment_count = this->segments[strand];
-            }
-
-            for (std::size_t segment { 0 }; segment < segment_count; ++segment) {
-                control_points.push_back(static_cast<unsigned>(vertex));
-                vertex += degree - 1;
-            }
-
-            ++vertex;
-        }
-    }
-
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() {
         std::vector<glm::vec4> position_thicknesses(get_vertex_count());
         for (std::size_t i { 0 }; i < get_vertex_count(); ++i) {
@@ -225,9 +196,7 @@ namespace vkhr {
                 vertices[i],
                 thickness
             };
-        }
-
-        return position_thicknesses;
+        } return position_thicknesses;
     }
 
     std::vector<glm::vec4> HairStyle::create_color_transparency_data() {
@@ -242,17 +211,11 @@ namespace vkhr {
                 color[i],
                 transparency
             };
-        }
-
-        return color_transparencies;
+        } return color_transparencies;
     }
 
     const std::vector<unsigned>& HairStyle::get_indices() const {
         return indices;
-    }
-
-    const std::vector<unsigned>& HairStyle::get_control_points() const {
-        return control_points;
     }
 
     const std::vector<glm::vec3>& HairStyle::get_tangents() const {

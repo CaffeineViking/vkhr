@@ -3,7 +3,7 @@
 
 #include <vkhr/renderer.hh>
 
-#include <vkhr/embree/ray.hh>
+#include <vkhr/ray.hh>
 
 #include <embree3/rtcore.h>
 
