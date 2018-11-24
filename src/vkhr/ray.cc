@@ -1,4 +1,4 @@
-#include <vkhr/embree/ray.hh>
+#include <vkhr/ray.hh>
 
 namespace vkhr {
     Ray::Ray(const glm::vec3& origin, const glm::vec3& direction, float tnear_plane) {

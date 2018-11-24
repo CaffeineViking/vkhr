@@ -2,6 +2,7 @@
 #define VKHR_EMBREE_RAY_HH
 
 #include <embree3/rtcore.h>
+
 #include <glm/glm.hpp>
 
 namespace vkhr {
