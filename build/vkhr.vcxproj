@@ -66,9 +66,10 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(VULKAN_SDK)\lib\vulkan-1.lib;..\foreign\glfw\lib\glfw3dll.lib;..\foreign\embree\lib\embree3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
@@ -88,11 +89,12 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(VULKAN_SDK)\lib\vulkan-1.lib;..\foreign\glfw\lib\glfw3dll.lib;..\foreign\embree\lib\embree3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -370,7 +372,6 @@
     <ClInclude Include="..\include\vkhr\embree\billboard.hh" />
     <ClInclude Include="..\include\vkhr\embree\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\embree\model.hh" />
-    <ClInclude Include="..\include\vkhr\embree\ray.hh" />
     <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
     <ClInclude Include="..\include\vkhr\input_map.hh" />
@@ -379,6 +380,7 @@
     <ClInclude Include="..\include\vkhr\model.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer.hh" />
+    <ClInclude Include="..\include\vkhr\ray.hh" />
     <ClInclude Include="..\include\vkhr\ray_tracer.hh" />
     <ClInclude Include="..\include\vkhr\renderer.hh" />
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
@@ -434,7 +436,6 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\embree\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\embree\model.cc" />
-    <ClCompile Include="..\src\vkhr\embree\ray.cc" />
     <ClCompile Include="..\src\vkhr\hair_style.cc">
       <ObjectFileName>$(IntDir)\hair_style1.obj</ObjectFileName>
     </ClCompile>
@@ -446,6 +447,7 @@
       <ObjectFileName>$(IntDir)\model1.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\rasterizer.cc" />
+    <ClCompile Include="..\src\vkhr\ray.cc" />
     <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
     <ClCompile Include="..\src\vkhr\scene_graph.cc" />
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">

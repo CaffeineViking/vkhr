@@ -44,7 +44,7 @@ STATIC_LINK = "-static -static-libstdc++ -static-libgcc -lpthread"
 
 project (name)
     targetdir "bin"
-    kind "ConsoleApp"
+    kind "WindowedApp"
 
     includedirs "include"
     files { "include/**.hh" }
@@ -93,6 +93,8 @@ project (name)
         includedirs { SDK.."/include" }
         includedirs { EMBREE.."/include" }
         includedirs { GLFW.."/include" }
+
+        entrypoint "mainCRTStartup"
 
         buildoptions { "/openmp" }
 
