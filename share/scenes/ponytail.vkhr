@@ -23,7 +23,7 @@
             "translate": [0, 0, 0],
             "rotate": [0, 0, 1, 0],
 
-            "name": "Hair Style",
+            "name": "Ponytail Hair",
 
             "styles": [
                 "../styles/ponytail.hair"
