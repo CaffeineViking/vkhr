@@ -74,8 +74,8 @@ namespace vkhr {
 
         void generate_tangents();
 
-        std::vector<glm::vec4> create_position_thickness_data();
-        std::vector<glm::vec4> create_color_transparency_data();
+        std::vector<glm::vec4> create_position_thickness_data() const;
+        std::vector<glm::vec4> create_color_transparency_data() const;
 
         void generate_indices();
 

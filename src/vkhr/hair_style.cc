@@ -184,9 +184,10 @@ namespace vkhr {
         }
     }
 
-    std::vector<glm::vec4> HairStyle::create_position_thickness_data() {
+    std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {
         std::vector<glm::vec4> position_thicknesses(get_vertex_count());
-        for (std::size_t i { 0 }; i < get_vertex_count(); ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i < static_cast<int>(get_vertex_count()); ++i) {
             float thickness { get_default_thickness() };
             if (has_thickness()) {
                 thickness = this->thickness[i];
@@ -199,16 +200,22 @@ namespace vkhr {
         } return position_thicknesses;
     }
 
-    std::vector<glm::vec4> HairStyle::create_color_transparency_data() {
+    std::vector<glm::vec4> HairStyle::create_color_transparency_data() const {
         std::vector<glm::vec4> color_transparencies(get_vertex_count());
-        for (std::size_t i { 0 }; i < get_vertex_count(); ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i < static_cast<int>(get_vertex_count()); ++i) {
             float transparency { get_default_transparency() };
             if (has_transparency()) {
                 transparency = this->transparency[i];
             }
 
+            glm::vec3 color { get_default_color() };
+            if (has_color()) {
+                color = this->color[i];
+            }
+
             color_transparencies[i] = glm::vec4 {
-                color[i],
+                color,
                 transparency
             };
         } return color_transparencies;

@@ -7,6 +7,10 @@
 #include <vkhr/rasterizer.hh>
 #include <vkhr/ray_tracer.hh>
 
+#include <chrono>
+
+#include <iostream>
+
 #include <glm/glm.hpp>
 
 int main(int argc, char** argv) {
@@ -19,6 +23,8 @@ int main(int argc, char** argv) {
 
     int width  = argp["x"].value.integer,
         height = argp["y"].value.integer;
+
+    vkhr::Raytracer ray_tracer { scene_graph };
 
     const vkhr::Image vulkan_icon { IMAGE("vulkan-icon.png") };
     vkhr::Window window { width, height, "VKHR", vulkan_icon };

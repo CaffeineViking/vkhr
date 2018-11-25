@@ -5,6 +5,8 @@
 #include <vkpp/descriptor_set.hh>
 #include <vkpp/shader_module.hh>
 
+#include <vector>
+
 namespace vk = vkpp;
 
 namespace vkhr {
@@ -24,6 +26,11 @@ namespace vkhr {
 
             std::vector<vk::DescriptorSet> descriptor_sets;
             std::vector<DescriptorState> descriptor_states;
+
+            void write_uniform_buffer(unsigned set, unsigned binding, VkDeviceSize uniform_buffers_bytes, vk::Device& device) {
+                descriptor_states[set].uniform_buffers.emplace_back(device, uniform_buffers_bytes);
+                descriptor_sets[set].write(binding, descriptor_states[set].uniform_buffers.back());
+            }
         };
     }
 }

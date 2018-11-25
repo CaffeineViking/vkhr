@@ -86,8 +86,7 @@ namespace vkhr {
                                                                                 pipeline.descriptor_set_layout);
             pipeline.descriptor_states.resize(pipeline.descriptor_sets.size());
             for (std::size_t i = 0; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_states[i].uniform_buffers.emplace_back(vulkan_renderer.device, sizeof(MVP));
-                pipeline.descriptor_sets[i].write(0, pipeline.descriptor_states[i].uniform_buffers.back()); // 0
+                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

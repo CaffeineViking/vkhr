@@ -55,8 +55,19 @@ namespace vkhr {
                  ray_hit.hit.Ng_z };
     }
 
+    glm::vec4 Ray::get_uniform_normal() const {
+        return { ray_hit.hit.Ng_x,
+                 ray_hit.hit.Ng_y,
+                 ray_hit.hit.Ng_z,
+                 0.0f };
+    }
+
     glm::vec3 Ray::get_tangent() const {
         return get_normal();
+    }
+
+    glm::vec4 Ray::get_uniform_tangent() const {
+        return get_uniform_normal();
     }
 
     unsigned Ray::get_primitive_id() const {
@@ -65,6 +76,10 @@ namespace vkhr {
 
     unsigned Ray::get_geometry_id() const {
         return ray_hit.hit.geomID;
+    }
+
+    bool Ray::hit_geometry(unsigned  id) const {
+        return ray_hit.hit.geomID == id;
     }
 
     glm::vec3 Ray::get_intersection_point() const {

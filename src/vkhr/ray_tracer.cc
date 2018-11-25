@@ -23,7 +23,7 @@ namespace vkhr {
         }
     }
 
-    Raytracer::Raytracer(const Camera& camera, vkhr::HairStyle& hair_style) {
+    Raytracer::Raytracer(const SceneGraph& scene_graph) {
         set_flush_to_zero();
         set_denormal_zero();
 
@@ -31,94 +31,102 @@ namespace vkhr {
 
         rtcSetDeviceErrorFunction(device, embree_debug_callback, nullptr);
 
-        scene = rtcNewScene(device);
-
-        hair_vertices = hair_style.create_position_thickness_data();
-
-        const auto& hair_indices = hair_style.get_indices();
-
-        hair = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE);
-
-        rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT4,
-                                   hair_vertices.data(), 0, sizeof(hair_vertices[0]),
-                                   hair_vertices.size());
-        rtcSetSharedGeometryBuffer(hair, RTC_BUFFER_TYPE_INDEX, 0, RTC_FORMAT_UINT,
-                                   hair_indices.data(), 0, sizeof(hair_indices[0]*2),
-                                   hair_indices.size());
-
-        rtcCommitGeometry(hair);
-        rtcAttachGeometry(scene, hair);
-        rtcReleaseGeometry(hair);
-
-        rtcCommitScene(scene);
-
-        back_buffer = Image {
-            camera.get_width(),
-            camera.get_height()
-        };
-
-        back_buffer.clear();
-    }
-
-    void Raytracer::load(const SceneGraph&) {
-    }
-
-    void Raytracer::draw(const SceneGraph&) {
-        // TODO: use the actual scene graphs!
-    }
-
-    void Raytracer::draw(const Camera& camera) {
-        auto hair_color = glm::vec3(0.80f, 0.57f, 0.32f) * 0.40f;
-        auto light = glm::normalize(glm::vec3(1.0f, 2.0f, 1.0f));
-        auto light_color = glm::vec3(1.0f, 0.77f, 0.56f) * 0.20f;
-
-        auto viewing_plane = camera.get_viewing_plane();
-
-        back_buffer.clear();
-
-        #pragma omp parallel for schedule(dynamic)
-        for (int j = 0; j < static_cast<int>(back_buffer.get_height()); ++j)
-        for (int i = 0; i < static_cast<int>(back_buffer.get_width()); ++i) {
-            float x { static_cast<float>(i) }, y { static_cast<float>(j) };
-
-            RTCIntersectContext      context;
-            rtcInitIntersectContext(&context);
-
-            auto eye_direction = glm::normalize(x * viewing_plane.x +
-                                                y * viewing_plane.y +
-                                                    viewing_plane.z);
-            Ray ray { viewing_plane.point, eye_direction , 0.0000f };
-
-            if (ray.intersects(scene, context)) {
-                glm::vec4 color { hair_color * 0.5f, 1.0 };
-
-                Ray shadow_ray { ray.get_intersection_point(), light, Ray::Epsilon };
-
-                auto tangent = glm::vec4 { ray.get_tangent(), 0 };
-                tangent = camera.get_view_matrix() * tangent;
-
-                if (shadow_ray.occluded_by(scene, context) || shadows_off) {
-                    auto shading = kajiya_kay(hair_color, light_color, 80.0f,
-                                              glm::normalize(tangent), light,
-                                              glm::vec3(0.00f, 0.0f, 0.00f));
-                    if (shadows_off) color = glm::vec4 { shading, 1 };
-                    else color += glm::vec4 { shading * 0.5f, 0.00f };
-                }
-
-                back_buffer.set_pixel(i, j, { glm::clamp(color.r, 0.0f, 1.0f) * 255,
-                                              glm::clamp(color.g, 0.0f, 1.0f) * 255,
-                                              glm::clamp(color.b, 0.0f, 1.0f) * 255,
-                                              glm::clamp(color.a, 0.0f, 1.0f) * 255 });
-            }
-        }
-
-        back_buffer.horizontal_flip();
-        back_buffer.save("render.png");
+        load(scene_graph);
     }
 
     Raytracer::~Raytracer() noexcept {
         rtcReleaseScene(scene);
         rtcReleaseDevice(device);
+    }
+
+    void Raytracer::load(const SceneGraph& scene_graph) {
+        if (scene != nullptr) {
+            rtcReleaseScene(scene);
+            scene = nullptr;
+        }
+
+        scene = rtcNewScene(device);
+
+        for (const auto& hair_style : scene_graph.get_hair_styles()) {
+            auto hair = embree::HairStyle { hair_style.second, *this };
+            if (hair.get_geometry() >= hair_style_geometry.size())
+                hair_style_geometry.resize(hair.get_geometry()+1);
+            hair_style_geometry[hair.get_geometry()] = std::move(hair);
+        }
+
+        rtcCommitScene(scene);
+
+        framebuffer = Image {
+            scene_graph.get_camera().get_width(),
+            scene_graph.get_camera().get_height()
+        };
+
+        framebuffer.clear();
+    }
+
+    void Raytracer::draw(const SceneGraph& scene_graph) {
+        framebuffer.clear();
+
+        auto& viewing_plane = scene_graph.get_camera().get_viewing_plane();
+
+        auto& camera = scene_graph.get_camera();
+
+        LightSource light { { 1.00f, 2.00f, 1.00f },
+                            LightSource::Type::Directional,
+                            { 0.2f, 0.154f, 0.112f } };
+
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)
+        for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
+            float x { static_cast<float>(i) }, y { static_cast<float>(j) };
+
+            RTCIntersectContext      context;
+            rtcInitIntersectContext(&context);
+
+            auto eye_direction = (x * viewing_plane.x +
+                                  y * viewing_plane.y +
+                                      viewing_plane.z);
+
+            Ray ray {
+                viewing_plane.point,
+                eye_direction,
+                0.0f
+            };
+
+            glm::vec4 frag_color { 0.0f, 0.0f, 0.0f, 1.0f };
+
+            if (ray.intersects(scene, context)) {
+                Ray shadow_ray {
+                    ray.get_intersection_point(),
+                    light.get_direction(),
+                    Ray::Epsilon
+                };
+
+                if (!shadow_ray.occluded_by(scene, context) || shadows_off) {
+                    auto& hair { hair_style_geometry[ray.get_geometry_id()] };
+                    frag_color = hair.shade(ray, light, camera); // Kajiya-Kay
+                }
+
+                framebuffer.set_pixel(i, j, {
+                    glm::clamp(frag_color.r, 0.0f, 1.0f) * 255,
+                    glm::clamp(frag_color.g, 0.0f, 1.0f) * 255,
+                    glm::clamp(frag_color.b, 0.0f, 1.0f) * 255,
+                    glm::clamp(frag_color.a, 0.0f, 1.0f) * 255
+              });
+            }
+        }
+    }
+
+    Image& Raytracer::get_framebuffer() {
+        return framebuffer;
+    }
+
+    const Image& Raytracer::get_framebuffer() const {
+        return framebuffer;
+    }
+
+    void Raytracer::toggle_shadows() {
+        shadows_off = !shadows_off;
     }
 
     Raytracer::Raytracer(Raytracer&& raytracer) noexcept {
@@ -141,33 +149,5 @@ namespace vkhr {
 
     void Raytracer::set_denormal_zero() {
         _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-    }
-
-    glm::vec3 Raytracer::kajiya_kay(const glm::vec3& diffuse,
-                                    const glm::vec3& specular,
-                                    float p,
-                                    const glm::vec3& tangent,
-                                    const glm::vec3& light,
-                                    const glm::vec3& eye) {
-        float cosTL = glm::dot(tangent, light);
-        float cosTE = glm::dot(tangent, eye);
-
-        float cosTL_squared = cosTL*cosTL;
-        float cosTE_squared = cosTE*cosTE;
-
-        float one_minus_cosTL_squared = 1.0f - cosTL_squared;
-        float one_minus_cosTE_squared = 1.0f - cosTE_squared;
-
-        float sinTL = one_minus_cosTL_squared / std::sqrt(one_minus_cosTL_squared);
-        float sinTE = one_minus_cosTE_squared / std::sqrt(one_minus_cosTE_squared);
-
-        glm::vec3 diffuse_colors = diffuse  * sinTL;
-        glm::vec3 specular_color = specular * std::pow((cosTL * cosTE + sinTL * sinTE), p);
-
-        return diffuse_colors + specular_color;
-    }
-
-    void Raytracer::toggle_shadows() {
-        shadows_off = !shadows_off;
     }
 }

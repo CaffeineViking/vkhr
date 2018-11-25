@@ -3,8 +3,10 @@
 
 #include <vkhr/vkhr.hh>
 
-#include <vkhr/vulkan/pipeline.hh>
+#include <vkhr/vulkan/model.hh>
 #include <vkhr/vulkan/hair_style.hh>
+#include <vkhr/vulkan/billboard.hh>
+#include <vkhr/vulkan/pipeline.hh>
 
 #include <vkpp/vkpp.hh>
 
@@ -15,9 +17,6 @@
 namespace vk = vkpp;
 
 namespace vkhr {
-    // Forward declaration for friending.
-    namespace vulkan { class HairStyle; }
-
     class Rasterizer final : public Renderer {
     public:
         Rasterizer(Window& window, const SceneGraph& scene_graph, bool vsync);

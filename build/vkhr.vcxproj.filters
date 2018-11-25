@@ -912,6 +912,9 @@
     <ClInclude Include="..\include\vkhr\embree\model.hh">
       <Filter>include\vkhr\embree</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\embree\shadable.hh">
+      <Filter>include\vkhr\embree</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\hair_style.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>

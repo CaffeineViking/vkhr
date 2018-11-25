@@ -17,7 +17,7 @@ void main() {
     mat4 projection_view = transform.projection * transform.view;
 
     vec4 world_position = transform.model * vec4(position, 1.0f);
-    vec4 camera_tangent = transform.view * transform.model * vec4(tangent, 0.0f);
+    vec4 camera_tangent = transform.view  * transform.model * vec4(tangent, 0.0f);
 
     vs_out.tangent = camera_tangent.xyz;
 

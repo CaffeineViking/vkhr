@@ -9,6 +9,8 @@ namespace vkpp {
     public:
         ~Sampler() noexcept;
 
+        Sampler() = default;
+
         Sampler(Device& device,
                 VkFilter min_filter = VK_FILTER_LINEAR,
                 VkFilter mag_filter = VK_FILTER_LINEAR,

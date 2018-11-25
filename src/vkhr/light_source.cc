@@ -36,8 +36,8 @@ namespace vkhr {
     }
 
     void LightSource::set_position(const glm::vec3& position) {
-        set_vector(position);
         set_type(Type::Point);
+        set_vector(position);
     }
 
     const glm::vec4& LightSource::get_vector() const {
@@ -45,8 +45,8 @@ namespace vkhr {
     }
 
     void LightSource::set_direction(const glm::vec3& direction) {
-        set_vector(direction);
         set_type(Type::Directional);
+        set_vector(direction);
     }
 
     glm::vec3 LightSource::get_direction() const {
@@ -71,7 +71,10 @@ namespace vkhr {
         return buffer.intensity[3];
     }
 
-    void LightSource::set_vector(const glm::vec3& vector) {
+    void LightSource::set_vector(glm::vec3 vector) {
+        if (type == LightSource::Type::Directional)
+            vector = glm::normalize(vector);
+
         buffer.vector[0] = vector[0];
         buffer.vector[1] = vector[1];
         buffer.vector[2] = vector[2];

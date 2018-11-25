@@ -42,7 +42,7 @@ namespace vkhr {
         float get_cutoff() const;
 
     private:
-        void set_vector(const glm::vec3& vector);
+        void set_vector(glm::vec3 vector);
 
         Type type;
         Buffer buffer;

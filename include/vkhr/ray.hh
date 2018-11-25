@@ -27,8 +27,12 @@ namespace vkhr {
         glm::vec3 get_tangent() const;
         glm::vec3 get_normal() const;
 
+        glm::vec4 get_uniform_tangent() const;
+        glm::vec4 get_uniform_normal()  const;
+
         unsigned get_primitive_id() const;
         unsigned get_geometry_id()  const;
+        bool hit_geometry(unsigned) const;
 
         glm::vec3 get_intersection_point() const;
 
