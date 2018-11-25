@@ -88,10 +88,21 @@ namespace vkpp {
                     vkhr::Image& image,
                     std::uint32_t mip_levels = 1);
 
+        DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes);
+
         DeviceMemory& get_device_memory();
+
+        Buffer& get_staging_buffer();
+
+        DeviceMemory& get_staging_memory();
+
+        void staged_copy(vkhr::Image& image, CommandPool& pool);
 
     private:
         void copy(Buffer& staged, CommandPool& pool);
+
+        Buffer       staging_buffer;
+        DeviceMemory staging_memory;
 
         DeviceMemory device_memory;
     };

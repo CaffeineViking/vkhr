@@ -22,7 +22,7 @@ namespace vkhr {
             HairStyle() = default;
             HairStyle(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& vulkan_renderer,
-                      Pipeline& hair_style_pipeline);
+                      Pipeline& hair_graphics_pipeline);
 
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& vulkan_renderer);

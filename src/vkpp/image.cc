@@ -219,6 +219,8 @@ namespace vkpp {
         swap(static_cast<Image&>(lhs), static_cast<Image&>(rhs));
 
         swap(lhs.device_memory, rhs.device_memory);
+        swap(lhs.staging_buffer, rhs.staging_buffer);
+        swap(lhs.staging_memory, rhs.staging_memory);
     }
 
     DeviceImage& DeviceImage::operator=(DeviceImage&& image) noexcept {
@@ -242,7 +244,7 @@ namespace vkpp {
                                       mip_levels,
                                       VK_SAMPLE_COUNT_1_BIT,
                                       VK_IMAGE_TILING_OPTIMAL } {
-        Buffer staging_buffer {
+        staging_buffer = Buffer {
             device,
             static_cast<VkDeviceSize>(image.get_size_in_bytes()),
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT
@@ -254,7 +256,7 @@ namespace vkpp {
 
         auto buffer = image.get_data();
 
-        DeviceMemory staging_memory {
+        staging_memory = DeviceMemory {
             device,
             staging_memory_requirements,
             DeviceMemory::Type::HostVisible
@@ -282,8 +284,65 @@ namespace vkpp {
                          VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
+    DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes)
+                            : Image { device,
+                                      width,
+                                      height,
+                                      VK_FORMAT_R8G8B8A8_UNORM,
+                                      VK_IMAGE_USAGE_SAMPLED_BIT |
+                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                                      1,
+                                      VK_SAMPLE_COUNT_1_BIT,
+                                      VK_IMAGE_TILING_OPTIMAL } {
+        staging_buffer = Buffer {
+            device,
+            size_in_bytes,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        staging_memory = DeviceMemory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+
+        auto image_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            image_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
+    }
+
+    void DeviceImage::staged_copy(vkhr::Image& image, CommandPool& pool) {
+        staging_memory.copy(image.get_size_in_bytes(), image.get_data());
+
+        transition(pool, VK_IMAGE_LAYOUT_UNDEFINED,
+                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        copy(staging_buffer, pool);
+
+        transition(pool, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    }
+
     DeviceMemory& DeviceImage::get_device_memory() {
         return device_memory;
+    }
+
+    Buffer& DeviceImage::get_staging_buffer() {
+        return staging_buffer;
+    }
+
+    DeviceMemory& DeviceImage::get_staging_memory() {
+        return staging_memory;
     }
 
     void DeviceImage::copy(Buffer& staged, CommandPool& pool) {

@@ -98,7 +98,8 @@ namespace vkhr {
     }
 
     void Rasterizer::load(const SceneGraph& scene_graph) {
-        imgui = Interface { window_surface.get_hwnd(), *this };
+        imgui = Interface { window_surface.get_glfw_window(), *this };
+
         for (const auto& hair_style : scene_graph.get_hair_styles()) {
             const auto& hair_style_geometry = hair_style.second;
             hair_styles[&hair_style_geometry] = vulkan::HairStyle {
@@ -107,6 +108,13 @@ namespace vkhr {
                 hair_style_pipeline
             };
         }
+
+        fb = vulkan::Billboard {
+            swap_chain.get_width(),
+            swap_chain.get_height(),
+            *this,
+            billboards_pipeline
+        };
     }
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {
@@ -148,7 +156,7 @@ namespace vkhr {
         }
     }
 
-    void Rasterizer::draw(const Image& framebuffer) {
+    void Rasterizer::draw(Image& image) {
         auto next_image = swap_chain.acquire_next_image(image_available);
 
         command_buffer_done.wait_and_reset();
@@ -158,6 +166,9 @@ namespace vkhr {
             command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                                  { 1.0f, 1.0f, 1.0f, 1.0f });
 
+            fb.update(image, command_pool);
+            fb.update(Camera::Identity, i);
+            fb.draw(command_buffers[i], i);
             imgui.draw(command_buffers[i]);
 
             command_buffers[i].end_render_pass();
@@ -173,6 +184,7 @@ namespace vkhr {
 
     void Rasterizer::build_pipelines() {
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
+        vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
 
     Interface& Rasterizer::get_imgui() {

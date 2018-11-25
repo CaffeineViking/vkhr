@@ -35,11 +35,11 @@ namespace vkpp {
         return handle;
     }
 
-    void Surface::set_hwnd(vkhr::Window& window) {
+    void Surface::set_glfw_window(vkhr::Window& window) {
         this->window = &window;
     }
 
-    vkhr::Window& Surface::get_hwnd() const {
+    vkhr::Window& Surface::get_glfw_window() const {
         return *this->window;
     }
 

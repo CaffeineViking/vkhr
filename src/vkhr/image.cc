@@ -123,6 +123,10 @@ namespace vkhr {
         return get_pixel_count() * BytesPerPixel;
     }
 
+    unsigned Image::get_expected_size(const unsigned width, const unsigned height) {
+        return width * height * Image::BytesPerPixel;
+    }
+
     unsigned char* Image::get_data() {
         return image_data;
     }

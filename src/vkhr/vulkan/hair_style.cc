@@ -40,20 +40,20 @@ namespace vkhr {
             pipeline->descriptor_states[i].uniform_buffers[0].update(transform);
         }
 
-        void HairStyle::draw(vk::CommandBuffer& command_lists, std::size_t fb) {
-            command_lists.bind_pipeline(pipeline->pipeline);
+        void HairStyle::draw(vk::CommandBuffer& command_list, std::size_t i) {
+            command_list.bind_pipeline(pipeline->pipeline);
 
-            auto& descriptor_sets = pipeline->descriptor_sets[fb];
+            auto& descriptor_sets = pipeline->descriptor_sets[i];
 
-            command_lists.bind_descriptor_set(descriptor_sets,
-                                              pipeline->pipeline);
+            command_list.bind_descriptor_set(descriptor_sets,
+                                             pipeline->pipeline);
 
-            command_lists.bind_vertex_buffer(0, positions, 0);
-            command_lists.bind_vertex_buffer(1, tangents,  0);
+            command_list.bind_vertex_buffer(0, positions, 0);
+            command_list.bind_vertex_buffer(1, tangents,  0);
 
-            command_lists.bind_index_buffer(vertices);
+            command_list.bind_index_buffer(vertices);
 
-            command_lists.draw_indexed(vertices.count());
+            command_list.draw_indexed(vertices.count());
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {

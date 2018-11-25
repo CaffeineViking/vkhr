@@ -154,7 +154,7 @@ namespace vkhr {
 
         vkpp::Surface surface { instance_handle, surface_handle };
 
-        surface.set_hwnd(*this);
+        surface.set_glfw_window(*this);
 
         return surface;
     }

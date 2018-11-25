@@ -215,4 +215,10 @@ namespace vkhr {
     void Camera::update_arcball_reference() {
         arcball_look_vector = position - look_at_point;
     }
+
+    MVP Camera::Identity {
+        glm::mat4 { 1.0f },
+        glm::mat4 { 1.0f },
+        glm::mat4 { 1.0f }
+    };
 }

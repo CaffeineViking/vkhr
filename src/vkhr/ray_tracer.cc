@@ -27,7 +27,7 @@ namespace vkhr {
         set_flush_to_zero();
         set_denormal_zero();
 
-        device = rtcNewDevice("verbose=1");
+        device = rtcNewDevice("verbose=0");
 
         rtcSetDeviceErrorFunction(device, embree_debug_callback, nullptr);
 

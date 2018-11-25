@@ -3,7 +3,7 @@
 #include "kajiya-kay.glsl"
 
 layout(location = 0) in PipelineData {
-    vec3 tangent;
+    flat vec3 tangent;
 } fs_in;
 
 layout(location = 0) out vec4 color;

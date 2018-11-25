@@ -24,8 +24,8 @@ namespace vkpp {
         void set_presentation_modes(const std::vector<VkPresentModeKHR>& present_modes);
         void set_formats(const std::vector<VkSurfaceFormatKHR>& formats);
 
-        void set_hwnd(vkhr::Window& window);
-        vkhr::Window& get_hwnd() const;
+        void set_glfw_window(vkhr::Window& window);
+        vkhr::Window& get_glfw_window() const;
 
         const VkSurfaceCapabilitiesKHR& get_capabilities() const;
         const std::vector<VkPresentModeKHR>& get_presentation_modes() const;

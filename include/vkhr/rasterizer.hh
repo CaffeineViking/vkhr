@@ -28,7 +28,7 @@ namespace vkhr {
         void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;
 
-        void draw(const Image& raytraced);
+        void draw(Image& fullscreen_image);
 
         void draw(const SceneGraph::Node* hair_node,
                   vk::CommandBuffer& command_buffer,
@@ -60,11 +60,15 @@ namespace vkhr {
 
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
 
+        vulkan::Pipeline billboards_pipeline;
+        vulkan::Billboard fb;
+
         Interface imgui;
 
         std::vector<vk::CommandBuffer> command_buffers;
 
         friend class vulkan::HairStyle;
+        friend class vulkan::Billboard;
         friend class ::vkhr::Interface;
     };
 }

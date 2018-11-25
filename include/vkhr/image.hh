@@ -49,6 +49,8 @@ namespace vkhr {
         const unsigned char* get_data() const;
         int get_size_in_bytes() const;
 
+        static unsigned get_expected_size(const unsigned width, const unsigned height);
+
         Color* get_pixels();
         const Color* get_pixels() const;
         const Color& get_pixel(const int x,
