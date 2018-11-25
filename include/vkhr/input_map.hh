@@ -164,8 +164,10 @@ namespace vkhr {
         //
         static void mouse_button_callback(GLFWwindow*, int, int, int);
         static std::unordered_map<GLFWwindow*, InputMap*> callback_map;
-        static void key_callback(GLFWwindow*, int, int, int, int);
+
         static void scroll_callback(GLFWwindow*, double, double);
+        static void key_callback(GLFWwindow*, int, int, int, int);
+        static void char_callback(GLFWwindow*, unsigned int);
 
         std::unordered_map<Input::Key, Input::State> key_state_map;
         std::unordered_map<Input::MouseButton, Input::State> mouse_button_state;

@@ -7,6 +7,7 @@ namespace vkhr {
         glfwSetKeyCallback(handle, &key_callback);
         glfwSetMouseButtonCallback(handle, &mouse_button_callback);
         glfwSetScrollCallback(handle, &scroll_callback);
+        glfwSetCharCallback(handle, &char_callback);
     }
 
     std::unordered_map<GLFWwindow*, InputMap*> InputMap::callback_map;
@@ -62,6 +63,10 @@ namespace vkhr {
 
     void InputMap::scroll_callback(GLFWwindow* window, double scroll_x, double scroll_y) {
         ImGui_ImplGlfw_ScrollCallback(window, scroll_x, scroll_y);
+    }
+
+    void InputMap::char_callback(GLFWwindow* window, unsigned int codepoint) {
+        ImGui_ImplGlfw_CharCallback(window, codepoint);
     }
 
     void InputMap::unbind(const std::string& id) {

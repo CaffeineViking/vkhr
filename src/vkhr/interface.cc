@@ -45,7 +45,7 @@ namespace vkhr {
 
         ImGui_ImplVulkan_Init(&init_info, vulkan_renderer.render_pass.get_handle());
 
-        ImGui::StyleColorsDark();
+        ImGui::StyleColorsLight();
 
         auto command_buffer = vulkan_renderer.command_pool.allocate_and_begin();
         ImGui_ImplVulkan_CreateFontsTexture(command_buffer.get_handle());
