@@ -65,26 +65,26 @@ namespace vkhr {
         return true;
     }
 
-    bool SceneGraph::parse_camera(nlohmann::json& parser, Camera& camera) {
+    bool SceneGraph::parse_camera(nlohmann::json& parser, Camera& scene_camera) {
         if (auto camera = parser.find("camera"); camera != parser.end()) {
-            this->camera.set_field_of_view(glm::radians(camera->value("fieldOfView", 45.0)));
+            scene_camera.set_field_of_view(glm::radians(camera->value("fieldOfView", 45.0)));
             if (auto origin = camera->find("origin"); origin != camera->end()) {
-                this->camera.set_position({ origin->at(0),
+                scene_camera.set_position({ origin->at(0),
                                             origin->at(1),
                                             origin->at(2) });
             } else return set_error_state(Error::ReadingCamera);
 
             if (auto look_at = camera->find("lookAt"); look_at != camera->end()) {
-                this->camera.set_look_at_point({ look_at->at(0),
+                scene_camera.set_look_at_point({ look_at->at(0),
                                                  look_at->at(1),
                                                  look_at->at(2) });
             } else return set_error_state(Error::ReadingCamera);
 
             if (auto upward = camera->find("upward"); upward != camera->end()) {
-                this->camera.set_up_direction({ upward->at(0),
+                scene_camera.set_up_direction({ upward->at(0),
                                                 upward->at(1),
                                                 upward->at(2) });
-            } else this->camera.set_up_direction({ 0, +1.0, 0 });
+            } else scene_camera.set_up_direction({ 0, +1.0, 0 });
         } else return set_error_state(Error::ReadingCamera);
 
         return true;
