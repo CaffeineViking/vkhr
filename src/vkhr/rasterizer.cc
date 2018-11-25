@@ -109,14 +109,8 @@ namespace vkhr {
         }
     }
 
-    void Rasterizer::update(const SceneGraph& scene_graph) {
-        imgui.update(scene_graph);
-    }
-
     void Rasterizer::draw(const SceneGraph& scene_graph) {
         auto next_image = swap_chain.acquire_next_image(image_available);
-
-        update(scene_graph); // e.g. buffers.
 
         auto& cam = scene_graph.get_camera();
 
@@ -154,12 +148,42 @@ namespace vkhr {
         }
     }
 
+    void Rasterizer::draw(const Image& framebuffer) {
+        auto next_image = swap_chain.acquire_next_image(image_available);
+
+        command_buffer_done.wait_and_reset();
+
+        for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
+            command_buffers[i].begin();
+            command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
+                                                 { 1.0f, 1.0f, 1.0f, 1.0f });
+
+            imgui.draw(command_buffers[i]);
+
+            command_buffers[i].end_render_pass();
+            command_buffers[i].end();
+        }
+
+        device.get_graphics_queue().submit(command_buffers[next_image], image_available,
+                                           VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                           render_complete, command_buffer_done);
+
+        device.get_present_queue().present(swap_chain, next_image, render_complete);
+    }
+
     void Rasterizer::build_pipelines() {
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
     }
 
     Interface& Rasterizer::get_imgui() {
         return imgui;
+    }
+
+    Image Rasterizer::get_screenshot() {
+        return Image { 1280, 720 };
+    }
+
+    void Rasterizer::recompile_spirv() {
     }
 
     vk::RenderPass Rasterizer::default_render_pass() {

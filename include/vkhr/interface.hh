@@ -33,16 +33,22 @@ namespace vkhr {
         ~Interface() noexcept;
 
         void load(vkhr::Rasterizer& vulkan_renderer);
-        void update(const SceneGraph& a_scene_graph);
+        void update(SceneGraph& scene_graph);
         void draw(vkpp::CommandBuffer& command_list);
 
         bool wants_focus() const;
+        bool typing_text() const;
 
         void hide();
         void toggle_visibility();
+        void toggle_raytracing();
         void show();
 
+        bool do_raytrace() const;
+
+
     private:
+        bool raytrace_scene { false };
         ImGuiContext* ctx { nullptr };
         bool gui_visibility { false };
     };

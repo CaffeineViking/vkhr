@@ -23,13 +23,18 @@ namespace vkhr {
 
         void build_pipelines();
 
+        void recompile_spirv();
+
         void load(const SceneGraph& scene) override;
-        void update(const SceneGraph& scene_graphs);
         void draw(const SceneGraph& scene) override;
+
+        void draw(const Image& raytraced);
 
         void draw(const SceneGraph::Node* hair_node,
                   vk::CommandBuffer& command_buffer,
                   std::size_t fbi, MVP& mvp_matrix);
+
+        Image get_screenshot();
 
         Interface& get_imgui();
 

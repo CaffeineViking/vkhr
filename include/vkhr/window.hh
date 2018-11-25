@@ -59,6 +59,8 @@ namespace vkhr {
         float get_current_time() const;
         float delta_time() const;
 
+        float update_delta_time() const;
+
     private:
         int width, height;
         std::string title;

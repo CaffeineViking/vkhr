@@ -5,6 +5,8 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include <vkhr/input_map.hh>
+
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/glm.hpp>
@@ -32,6 +34,8 @@ namespace vkhr {
         void set_height(unsigned height);
         unsigned get_height() const;
 
+        void set_resolution(unsigned width, unsigned height);
+
         float get_aspect_ratio() const;
         void  set_field_of_view(const float field_of_view);
         float get_field_of_view() const;
@@ -42,6 +46,8 @@ namespace vkhr {
         const glm::vec3& get_look_at_point() const;
         void set_up_direction(const glm::vec3& up_direction);
         const glm::vec3& get_up_direction() const;
+
+        void control(InputMap& input_map, const float delta_time, const bool imgui_focused);
 
         void arcball_by(const glm::vec2& diff);
 
@@ -85,6 +91,8 @@ namespace vkhr {
 
         glm::vec3 arcball { 0, 0, 0 };
         glm::vec3 arcball_look_vector { 0, 0, 0 };
+
+        glm::vec2 last_mouse_point;
 
         mutable ViewingPlane viewing_plane;
 

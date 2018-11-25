@@ -237,4 +237,8 @@ namespace vkhr {
     float Window::delta_time() const {
         return frame_time;
     }
+
+    float Window::update_delta_time() const {
+        return delta_time();
+    }
 }

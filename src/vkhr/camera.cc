@@ -46,6 +46,10 @@ namespace vkhr {
         viewing_plane_dirty     = true;
     }
 
+    void Camera::set_resolution(unsigned width, unsigned height) {
+        set_width(width); set_height(height);
+    }
+
     unsigned Camera::get_height() const {
         return height;
     }
@@ -95,6 +99,24 @@ namespace vkhr {
 
     const glm::vec3& Camera::get_up_direction() const {
         return up_direction;
+    }
+
+    void Camera::control(InputMap& input_map, const float delta_time, bool imgui_focused) {
+        glm::vec2 cursor_delta { 0.0f, 0.0f };
+        if (input_map.just_released("grab")) {
+            input_map.unlock_cursor();
+        } else if (!imgui_focused) {
+            if (input_map.just_pressed("grab")) {
+                input_map.freeze_cursor();
+                last_mouse_point = input_map.get_mouse_position();
+            } else if (input_map.pressed("grab")) {
+                auto mouse_point = input_map.get_mouse_position();
+                cursor_delta = mouse_point - last_mouse_point;
+                last_mouse_point = mouse_point;
+                cursor_delta *= delta_time * 0.2f;
+                arcball_by(cursor_delta);
+            }
+        }
     }
 
     void Camera::arcball_by(const glm::vec2& diff) {

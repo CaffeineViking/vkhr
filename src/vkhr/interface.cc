@@ -56,7 +56,7 @@ namespace vkhr {
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
     }
 
-    void Interface::update(const SceneGraph& scene_graph) {
+    void Interface::update(SceneGraph& scene_graph) {
         if (!gui_visibility) {
             ImGui_ImplVulkan_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -79,6 +79,10 @@ namespace vkhr {
         return ImGui::GetIO().WantCaptureMouse && !gui_visibility;
     }
 
+    bool Interface::typing_text() const {
+        return ImGui::GetIO().WantCaptureKeyboard && !gui_visibility;
+    }
+
     void Interface::hide() {
         gui_visibility = true;
     }
@@ -87,8 +91,16 @@ namespace vkhr {
         gui_visibility = !gui_visibility;
     }
 
+    void Interface::toggle_raytracing() {
+        raytrace_scene = !raytrace_scene;
+    }
+
     void Interface::show() {
         gui_visibility = false;
+    }
+
+    bool Interface::do_raytrace() const {
+        return raytrace_scene;
     }
 
     Interface::Interface(Interface&& interface) noexcept {

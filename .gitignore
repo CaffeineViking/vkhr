@@ -4,6 +4,8 @@ build/
 docs/build/
 vkhr.zip
 
+render.png
+
 # Compiled Object files
 *.slo
 *.lo
