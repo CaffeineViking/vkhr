@@ -1,7 +1,5 @@
 #include <vkhr/rasterizer.hh>
 
-namespace vk = vkpp;
-
 namespace vkhr {
     Rasterizer::Rasterizer(Window& window, const SceneGraph& scene_graph, bool vsync = true) {
         vk::Version target_vulkan_loader { 1,1 };

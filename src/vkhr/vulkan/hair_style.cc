@@ -4,8 +4,6 @@
 #include <vkhr/light_source.hh>
 #include <vkhr/rasterizer.hh>
 
-namespace vk = vkpp;
-
 namespace vkhr {
     namespace vulkan {
         HairStyle::HairStyle(const vkhr::HairStyle& hair_style,
