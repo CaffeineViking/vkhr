@@ -1,7 +1,7 @@
 #ifndef VKPP_SHADER_MODULE_HH
 #define VKPP_SHADER_MODULE_HH
 
-#define VKPP_SHADER_MODULE_COMPILER "glslc -O -Os -c"
+#define VKPP_SHADER_MODULE_COMPILER "glslc -O -g -c"
 
 #include <vulkan/vulkan.h>
 

@@ -15,7 +15,7 @@ class ShaderScript:
     DESCRIPTION = """
     """
 
-    GLSLC = "glslc -O -Os -c "
+    GLSLC = "glslc -O -g -c "
 
     SHADER_TYPES = [ "*.vert",
                      "*.tesc",
