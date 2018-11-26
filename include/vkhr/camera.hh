@@ -48,8 +48,7 @@ namespace vkhr {
         const glm::vec3& get_up_direction() const;
 
         void control(InputMap& input_map, const float delta_time, const bool imgui_focused);
-
-        void arcball_by(const glm::vec2& diff);
+        void arcball_relative_to(const glm::vec2& mouse_movement);
 
         void look_at(const glm::vec3& point, const glm::vec3& eye,
                      const glm::vec3& up = { 0.0f, 1.0f, 0.0f });
@@ -78,8 +77,6 @@ namespace vkhr {
         void recalculate_projection_matrix() const;
         void recalculate_viewing_plane() const;
 
-        void update_arcball_reference();
-
         float near_distance { .01 };
         float far_distance { 1000 };
 
@@ -92,9 +89,7 @@ namespace vkhr {
         glm::vec3 up_direction  { 0.0, 1.0, 0.0 };
 
         glm::vec3 arcball { 0, 0, 0 };
-        glm::vec3 arcball_look_vector { 0, 0, 0 };
-
-        glm::vec2 last_mouse_point;
+        glm::vec2 last_mouse_position;
 
         mutable ViewingPlane viewing_plane;
 

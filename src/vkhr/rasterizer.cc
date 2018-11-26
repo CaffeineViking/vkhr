@@ -192,10 +192,12 @@ namespace vkhr {
     }
 
     Image Rasterizer::get_screenshot() {
-        return Image { 1280, 720 };
+        // TODO: capture screenshot.
+        return Image { 1024, 1024 };
     }
 
     void Rasterizer::recompile_spirv() {
+        // TODO: recompile SPIR shaders.
     }
 
     vk::RenderPass Rasterizer::default_render_pass() {

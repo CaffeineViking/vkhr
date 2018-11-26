@@ -77,14 +77,12 @@ namespace vkhr {
         this->position = position;
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
-        update_arcball_reference();
     }
 
     void Camera::set_look_at_point(const glm::vec3& look_at_point) {
         this->look_at_point = look_at_point;
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
-        update_arcball_reference();
     }
 
     const glm::vec3& Camera::get_look_at_point() const {
@@ -102,37 +100,34 @@ namespace vkhr {
     }
 
     void Camera::control(InputMap& input_map, const float delta_time, bool imgui_focused) {
-        glm::vec2 cursor_delta { 0.0f, 0.0f };
         if (input_map.just_released("grab")) {
             input_map.unlock_cursor();
         } else if (!imgui_focused) {
             if (input_map.just_pressed("grab")) {
                 input_map.freeze_cursor();
-                last_mouse_point = input_map.get_mouse_position();
+                last_mouse_position = input_map.get_mouse_position();
             } else if (input_map.pressed("grab")) {
-                auto mouse_point = input_map.get_mouse_position();
-                cursor_delta = mouse_point - last_mouse_point;
-                last_mouse_point = mouse_point;
-                cursor_delta *= delta_time * 0.2f;
-                arcball_by(cursor_delta);
+                glm::vec2 cursor_movement { 0.0f, 0.0f };
+                auto mouse_position = input_map.get_mouse_position();
+                cursor_movement = mouse_position - last_mouse_position;
+                last_mouse_position = mouse_position;
+                cursor_movement *= delta_time * 0.2f;
+                arcball_relative_to(cursor_movement);
             }
         }
     }
 
-    void Camera::arcball_by(const glm::vec2& diff) {
-        arcball.x -= diff.x; // Controls yaw radians.
-        arcball.y -= diff.y; // Pitches some radians.
+    void Camera::arcball_relative_to(const glm::vec2& cursor) {
+        glm::vec2 cursor_delta { cursor };
 
-        // Clamp the pitch so it doesn't start getting all spasmy...
-        arcball.y = glm::clamp(arcball.y, -glm::quarter_pi<float>(),
-                                          glm::quarter_pi<float>());
+        arcball.x -= cursor.x;
+        arcball.y -= cursor.y;
 
-        auto displacement = arcball_look_vector;
+        position = glm::rotate(position - look_at_point, -cursor_delta.x, +(get_up_direction())) + look_at_point;
+        position = glm::rotate(position - look_at_point, -cursor_delta.y, -get_left_direction()) + look_at_point;
 
-        displacement = glm::rotate(displacement, arcball.x, +(get_up_direction()));
-        displacement = glm::rotate(displacement, arcball.y, -get_left_direction());
-
-        position = look_at_point + displacement;
+        up_direction = glm::rotate(up_direction, -cursor_delta.x, +(get_up_direction()));
+        up_direction = glm::rotate(up_direction, -cursor_delta.y, -get_left_direction());
 
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
@@ -145,7 +140,6 @@ namespace vkhr {
         this->look_at_point = point;
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
-        update_arcball_reference();
     }
 
     const Camera::ViewingPlane& Camera::get_viewing_plane() const {
@@ -210,10 +204,6 @@ namespace vkhr {
                            0.5f * height * viewing_plane.z * yfov_scale;
 
         viewing_plane_dirty = false;
-    }
-
-    void Camera::update_arcball_reference() {
-        arcball_look_vector = position - look_at_point;
     }
 
     MVP Camera::Identity {
