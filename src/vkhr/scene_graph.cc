@@ -201,6 +201,7 @@ namespace vkhr {
         hair_styles[path] = HairStyle { path };
         if (!hair_styles[path].has_tangents())
             hair_styles[path].generate_tangents();
+        hair_styles[path].set_default_thickness(0.14f);
         if (!hair_styles[path].has_indices())
             hair_styles[path].generate_indices();
         return hair_styles[path];

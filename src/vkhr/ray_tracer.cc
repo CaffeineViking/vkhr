@@ -7,6 +7,8 @@
 #include <xmmintrin.h>
 #include <pmmintrin.h>
 
+#include <glm/gtx/rotate_vector.hpp>
+
 #include <limits>
 #include <vector>
 #include <cmath>
@@ -62,6 +64,10 @@ namespace vkhr {
         };
 
         framebuffer.clear();
+
+        light = LightSource { { 1.00f, 2.00f, 1.00f },
+                            LightSource::Type::Directional,
+                            { 0.2f, 0.154f, 0.112f } };
     }
 
     void Raytracer::draw(const SceneGraph& scene_graph) {
@@ -71,9 +77,9 @@ namespace vkhr {
 
         auto& camera = scene_graph.get_camera();
 
-        LightSource light { { 1.00f, 2.00f, 1.00f },
-                            LightSource::Type::Directional,
-                            { 0.2f, 0.154f, 0.112f } };
+        light.set_direction(glm::rotateY(light.get_direction(), 0.06f));
+        light.set_direction(glm::rotateX(light.get_direction(), 0.03f));
+        light.set_direction(glm::rotateZ(light.get_direction(), 0.05f));
 
         #pragma omp parallel for schedule(dynamic)
         for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)

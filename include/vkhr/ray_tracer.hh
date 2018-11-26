@@ -33,7 +33,9 @@ namespace vkhr {
         void set_flush_to_zero();
         void set_denormal_zero();
 
-        bool shadows_off { true };
+        bool shadows_off = false;
+
+        LightSource light;
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
