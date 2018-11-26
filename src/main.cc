@@ -38,6 +38,7 @@ int main(int argc, char** argv) {
     input_map.bind("switch_renderer", vkhr::Input::Key::Tab);
     input_map.bind("take_screenshot", vkhr::Input::Key::S);
     input_map.bind("toggle_ui", vkhr::Input::Key::U);
+    input_map.bind("toggle_shadows", vkhr::Input::Key::T);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
     bool vsync_enabled = argp["vsync"].value.boolean;
@@ -60,6 +61,8 @@ int main(int argc, char** argv) {
             rasterizer.get_screenshot().save("render.png");
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile_spirv();
+        } else if (input_map.just_pressed("toggle_shadows")) {
+            ray_tracer.toggle_shadows();
         }
 
         camera.control(input_map, window.update_delta_time(),

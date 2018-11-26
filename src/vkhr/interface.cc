@@ -18,7 +18,6 @@ namespace vkhr {
         IMGUI_CHECKVERSION();
         ctx = ImGui::CreateContext();
         ImGui_ImplGlfw_InitForVulkan(window.get_handle(), false);
-        ImGui::GetIO().IniFilename = nullptr;
         load(vulkan_renderer);
     }
 

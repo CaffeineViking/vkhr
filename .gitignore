@@ -5,6 +5,7 @@ docs/build/
 vkhr.zip
 
 render.png
+imgui.ini
 
 # Compiled Object files
 *.slo
