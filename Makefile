@@ -74,6 +74,7 @@ distclean: clean
 	rm -f tags
 	rm -f imgui.ini
 	rm -rf bin/share
+	rm -rf build/.vs
 	find bin/ -type f ! -name "*.dll" -delete
 FORCE:
 
