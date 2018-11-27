@@ -19,9 +19,11 @@ namespace vk = vkpp;
 namespace vkhr {
     class Rasterizer final : public Renderer {
     public:
-        Rasterizer(Window& window, const SceneGraph& scene_graph, bool vsync);
+        Rasterizer(Window& window, const SceneGraph& scene_graph);
 
         void build_pipelines();
+
+        void recreate_swapchain(Window& window);
 
         void recompile_spirv();
 

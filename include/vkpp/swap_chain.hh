@@ -65,6 +65,8 @@ namespace vkpp {
         const PresentationMode& get_presentation_mode() const;
         const VkColorSpaceKHR& get_color_space() const;
 
+        bool out_of_date() const;
+
         const VkSurfaceFormatKHR& get_surface_format() const;
 
         std::uint32_t size() const;
@@ -88,6 +90,8 @@ namespace vkpp {
         VkSurfaceFormatKHR format;
         PresentationMode presentation_mode;
         VkExtent2D current_extent;
+
+        VkResult swapchain_status { VK_SUCCESS };
 
         Surface* surface { nullptr };
 

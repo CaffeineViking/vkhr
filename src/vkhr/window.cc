@@ -92,7 +92,11 @@ namespace vkhr {
         }
     }
 
-    bool Window::request_vsync() const {
+    void Window::enable_vsync(bool sync) {
+        vsync = sync;
+    }
+
+    bool Window::vsync_requested() const {
         return vsync;
     }
 

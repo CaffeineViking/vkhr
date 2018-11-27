@@ -1,7 +1,7 @@
 #include <vkhr/rasterizer.hh>
 
 namespace vkhr {
-    Rasterizer::Rasterizer(Window& window, const SceneGraph& scene_graph, bool vsync = true) {
+    Rasterizer::Rasterizer(Window& window, const SceneGraph& scene_graph) {
         vk::Version target_vulkan_loader { 1,1 };
         vk::Application application_information {
             "VKHR", { 1, 0, 0 },
@@ -55,6 +55,8 @@ namespace vkhr {
         };
 
         command_pool = vk::CommandPool { device, device.get_graphics_queue() };
+
+        auto vsync = window.vsync_requested();
 
         auto presentation_mode = vsync ? vk::SwapChain::PresentationMode::Fifo
                                    : vk::SwapChain::PresentationMode::MailBox;
@@ -190,12 +192,14 @@ namespace vkhr {
     }
 
     Image Rasterizer::get_screenshot() {
-        // TODO: capture screenshot.
-        return Image { 1024, 1024 };
+        return Image { swap_chain.get_width(),
+                       swap_chain.get_height() };
     }
 
     void Rasterizer::recompile_spirv() {
-        // TODO: recompile SPIR shaders.
+    }
+
+    void Rasterizer::recreate_swapchain(Window& window) {
     }
 
     vk::RenderPass Rasterizer::default_render_pass() {
@@ -210,7 +214,7 @@ namespace vkhr {
             }
         };
 
-        std::vector<vk::RenderPass::Subpass> render_subpasses {
+        std::vector<vk::RenderPass::Subpass> subpasses {
             {
                 { 0, swap_chain.get_color_attachment_layout() },
                 { 1, swap_chain.get_depth_attachment_layout() }
@@ -229,13 +233,6 @@ namespace vkhr {
             }
         };
 
-        vk::RenderPass render_pass {
-            device,
-            attachments,
-            render_subpasses,
-            dependencies
-        };
-
-        return render_pass;
+        return { device, attachments, subpasses, dependencies };
     }
 }

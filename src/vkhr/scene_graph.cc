@@ -5,6 +5,8 @@ using json = nlohmann::json;
 
 #include <fstream>
 
+#include <stdexcept>
+
 namespace vkhr {
     SceneGraph::SceneGraph(const std::string& file_path) {
         load(file_path);
@@ -199,6 +201,10 @@ namespace vkhr {
     HairStyle& SceneGraph::add_style(const std::string& asset_path) {
         auto path = scene_path + asset_path;
         hair_styles[path] = HairStyle { path };
+
+        // If you get this exception, it most likely means you haven't cloned using Git LFS.
+        if (!hair_styles[path]) throw std::runtime_error { "Couldn't find: " + path + "!" };
+
         if (!hair_styles[path].has_tangents())
             hair_styles[path].generate_tangents();
         hair_styles[path].set_default_thickness(0.14f);
@@ -210,6 +216,10 @@ namespace vkhr {
     Model& SceneGraph::add_model(const std::string& asset_path) {
         auto path = scene_path + asset_path;
         models[path] = Model { path };
+
+        // Same thing here, this is likely the failure of not having Git LFS installed.
+        if (!models[path]) throw std::runtime_error { "Couldn't find: " + path + "!" };
+
         return models[path];
     }
 

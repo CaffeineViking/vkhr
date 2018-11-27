@@ -25,7 +25,6 @@ namespace vkhr {
         void close(); // kill
 
         bool is_fullscreen() const;
-        bool request_vsync() const;
 
         void toggle_fullscreen();
         void hide(); void show();
@@ -37,6 +36,9 @@ namespace vkhr {
         VkExtent2D get_extent() const;
 
         int get_refresh_rate() const;
+
+        bool vsync_requested() const;
+        void enable_vsync(bool sync);
 
         std::vector<vkpp::Extension> get_vulkan_surface_extensions() const;
         vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance);

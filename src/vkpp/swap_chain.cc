@@ -120,6 +120,8 @@ namespace vkpp {
         swap(lhs.depth_buffer_image, rhs.depth_buffer_image);
         swap(lhs.depth_buffer_memory, rhs.depth_buffer_memory);
         swap(lhs.depth_buffer_view, rhs.depth_buffer_view);
+
+        swap(lhs.swapchain_status, rhs.swapchain_status);
     }
 
     VkSwapchainKHR& SwapChain::get_handle() {
@@ -140,10 +142,15 @@ namespace vkpp {
 
     std::uint32_t SwapChain::acquire_next_image(Semaphore& semaphore) {
         std::uint32_t next;
-        vkAcquireNextImageKHR(device, handle, std::numeric_limits<std::uint64_t>::max(),
-                              semaphore.get_handle(),
-                              VK_NULL_HANDLE, &next);
+        swapchain_status = vkAcquireNextImageKHR(device, handle,
+                                                 std::numeric_limits<std::uint64_t>::max(),
+                                                 semaphore.get_handle(),
+                                                 VK_NULL_HANDLE, &next);
         return next;
+    }
+
+    bool SwapChain::out_of_date() const {
+        return swapchain_status == VK_ERROR_OUT_OF_DATE_KHR;
     }
 
     std::vector<Framebuffer> SwapChain::create_framebuffers(RenderPass& render_pass) {

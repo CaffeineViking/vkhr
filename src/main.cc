@@ -31,6 +31,8 @@ int main(int argc, char** argv) {
     if (argp["fullscreen"].value.boolean)
         window.toggle_fullscreen();
 
+    window.enable_vsync(argp["vsync"].value.boolean);
+
     vkhr::InputMap input_map { window };
 
     input_map.bind("quit", vkhr::Input::Key::Escape);
@@ -41,9 +43,7 @@ int main(int argc, char** argv) {
     input_map.bind("toggle_shadows", vkhr::Input::Key::T);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
-    bool vsync_enabled = argp["vsync"].value.boolean;
-
-    vkhr::Rasterizer rasterizer { window, scene_graph, vsync_enabled };
+    vkhr::Rasterizer rasterizer { window, scene_graph };
 
     if (argp["ui"].value.boolean == 0)
         rasterizer.get_imgui().hide();
