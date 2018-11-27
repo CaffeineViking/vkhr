@@ -465,6 +465,7 @@
     <ClCompile Include="..\src\vkpp\barrier.cc" />
     <ClCompile Include="..\src\vkpp\buffer.cc" />
     <ClCompile Include="..\src\vkpp\command_buffer.cc" />
+    <ClCompile Include="..\src\vkpp\debug_marker.cc" />
     <ClCompile Include="..\src\vkpp\debug_messenger.cc" />
     <ClCompile Include="..\src\vkpp\descriptor_set.cc" />
     <ClCompile Include="..\src\vkpp\device.cc" />

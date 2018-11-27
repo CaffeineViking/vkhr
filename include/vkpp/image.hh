@@ -14,6 +14,7 @@
 namespace vkpp {
     class Queue;
     class CommandPool;
+    class CommandBuffer;
     class Device;
 
     class Image {
@@ -48,16 +49,15 @@ namespace vkpp {
 
         VkImageAspectFlags get_aspect_mask() const;
 
-        void transition(CommandPool& pool, VkImageLayout from, VkImageLayout to);
-
-        void transition(CommandPool& pool, VkImageLayout to);
+        void transition(CommandBuffer& command_buffer, VkImageLayout from, VkImageLayout to);
+        void transition(CommandBuffer& command_buffer, VkImageLayout to);
 
         VkDeviceMemory& get_bound_memory();
         VkMemoryRequirements get_memory_requirements() const;
         void bind(DeviceMemory& device_memory,
                   std::uint32_t offset = 0);
 
-    private:
+    protected:
         VkExtent3D extent;
         VkFormat format;
         VkImageUsageFlags usage;
@@ -84,7 +84,7 @@ namespace vkpp {
         DeviceImage& operator=(DeviceImage&& image) noexcept;
         DeviceImage(DeviceImage&& image) noexcept;
 
-        DeviceImage(Device& device, CommandPool& pool,
+        DeviceImage(Device& device, CommandBuffer& command_buffer,
                     vkhr::Image& image,
                     std::uint32_t mip_levels = 1);
 
@@ -96,11 +96,9 @@ namespace vkpp {
 
         DeviceMemory& get_staging_memory();
 
-        void staged_copy(vkhr::Image& image, CommandPool& pool);
+        void staged_copy(vkhr::Image& image, CommandBuffer& command_buffer);
 
     private:
-        void copy(Buffer& staged, CommandPool& pool);
-
         Buffer       staging_buffer;
         DeviceMemory staging_memory;
 

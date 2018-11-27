@@ -3,6 +3,7 @@
 #include <vkpp/device.hh>
 
 #include <vkpp/exception.hh>
+#include <vkpp/debug_marker.hh>
 
 #include <algorithm>
 #include <utility>
@@ -84,8 +85,17 @@ namespace vkpp {
             throw Exception { error, "couldn't create swap chain!" };
         }
 
+        DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_SWAPCHAIN_KHR, "Window Swapchain");
+
         create_swapchain_images();
-        create_swapchain_depths(logical_device, command_pool);
+
+        auto command_buffer = command_pool.allocate_and_begin();
+        DebugMarker::begin(command_buffer, "Swapchain Depth Image Transition");
+        create_swapchain_depths(logical_device, command_buffer);
+        DebugMarker::end(command_buffer);
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer).wait_idle();
     }
 
     SwapChain::~SwapChain() noexcept {
@@ -159,6 +169,10 @@ namespace vkpp {
         framebuffers.reserve(image_views.size());
 
         for (auto& image_attachment : image_views) {
+            DebugMarker::object_name(device, image_attachment,
+                                     VK_OBJECT_TYPE_IMAGE_VIEW,
+                                     "Swapchain Image View");
+
             if (render_pass.has_depth_attachment()) {
                 framebuffers.emplace_back(device,
                                           render_pass,
@@ -171,6 +185,10 @@ namespace vkpp {
                                           image_attachment,
                                           get_extent());
             }
+
+            DebugMarker::object_name(device, framebuffers.back(),
+                                     VK_OBJECT_TYPE_FRAMEBUFFER,
+                                     "Swapchain Framebuffer");
         }
 
         return framebuffers;
@@ -248,7 +266,11 @@ namespace vkpp {
 
         image_views.reserve(image_count);
 
+        std::size_t image_index { 0 };
         for (const auto& image : images) {
+            std::string image_name { "Swapchain Image #" + std::to_string(image_index++) };
+            DebugMarker::object_name(device, image, VK_OBJECT_TYPE_IMAGE, image_name.c_str());
+
             VkImageViewCreateInfo create_info;
             create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             create_info.pNext = nullptr;
@@ -279,7 +301,7 @@ namespace vkpp {
         }
     }
 
-    void SwapChain::create_swapchain_depths(Device& device, CommandPool& p) {
+    void SwapChain::create_swapchain_depths(Device& device, CommandBuffer& command_buffer) {
         depth_buffer_image = Image {
             device,
             get_width(), get_height(),
@@ -287,19 +309,25 @@ namespace vkpp {
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
         };
 
+        DebugMarker::object_name(device, depth_buffer_image, VK_OBJECT_TYPE_IMAGE, "Swapchain Depth Image");
+
         depth_buffer_memory = DeviceMemory {
             device,
             depth_buffer_image.get_memory_requirements(),
             DeviceMemory::Type::DeviceLocal
         };
 
+        DebugMarker::object_name(device, depth_buffer_memory, VK_OBJECT_TYPE_DEVICE_MEMORY, "Swapchain Depth Device Memory");
+
         depth_buffer_image.bind(depth_buffer_memory);
 
-        depth_buffer_image.transition(p, get_depth_attachment_layout());
+        depth_buffer_image.transition(command_buffer, get_depth_attachment_layout());
 
         depth_buffer_view = ImageView {
             device, depth_buffer_image
         };
+
+        DebugMarker::object_name(device, depth_buffer_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Swapchain Depth Image View");
     }
 
     void SwapChain::choose_extent(const VkExtent2D& window_extent) {

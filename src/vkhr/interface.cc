@@ -67,10 +67,12 @@ namespace vkhr {
         }
     }
 
-    void Interface::draw(vkpp::CommandBuffer& cmdlst) {
+    void Interface::draw(vkpp::CommandBuffer& command_buffer) {
         if (!gui_visibility) {
+            vk::DebugMarker::begin(command_buffer, "Render Interface");
             ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                            cmdlst.get_handle());
+                                            command_buffer.get_handle());
+            vk::DebugMarker::end(command_buffer);
         }
     }
 

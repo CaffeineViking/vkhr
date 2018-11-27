@@ -33,6 +33,8 @@ namespace vkpp {
 
         VkSurfaceKHR& get_handle();
 
+        void label(VkDevice device);
+
     private:
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkPresentModeKHR> present_modes;

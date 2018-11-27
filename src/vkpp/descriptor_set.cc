@@ -2,6 +2,8 @@
 
 #include <vkpp/device.hh>
 
+#include <vkpp/debug_marker.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>
@@ -201,6 +203,8 @@ namespace vkpp {
                                                     nullptr, &handle)) {
             throw Exception { error, "couldn't create descriptor pool!" };
         }
+
+        DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Descriptor Pool");
     }
 
     DescriptorPool::~DescriptorPool() noexcept {

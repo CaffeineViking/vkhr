@@ -2,6 +2,7 @@
 
 #include <vkpp/queue.hh>
 #include <vkpp/exception.hh>
+#include <vkpp/debug_marker.hh>
 #include <vkpp/command_buffer.hh>
 #include <vkpp/device.hh>
 
@@ -126,7 +127,7 @@ namespace vkpp {
     }
 
     DeviceBuffer::DeviceBuffer(Device& device,
-                               CommandPool& pool,
+                               CommandPool& command_pool,
                                const void* buffer,
                                VkDeviceSize size,
                                VkBufferUsageFlags usage)
@@ -159,8 +160,13 @@ namespace vkpp {
         };
 
         bind(device_memory);
-        copy(staging_buffer,
-             pool);
+
+        auto command_buffer = command_pool.allocate_and_begin();
+        command_buffer.copy_buffer(staging_buffer, *this);
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer)
+                                .wait_idle();
     }
 
     void swap(DeviceBuffer& lhs, DeviceBuffer& rhs) {
@@ -178,14 +184,6 @@ namespace vkpp {
 
     DeviceBuffer::DeviceBuffer(DeviceBuffer&& buffer) noexcept {
         swap(*this, buffer);
-    }
-
-    void DeviceBuffer::copy(Buffer& staged_buffer, CommandPool& pool) {
-        auto command_buffer = pool.allocate_and_begin();
-        command_buffer.copy_buffer(staged_buffer, *this);
-        command_buffer.end();
-        pool.get_queue().submit(command_buffer)
-                        .wait_idle();
     }
 
     DeviceMemory& DeviceBuffer::get_device_memory() {
@@ -285,10 +283,10 @@ namespace vkpp {
     }
 
     IndexBuffer::IndexBuffer(Device& device,
-                             CommandPool& pool,
+                             CommandPool& command_pool,
                              const std::vector<unsigned>& indices)
                             : DeviceBuffer { device,
-                                             pool,
+                                             command_pool,
                                              indices.data(),
                                              sizeof(indices[0]) * indices.size(),
                                              VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
@@ -297,10 +295,10 @@ namespace vkpp {
     }
 
     IndexBuffer::IndexBuffer(Device& device,
-                             CommandPool& pool,
+                             CommandPool& command_pool,
                              const std::vector<unsigned short>& indices)
                             : DeviceBuffer { device,
-                                             pool,
+                                             command_pool,
                                              indices.data(),
                                              sizeof(indices[0]) * indices.size(),
                                              VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {

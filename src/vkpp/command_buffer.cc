@@ -1,6 +1,7 @@
 #include <vkpp/command_buffer.hh>
 
 #include <vkpp/device.hh>
+#include <vkpp/debug_marker.hh>
 #include <vkpp/queue.hh>
 
 #include <vkpp/exception.hh>
@@ -232,6 +233,8 @@ namespace vkpp {
         if (VkResult error = vkCreateCommandPool(device, &create_info, nullptr, &handle)) {
             throw Exception { error, "couldn't create command pool!" };
         }
+
+        DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_COMMAND_POOL, "Command Pool");
     }
 
     CommandPool::~CommandPool() noexcept {

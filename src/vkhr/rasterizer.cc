@@ -58,6 +58,8 @@ namespace vkhr {
             device_features
         };
 
+        instance.label(device.get_handle());
+
         command_pool = vk::CommandPool { device, device.get_graphics_queue() };
 
         auto vsync = window.vsync_requested();
@@ -77,6 +79,8 @@ namespace vkhr {
             window.get_extent()
         };
 
+        window_surface.label(device.get_handle());
+
         descriptor_pool = vkpp::DescriptorPool {
             device,
             {
@@ -86,13 +90,17 @@ namespace vkhr {
             }
         };
 
-        render_pass = default_render_pass();
+        build_render_passes();
 
         framebuffers = swap_chain.create_framebuffers(render_pass);
 
         image_available = vk::Semaphore { device };
         render_complete = vk::Semaphore { device };
         command_buffer_done = vk::Fence { device };
+
+        vk::DebugMarker::object_name(device, image_available, VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore");
+        vk::DebugMarker::object_name(device, render_complete, VK_OBJECT_TYPE_SEMAPHORE, "Render Complete Semaphore");
+        vk::DebugMarker::object_name(device, command_buffer_done, VK_OBJECT_TYPE_FENCE, "Command Buffer Done Fence");
 
         build_pipelines();
 
@@ -130,17 +138,21 @@ namespace vkhr {
 
         for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
             command_buffers[i].begin();
+
+            vk::DebugMarker::begin(command_buffers[i], "Render Scene Graph");
             command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                                  { 1.0f, 1.0f, 1.0f, 1.0f });
 
+            vk::DebugMarker::begin(command_buffers[i], "Render Hair Styles");
             for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
                 auto& model_view_projection = cam.get_mvp(hair_node->get_m());
                 draw(hair_node, command_buffers[i], i, model_view_projection);
-            }
+            } vk::DebugMarker::end(command_buffers[i]);
 
             imgui.draw(command_buffers[i]);
 
             command_buffers[i].end_render_pass();
+            vk::DebugMarker::end(command_buffers[i]);
             command_buffers[i].end();
         }
 
@@ -160,22 +172,26 @@ namespace vkhr {
         }
     }
 
-    void Rasterizer::draw(Image& image) {
+    void Rasterizer::draw(Image& framebuffer) {
         auto next_image = swap_chain.acquire_next_image(image_available);
 
         command_buffer_done.wait_and_reset();
 
         for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
             command_buffers[i].begin();
+
+            fb.update(framebuffer, command_buffers[i]);
+            vk::DebugMarker::begin(command_buffers[i], "Render Framebuffer");
             command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
                                                  { 1.0f, 1.0f, 1.0f, 1.0f });
 
-            fb.update(image, command_pool);
             fb.update(Camera::Identity, i);
             fb.draw(command_buffers[i], i);
             imgui.draw(command_buffers[i]);
 
             command_buffers[i].end_render_pass();
+            vk::DebugMarker::end(command_buffers[i]);
+
             command_buffers[i].end();
         }
 
@@ -206,7 +222,7 @@ namespace vkhr {
     void Rasterizer::recreate_swapchain(Window& window) {
     }
 
-    vk::RenderPass Rasterizer::default_render_pass() {
+    void Rasterizer::build_render_passes() {
         std::vector<vk::RenderPass::Attachment> attachments {
             {
                 swap_chain.get_color_attachment_format(),
@@ -237,6 +253,13 @@ namespace vkhr {
             }
         };
 
-        return { device, attachments, subpasses, dependencies };
+        render_pass = vk::RenderPass {
+             device,
+             attachments,
+             subpasses,
+             dependencies
+        };
+
+        vk::DebugMarker::object_name(device, render_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
     }
 }

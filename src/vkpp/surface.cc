@@ -1,4 +1,5 @@
 #include <vkpp/surface.hh>
+#include <vkpp/debug_marker.hh>
 
 #include <vkpp/exception.hh>
 
@@ -65,5 +66,9 @@ namespace vkpp {
 
     const std::vector<VkSurfaceFormatKHR>& Surface::get_formats() const {
         return formats;
+    }
+
+    void Surface::label(VkDevice device) {
+        DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_SURFACE_KHR, "Window Surface");
     }
 }

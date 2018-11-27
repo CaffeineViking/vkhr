@@ -1,6 +1,7 @@
 #include <vkpp/image.hh>
 
 #include <vkpp/device.hh>
+#include <vkpp/debug_marker.hh>
 #include <vkpp/command_buffer.hh>
 #include <vkpp/queue.hh>
 
@@ -153,11 +154,11 @@ namespace vkpp {
         vkBindImageMemory(device, handle, memory, offset);
     }
 
-    void Image::transition(CommandPool& pool, VkImageLayout to) {
-        transition(pool, VK_IMAGE_LAYOUT_UNDEFINED, to);
+    void Image::transition(CommandBuffer& command_buffer, VkImageLayout to) {
+        transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED, to);
     }
 
-    void Image::transition(CommandPool& pool, VkImageLayout from, VkImageLayout to) {
+    void Image::transition(CommandBuffer& command_buffer, VkImageLayout from, VkImageLayout to) {
         VkImageMemoryBarrier barrier;
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier.pNext = nullptr;
@@ -203,14 +204,9 @@ namespace vkpp {
                               "unknown image layout transition!" };
         }
 
-        auto command_buffer = pool.allocate_and_begin();
         command_buffer.pipeline_barrier(src_stage, dst_stage,
                                         barrier);
-        command_buffer.end();
-        pool.get_queue().submit(command_buffer)
-                        .wait_idle();
-
-        layout = to; // A new layout!
+        layout = to;
     }
 
     void swap(DeviceImage& lhs, DeviceImage& rhs) {
@@ -232,7 +228,7 @@ namespace vkpp {
         swap(*this, image);
     }
 
-    DeviceImage::DeviceImage(Device& device, CommandPool& pool,
+    DeviceImage::DeviceImage(Device& device, CommandBuffer& command_buffer,
                              vkhr::Image& image,
                              std::uint32_t mip_levels)
                             : Image { device,
@@ -275,13 +271,13 @@ namespace vkpp {
 
         bind(device_memory);
 
-        transition(pool, VK_IMAGE_LAYOUT_UNDEFINED,
-                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
+                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-        copy(staging_buffer, pool);
+        command_buffer.copy_buffer_image(staging_buffer, *this);
 
-        transition(pool, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        transition(command_buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
     DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes)
@@ -321,16 +317,16 @@ namespace vkpp {
         bind(device_memory);
     }
 
-    void DeviceImage::staged_copy(vkhr::Image& image, CommandPool& pool) {
+    void DeviceImage::staged_copy(vkhr::Image& image, CommandBuffer& command_buffer) {
         staging_memory.copy(image.get_size_in_bytes(), image.get_data());
 
-        transition(pool, VK_IMAGE_LAYOUT_UNDEFINED,
-                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
+                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-        copy(staging_buffer, pool);
+        command_buffer.copy_buffer_image(staging_buffer, *this);
 
-        transition(pool, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        transition(command_buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
     DeviceMemory& DeviceImage::get_device_memory() {
@@ -343,14 +339,6 @@ namespace vkpp {
 
     DeviceMemory& DeviceImage::get_staging_memory() {
         return staging_memory;
-    }
-
-    void DeviceImage::copy(Buffer& staged, CommandPool& pool) {
-        auto command_buffer = pool.allocate_and_begin();
-        command_buffer.copy_buffer_image(staged, *this);
-        command_buffer.end();
-        pool.get_queue().submit(command_buffer)
-                        .wait_idle();
     }
 
     ImageView::ImageView(VkDevice& device, VkImageView& image_view)

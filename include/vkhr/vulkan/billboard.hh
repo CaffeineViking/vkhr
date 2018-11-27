@@ -33,7 +33,7 @@ namespace vkhr {
             void load(const vkhr::Billboard& hair_style,
                       vkhr::Rasterizer& vulkan_rendrer);
             void update(MVP& mvp, std::size_t fb_index);
-            void update(vkhr::Image&, vk::CommandPool&);
+            void update(vkhr::Image&, vk::CommandBuffer&);
             void draw(vk::CommandBuffer& command_buffer,
                       std::size_t framebuffer) override;
 

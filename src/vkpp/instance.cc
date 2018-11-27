@@ -1,6 +1,7 @@
 #include <vkpp/instance.hh>
 
 #include <vkpp/exception.hh>
+#include <vkpp/debug_marker.hh>
 
 #include <utility>
 
@@ -64,9 +65,11 @@ namespace vkpp {
         if (VkResult error = vkCreateInstance(&create_info, nullptr, &handle))
             throw Exception { error, "couldn't create instance!" };
 
-        if (find({ "VK_EXT_debug_utils" }, required_extensions).size() == 0)
-        if (find({ "VK_LAYER_LUNARG_standard_validation" }, required_layers).size() == 0)
-            debug_utils_messenger = std::move(DebugMessenger { handle, debug_callback });
+        if (find({ "VK_EXT_debug_utils" }, required_extensions).size() == 0) {
+            if (find({ "VK_LAYER_LUNARG_standard_validation" }, required_layers).size() == 0)
+                debug_utils_messenger = std::move(DebugMessenger { handle, debug_callback });
+            DebugMarker::setup_function_pointers(handle); // Great debugging using RenderDoc.
+        }
 
         std::uint32_t count;
 
@@ -182,6 +185,10 @@ namespace vkpp {
             available_extensions[i] = extension_properties[i];
 
         return available_extensions;
+    }
+
+    void Instance::label(VkDevice device) {
+        DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_INSTANCE, "Instance");
     }
 
     // Cache the available layers plus extensions.

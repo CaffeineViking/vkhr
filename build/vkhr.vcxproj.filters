@@ -1151,6 +1151,9 @@
     <ClCompile Include="..\src\vkpp\command_buffer.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkpp\debug_marker.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkpp\debug_messenger.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>

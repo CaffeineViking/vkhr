@@ -65,7 +65,7 @@ namespace vkpp {
         DeviceBuffer(DeviceBuffer&& buffer) noexcept;
 
         DeviceBuffer(Device& device,
-                     CommandPool& pool,
+                     CommandPool& command_buffer,
                      const void* buffer,
                      VkDeviceSize size,
                      VkBufferUsageFlags usage);
@@ -73,8 +73,6 @@ namespace vkpp {
         DeviceMemory& get_device_memory();
 
     protected:
-        void copy(Buffer& staged_buffer, CommandPool& cmd_pool);
-
         DeviceMemory device_memory;
     };
 
@@ -97,7 +95,7 @@ namespace vkpp {
 
         template<typename T>
         VertexBuffer(Device& device,
-                     CommandPool& pool,
+                     CommandPool& command_buffer,
                      const std::vector<T>& vertices,
                      std::uint32_t binding = 0,
                      const std::vector<Attribute> attributes = {});
@@ -125,11 +123,11 @@ namespace vkpp {
         IndexBuffer(IndexBuffer&& buffer) noexcept;
 
         IndexBuffer(Device& device,
-                    CommandPool& pool,
+                    CommandPool& command_buffer,
                     const std::vector<unsigned short>& indices);
 
         IndexBuffer(Device& device,
-                    CommandPool& pool,
+                    CommandPool& command_buffer,
                     const std::vector<unsigned>& indices);
 
         VkIndexType get_type() const;
@@ -200,12 +198,12 @@ namespace vkpp {
 
     template<typename T>
     VertexBuffer::VertexBuffer(Device& device,
-                               CommandPool& pool,
+                               CommandPool& command_buffer,
                                const std::vector<T>& vertices,
                                std::uint32_t binding,
                                const std::vector<Attribute> attributes)
                               : DeviceBuffer { device,
-                                               pool,
+                                               command_buffer,
                                                vertices.data(),
                                                sizeof(vertices[0]) * vertices.size(),
                                                VK_BUFFER_USAGE_VERTEX_BUFFER_BIT } {

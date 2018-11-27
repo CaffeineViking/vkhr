@@ -3,6 +3,7 @@
 
 #include <vkpp/application.hh>
 #include <vkpp/debug_messenger.hh>
+#include <vkpp/debug_marker.hh>
 #include <vkpp/layer.hh>
 #include <vkpp/extension.hh>
 #include <vkpp/exception.hh>
@@ -50,6 +51,8 @@ namespace vkpp {
         static Version get_api_version();
         static const std::vector<Layer>& get_available_layers();
         static const std::vector<Extension>& get_available_extensions();
+
+        void label(VkDevice device);
 
     private:
         template<typename T> static std::string collapse(const std::vector<T>& vector);

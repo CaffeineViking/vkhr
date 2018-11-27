@@ -25,7 +25,7 @@ namespace vkpp {
 
         SwapChain() = default;
         SwapChain(Device& device, Surface& window_surface,
-                  CommandPool& cmd_pool, // for transitions.
+                  CommandPool& command_pool,
                   const VkSurfaceFormatKHR& preferred_format,
                   const PresentationMode& preferred_present_mode,
                   const VkExtent2D& preferred_window_extent);
@@ -73,7 +73,7 @@ namespace vkpp {
 
     private:
         void create_swapchain_images();
-        void create_swapchain_depths(Device& device, CommandPool& cmd);
+        void create_swapchain_depths(Device& device, CommandBuffer& cmd_list);
 
         bool choose_format(const VkSurfaceFormatKHR& preferred_format);
         bool choose_mode(const PresentationMode& preferred_presentation_mode);

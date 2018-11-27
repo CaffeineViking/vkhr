@@ -23,12 +23,18 @@ namespace vkhr {
                 vkhr::Image::get_expected_size(width, height)
             };
 
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_image, VK_OBJECT_TYPE_IMAGE, "Billboard Image");
+
             billboard_view = vk::ImageView {
                 vulkan_renderer.device,
                 billboard_image
             };
 
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Billboard Image View");
+
             billboard_sampler = vk::Sampler { vulkan_renderer.device };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_sampler, VK_OBJECT_TYPE_SAMPLER, "Billboard Sampler");
         }
 
         void Billboard::load(const vkhr::Billboard& billboards,
@@ -40,8 +46,8 @@ namespace vkhr {
             pipeline->descriptor_states[i].uniform_buffers[0].update(transform);
         }
 
-        void Billboard::update(vkhr::Image& image, vk::CommandPool& command_pool) {
-            billboard_image.staged_copy(image, command_pool);
+        void Billboard::update(vkhr::Image& image, vk::CommandBuffer& command_buffer) {
+            billboard_image.staged_copy(image, command_buffer);
         }
 
         void Billboard::draw(vk::CommandBuffer& command_list, std::size_t i) {
@@ -69,11 +75,15 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
-            pipeline.fixed_stages.enable_depth_test();
             pipeline.fixed_stages.enable_alpha_mix(0);
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.vert"));
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.frag"));
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Fragment Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
@@ -83,17 +93,28 @@ namespace vkhr {
                 }
             };
 
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT,
+                                         "Billboard Descriptor Set Layout");
+
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout);
             pipeline.descriptor_states.resize(pipeline.descriptor_sets.size());
             for (std::size_t i = 0; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device);
+                vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_sets[i],
+                                             VK_OBJECT_TYPE_DESCRIPTOR_SET,
+                                             "Billboard Descriptor Set");
+                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device, "Billboard MVP");
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
                 vulkan_renderer.device,
                 pipeline.descriptor_set_layout
             };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
+                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+                                         "Billboard Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -102,6 +123,8 @@ namespace vkhr {
                 pipeline.pipeline_layout,
                 vulkan_renderer.render_pass
             };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboard Graphics Pipeline");
         }
     }
 }

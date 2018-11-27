@@ -49,7 +49,9 @@ namespace vkhr {
 
         vk::Surface window_surface;
         vk::SwapChain swap_chain;
-        vk::RenderPass default_render_pass();
+
+        void build_render_passes();
+
         vk::RenderPass render_pass;
 
         vk::DescriptorPool descriptor_pool;

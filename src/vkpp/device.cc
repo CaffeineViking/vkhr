@@ -2,6 +2,8 @@
 
 #include <vkpp/exception.hh>
 
+#include <vkpp/debug_marker.hh>
+
 #include <utility>
 
 namespace vkpp {
@@ -67,6 +69,10 @@ namespace vkpp {
         if (VkResult error = vkCreateDevice(physical_device.get_handle(),
                                             &create_info, nullptr, &handle))
             throw Exception { error, "couldn't create device!" };
+
+        DebugMarker::object_name(handle, *this, VK_OBJECT_TYPE_DEVICE, "Logical Device");
+        DebugMarker::object_name(handle, physical_device, VK_OBJECT_TYPE_PHYSICAL_DEVICE,
+                                 physical_device.get_name().c_str());
 
         assign_queues(); // Get the queue object from the device.
     }
@@ -168,9 +174,11 @@ namespace vkpp {
     void Device::assign_queues() {
         auto& physical_device = get_physical_device(); // Create Queues from the index.
         assign_queue(physical_device.get_compute_queue_family_index(), &compute_queue);
-        assign_queue(physical_device.get_graphics_queue_family_index(), &graphics_queue);
+        DebugMarker::object_name(handle, get_compute_queue(), VK_OBJECT_TYPE_QUEUE, "Compute Queue");
         assign_queue(physical_device.get_transfer_queue_family_index(), &transfer_queue);
         assign_queue(physical_device.get_present_queue_family_index(), &present_queue);
+        assign_queue(physical_device.get_graphics_queue_family_index(), &graphics_queue);
+        DebugMarker::object_name(handle, get_graphics_queue(), VK_OBJECT_TYPE_QUEUE, "Graphics Queue");
     }
 
     void Device::assign_queue(std::int32_t index, Queue** queue) {
