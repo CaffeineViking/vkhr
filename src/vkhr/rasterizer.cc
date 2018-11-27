@@ -10,11 +10,15 @@ namespace vkhr {
         };
 
         std::vector<vk::Layer> required_layers {
+        #ifdef DEBUG
             "VK_LAYER_LUNARG_standard_validation"
+        #endif
         };
 
         std::vector<vk::Extension> required_extensions {
+        #ifdef DEBUG
             "VK_EXT_debug_utils"
+        #endif
         };
 
         vk::append(window.get_vulkan_surface_extensions(),

@@ -987,6 +987,9 @@
     <ClInclude Include="..\include\vkpp\command_buffer.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\debug_marker.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\debug_messenger.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>

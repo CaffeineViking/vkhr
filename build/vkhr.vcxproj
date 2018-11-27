@@ -397,6 +397,7 @@
     <ClInclude Include="..\include\vkpp\barrier.hh" />
     <ClInclude Include="..\include\vkpp\buffer.hh" />
     <ClInclude Include="..\include\vkpp\command_buffer.hh" />
+    <ClInclude Include="..\include\vkpp\debug_marker.hh" />
     <ClInclude Include="..\include\vkpp\debug_messenger.hh" />
     <ClInclude Include="..\include\vkpp\descriptor_set.hh" />
     <ClInclude Include="..\include\vkpp\device.hh" />

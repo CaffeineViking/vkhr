@@ -8,6 +8,11 @@ namespace vkpp {
     void append(const std::vector<T>& values, std::vector<T>& target) {
         target.insert(target.end(), values.begin(), values.end());
     }
+
+    template<typename T>
+    void append(const T& value, std::vector<T>& target) {
+        target.push_back(value);
+    }
 }
 
 #endif
