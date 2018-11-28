@@ -42,7 +42,7 @@ namespace vkhr {
         init_info.Allocator = nullptr;
         init_info.CheckVkResultFn = imgui_debug_callback;
 
-        ImGui_ImplVulkan_Init(&init_info, vulkan_renderer.render_pass.get_handle());
+        ImGui_ImplVulkan_Init(&init_info, vulkan_renderer.color_pass.get_handle());
 
         ImGui::StyleColorsLight();
 

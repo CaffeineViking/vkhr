@@ -92,7 +92,7 @@ namespace vkhr {
 
         build_render_passes();
 
-        framebuffers = swap_chain.create_framebuffers(render_pass);
+        framebuffers = swap_chain.create_framebuffers(color_pass);
 
         image_available = vk::Semaphore { device };
         render_complete = vk::Semaphore { device };
@@ -138,9 +138,8 @@ namespace vkhr {
 
         for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
             command_buffers[i].begin();
-
             vk::DebugMarker::begin(command_buffers[i], "Render Scene Graph");
-            command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
+            command_buffers[i].begin_render_pass(color_pass, framebuffers[i],
                                                  { 1.0f, 1.0f, 1.0f, 1.0f });
 
             vk::DebugMarker::begin(command_buffers[i], "Render Hair Styles");
@@ -179,10 +178,9 @@ namespace vkhr {
 
         for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
             command_buffers[i].begin();
-
             fb.update(framebuffer, command_buffers[i]);
             vk::DebugMarker::begin(command_buffers[i], "Render Framebuffer");
-            command_buffers[i].begin_render_pass(render_pass, framebuffers[i],
+            command_buffers[i].begin_render_pass(color_pass, framebuffers[i],
                                                  { 1.0f, 1.0f, 1.0f, 1.0f });
 
             fb.update(Camera::Identity, i);
@@ -191,7 +189,6 @@ namespace vkhr {
 
             command_buffers[i].end_render_pass();
             vk::DebugMarker::end(command_buffers[i]);
-
             command_buffers[i].end();
         }
 
@@ -207,6 +204,14 @@ namespace vkhr {
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
 
+    void Rasterizer::build_render_passes() {
+        vk::RenderPass::mk_color_pass(color_pass, device, swap_chain);
+        vk::RenderPass::mk_depth_pass(depth_pass, device, swap_chain);
+    }
+
+    void Rasterizer::recreate_swapchain(Window& window) {
+    }
+
     Interface& Rasterizer::get_imgui() {
         return imgui;
     }
@@ -217,49 +222,16 @@ namespace vkhr {
     }
 
     void Rasterizer::recompile_spirv() {
-    }
+        bool hair_style_pipeline_dirty { false };
+        for (auto& hair_style_shader : hair_style_pipeline.shader_stages)
+            hair_style_pipeline_dirty |= hair_style_shader.recompile();
+        if (hair_style_pipeline_dirty)
+            vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
 
-    void Rasterizer::recreate_swapchain(Window& window) {
-    }
-
-    void Rasterizer::build_render_passes() {
-        std::vector<vk::RenderPass::Attachment> attachments {
-            {
-                swap_chain.get_color_attachment_format(),
-                swap_chain.get_khr_presentation_layout()
-            },
-            {
-                swap_chain.get_depth_attachment_format(),
-                swap_chain.get_depth_attachment_layout()
-            }
-        };
-
-        std::vector<vk::RenderPass::Subpass> subpasses {
-            {
-                { 0, swap_chain.get_color_attachment_layout() },
-                { 1, swap_chain.get_depth_attachment_layout() }
-            }
-        };
-
-        std::vector<vk::RenderPass::Dependency> dependencies {
-            {
-                VK_SUBPASS_EXTERNAL,
-                0,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                0,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
-            }
-        };
-
-        render_pass = vk::RenderPass {
-             device,
-             attachments,
-             subpasses,
-             dependencies
-        };
-
-        vk::DebugMarker::object_name(device, render_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
+        bool billboards_pipeline_dirty  { false };
+        for (auto& billboard_shader : billboards_pipeline.shader_stages)
+            billboards_pipeline_dirty |= billboard_shader.recompile();
+        if (billboards_pipeline_dirty)
+            vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
 }

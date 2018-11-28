@@ -69,6 +69,8 @@ namespace vkhr {
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
+            pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
+
             pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
             pipeline.fixed_stages.add_vertex_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
 
@@ -127,7 +129,7 @@ namespace vkhr {
                 pipeline.shader_stages,
                 pipeline.fixed_stages,
                 pipeline.pipeline_layout,
-                vulkan_renderer.render_pass
+                vulkan_renderer.color_pass
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Style Graphics Pipeline");

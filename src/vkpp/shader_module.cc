@@ -11,6 +11,7 @@
 #endif
 
 #include <fstream>
+#include <iostream>
 #include <utility>
 
 namespace vkpp {
@@ -84,7 +85,7 @@ namespace vkpp {
         return handle;
     }
 
-    void ShaderModule::recompile() {
+    bool ShaderModule::recompile() {
         std::string compiler { VKPP_SHADER_MODULE_COMPILER };
         std::string shader_file { get_file_path() };
         compiler.append(" -o " + shader_file + ".spv ");
@@ -93,7 +94,22 @@ namespace vkpp {
 #ifndef WINDOWS
         system(glslc_compile.c_str());
 #else
-        WinExec(glslc_compile.c_str(), SW_HIDE);
+        PROCESS_INFORMATION process_info {   };
+        STARTUPINFOW startup_info {   };
+        startup_info.cb = sizeof(startup_info);
+
+        auto wide_glslc_cmd = to_lpcwstr(glslc_compile);
+
+        BOOL result = CreateProcessW(nullptr, (LPWSTR) wide_glslc_cmd.c_str(),
+                                     nullptr, nullptr, false,
+                                     NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
+                                     nullptr, nullptr,
+                                     &startup_info, &process_info);
+        if (result) {
+            WaitForSingleObject(process_info.hProcess, INFINITE);
+            CloseHandle(process_info.hProcess);
+            CloseHandle(process_info.hThread);
+        }
 #endif
 
         auto spirv_candidate = load(shader_file + ".spv");
@@ -121,7 +137,11 @@ namespace vkpp {
                                                       nullptr, &handle)) {
                 throw Exception { error, "couldn't create shader module!" };
             }
+
+            return true;
         }
+
+        return false;
     }
 
     ShaderModule::Type ShaderModule::get_stage() const {
@@ -173,5 +193,20 @@ namespace vkpp {
         }
 
         return hash;
+    }
+
+    std::wstring ShaderModule::to_lpcwstr(const std::string& string) {
+#ifndef WINDOWS
+        return std::wstring { string.begin(), string.end() };
+#else
+        int len;
+        int slength = (int)string.length() + 1;
+        len = MultiByteToWideChar(CP_ACP, 0, string.c_str(), slength, 0, 0);
+        wchar_t* buf = new wchar_t[len];
+        MultiByteToWideChar(CP_ACP, 0, string.c_str(), slength, buf, len);
+        std::wstring r(buf);
+        delete[] buf;
+        return r;
+#endif
     }
 }

@@ -67,6 +67,8 @@ namespace vkhr {
         }
 
         void Billboard::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
+            pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
+
             pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 
             pipeline.fixed_stages.set_scissor({ 0, 0, vulkan_renderer.swap_chain.get_extent() });
@@ -121,7 +123,7 @@ namespace vkhr {
                 pipeline.shader_stages,
                 pipeline.fixed_stages,
                 pipeline.pipeline_layout,
-                vulkan_renderer.render_pass
+                vulkan_renderer.color_pass
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboard Graphics Pipeline");

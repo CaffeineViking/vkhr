@@ -410,9 +410,9 @@ namespace vkhr {
         return nodes_by_name;
     }
     void SceneGraph::build_node_cache(Node& node) {
-        for (auto& model : node.get_models())
+        for (std::size_t i { }; i < node.get_models().size(); ++i)
             model_node_cache.push_back(&node);
-        for (auto& hair_style : node.get_hair_styles())
+        for (std::size_t i { }; i < node.get_hair_styles().size(); ++i)
             hair_style_cache.push_back(&node);
     }
 

@@ -34,7 +34,7 @@ namespace vkpp {
 
         VkShaderModule& get_handle();
 
-        void recompile();
+        bool recompile();
 
         Type get_stage() const;
         std::size_t get_file_size() const;
@@ -45,6 +45,7 @@ namespace vkpp {
     private:
         std::vector<char> load(const std::string& sbinary);
         std::uint32_t djb2a(const std::vector<char>& data);
+        std::wstring to_lpcwstr(const std::string& string);
 
         Type shader_type;
         std::string file_path;

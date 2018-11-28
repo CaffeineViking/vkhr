@@ -7,8 +7,11 @@
 #include <utility>
 #include <cstdint>
 
+namespace vkhr { class Rasterizer; }
+
 namespace vkpp {
     class Device;
+    class SwapChain;
     class RenderPass final {
     public:
         struct Attachment {
@@ -64,6 +67,9 @@ namespace vkpp {
         const std::vector<VkAttachmentDescription>& get_attachments() const;
 
         bool has_depth_attachment() const;
+
+        static void mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain);
+        static void mk_depth_pass(RenderPass& depth_pass, Device& device, SwapChain& swap_chain);
 
     private:
         std::vector<VkAttachmentDescription> attachments;

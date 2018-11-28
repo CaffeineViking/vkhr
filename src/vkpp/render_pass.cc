@@ -1,7 +1,8 @@
 #include <vkpp/render_pass.hh>
 
 #include <vkpp/device.hh>
-
+#include <vkpp/swap_chain.hh>
+#include <vkpp/debug_marker.hh>
 #include <vkpp/exception.hh>
 
 #include <utility>
@@ -128,6 +129,13 @@ namespace vkpp {
                           : RenderPass { device, attachments,
                             std::vector<Subpass> { subpass } } {  }
 
+    RenderPass::RenderPass(Device& logical_device,
+                           Attachment& attachment,
+                           Subpass& subpass)
+                          : RenderPass { logical_device,
+                                         std::vector<Attachment> { attachment },
+                                         subpass } {  }
+
     RenderPass::RenderPass(Device& device,
                            const std::vector<Attachment>& attachments,
                            Subpass& subpass, Dependency& dependency)
@@ -190,5 +198,49 @@ namespace vkpp {
 
     bool RenderPass::has_depth_attachment() const {
         return depth_attachment_binding != -1;
+    }
+
+    void RenderPass::mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain) {
+        std::vector<RenderPass::Attachment> attachments {
+            {
+                swap_chain.get_color_attachment_format(),
+                swap_chain.get_khr_presentation_layout()
+            },
+            {
+                swap_chain.get_depth_attachment_format(),
+                swap_chain.get_depth_attachment_layout()
+            }
+        };
+
+        std::vector<RenderPass::Subpass> subpasses {
+            {
+                { 0, swap_chain.get_color_attachment_layout() },
+                { 1, swap_chain.get_depth_attachment_layout() }
+            }
+        };
+
+        std::vector<RenderPass::Dependency> dependencies {
+            {
+                VK_SUBPASS_EXTERNAL,
+                0,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                0,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+            }
+        };
+
+        color_pass = RenderPass {
+             device,
+             attachments,
+             subpasses,
+             dependencies
+        };
+
+        DebugMarker::object_name(device, color_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
+    }
+
+    void RenderPass::mk_depth_pass(RenderPass&, Device&, SwapChain&) {
     }
 }

@@ -21,11 +21,11 @@ namespace vkhr {
     public:
         Rasterizer(Window& window, const SceneGraph& scene_graph);
 
-        void build_pipelines();
+        void build_render_passes();
 
         void recreate_swapchain(Window& window);
 
-        void recompile_spirv();
+        void build_pipelines();
 
         void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;
@@ -36,9 +36,10 @@ namespace vkhr {
                   vk::CommandBuffer& command_buffer,
                   std::size_t fbi, MVP& mvp_matrix);
 
-        Image get_screenshot();
-
         Interface& get_imgui();
+
+        Image get_screenshot();
+        void recompile_spirv();
 
     private:
         vk::Instance instance;
@@ -50,9 +51,8 @@ namespace vkhr {
         vk::Surface window_surface;
         vk::SwapChain swap_chain;
 
-        void build_render_passes();
-
-        vk::RenderPass render_pass;
+        vk::RenderPass depth_pass;
+        vk::RenderPass color_pass;
 
         vk::DescriptorPool descriptor_pool;
 
