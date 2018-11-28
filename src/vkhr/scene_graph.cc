@@ -161,7 +161,7 @@ namespace vkhr {
             std::size_t node_id { 0 };
             for (auto& node : *nodes) {
                 auto& current_node = this->nodes[node_id++];
-                if (auto children = node.find("childs"); children != node.end()) {
+                if (auto children = node.find("children"); children != node.end()) {
                     current_node.reserve_nodes(children->size());
                     for (auto& child : *children)
                         current_node.add(&this->nodes[child]);

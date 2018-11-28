@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     input_map.bind("switch_renderer", vkhr::Input::Key::Tab);
     input_map.bind("take_screenshot", vkhr::Input::Key::S);
     input_map.bind("toggle_ui", vkhr::Input::Key::U);
-    input_map.bind("toggle_shadows", vkhr::Input::Key::T);
+    input_map.bind("toggle_fullscreen", vkhr::Input::Key::F);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
     vkhr::Rasterizer rasterizer { window, scene_graph };
@@ -57,12 +57,12 @@ int main(int argc, char** argv) {
             rasterizer.get_imgui().toggle_visibility();
         } else if (input_map.just_pressed("switch_renderer")) {
             rasterizer.get_imgui().toggle_raytracing();
+        } else if (input_map.just_pressed("toggle_fullscreen")) {
+            window.toggle_fullscreen();
         } else if (input_map.just_pressed("take_screenshot")) {
             rasterizer.get_screenshot().save("render.png");
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile_spirv();
-        } else if (input_map.just_pressed("toggle_shadows")) {
-            ray_tracer.toggle_shadows();
         }
 
         camera.control(input_map, window.update_delta_time(),
