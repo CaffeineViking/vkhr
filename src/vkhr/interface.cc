@@ -100,7 +100,7 @@ namespace vkhr {
         gui_visibility = false;
     }
 
-    bool Interface::do_raytrace() const {
+    bool Interface::raytracing_enabled() {
         return raytrace_scene;
     }
 

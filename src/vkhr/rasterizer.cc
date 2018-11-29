@@ -226,8 +226,8 @@ namespace vkhr {
                        swap_chain.get_height() };
     }
 
-    void Rasterizer::recompile_spirv() {
-        device.wait_idle(); // Flush it.
+    void Rasterizer::recompile() {
+        device.wait_idle();
 
         bool hair_style_pipeline_dirty { false };
         for (auto& hair_style_shader : hair_style_pipeline.shader_stages)

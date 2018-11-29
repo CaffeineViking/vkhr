@@ -36,9 +36,10 @@ namespace vkhr {
                   vk::CommandBuffer& command_buffer,
                   std::size_t fbi, MVP& mvp_matrix);
 
+        void recompile();
+
         Interface& get_imgui();
         Image get_screenshot();
-        void recompile_spirv();
 
     private:
         vk::Instance instance;

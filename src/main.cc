@@ -38,7 +38,6 @@ int main(int argc, char** argv) {
     input_map.bind("quit", vkhr::Input::Key::Escape);
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
     input_map.bind("switch_renderer", vkhr::Input::Key::Tab);
-    input_map.bind("take_screenshot", vkhr::Input::Key::S);
     input_map.bind("toggle_ui", vkhr::Input::Key::U);
     input_map.bind("toggle_fullscreen", vkhr::Input::Key::F);
     input_map.bind("recompile", vkhr::Input::Key::R);
@@ -48,21 +47,21 @@ int main(int argc, char** argv) {
     if (argp["ui"].value.boolean == 0)
         rasterizer.get_imgui().hide();
 
+    auto& imgui = rasterizer.get_imgui();
+
     window.show();
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();
         } else if (input_map.just_pressed("toggle_ui")) {
-            rasterizer.get_imgui().toggle_visibility();
+            imgui.toggle_visibility();
         } else if (input_map.just_pressed("switch_renderer")) {
-            rasterizer.get_imgui().toggle_raytracing();
+            imgui.toggle_raytracing();
         } else if (input_map.just_pressed("toggle_fullscreen")) {
             window.toggle_fullscreen();
-        } else if (input_map.just_pressed("take_screenshot")) {
-            rasterizer.get_screenshot().save("render.png");
         } else if (input_map.just_pressed("recompile")) {
-            rasterizer.recompile_spirv();
+            rasterizer.recompile();
         }
 
         camera.control(input_map, window.update_delta_time(),
@@ -72,7 +71,7 @@ int main(int argc, char** argv) {
 
         rasterizer.get_imgui().update(scene_graph);
 
-        if (rasterizer.get_imgui().do_raytrace()) {
+        if (imgui.raytracing_enabled()) {
             ray_tracer.draw(scene_graph);
             auto& framebuffer = ray_tracer.get_framebuffer();
             rasterizer.draw(framebuffer);
