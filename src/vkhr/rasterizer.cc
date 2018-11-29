@@ -117,6 +117,13 @@ namespace vkhr {
             };
         }
 
+        shadow_map = vulkan::DepthView {
+            1024, 1024,
+            1,
+            *this,
+            depth_view_pipeline
+        };
+
         raytraced_image = vulkan::Billboard {
             scene_graph.get_camera().get_width(),
             scene_graph.get_camera().get_height(),
@@ -169,13 +176,13 @@ namespace vkhr {
         }
     }
 
-    void Rasterizer::draw(Image& current_raytraced_buffer) {
+    void Rasterizer::draw(Image& current_raytraced) {
         auto next_image = swap_chain.acquire_next_image(image_available[frame]);
 
         command_buffer_done[frame].wait_and_reset();
 
         command_buffers[frame].begin();
-        raytraced_image.update(current_raytraced_buffer, command_buffers[frame]);
+        raytraced_image.update(current_raytraced, command_buffers[frame], frame);
         vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });

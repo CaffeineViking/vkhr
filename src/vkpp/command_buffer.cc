@@ -127,6 +127,30 @@ namespace vkpp {
     }
 
     void CommandBuffer::begin_render_pass(RenderPass& render_pass,
+                                          Framebuffer& framebuffer) {
+        VkRenderPassBeginInfo begin_info;
+        begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        begin_info.pNext = nullptr;
+
+        begin_info.renderPass = render_pass.get_handle();
+        begin_info.framebuffer = framebuffer.get_handle();
+        begin_info.renderArea.extent = framebuffer.get_extent();
+        begin_info.renderArea.offset = { 0, 0 };
+
+        std::vector<VkClearValue> clear_values;
+        if (render_pass.has_depth_attachment()) {
+            VkClearValue depth_clear_value { };
+            depth_clear_value.depthStencil = { 1, 0 };
+            clear_values.push_back(depth_clear_value);
+        }
+
+        begin_info.pClearValues    = clear_values.data();
+        begin_info.clearValueCount = clear_values.size();
+
+        vkCmdBeginRenderPass(handle, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
+    }
+
+    void CommandBuffer::begin_render_pass(RenderPass& render_pass,
                                           Framebuffer& framebuffer,
                                           VkClearValue clear_color) {
         VkRenderPassBeginInfo begin_info;
@@ -142,7 +166,7 @@ namespace vkpp {
 
         if (render_pass.has_depth_attachment()) {
             VkClearValue depth_clear_value {  };
-            depth_clear_value.depthStencil = { 1.0, 0 };
+            depth_clear_value.depthStencil = { 1, 0 };
             clear_values.push_back(depth_clear_value);
         }
 

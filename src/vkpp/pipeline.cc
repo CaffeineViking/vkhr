@@ -361,6 +361,10 @@ namespace vkpp {
         rasterization_state.rasterizerDiscardEnable = VK_TRUE;
     }
 
+    void GraphicsPipeline::FixedFunction::enable_depth_bias() {
+        rasterization_state.depthBiasEnable = VK_TRUE;
+    }
+
     void GraphicsPipeline::FixedFunction::enable_depth_bias(float constant_factor,
                                                             float clamp,
                                                             float slope_factor) {

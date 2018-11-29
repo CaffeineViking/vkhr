@@ -27,13 +27,14 @@ namespace vkhr {
 
             Billboard() = default;
 
-            Billboard(std::uint32_t width, std::uint32_t height,
-                      vkhr::Rasterizer& rs, Pipeline& pipeline);
+            Billboard(const std::uint32_t width, const std::uint32_t height,
+                      vkhr::Rasterizer& vulkan_renderer, Pipeline& pipeline);
 
             void load(const vkhr::Billboard& hair_style,
                       vkhr::Rasterizer& vulkan_rendrer);
             void update(MVP& mvp, std::size_t fb_index);
-            void update(vkhr::Image&, vk::CommandBuffer&);
+            void update(Image& i, vk::CommandBuffer&, std::size_t j);
+            void update(vk::ImageView&, vk::Sampler&, std::size_t i);
             void draw(vk::CommandBuffer& command_buffer,
                       std::size_t framebuffer) override;
 

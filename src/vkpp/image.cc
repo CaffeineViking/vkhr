@@ -27,7 +27,7 @@ namespace vkpp {
         create_info.format = format;
         this->format       = format;
 
-        if (usage == VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+        if ((usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) != 0) {
             this->aspect_mask = VK_IMAGE_ASPECT_DEPTH_BIT;
         } else {
             this->aspect_mask = VK_IMAGE_ASPECT_COLOR_BIT;

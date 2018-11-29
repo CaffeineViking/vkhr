@@ -13,9 +13,9 @@ namespace vkhr {
             load(billboards, vulkan_renderer);
         }
 
-        Billboard::Billboard(std::uint32_t width, std::uint32_t height,
-                             Rasterizer& vulkan_renderer, Pipeline& pl)
-                            : pipeline { &pl } {
+        Billboard::Billboard(const std::uint32_t width, const std::uint32_t height,
+                             vkhr::Rasterizer& vulkan_renderer, Pipeline& pipeline)
+                            : pipeline { &pipeline } {
             billboard_image = vk::DeviceImage {
                 vulkan_renderer.device,
                 width,
@@ -46,13 +46,16 @@ namespace vkhr {
             pipeline->descriptor_states[i].uniform_buffers[0].update(transform);
         }
 
-        void Billboard::update(vkhr::Image& image, vk::CommandBuffer& command_buffer) {
+        void Billboard::update(vkhr::Image& image, vk::CommandBuffer& command_buffer, std::size_t frame) {
             billboard_image.staged_copy(image, command_buffer);
+            update(billboard_view,  billboard_sampler,  frame);
+        }
+
+        void Billboard::update(vk::ImageView& image_view, vk::Sampler& sampler, std::size_t i) {
+            pipeline->descriptor_sets[i].write(1, image_view, sampler);
         }
 
         void Billboard::draw(vk::CommandBuffer& command_list, std::size_t i) {
-            pipeline->descriptor_sets[i].write(1, billboard_view, billboard_sampler);
-
             command_list.bind_pipeline(pipeline->pipeline);
 
             auto& descriptor_sets = pipeline->descriptor_sets[i];
@@ -80,12 +83,11 @@ namespace vkhr {
             pipeline.fixed_stages.enable_alpha_mix(0);
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.vert"));
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.frag"));
-
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboards Vertex Shader");
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.frag"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Fragment Shader");
+                                       VK_OBJECT_TYPE_SHADER_MODULE, "Billboards Fragmnet Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
@@ -97,7 +99,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
                                          VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT,
-                                         "Billboard Descriptor Set Layout");
+                                         "Billboards Descriptor Set Layout");
 
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout);
@@ -105,8 +107,8 @@ namespace vkhr {
             for (std::size_t i = 0; i < pipeline.descriptor_sets.size(); ++i) {
                 vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_sets[i],
                                              VK_OBJECT_TYPE_DESCRIPTOR_SET,
-                                             "Billboard Descriptor Set");
-                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device, "Billboard MVP");
+                                             "Billboards Descriptor Set");
+                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device, "Billboards MVP");
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
@@ -116,7 +118,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
                                          VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Billboard Pipeline Layout");
+                                         "Billboards Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -126,7 +128,7 @@ namespace vkhr {
                 vulkan_renderer.color_pass
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboard Graphics Pipeline");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboards Graphics Pipeline");
         }
     }
 }

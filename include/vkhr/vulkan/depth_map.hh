@@ -19,6 +19,7 @@ namespace vkhr {
         public:
             DepthView() = default;
             DepthView(const std::uint32_t width, const std::uint32_t height,
+                      const std::uint32_t depth,
                       Rasterizer& vulkan_renderer, Pipeline& depth_pipeline);
 
             void draw(vk::CommandBuffer& command_buffer,

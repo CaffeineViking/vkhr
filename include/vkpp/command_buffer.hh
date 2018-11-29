@@ -42,11 +42,9 @@ namespace vkpp {
         void pipeline_barrier(VkPipelineStageFlags source_stage_mask,
                               VkPipelineStageFlags destination_stage_mask,
                               VkMemoryBarrier memory_barrier);
-
         void pipeline_barrier(VkPipelineStageFlags source_stage_mask,
                               VkPipelineStageFlags destination_stage_mask,
                               VkBufferMemoryBarrier buffer_memory_barrier);
-
         void pipeline_barrier(VkPipelineStageFlags source_stage_mask,
                               VkPipelineStageFlags destination_stage_mask,
                               VkImageMemoryBarrier image_memory_barrier);
@@ -54,15 +52,15 @@ namespace vkpp {
         void copy_buffer(Buffer& source, Buffer& destination,
                          std::uint32_t source_offset = 0,
                          std::uint32_t destination_offset = 0);
-
         void copy_buffer_image(Buffer& source, Image& destination);
 
+        void begin_render_pass(RenderPass& render_pass,
+                               Framebuffer& framebuffer);
         void begin_render_pass(RenderPass& render_pass,
                                Framebuffer& framebuffer,
                                VkClearValue clear_color);
 
         void bind_pipeline(Pipeline& pipeline);
-
         void bind_descriptor_set(DescriptorSet& descriptor_set,
                                  Pipeline& pipeline);
 

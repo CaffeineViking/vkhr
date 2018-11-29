@@ -175,6 +175,7 @@ namespace vkpp {
             void disable_discarding();
             void enable_discarding();
 
+            void enable_depth_bias();
             void enable_depth_bias(float constant_factor,
                                    float clamp,
                                    float slope_factor);
