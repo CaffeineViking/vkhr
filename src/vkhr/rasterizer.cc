@@ -94,13 +94,9 @@ namespace vkhr {
 
         framebuffers = swap_chain.create_framebuffers(color_pass);
 
-        image_available = vk::Semaphore { device };
-        render_complete = vk::Semaphore { device };
-        command_buffer_done = vk::Fence { device };
-
-        vk::DebugMarker::object_name(device, image_available, VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore");
-        vk::DebugMarker::object_name(device, render_complete, VK_OBJECT_TYPE_SEMAPHORE, "Render Complete Semaphore");
-        vk::DebugMarker::object_name(device, command_buffer_done, VK_OBJECT_TYPE_FENCE, "Command Buffer Done Fence");
+        image_available = vk::Semaphore::create(device, swap_chain.size(), "Image Available Semaphore");
+        render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
+        command_buffer_done = vk::Fence::create(device, swap_chain.size(), "Command Buffer Done Fence");
 
         build_pipelines();
 
@@ -121,88 +117,87 @@ namespace vkhr {
             };
         }
 
-        auto& camera = scene_graph.get_camera();
-
         raytraced_image = vulkan::Billboard {
-            camera.get_width(),
-            camera.get_height(),
+            scene_graph.get_camera().get_width(),
+            scene_graph.get_camera().get_height(),
             *this,
             billboards_pipeline
         };
     }
 
+    std::uint32_t Rasterizer::fetch_next_frame() {
+        return (frame + 1) % swap_chain.size();
+    }
+
     void Rasterizer::draw(const SceneGraph& scene_graph) {
-        auto next_image = swap_chain.acquire_next_image(image_available);
+        auto next_image = swap_chain.acquire_next_image(image_available[frame]);
 
-        auto& cam = scene_graph.get_camera();
+        command_buffer_done[frame].wait_and_reset();
 
-        command_buffer_done.wait_and_reset();
+        command_buffers[frame].begin();
+        vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph");
+        command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
+                                                 { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
-            command_buffers[i].begin();
-            vk::DebugMarker::begin(command_buffers[i], "Render Scene Graph");
-            command_buffers[i].begin_render_pass(color_pass, framebuffers[i],
-                                                 { 1.0f, 1.0f, 1.0f, 1.0f });
+        auto camera_node = scene_graph.get_camera();
 
-            vk::DebugMarker::begin(command_buffers[i], "Render Hair Styles");
-            for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
-                auto& model_view_projection = cam.get_mvp(hair_node->get_m());
-                draw(hair_node, command_buffers[i], i, model_view_projection);
-            } vk::DebugMarker::end(command_buffers[i]);
+        vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles");
+        for (auto& hair_styles_node : scene_graph.get_nodes_with_hair_styles()) {
+            auto& mvp = camera_node.get_mvp(hair_styles_node->get_matrix());
+            draw_hair(hair_styles_node, command_buffers[frame], frame, mvp);
+        } vk::DebugMarker::end(command_buffers[frame]);
 
-            imgui.draw(command_buffers[i]);
+        imgui.draw(command_buffers[frame]);
 
-            command_buffers[i].end_render_pass();
-            vk::DebugMarker::end(command_buffers[i]);
-            command_buffers[i].end();
-        }
+        command_buffers[frame].end_render_pass();
+        vk::DebugMarker::end(command_buffers[frame]);
+        command_buffers[frame].end();
 
-        device.get_graphics_queue().submit(command_buffers[next_image], image_available,
+        device.get_graphics_queue().submit(command_buffers[frame], image_available[frame],
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                           render_complete, command_buffer_done);
-
-        device.get_present_queue().present(swap_chain, next_image, render_complete);
+                                           render_complete[frame], command_buffer_done[frame]);
+        device.get_present_queue().present(swap_chain, next_image, render_complete[frame]);
+        frame = fetch_next_frame();
     }
 
-    void Rasterizer::draw(const SceneGraph::Node* node,
-                          vk::CommandBuffer& cmd_lists,
-                          std::size_t fb, MVP& mvp_mat) {
+    void Rasterizer::draw_hair(const SceneGraph::Node* node,
+                               vk::CommandBuffer& command_buffer,
+                               std::size_t frame, MVP& mvp) {
         for (auto& hair_style : node->get_hair_styles()) {
-            hair_styles[hair_style].update(mvp_mat, fb);
-            hair_styles[hair_style].draw(cmd_lists, fb);
+            hair_styles[hair_style].update(mvp, frame);
+            hair_styles[hair_style].draw(command_buffer, frame);
         }
     }
 
-    void Rasterizer::draw(Image& raytrace_framebuffer) {
-        auto next_image = swap_chain.acquire_next_image(image_available);
+    void Rasterizer::draw(Image& current_raytraced_buffer) {
+        auto next_image = swap_chain.acquire_next_image(image_available[frame]);
 
-        command_buffer_done.wait_and_reset();
+        command_buffer_done[frame].wait_and_reset();
 
-        for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
-            command_buffers[i].begin();
-            raytraced_image.update(raytrace_framebuffer, command_buffers[i]);
-            vk::DebugMarker::begin(command_buffers[i], "Render Framebuffer");
-            command_buffers[i].begin_render_pass(color_pass, framebuffers[i],
-                                                 { 1.0f, 1.0f, 1.0f, 1.0f });
+        command_buffers[frame].begin();
+        raytraced_image.update(current_raytraced_buffer, command_buffers[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer");
+        command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
+                                                 { 1.00f, 1.00f, 1.00f, 1.00f });
 
-            raytraced_image.update(Camera::Identity, i);
-            raytraced_image.draw(command_buffers[i], i);
+        raytraced_image.update(Camera::Identity_MVP, frame);
+        raytraced_image.draw(command_buffers[frame], frame);
 
-            imgui.draw(command_buffers[i]);
+        imgui.draw(command_buffers[frame]);
 
-            command_buffers[i].end_render_pass();
-            vk::DebugMarker::end(command_buffers[i]);
-            command_buffers[i].end();
-        }
+        command_buffers[frame].end_render_pass();
+        vk::DebugMarker::end(command_buffers[frame]);
+        command_buffers[frame].end();
 
-        device.get_graphics_queue().submit(command_buffers[next_image], image_available,
+        device.get_graphics_queue().submit(command_buffers[next_image], image_available[frame],
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                           render_complete, command_buffer_done);
-
-        device.get_present_queue().present(swap_chain, next_image, render_complete);
+                                           render_complete[frame], command_buffer_done[frame]);
+        device.get_present_queue().present(swap_chain, next_image, render_complete[frame]);
+        frame = fetch_next_frame();
     }
 
     void Rasterizer::build_pipelines() {
+        vulkan::DepthView::build_pipeline(depth_view_pipeline, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
@@ -212,7 +207,7 @@ namespace vkhr {
         vk::RenderPass::mk_depth_pass(depth_pass, device, shadow_map);
     }
 
-    void Rasterizer::recreate_swapchain(Window& window) {
+    void Rasterizer::recreate_swapchain(Window&) {
     }
 
     Interface& Rasterizer::get_imgui() {

@@ -10,7 +10,7 @@ layout(binding = 0) uniform Transform {
 } transform;
 
 layout(location = 0) out PipelineData {
-    flat vec3 tangent;
+    vec3 tangent;
 } vs_out;
 
 void main() {

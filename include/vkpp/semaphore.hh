@@ -3,6 +3,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include <vector>
+
 namespace vkpp {
     class Device;
     class Semaphore final {
@@ -11,6 +13,8 @@ namespace vkpp {
         Semaphore(Device& device);
 
         ~Semaphore() noexcept;
+
+        static std::vector<Semaphore> create(Device& device, std::uint32_t n = 1, const char* name = "");
 
         Semaphore(Semaphore&& semaphore) noexcept;
         Semaphore& operator=(Semaphore&& semaphore) noexcept;

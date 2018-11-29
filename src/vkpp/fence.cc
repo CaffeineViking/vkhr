@@ -2,6 +2,8 @@
 
 #include <vkpp/device.hh>
 
+#include <vkpp/debug_marker.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>
@@ -12,6 +14,17 @@ namespace vkpp {
         if (handle != VK_NULL_HANDLE) {
             vkDestroyFence(device, handle, nullptr);
         }
+    }
+
+    std::vector<Fence> Fence::create(Device& device, std::uint32_t amount, const char* name) {
+        std::vector<Fence> fences;
+        fences.reserve(amount);
+        for (std::uint32_t i { 0 }; i < amount; ++i) {
+            fences.emplace_back(device);
+            DebugMarker::object_name(device, fences.back(),
+                                     VK_OBJECT_TYPE_FENCE,
+                                     name);
+        } return fences;
     }
 
     Fence::Fence(Device& logical_device) : device { logical_device.get_handle() } {

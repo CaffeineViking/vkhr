@@ -23,22 +23,20 @@ namespace vkhr {
         Rasterizer(Window& window, const SceneGraph& scene_graph);
 
         void build_render_passes();
-
         void recreate_swapchain(Window& window);
-
         void build_pipelines();
 
         void load(const SceneGraph& scene) override;
+
+        std::uint32_t fetch_next_frame();
+
         void draw(const SceneGraph& scene) override;
-
         void draw(Image& raytraced_image);
-
-        void draw(const SceneGraph::Node* hair_node,
+        void draw_hair(const SceneGraph::Node* node,
                   vk::CommandBuffer& command_buffer,
                   std::size_t fbi, MVP& mvp_matrix);
 
         Interface& get_imgui();
-
         Image get_screenshot();
         void recompile_spirv();
 
@@ -58,19 +56,17 @@ namespace vkhr {
         vk::DescriptorPool descriptor_pool;
 
         std::vector<vkpp::Framebuffer> framebuffers;
-        vk::Semaphore image_available, render_complete;
-        vk::Fence command_buffer_done;
+        std::vector<vk::Semaphore> image_available, render_complete;
+        std::vector<vk::Fence> command_buffer_done;
 
-        vulkan::Pipeline depth_maps_pipeline;
+        std::uint32_t frame { 0 };
 
-        vulkan::DepthMap shadow_map;
-
+        vulkan::Pipeline depth_view_pipeline;
+        vulkan::Pipeline billboards_pipeline;
         vulkan::Pipeline hair_style_pipeline;
 
+        vulkan::DepthView shadow_map;
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
-
-        vulkan::Pipeline billboards_pipeline;
-
         vulkan::Billboard raytraced_image;
 
         Interface imgui;
@@ -80,6 +76,7 @@ namespace vkhr {
         friend class vulkan::HairStyle;
         friend class vulkan::Billboard;
         friend class ::vkhr::Interface;
+        friend class vulkan::DepthView;
     };
 }
 

@@ -88,7 +88,9 @@ namespace vkpp {
                     vkhr::Image& image,
                     std::uint32_t mip_levels = 1);
 
-        DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes);
+        DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes,
+                    VkFormat format = VK_FORMAT_R8G8B8A8_UNORM,
+                    VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 
         DeviceMemory& get_device_memory();
 

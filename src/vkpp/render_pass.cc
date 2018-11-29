@@ -241,17 +241,17 @@ namespace vkpp {
         DebugMarker::object_name(device, color_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
     }
 
-    void RenderPass::mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthMap& depth_map) {
+    void RenderPass::mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthView& depth_view) {
         std::vector<RenderPass::Attachment> attachments {
             {
-                depth_map.get_attachment_format(),
-                depth_map.get_read_depth_layout()
+                depth_view.get_attachment_format(),
+                depth_view.get_read_depth_layout()
             }
         };
 
         std::vector<RenderPass::Subpass> subpasses {
             {
-                { 0, depth_map.get_attachment_layout() }
+                { 0, depth_view.get_attachment_layout() }
             }
         };
 

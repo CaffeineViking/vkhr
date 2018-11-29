@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 
 #include <cstdint>
+#include <vector>
 
 namespace vkpp {
     class Device;
@@ -13,6 +14,8 @@ namespace vkpp {
         Fence(Device& device);
 
         ~Fence() noexcept;
+
+        static std::vector<Fence> create(Device& device, std::uint32_t n = 1, const char* name = "");
 
         Fence(Fence&& fence) noexcept;
         Fence& operator=(Fence&& fence) noexcept;

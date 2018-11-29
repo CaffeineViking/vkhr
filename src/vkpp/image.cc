@@ -280,13 +280,13 @@ namespace vkpp {
                                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
-    DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes)
+    DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes,
+                             VkFormat format, VkImageUsageFlags usage)
                             : Image { device,
                                       width,
                                       height,
-                                      VK_FORMAT_R8G8B8A8_UNORM,
-                                      VK_IMAGE_USAGE_SAMPLED_BIT |
-                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                                      format,
+                                      usage,
                                       1,
                                       VK_SAMPLE_COUNT_1_BIT,
                                       VK_IMAGE_TILING_OPTIMAL } {

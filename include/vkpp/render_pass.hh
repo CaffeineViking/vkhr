@@ -7,7 +7,7 @@
 #include <utility>
 #include <cstdint>
 
-namespace vkhr::vulkan { class DepthMap; }
+namespace vkhr::vulkan { class DepthView; }
 
 namespace vkpp {
     class Device;
@@ -69,8 +69,8 @@ namespace vkpp {
 
         bool has_depth_attachment() const;
 
-        static void mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& window_chain);
-        static void mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthMap&);
+        static void mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& window_swap_chain);
+        static void mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthView& d32);
 
     private:
         std::vector<VkAttachmentDescription> attachments;

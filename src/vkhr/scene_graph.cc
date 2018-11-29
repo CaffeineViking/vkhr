@@ -349,7 +349,7 @@ namespace vkhr {
         return model_matrix;
     }
 
-    const glm::mat4& SceneGraph::Node::get_m() const {
+    const glm::mat4& SceneGraph::Node::get_matrix() const {
         return model_matrix;
     }
 

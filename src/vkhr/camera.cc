@@ -117,11 +117,8 @@ namespace vkhr {
         }
     }
 
-    void Camera::arcball_relative_to(const glm::vec2& cursor) {
+    void Camera::arcball_relative_to(const glm::vec2& cursor, const float scroll) {
         glm::vec2 cursor_delta { cursor };
-
-        arcball.x -= cursor.x;
-        arcball.y -= cursor.y;
 
         position = glm::rotate(position - look_at_point, -cursor_delta.x, +(get_up_direction())) + look_at_point;
         position = glm::rotate(position - look_at_point, -cursor_delta.y, -get_left_direction()) + look_at_point;
@@ -206,7 +203,7 @@ namespace vkhr {
         viewing_plane_dirty = false;
     }
 
-    MVP Camera::Identity {
+    MVP Camera::Identity_MVP {
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f }

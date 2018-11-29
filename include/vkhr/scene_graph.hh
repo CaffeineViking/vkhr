@@ -80,7 +80,7 @@ namespace vkhr {
             void set_model_matrix(const glm::mat4& m);
             const glm::mat4& get_model_matrix() const;
 
-            const glm::mat4& get_m() const;
+            const glm::mat4& get_matrix() const;
 
             void set_node_name(const std::string& n);
             const std::string& get_node_name() const;

@@ -48,7 +48,7 @@ namespace vkhr {
         const glm::vec3& get_up_direction() const;
 
         void control(InputMap& input_map, const float delta_time, const bool imgui_focused);
-        void arcball_relative_to(const glm::vec2& mouse_movement);
+        void arcball_relative_to(const glm::vec2& mouse_movement, const float scroll = 0.0);
 
         void look_at(const glm::vec3& point, const glm::vec3& eye,
                      const glm::vec3& up = { 0.0f, 1.0f, 0.0f });
@@ -68,7 +68,7 @@ namespace vkhr {
         const glm::mat4& get_view_matrix() const;
         const glm::mat4& get_projection_matrix() const;
 
-        static MVP Identity;
+        static MVP Identity_MVP;
 
         MVP& get_mvp(const glm::mat4& model) const;
 
@@ -88,7 +88,6 @@ namespace vkhr {
         glm::vec3 look_at_point { 0.0, 0.0, 0.0 };
         glm::vec3 up_direction  { 0.0, 1.0, 0.0 };
 
-        glm::vec3 arcball { 0, 0, 0 };
         glm::vec2 last_mouse_position;
 
         mutable ViewingPlane viewing_plane;

@@ -2,6 +2,8 @@
 
 #include <vkpp/device.hh>
 
+#include <vkpp/debug_marker.hh>
+
 #include <vkpp/exception.hh>
 
 #include <utility>
@@ -11,6 +13,17 @@ namespace vkpp {
         if (handle != VK_NULL_HANDLE) {
             vkDestroySemaphore(device, handle, nullptr);
         }
+    }
+
+    std::vector<Semaphore> Semaphore::create(Device& device, std::uint32_t amount, const char* name) {
+        std::vector<Semaphore> semaphores;
+        semaphores.reserve(amount);
+        for (std::uint32_t i { 0 }; i < amount; ++i) {
+            semaphores.emplace_back(device);
+            DebugMarker::object_name(device, semaphores.back(),
+                                     VK_OBJECT_TYPE_SEMAPHORE,
+                                     name);
+        } return semaphores;
     }
 
     Semaphore::Semaphore(Device& logical_device) : device { logical_device.get_handle() } {

@@ -50,7 +50,7 @@ namespace vkhr {
     private:
         bool raytrace_scene { false };
         ImGuiContext* ctx { nullptr };
-        bool gui_visibility { false };
+        bool gui_visibility  { true };
     };
 }
 
