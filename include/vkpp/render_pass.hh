@@ -7,11 +7,12 @@
 #include <utility>
 #include <cstdint>
 
-namespace vkhr { class Rasterizer; }
+namespace vkhr::vulkan { class DepthMap; }
 
 namespace vkpp {
     class Device;
     class SwapChain;
+
     class RenderPass final {
     public:
         struct Attachment {
@@ -68,8 +69,8 @@ namespace vkpp {
 
         bool has_depth_attachment() const;
 
-        static void mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain);
-        static void mk_depth_pass(RenderPass& depth_pass, Device& device, SwapChain& swap_chain);
+        static void mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& window_chain);
+        static void mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthMap&);
 
     private:
         std::vector<VkAttachmentDescription> attachments;

@@ -387,6 +387,7 @@
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\billboard.hh" />
+    <ClInclude Include="..\include\vkhr\vulkan\depth_map.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\drawable.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\model.hh" />
@@ -455,6 +456,7 @@
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
       <ObjectFileName>$(IntDir)\billboard2.obj</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\vulkan\depth_map.cc" />
     <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
       <ObjectFileName>$(IntDir)\hair_style2.obj</ObjectFileName>
     </ClCompile>

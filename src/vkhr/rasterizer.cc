@@ -121,9 +121,11 @@ namespace vkhr {
             };
         }
 
-        fb = vulkan::Billboard {
-            swap_chain.get_width(),
-            swap_chain.get_height(),
+        auto& camera = scene_graph.get_camera();
+
+        raytraced_image = vulkan::Billboard {
+            camera.get_width(),
+            camera.get_height(),
             *this,
             billboards_pipeline
         };
@@ -171,20 +173,21 @@ namespace vkhr {
         }
     }
 
-    void Rasterizer::draw(Image& framebuffer) {
+    void Rasterizer::draw(Image& raytrace_framebuffer) {
         auto next_image = swap_chain.acquire_next_image(image_available);
 
         command_buffer_done.wait_and_reset();
 
         for (std::size_t i { 0 }; i < swap_chain.size(); ++i) {
             command_buffers[i].begin();
-            fb.update(framebuffer, command_buffers[i]);
+            raytraced_image.update(raytrace_framebuffer, command_buffers[i]);
             vk::DebugMarker::begin(command_buffers[i], "Render Framebuffer");
             command_buffers[i].begin_render_pass(color_pass, framebuffers[i],
                                                  { 1.0f, 1.0f, 1.0f, 1.0f });
 
-            fb.update(Camera::Identity, i);
-            fb.draw(command_buffers[i], i);
+            raytraced_image.update(Camera::Identity, i);
+            raytraced_image.draw(command_buffers[i], i);
+
             imgui.draw(command_buffers[i]);
 
             command_buffers[i].end_render_pass();
@@ -206,7 +209,7 @@ namespace vkhr {
 
     void Rasterizer::build_render_passes() {
         vk::RenderPass::mk_color_pass(color_pass, device, swap_chain);
-        vk::RenderPass::mk_depth_pass(depth_pass, device, swap_chain);
+        vk::RenderPass::mk_depth_pass(depth_pass, device, shadow_map);
     }
 
     void Rasterizer::recreate_swapchain(Window& window) {

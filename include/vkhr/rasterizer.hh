@@ -6,6 +6,7 @@
 #include <vkhr/vulkan/model.hh>
 #include <vkhr/vulkan/hair_style.hh>
 #include <vkhr/vulkan/billboard.hh>
+#include <vkhr/vulkan/depth_map.hh>
 #include <vkhr/vulkan/pipeline.hh>
 
 #include <vkpp/vkpp.hh>
@@ -30,7 +31,7 @@ namespace vkhr {
         void load(const SceneGraph& scene) override;
         void draw(const SceneGraph& scene) override;
 
-        void draw(Image& fullscreen_image);
+        void draw(Image& raytraced_image);
 
         void draw(const SceneGraph::Node* hair_node,
                   vk::CommandBuffer& command_buffer,
@@ -60,12 +61,17 @@ namespace vkhr {
         vk::Semaphore image_available, render_complete;
         vk::Fence command_buffer_done;
 
+        vulkan::Pipeline depth_maps_pipeline;
+
+        vulkan::DepthMap shadow_map;
+
         vulkan::Pipeline hair_style_pipeline;
 
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
 
         vulkan::Pipeline billboards_pipeline;
-        vulkan::Billboard fb;
+
+        vulkan::Billboard raytraced_image;
 
         Interface imgui;
 

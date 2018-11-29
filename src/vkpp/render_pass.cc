@@ -5,6 +5,8 @@
 #include <vkpp/debug_marker.hh>
 #include <vkpp/exception.hh>
 
+#include <vkhr/vulkan/depth_map.hh>
+
 #include <utility>
 
 namespace vkpp {
@@ -52,8 +54,6 @@ namespace vkpp {
         for (std::size_t i { 0 }; i < subpasses.size(); ++i) {
             this->subpasses[i].flags = 0;
             this->subpasses[i].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-
-            subpass_color_references.reserve(subpasses[i].size());
 
             for (const auto& attachment : subpasses[i]) {
                 if (attachment.layout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL ||
@@ -226,7 +226,7 @@ namespace vkpp {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 0,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT|
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
             }
         };
@@ -241,6 +241,48 @@ namespace vkpp {
         DebugMarker::object_name(device, color_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
     }
 
-    void RenderPass::mk_depth_pass(RenderPass&, Device&, SwapChain&) {
+    void RenderPass::mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthMap& depth_map) {
+        std::vector<RenderPass::Attachment> attachments {
+            {
+                depth_map.get_attachment_format(),
+                depth_map.get_read_depth_layout()
+            }
+        };
+
+        std::vector<RenderPass::Subpass> subpasses {
+            {
+                { 0, depth_map.get_attachment_layout() }
+            }
+        };
+
+        std::vector<RenderPass::Dependency> dependencies {
+            {
+                VK_SUBPASS_EXTERNAL,
+                0,
+                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                0,
+                VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
+            },
+            {
+                0,
+                VK_SUBPASS_EXTERNAL,
+                VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                VK_ACCESS_SHADER_READ_BIT
+            }
+        };
+
+        depth_pass = RenderPass {
+             device,
+             attachments,
+             subpasses,
+             dependencies
+        };
+
+        DebugMarker::object_name(device, depth_pass, VK_OBJECT_TYPE_RENDER_PASS, "Depth Pass");
     }
 }

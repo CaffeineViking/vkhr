@@ -957,6 +957,9 @@
     <ClInclude Include="..\include\vkhr\vulkan\billboard.hh">
       <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\vulkan\depth_map.hh">
+      <Filter>include\vkhr\vulkan</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\vulkan\drawable.hh">
       <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
@@ -1131,6 +1134,9 @@
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
+      <Filter>src\vkhr\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\vulkan\depth_map.cc">
       <Filter>src\vkhr\vulkan</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
