@@ -44,7 +44,9 @@ namespace vkhr {
 
         ImGui_ImplVulkan_Init(&init_info, vulkan_renderer.color_pass.get_handle());
 
-        ImGui::StyleColorsLight();
+        ImGui::StyleColorsDark();
+        auto& style = ImGui::GetStyle();
+        make_style(style.Colors);
 
         auto command_buffer = vulkan_renderer.command_pool.allocate_and_begin();
         ImGui_ImplVulkan_CreateFontsTexture(command_buffer.get_handle());
@@ -61,7 +63,9 @@ namespace vkhr {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::ShowDemoWindow();
+            ImGui::Begin("VKHR - Scalable Strand-Based Hair Rendering");
+
+            ImGui::End();
 
             ImGui::Render();
         }
@@ -117,5 +121,8 @@ namespace vkhr {
         using std::swap;
         swap(lhs.ctx, rhs.ctx);
         swap(lhs.gui_visibility, rhs.gui_visibility);
+    }
+
+    void Interface::make_style(ImVec4* color) {
     }
 }

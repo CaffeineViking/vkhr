@@ -20,6 +20,7 @@ using json = nlohmann::json;
 #include <vector>
 
 namespace vkhr {
+    class Interface;
     class SceneGraph final {
     public:
         SceneGraph() = default;
@@ -176,6 +177,8 @@ namespace vkhr {
         mutable Error error_state {
             Error::None
         };
+
+        friend class vkhr::Interface;
     };
 }
 

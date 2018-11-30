@@ -45,11 +45,12 @@ namespace vkhr {
         void toggle_raytracing();
         void show();
 
+        void make_style(ImVec4*);
 
     private:
         bool raytrace_scene { false };
         ImGuiContext* ctx { nullptr };
-        bool gui_visibility  { true };
+        bool gui_visibility { false };
     };
 }
 
