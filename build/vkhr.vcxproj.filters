@@ -1234,6 +1234,9 @@
     <None Include="..\share\shaders\billboards.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\depth-pass.vert">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\kajiya-kay.frag">
       <Filter>shaders</Filter>
     </None>
@@ -1241,6 +1244,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\kajiya-kay.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\light_data.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
