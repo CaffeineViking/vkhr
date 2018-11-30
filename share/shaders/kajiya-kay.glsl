@@ -1,5 +1,5 @@
-vec3 kajiya_kay(vec3 diffuse, vec3 specular, float p, vec3 tangent, vec3 light, vec3 eye) {
-    float cosTL = dot(tangent, light);
+vec3 kajiya_kay(vec3 diffuse, vec3 specular, float p, vec3 tangent, vec3 dir, vec3 eye) {
+    float cosTL = dot(tangent, dir);
     float cosTE = dot(tangent, eye);
 
     float cosTL_squared = cosTL*cosTL;

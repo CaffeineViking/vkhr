@@ -141,6 +141,7 @@ namespace vkhr {
     void Rasterizer::draw(const SceneGraph& scene_graph) {
         auto next_image = swap_chain.acquire_next_image(image_available[frame]);
 
+        light_data[frame].update(scene_graph.light);
         command_buffer_done[frame].wait_and_reset();
 
         command_buffers[frame].begin();
@@ -229,7 +230,7 @@ namespace vkhr {
     }
 
     void Rasterizer::recompile() {
-        device.wait_idle();
+        device.wait_idle(); // GPU
 
         bool hair_style_pipeline_dirty { false };
         for (auto& hair_style_shader : hair_style_pipeline.shader_stages)

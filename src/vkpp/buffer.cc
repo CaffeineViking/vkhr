@@ -357,6 +357,10 @@ namespace vkpp {
             uniform_buffers.emplace_back(device, size);
             DebugMarker::object_name(device, uniform_buffers.back(),
                                      VK_OBJECT_TYPE_BUFFER, name);
+            std::string memory_name { name };
+            memory_name += "Device Memory";
+            DebugMarker::object_name(device, uniform_buffers.back().get_device_memory(),
+                                     VK_OBJECT_TYPE_DEVICE_MEMORY, memory_name.c_str());
         } return uniform_buffers;
     }
 
