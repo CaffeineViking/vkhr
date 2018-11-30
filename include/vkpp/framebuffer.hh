@@ -19,6 +19,11 @@ namespace vkpp {
                     std::vector<ImageView>& attachments,
                     const VkExtent2D& extent);
 
+        Framebuffer(Device& device,
+                    RenderPass& render_pass,
+                    ImageView& attachment,
+                    const VkExtent2D& extent);
+
         Framebuffer(VkDevice& device,
                     RenderPass& render_pass,
                     std::vector<ImageView>& attachments,

@@ -36,6 +36,16 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, image_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Map Image View");
 
+            framebuffer = vk::Framebuffer {
+                vulkan_renderer.device,
+                vulkan_renderer.depth_pass,
+                image_view, VkExtent2D {
+                    width, height
+                }
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, framebuffer, VK_OBJECT_TYPE_FRAMEBUFFER, "Depth Map Framebuffer");
+
             sampler = vk::Sampler {
                 vulkan_renderer.device,
                 VK_FILTER_LINEAR,

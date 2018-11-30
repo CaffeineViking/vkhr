@@ -68,8 +68,7 @@ int main(int argc, char** argv) {
                        rasterizer.get_imgui().wants_focus());
 
         scene_graph.traverse_nodes();
-
-        rasterizer.get_imgui().update(scene_graph);
+        imgui.transform(scene_graph);
 
         if (imgui.raytracing_enabled()) {
             ray_tracer.draw(scene_graph);

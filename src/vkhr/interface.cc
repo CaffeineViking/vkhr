@@ -55,7 +55,7 @@ namespace vkhr {
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
     }
 
-    void Interface::update(SceneGraph& scene_graph) {
+    void Interface::transform(SceneGraph& scene_graph) {
         if (!gui_visibility) {
             ImGui_ImplVulkan_NewFrame();
             ImGui_ImplGlfw_NewFrame();

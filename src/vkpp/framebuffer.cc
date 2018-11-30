@@ -37,6 +37,13 @@ namespace vkpp {
                             : Framebuffer { device.get_handle(), render_pass,
                                             image_views, extent } { }
 
+    Framebuffer::Framebuffer(Device& device,
+                             RenderPass& render_pass,
+                             ImageView& attachment,
+                             const VkExtent2D& extent)
+                            :  Framebuffer { device.get_handle(), render_pass,
+                                             attachment, extent } {}
+
     Framebuffer::Framebuffer(VkDevice& device,
                              RenderPass& render_pass,
                              ImageView& image_view,
