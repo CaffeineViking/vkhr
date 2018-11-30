@@ -153,8 +153,6 @@ namespace vkhr {
             if (ImGui::CollapsingHeader("Shader Profiler")) {
             }
 
-            ImGui::ShowDemoWindow();
-
             ImGui::End();
 
             ImGui::Render();
