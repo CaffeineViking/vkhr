@@ -54,6 +54,8 @@ namespace vkhr {
         const Camera& get_camera() const;
         Camera& get_camera();
 
+        const std::string& get_scene_path() const;
+
         class Node final {
         public:
             void add(Model* model);

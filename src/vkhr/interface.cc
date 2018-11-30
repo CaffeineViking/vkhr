@@ -55,6 +55,13 @@ namespace vkhr {
         vulkan_renderer.device.get_graphics_queue().submit(command_buffer)
                                                    .wait_idle();
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
+
+        scene_files.push_back("share/scenes/ponytail.vkhr");
+        scene_file = 0;
+
+        renderers.push_back("Rasterizer");
+        renderers.push_back("Ray Tracer");
+        renderer = 0;
     }
 
     void Interface::transform(SceneGraph& scene_graph) {
@@ -63,7 +70,90 @@ namespace vkhr {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::Begin("VKHR - Scalable Strand-Based Hair Rendering");
+            ImGui::Begin("VKHR - Scalable Strand-Based Hair Renderer!",
+                         nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+            ImGui::Button("Toggle Fullscreen");
+
+            ImGui::SameLine();
+
+            ImGui::Button("Take Screenshot");
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Hide UI"))
+                toggle_visibility();
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::Combo("", &renderer, get_string_from_vector, static_cast<void*>(&renderers), renderers.size());
+
+            if (renderer == 0) raytrace_scene = 0;
+            else               raytrace_scene = 1;
+
+            ImGui::SameLine(0.0, 4.0);
+
+            if (ImGui::Button("Toggle Render"))
+                toggle_raytracing();
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::CollapsingHeader("Render Settings")) {
+                if (ImGui::TreeNode("Rasterizer")) {
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Ray Tracer")) {
+                    ImGui::TreePop();
+                }
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::Combo("Rendered Scene", &scene_file, get_string_from_vector, static_cast<void*>(&scene_files), scene_files.size());
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::CollapsingHeader("Scene Hierarchy")) {
+                if (ImGui::TreeNode("Camera")) {
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Light Sources")) {
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Node")) {
+                    ImGui::TreePop();
+                }
+            }
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::Button("Recompile Shaders");
+
+            ImGui::SameLine(0.0, 9.0);
+
+            ImGui::Button("Toggle Shadow Map Viewer");
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::CollapsingHeader("Shader Profiler")) {
+            }
+
+            ImGui::ShowDemoWindow();
 
             ImGui::End();
 
@@ -98,6 +188,7 @@ namespace vkhr {
 
     void Interface::toggle_raytracing() {
         raytrace_scene = !raytrace_scene;
+        renderer       =  raytrace_scene;
     }
 
     void Interface::show() {
@@ -119,10 +210,23 @@ namespace vkhr {
 
     void swap(Interface& lhs, Interface& rhs) {
         using std::swap;
+
         swap(lhs.ctx, rhs.ctx);
         swap(lhs.gui_visibility, rhs.gui_visibility);
+        swap(lhs.raytrace_scene, rhs.raytrace_scene);
+
+        swap(lhs.renderer, rhs.renderer);
+        swap(lhs.scene_file, rhs.scene_file);
+        swap(lhs.scene_files, rhs.scene_files);
+        swap(lhs.renderers, rhs.renderers);
     }
 
     void Interface::make_style(ImVec4* color) {
+    }
+
+    bool Interface::get_string_from_vector(void* data, int n, const char** str) {
+        std::vector<std::string>* v = (std::vector<std::string>*) data;
+        *str = v->at(n).c_str();
+        return true;
     }
 }

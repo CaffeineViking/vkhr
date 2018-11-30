@@ -48,6 +48,13 @@ namespace vkhr {
         void make_style(ImVec4*);
 
     private:
+        int scene_file { 0 };
+        std::vector<std::string> scene_files;
+        std::vector<std::string> renderers;
+        int renderer { 0 };
+
+        static bool get_string_from_vector(void*, int, const char**);
+
         bool raytrace_scene { false };
         ImGuiContext* ctx { nullptr };
         bool gui_visibility { false };
