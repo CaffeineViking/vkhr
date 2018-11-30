@@ -89,9 +89,6 @@ namespace vkhr {
 
             pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_depth_test();
-            pipeline.fixed_stages.enable_depth_bias();
-
-            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_DEPTH_BIAS);
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("depth-pass.vert"));
 
@@ -108,13 +105,11 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
                                          VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Depth Map Descriptor Set Layout");
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
-                                                                                pipeline.descriptor_set_layout);
-            pipeline.descriptor_states.resize(pipeline.descriptor_sets.size());
-            for (std::size_t i = 0; i < pipeline.descriptor_sets.size(); ++i) {
-                vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_sets[i],
-                                             VK_OBJECT_TYPE_DESCRIPTOR_SET,
-                                             "Depth View Descriptor Sets");
-                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device, "Depth Map MVP");
+                                                                                pipeline.descriptor_set_layout,
+                                                                                "Depth Map Descriptor Set");
+
+            for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.transform[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

@@ -42,10 +42,6 @@ namespace vkhr {
             // TODO: case where an image is already provided...
         }
 
-        void Billboard::update(MVP& transform, std::size_t i) {
-            pipeline->descriptor_states[i].uniform_buffers[0].update(transform);
-        }
-
         void Billboard::update(vkhr::Image& image, vk::CommandBuffer& command_buffer, std::size_t frame) {
             billboard_image.staged_copy(image, command_buffer);
             update(billboard_view,  billboard_sampler,  frame);
@@ -102,13 +98,11 @@ namespace vkhr {
                                          "Billboards Descriptor Set Layout");
 
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
-                                                                                pipeline.descriptor_set_layout);
-            pipeline.descriptor_states.resize(pipeline.descriptor_sets.size());
-            for (std::size_t i = 0; i < pipeline.descriptor_sets.size(); ++i) {
-                vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_sets[i],
-                                             VK_OBJECT_TYPE_DESCRIPTOR_SET,
-                                             "Billboards Descriptor Set");
-                pipeline.write_uniform_buffer(i, 0, sizeof(MVP), vulkan_renderer.device, "Billboards MVP");
+                                                                                pipeline.descriptor_set_layout,
+                                                                                "Billboards Descriptor Set");
+
+            for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.transform[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

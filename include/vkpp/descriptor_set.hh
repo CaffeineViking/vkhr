@@ -100,8 +100,9 @@ namespace vkpp {
         const std::vector<VkDescriptorPoolSize>& get_pool_sizes() const;
 
         DescriptorSet allocate(DescriptorSet::Layout& layout);
-        std::vector<DescriptorSet> allocate(std::uint32_t num,
-                                            DescriptorSet::Layout& layout);
+        std::vector<DescriptorSet> allocate(std::uint32_t count_of_sets,
+                                            DescriptorSet::Layout& layout,
+                                            std::string name = "");
 
     private:
         std::vector<VkDescriptorPoolSize> pool_sizes;

@@ -203,7 +203,7 @@ namespace vkhr {
         viewing_plane_dirty = false;
     }
 
-    MVP Camera::Identity_MVP {
+    MVP Camera::Identity_Transform {
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f }

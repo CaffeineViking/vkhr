@@ -32,7 +32,6 @@ namespace vkhr {
 
             void load(const vkhr::Billboard& hair_style,
                       vkhr::Rasterizer& vulkan_rendrer);
-            void update(MVP& mvp, std::size_t fb_index);
             void update(Image& i, vk::CommandBuffer&, std::size_t j);
             void update(vk::ImageView&, vk::Sampler&, std::size_t i);
             void draw(vk::CommandBuffer& command_buffer,

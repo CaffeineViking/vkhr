@@ -192,6 +192,8 @@ namespace vkpp {
         UniformBuffer(Device& device,
                       VkDeviceSize size);
 
+        static std::vector<UniformBuffer> create(Device& device, VkDeviceSize size, std::size_t n = 1, const char* name = "");
+
         template<typename T>
         void update(T& uniform_data_obj);
     };

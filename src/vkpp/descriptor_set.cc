@@ -258,7 +258,8 @@ namespace vkpp {
     }
 
     std::vector<DescriptorSet> DescriptorPool::allocate(std::uint32_t amount,
-                                                        DescriptorSet::Layout& layout) {
+                                                        DescriptorSet::Layout& layout,
+                                                        std::string name) {
         VkDescriptorSetAllocateInfo alloc_info;
         alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         alloc_info.pNext = nullptr;
@@ -284,6 +285,12 @@ namespace vkpp {
             descriptor_sets.emplace_back(
                 ds, handle, &layout, device
             );
+
+            if (!name.empty()) {
+                DebugMarker::object_name(device, descriptor_sets.back(),
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET,
+                                         name.c_str()); // for RenderDoc
+            }
         }
 
         return descriptor_sets;

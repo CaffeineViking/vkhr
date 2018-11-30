@@ -350,6 +350,16 @@ namespace vkpp {
         swap(*this, buffer);
     }
 
+    std::vector<UniformBuffer> UniformBuffer::create(Device& device, VkDeviceSize size, std::size_t n, const char* name) {
+        std::vector<UniformBuffer> uniform_buffers;
+        uniform_buffers.reserve(n);
+        for (std::size_t i { 0 }; i < n; ++i) {
+            uniform_buffers.emplace_back(device, size);
+            DebugMarker::object_name(device, uniform_buffers.back(),
+                                     VK_OBJECT_TYPE_BUFFER, name);
+        } return uniform_buffers;
+    }
+
     void swap(StorageBuffer& lhs, StorageBuffer& rhs) {
         using std::swap;
         swap(static_cast<DeviceBuffer&>(lhs), static_cast<DeviceBuffer&>(rhs));

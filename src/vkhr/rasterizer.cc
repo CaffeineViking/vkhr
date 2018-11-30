@@ -97,6 +97,8 @@ namespace vkhr {
         image_available = vk::Semaphore::create(device, swap_chain.size(), "Image Available Semaphore");
         render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
         command_buffer_done = vk::Fence::create(device, swap_chain.size(), "Command Buffer Done Fence");
+        light_data = vk::UniformBuffer::create(device, sizeof(Lights), swap_chain.size(), "Light Data");
+        transform = vk::UniformBuffer::create(device, sizeof(MVP), swap_chain.size(), "Transform Data");
 
         build_pipelines();
 
@@ -167,11 +169,11 @@ namespace vkhr {
         frame = fetch_next_frame();
     }
 
-    void Rasterizer::draw_hair(const SceneGraph::Node* node,
+    void Rasterizer::draw_hair(const SceneGraph::Node* hair_node,
                                vk::CommandBuffer& command_buffer,
-                               std::size_t frame, MVP& mvp) {
-        for (auto& hair_style : node->get_hair_styles()) {
-            hair_styles[hair_style].update(mvp, frame);
+                               std::size_t frame, MVP& transform) {
+        this->transform[frame].update(transform); // MVP stuff.
+        for (auto& hair_style : hair_node->get_hair_styles()) {
             hair_styles[hair_style].draw(command_buffer, frame);
         }
     }
@@ -187,7 +189,7 @@ namespace vkhr {
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        raytraced_image.update(Camera::Identity_MVP, frame);
+        transform[frame].update(Camera::Identity_Transform);
         raytraced_image.draw(command_buffers[frame], frame);
 
         imgui.draw(command_buffers[frame]);

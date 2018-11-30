@@ -62,6 +62,9 @@ namespace vkhr {
 
         std::uint32_t frame { 0 };
 
+        std::vector<vk::UniformBuffer> transform;
+        std::vector<vk::UniformBuffer> light_data;
+
         vulkan::Pipeline depth_view_pipeline;
         vulkan::Pipeline billboards_pipeline;
         vulkan::Pipeline hair_style_pipeline;
