@@ -3,6 +3,7 @@
 
 #include <vkhr/window.hh>
 #include <vkhr/scene_graph.hh>
+#include <vkhr/ray_tracer.hh>
 
 #include <vkpp/instance.hh>
 #include <vkpp/device.hh>
@@ -33,7 +34,7 @@ namespace vkhr {
         ~Interface() noexcept;
 
         void load(vkhr::Rasterizer& vulkan_renderer);
-        void transform(SceneGraph& scene_graph_node);
+        void transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer);
         void draw(vkpp::CommandBuffer& command_list);
 
         bool wants_focus() const;

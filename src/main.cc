@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
     input_map.bind("switch_renderer", vkhr::Input::Key::Tab);
     input_map.bind("toggle_ui", vkhr::Input::Key::U);
     input_map.bind("toggle_fullscreen", vkhr::Input::Key::F);
+    input_map.bind("take_screenshot", vkhr::Input::Key::S);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
     vkhr::Rasterizer rasterizer { window, scene_graph };
@@ -60,6 +61,9 @@ int main(int argc, char** argv) {
             imgui.toggle_raytracing();
         } else if (input_map.just_pressed("toggle_fullscreen")) {
             window.toggle_fullscreen();
+        } else if (input_map.just_pressed("take_screenshot")) {
+            rasterizer.get_screenshot()
+                      .save("out.png");
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile();
         }
@@ -68,7 +72,8 @@ int main(int argc, char** argv) {
                        rasterizer.get_imgui().wants_focus());
 
         scene_graph.traverse_nodes();
-        imgui.transform(scene_graph);
+
+        imgui.transform(scene_graph, rasterizer, ray_tracer);
 
         if (imgui.raytracing_enabled()) {
             ray_tracer.draw(scene_graph);

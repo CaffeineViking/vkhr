@@ -4,11 +4,10 @@ build/
 docs/build/
 vkhr.zip
 
+out.png
+
 vkhr.ico
 vkhr.lnk
-
-render.png
-imgui.ini
 
 # Compiled Object files
 *.slo

@@ -17,6 +17,7 @@ namespace vkhr {
     Interface::Interface(Window& window, Rasterizer& vulkan_renderer) {
         IMGUI_CHECKVERSION();
         ctx = ImGui::CreateContext();
+        ImGui::GetIO().IniFilename = nullptr;
         ImGui_ImplGlfw_InitForVulkan(window.get_handle(), false);
         load(vulkan_renderer);
     }
@@ -64,20 +65,22 @@ namespace vkhr {
         renderer = 0;
     }
 
-    void Interface::transform(SceneGraph& scene_graph) {
+    void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer) {
         if (!gui_visibility) {
             ImGui_ImplVulkan_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::Begin("VKHR - Scalable Strand-Based Hair Renderer!",
+            ImGui::Begin("VKHR - Scalable Strand-Based Hair Renderer.",
                          nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
             ImGui::Button("Toggle Fullscreen");
 
             ImGui::SameLine();
 
-            ImGui::Button("Take Screenshot");
+            if (ImGui::Button("Take Screenshot"))
+                rasterizer.get_screenshot()
+                          .save("out.png");
 
             ImGui::SameLine();
 
@@ -140,7 +143,8 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Button("Recompile Shaders");
+            if (ImGui::Button("Recompile Shaders"))
+                rasterizer.recompile();
 
             ImGui::SameLine(0.0, 9.0);
 
