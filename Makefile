@@ -36,7 +36,9 @@ program: FORCE
 
 shaders: FORCE
 	@-utils/glslc.py share/shaders
-	-make -C share/shaders
+	@-utils/glslc.py share/shaders/compute-strands
+	@-make --no-print-directory -C share/shaders
+	@-make --no-print-directory -C share/shaders/compute-strands
 
 download: download-modules
 download-modules: FORCE

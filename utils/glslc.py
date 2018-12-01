@@ -24,6 +24,15 @@ class ShaderScript:
                      "*.frag",
                      "*.comp" ]
 
+    HLSL_SHADERS = [ "ClipCurves.hlsl",
+                     "DrawStrands.hlsl",
+                     "PrefixSum_1.hlsl",
+                     "PrefixSum_2.hlsl",
+                     "ReduceDepthBuffer.hlsl",
+                     "Reorder.hlsl" ]
+
+    HLSLCS = "-fshader-stage=compute -fentry-point="
+
     def __init__(self):
         parser = argparse.ArgumentParser(description=self.DESCRIPTION,
                                          usage="%(prog)s "+self.USAGE)
@@ -55,8 +64,15 @@ class ShaderScript:
             for shader_type in self.SHADER_TYPES:
                 shader_files = shader_files + glob.glob(shader_type)
 
+            for hlsl_shader in self.HLSL_SHADERS:
+                shader_files = shader_files + glob.glob(hlsl_shader)
+
             for shader_file in shader_files:
-                contents = contents + (shader_file + ".spv ")
+                file_name, ext = os.path.splitext(shader_file)
+                if ext == ".hlsl":
+                    contents = contents + (file_name   + ".spv ")
+                else:
+                    contents = contents + (shader_file + ".spv ")
 
             contents = contents[:-1]
 
@@ -70,7 +86,14 @@ class ShaderScript:
                 command = ""
                 command = command + dependencies.decode("utf-8")
                 command = command + "\t"
+
                 command = command + self.GLSLC
+
+                entry_point, ext = os.path.splitext(shader_file)
+                if ext == ".hlsl":
+                    command = command + self.HLSLCS
+                    command = command + entry_point + " "
+
                 command = command + shader_file
 
                 contents = contents + command
