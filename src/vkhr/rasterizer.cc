@@ -114,23 +114,20 @@ namespace vkhr {
             const auto& hair_style_geometry = hair_style.second;
             hair_styles[&hair_style_geometry] = vulkan::HairStyle {
                 hair_style_geometry,
-                *this,
-                hair_style_pipeline
+                *this
             };
         }
 
         shadow_map = vulkan::DepthView {
             1024, 1024,
             1,
-            *this,
-            depth_view_pipeline
+            *this
         };
 
         raytraced_image = vulkan::Billboard {
             scene_graph.get_camera().get_width(),
             scene_graph.get_camera().get_height(),
-            *this,
-            billboards_pipeline
+            *this
         };
     }
 
@@ -145,6 +142,7 @@ namespace vkhr {
         command_buffer_done[frame].wait_and_reset();
 
         command_buffers[frame].begin();
+        vk::DebugMarker::begin(command_buffers[frame], "Render into Shadow Map");
         vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
@@ -152,6 +150,7 @@ namespace vkhr {
         auto camera_node = scene_graph.get_camera();
 
         vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles");
+        hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
         for (auto& hair_styles_node : scene_graph.get_nodes_with_hair_styles()) {
             auto& mvp = camera_node.get_mvp(hair_styles_node->get_matrix());
             draw_hair(hair_styles_node, command_buffers[frame], frame, mvp);
@@ -179,14 +178,16 @@ namespace vkhr {
         }
     }
 
-    void Rasterizer::draw(Image& current_raytraced) {
+    void Rasterizer::draw(Image& image) {
         auto next_image = swap_chain.acquire_next_image(image_available[frame]);
 
         command_buffer_done[frame].wait_and_reset();
 
         command_buffers[frame].begin();
-        raytraced_image.update(current_raytraced, command_buffers[frame], frame);
+        raytraced_image.update(billboards_pipeline.descriptor_sets[frame], image,
+                               command_buffers[frame]); // Staged image upload...
         vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer");
+        billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 

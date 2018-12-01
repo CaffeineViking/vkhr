@@ -7,15 +7,12 @@
 namespace vkhr {
     namespace vulkan {
         Billboard::Billboard(const vkhr::Billboard& billboards,
-                             vkhr::Rasterizer& vulkan_renderer,
-                             Pipeline& billboard_gpu_pipeline)
-                            : pipeline { &billboard_gpu_pipeline } {
+                             vkhr::Rasterizer& vulkan_renderer) {
             load(billboards, vulkan_renderer);
         }
 
         Billboard::Billboard(const std::uint32_t width, const std::uint32_t height,
-                             vkhr::Rasterizer& vulkan_renderer, Pipeline& pipeline)
-                            : pipeline { &pipeline } {
+                             vkhr::Rasterizer& vulkan_renderer, bool flip_image) {
             billboard_image = vk::DeviceImage {
                 vulkan_renderer.device,
                 width,
@@ -42,23 +39,16 @@ namespace vkhr {
             // TODO: case where an image is already provided...
         }
 
-        void Billboard::update(vkhr::Image& image, vk::CommandBuffer& command_buffer, std::size_t frame) {
+        void Billboard::update(vk::DescriptorSet& descriptor_set, vkhr::Image& image, vk::CommandBuffer& command_buffer) {
             billboard_image.staged_copy(image, command_buffer);
-            update(billboard_view,  billboard_sampler,  frame);
+            update(descriptor_set, billboard_view, billboard_sampler);
         }
 
-        void Billboard::update(vk::ImageView& image_view, vk::Sampler& sampler, std::size_t i) {
-            pipeline->descriptor_sets[i].write(1, image_view, sampler);
+        void Billboard::update(vk::DescriptorSet& descriptor_set, vk::ImageView& image_view, vk::Sampler& image_sampler) {
+            descriptor_set.write(1, image_view, image_sampler);
         }
 
         void Billboard::draw(vk::CommandBuffer& command_list, std::size_t i) {
-            command_list.bind_pipeline(pipeline->pipeline);
-
-            auto& descriptor_sets = pipeline->descriptor_sets[i];
-
-            command_list.bind_descriptor_set(descriptor_sets,
-                                             pipeline->pipeline);
-
             command_list.draw(6, 1); // WARNING: this isn't how a
             // billboard class should actually look like since it
             // won't perform very well. The proper way is to make

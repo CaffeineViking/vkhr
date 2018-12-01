@@ -4,8 +4,8 @@
 #include <vkhr/hair_style.hh>
 #include <vkhr/vulkan/pipeline.hh>
 #include <vkhr/vulkan/drawable.hh>
+#include <vkhr/vulkan/depth_map.hh>
 #include <vkhr/camera.hh>
-#include <vkhr/paths.hh>
 
 #include <vkpp/buffer.hh>
 #include <vkpp/command_buffer.hh>
@@ -19,17 +19,16 @@ namespace vkhr {
     namespace vulkan {
         class HairStyle final : public Drawable {
         public:
-            HairStyle() = default;
             HairStyle(const vkhr::HairStyle& hair_style,
-                      vkhr::Rasterizer& vulkan_renderer,
-                      Pipeline& hair_graphics_pipeline);
+                      vkhr::Rasterizer& vulkan_renderer);
+
+            HairStyle() = default;
 
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& scene_renderer);
+
             void draw(vk::CommandBuffer& command_buffer,
                       std::size_t framebuffer) override;
-
-            Pipeline* pipeline { nullptr };
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

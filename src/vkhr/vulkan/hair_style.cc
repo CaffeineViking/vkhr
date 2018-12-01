@@ -9,9 +9,7 @@
 namespace vkhr {
     namespace vulkan {
         HairStyle::HairStyle(const vkhr::HairStyle& hair_style,
-                             vkhr::Rasterizer& vulkan_renderer,
-                             Pipeline& hair_style_pipeline)
-                            : pipeline { &hair_style_pipeline } {
+                             vkhr::Rasterizer& vulkan_renderer) {
             load(hair_style, vulkan_renderer);
         }
 
@@ -49,13 +47,6 @@ namespace vkhr {
         }
 
         void HairStyle::draw(vk::CommandBuffer& command_list, std::size_t i) {
-            command_list.bind_pipeline(pipeline->pipeline);
-
-            auto& descriptor_sets = pipeline->descriptor_sets[i];
-
-            command_list.bind_descriptor_set(descriptor_sets,
-                                             pipeline->pipeline);
-
             command_list.bind_vertex_buffer(0, positions, 0);
             command_list.bind_vertex_buffer(1, tangents,  0);
 

@@ -22,22 +22,21 @@ namespace vkhr {
         class Billboard final : public Drawable {
         public:
             Billboard(const vkhr::Billboard& billboards,
-                      vkhr::Rasterizer& vulkan_renderer,
-                      Pipeline& billboard_gpu_pipeline);
+                      vkhr::Rasterizer& vulkan_renderer);
 
             Billboard() = default;
 
             Billboard(const std::uint32_t width, const std::uint32_t height,
-                      vkhr::Rasterizer& vulkan_renderer, Pipeline& pipeline);
+                      vkhr::Rasterizer& vulkan_renderer, bool flip = false);
 
             void load(const vkhr::Billboard& hair_style,
                       vkhr::Rasterizer& vulkan_rendrer);
-            void update(Image& i, vk::CommandBuffer&, std::size_t j);
-            void update(vk::ImageView&, vk::Sampler&, std::size_t i);
+
+            void update(vk::DescriptorSet&, Image& i, vk::CommandBuffer&);
+            void update(vk::DescriptorSet&, vk::ImageView&, vk::Sampler&);
+
             void draw(vk::CommandBuffer& command_buffer,
                       std::size_t framebuffer) override;
-
-            Pipeline* pipeline { nullptr };
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

@@ -7,14 +7,13 @@
 namespace vkhr {
     namespace vulkan {
         DepthView::DepthView(const std::uint32_t width, const std::uint32_t height,
-                             const std::uint32_t depth,
-                             Rasterizer& vulkan_renderer, Pipeline& depth_pipeline) {
+                             const std::uint32_t depth, Rasterizer& vulkan_renderer) {
             image = vk::Image {
                 vulkan_renderer.device,
                 width, height,
-                VK_FORMAT_D32_SFLOAT,
+                get_attachment_format(),
                 VK_IMAGE_USAGE_SAMPLED_BIT |
-                VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+                get_image_usage_flags()
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, image, VK_OBJECT_TYPE_IMAGE, "Depth Map Image");
@@ -57,9 +56,6 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, sampler, VK_OBJECT_TYPE_SAMPLER, "Depth Map Sampler");
         }
 
-        void DepthView::draw(vk::CommandBuffer& command_buffer, std::size_t i) {
-        }
-
         VkImageLayout DepthView::get_read_depth_layout() {
             return VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
         }
@@ -72,18 +68,26 @@ namespace vkhr {
             return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
         }
 
+        VkImageUsageFlags DepthView::get_image_usage_flags() {
+            return VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        }
+
         void DepthView::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
             pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
-
-            pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 
             pipeline.fixed_stages.set_scissor({ 0, 0, vulkan_renderer.swap_chain.get_extent() });
             pipeline.fixed_stages.set_viewport({ 0.0, 0.0,
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_width()),
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
+
+            pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_VIEWPORT);
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_SCISSOR);
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_DEPTH_BIAS);
 
             pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_FRONT_BIT);
 

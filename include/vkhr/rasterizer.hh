@@ -31,7 +31,7 @@ namespace vkhr {
         std::uint32_t fetch_next_frame();
 
         void draw(const SceneGraph& scene) override;
-        void draw(Image& raytraced_image);
+        void draw(Image& fullscreen_image);
         void draw_hair(const SceneGraph::Node* node,
                   vk::CommandBuffer& command_buffer,
                   std::size_t fbi, MVP& mvp_matrix);

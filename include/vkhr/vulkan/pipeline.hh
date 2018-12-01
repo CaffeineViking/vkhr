@@ -19,6 +19,11 @@ namespace vkhr {
             vk::GraphicsPipeline pipeline;
             vk::DescriptorSet::Layout descriptor_set_layout;
             std::vector<vk::DescriptorSet> descriptor_sets;
+
+            void make_current_pipeline(vk::CommandBuffer& command_list, std::size_t frame) {
+                command_list.bind_pipeline(pipeline);
+                command_list.bind_descriptor_set(descriptor_sets[frame], pipeline);
+            }
         };
     }
 }

@@ -73,8 +73,8 @@ namespace vkhr {
 
             auto& window = rasterizer.window_surface.get_glfw_window();
 
-            ImGui::Begin("VKHR - Scalable Strand-Based Hair Renderer.",
-                         nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Begin(" VKHR - a Scalable Strand-Based Hair Renderer",
+                         nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
 
             if (ImGui::Button("Toggle Fullscreen"))
                 window.toggle_fullscreen();

@@ -15,21 +15,16 @@ namespace vk = vkpp;
 namespace vkhr {
     class Rasterizer;
     namespace vulkan {
-        class DepthView final : public Drawable {
+        class DepthView final {
         public:
             DepthView() = default;
             DepthView(const std::uint32_t width, const std::uint32_t height,
-                      const std::uint32_t depth,
-                      Rasterizer& vulkan_renderer, Pipeline& depth_pipeline);
+                      const std::uint32_t depth, Rasterizer& vulkan_renderer);
 
-            void draw(vk::CommandBuffer& command_buffer,
-                      std::size_t framebuffer) override;
-
-            VkFormat      get_attachment_format();
-            VkImageLayout get_read_depth_layout();
-            VkImageLayout get_attachment_layout();
-
-            Pipeline* pipeline { nullptr };
+            VkFormat          get_attachment_format();
+            VkImageLayout     get_read_depth_layout();
+            VkImageLayout     get_attachment_layout();
+            VkImageUsageFlags get_image_usage_flags();
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
