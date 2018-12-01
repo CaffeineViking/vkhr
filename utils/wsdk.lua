@@ -12,7 +12,8 @@ function os.vpaths()
             "share/shaders/**.tesc",
             "share/shaders/**.tese",
             "share/shaders/**.frag",
-            "share/shaders/**.comp" }
+            "share/shaders/**.comp",
+            "share/shaders/**.hlsl" }
     vpaths {
         ["src/*"] = "src/**.cc",
         ["include/*"] = "include/**.hh",
@@ -27,7 +28,8 @@ function os.vpaths()
                           "share/shaders/**.tesc",
                           "share/shaders/**.tese",
                           "share/shaders/**.frag",
-                          "share/shaders/**.comp" }
+                          "share/shaders/**.comp",
+                          "share/shaders/**.hlsl" }
     }
 end
 

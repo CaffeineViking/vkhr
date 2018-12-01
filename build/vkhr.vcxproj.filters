@@ -73,6 +73,9 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{0F45D591-7B24-542D-843C-DF03F09ABA8E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\compute-curve">
+      <UniqueIdentifier>{8DAB2AE7-F917-E6E1-C20B-7E3F2E37084A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -1070,9 +1073,6 @@
     <ClCompile Include="..\foreign\imgui\imgui.cpp">
       <Filter>foreign\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\foreign\imgui\imgui_demo.cpp">
-      <Filter>foreign\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="..\foreign\imgui\imgui_draw.cpp">
       <Filter>foreign\imgui</Filter>
     </ClCompile>
@@ -1233,6 +1233,39 @@
     </None>
     <None Include="..\share\shaders\billboards.vert">
       <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\ClipCurves.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\Commons.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\Constants.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\Curves.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\DrawStrands.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\PrefixSum_1.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\PrefixSum_2.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\Random.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\ReduceDepthBuffer.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\Reorder.hlsl">
+      <Filter>shaders\compute-curve</Filter>
+    </None>
+    <None Include="..\share\shaders\compute-curve\ScanBlockBuffer.hlsl">
+      <Filter>shaders\compute-curve</Filter>
     </None>
     <None Include="..\share\shaders\depth-pass.vert">
       <Filter>shaders</Filter>

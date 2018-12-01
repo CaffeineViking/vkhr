@@ -426,7 +426,6 @@
     <ClCompile Include="..\foreign\imgui\examples\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\foreign\imgui\examples\imgui_impl_vulkan.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui.cpp" />
-    <ClCompile Include="..\foreign\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\foreign\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
@@ -496,6 +495,17 @@
     <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\billboards.frag" />
     <None Include="..\share\shaders\billboards.vert" />
+    <None Include="..\share\shaders\compute-curve\ClipCurves.hlsl" />
+    <None Include="..\share\shaders\compute-curve\Commons.hlsl" />
+    <None Include="..\share\shaders\compute-curve\Constants.hlsl" />
+    <None Include="..\share\shaders\compute-curve\Curves.hlsl" />
+    <None Include="..\share\shaders\compute-curve\DrawStrands.hlsl" />
+    <None Include="..\share\shaders\compute-curve\PrefixSum_1.hlsl" />
+    <None Include="..\share\shaders\compute-curve\PrefixSum_2.hlsl" />
+    <None Include="..\share\shaders\compute-curve\Random.hlsl" />
+    <None Include="..\share\shaders\compute-curve\ReduceDepthBuffer.hlsl" />
+    <None Include="..\share\shaders\compute-curve\Reorder.hlsl" />
+    <None Include="..\share\shaders\compute-curve\ScanBlockBuffer.hlsl" />
     <None Include="..\share\shaders\depth-pass.vert" />
     <None Include="..\share\shaders\kajiya-kay.frag" />
     <None Include="..\share\shaders\kajiya-kay.glsl" />
