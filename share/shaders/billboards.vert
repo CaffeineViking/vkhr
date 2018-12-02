@@ -10,12 +10,12 @@ vec2 positions[] = {
 };
 
 vec2 coordinates[] = {
-    { 1.0f, 0.0f },
-    { 0.0f, 1.0f },
     { 0.0f, 0.0f },
-    { 0.0f, 1.0f },
+    { 1.0f, 1.0f },
     { 1.0f, 0.0f },
     { 1.0f, 1.0f },
+    { 0.0f, 0.0f },
+    { 0.0f, 1.0f },
 };
 
 layout(binding = 0) uniform Transform {

@@ -113,7 +113,7 @@ namespace vkhr {
                     frag_color = hair.shade(ray, light, camera); // Kajiya-Kay
                 }
 
-                framebuffer.set_pixel(i, j, {
+                framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
                     glm::clamp(frag_color.r, 0.0f, 1.0f) * 255,
                     glm::clamp(frag_color.g, 0.0f, 1.0f) * 255,
                     glm::clamp(frag_color.b, 0.0f, 1.0f) * 255,
