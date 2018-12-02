@@ -6,6 +6,7 @@ layout(binding = 0) uniform Transform {
     mat4 model;
     mat4 view;
     mat4 projection;
+    vec3 eye;
 } transform;
 
 void main() {

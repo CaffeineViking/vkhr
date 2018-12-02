@@ -1267,7 +1267,7 @@
     <None Include="..\share\shaders\compute-curve\ScanBlockBuffer.hlsl">
       <Filter>shaders\compute-curve</Filter>
     </None>
-    <None Include="..\share\shaders\depth-pass.vert">
+    <None Include="..\share\shaders\depth_pass.vert">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\kajiya-kay.frag">
@@ -1280,6 +1280,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\light_data.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\shadow-map.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
