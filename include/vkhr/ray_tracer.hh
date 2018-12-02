@@ -35,8 +35,6 @@ namespace vkhr {
 
         bool shadows_off = false;
 
-        LightSource light;
-
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
 
