@@ -1,6 +1,7 @@
 #version 460 core
 
-#include "light_data.glsl"
+#include "light-data.glsl"
+#include "shadow-map.glsl"
 #include "kajiya-kay.glsl"
 
 layout(location = 0) in PipelineInput {

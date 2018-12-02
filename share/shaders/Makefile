@@ -12,5 +12,5 @@ kajiya-kay.vert.spv: kajiya-kay.vert
 billboards.frag.spv: billboards.frag
 	glslc -O -g -c billboards.frag
 
-kajiya-kay.frag.spv: kajiya-kay.frag light_data.glsl kajiya-kay.glsl
+kajiya-kay.frag.spv: kajiya-kay.frag light-data.glsl shadow-map.glsl kajiya-kay.glsl
 	glslc -O -g -c kajiya-kay.frag
