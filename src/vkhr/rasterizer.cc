@@ -249,6 +249,7 @@ namespace vkhr {
     }
 
     void Rasterizer::recreate_swapchain(Window&) {
+        // TODO: still need to do this, one day.
     }
 
     Interface& Rasterizer::get_imgui() {
@@ -256,8 +257,53 @@ namespace vkhr {
     }
 
     Image Rasterizer::get_screenshot() {
-        return Image { swap_chain.get_width(),
-                       swap_chain.get_height() };
+        vk::Image screenshot_image {
+            device,
+            swap_chain.get_width(),
+            swap_chain.get_height(),
+            VK_FORMAT_R8G8B8A8_UNORM,
+            VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+            1, VK_SAMPLE_COUNT_1_BIT,
+            VK_IMAGE_TILING_LINEAR
+        };
+
+        vk::DeviceMemory screenshot_memory {
+            device,
+            screenshot_image.get_memory_requirements(),
+            vk::DeviceMemory::Type::HostVisible
+        };
+
+        screenshot_image.bind(screenshot_memory);
+
+        auto command_list = command_pool.allocate_and_begin();
+        screenshot_image.transition(command_list, 0, VK_ACCESS_TRANSFER_WRITE_BIT,
+                                    VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+        swap_chain.get_images()[frame].transition(command_list, VK_ACCESS_MEMORY_READ_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+                                                  VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                                  VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+
+        command_list.copy_image(swap_chain.get_images()[frame], screenshot_image);
+
+        swap_chain.get_images()[frame].transition(command_list, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_MEMORY_READ_BIT,
+                                                  VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                                                  VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+
+        screenshot_image.transition(command_list, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_MEMORY_READ_BIT,
+                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_GENERAL,
+                                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+        command_list.end();
+        device.get_graphics_queue().submit(command_list)
+                                   .wait_idle();
+
+        vkhr::Image screenshot { swap_chain.get_width(), swap_chain.get_height() };
+
+        const char* buffer { nullptr };
+        screenshot_memory.map(0, screenshot.get_size_in_bytes(), (void**) &buffer);
+        std::memcpy(screenshot.get_data(), buffer, screenshot.get_size_in_bytes());
+        screenshot_memory.unmap();
+
+        return screenshot;
     }
 
     void Rasterizer::recompile() {

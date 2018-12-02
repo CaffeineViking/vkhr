@@ -53,12 +53,13 @@ namespace vkpp {
 
         float get_aspect_ratio() const;
 
-
         VkFormat get_color_attachment_format() const;
         VkImageLayout get_khr_presentation_layout() const;
         VkImageLayout get_color_attachment_layout() const;
         VkImageLayout get_depth_attachment_layout() const;
         VkFormat get_depth_attachment_format() const;
+
+        std::vector<Image>& get_images();
 
         const VkExtent2D& get_extent() const;
         VkSampleCountFlagBits get_sample_count();
@@ -72,7 +73,7 @@ namespace vkpp {
         std::uint32_t size() const;
 
     private:
-        void create_swapchain_images();
+        void create_swapchain_images(std::uint32_t image_count);
         void create_swapchain_depths(Device& device, CommandBuffer& cmd_list);
 
         bool choose_format(const VkSurfaceFormatKHR& preferred_format);
@@ -80,7 +81,8 @@ namespace vkpp {
 
         void choose_extent(const VkExtent2D& window_extent);
 
-        std::vector<VkImage>    images;
+        std::vector<VkImage>    image_handles;
+        std::vector<Image>      images;
         std::vector<ImageView>  image_views;
 
         Image depth_buffer_image;

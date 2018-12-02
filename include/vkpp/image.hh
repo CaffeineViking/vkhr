@@ -29,6 +29,13 @@ namespace vkpp {
               VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT,
               VkImageTiling tiling_mode = VK_IMAGE_TILING_OPTIMAL);
 
+        Image(VkDevice device, VkImage image,
+              std::uint32_t width, std::uint32_t height, VkFormat format,
+              VkImageUsageFlags usage, std::uint32_t mip_levels = 1,
+              VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT,
+              VkImageTiling tiling_mode = VK_IMAGE_TILING_OPTIMAL,
+              bool destroy = true); // in case it's a swapchain...
+
         Image(Image&& image) noexcept;
         Image& operator=(Image&& image) noexcept;
 
@@ -48,6 +55,11 @@ namespace vkpp {
         VkImageLayout get_layout() const;
 
         VkImageAspectFlags get_aspect_mask() const;
+
+        void transition(CommandBuffer& command_buffer,
+                        VkAccessFlags src_access, VkAccessFlags dst_access,
+                        VkImageLayout src_layout, VkImageLayout dst_layout,
+                        VkPipelineStageFlags src, VkPipelineStageFlags dst);
 
         void transition(CommandBuffer& command_buffer, VkImageLayout from, VkImageLayout to);
         void transition(CommandBuffer& command_buffer, VkImageLayout to);
@@ -74,6 +86,8 @@ namespace vkpp {
 
         VkDevice device { VK_NULL_HANDLE };
         VkImage handle  { VK_NULL_HANDLE };
+
+        bool destroy { true };
     };
 
     class DeviceImage : public Image {

@@ -56,7 +56,7 @@ namespace vkpp {
         create_info.imageExtent = current_extent;
 
         create_info.imageArrayLayers = 1;
-        create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 
         std::int32_t queue_family_indices[] = {
             logical_device.get_physical_device().get_graphics_queue_family_index(),
@@ -87,7 +87,7 @@ namespace vkpp {
 
         DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_SWAPCHAIN_KHR, "Window Swapchain");
 
-        create_swapchain_images();
+        create_swapchain_images(image_count);
 
         auto command_buffer = command_pool.allocate_and_begin();
         DebugMarker::begin(command_buffer, "Swapchain Depth Image Transition");
@@ -121,6 +121,7 @@ namespace vkpp {
         swap(lhs.surface, rhs.surface);
 
         swap(lhs.images, rhs.images);
+        swap(lhs.image_handles, rhs.image_handles);
         swap(lhs.image_views, rhs.image_views);
 
         swap(lhs.format, rhs.format);
@@ -198,6 +199,10 @@ namespace vkpp {
         return image_views;
     }
 
+    std::vector<Image>& SwapChain::get_images() {
+        return images;
+    }
+
     VkImageView SwapChain::get_attachment(std::size_t i) {
         return image_views[i].get_handle();
     }
@@ -258,25 +263,33 @@ namespace vkpp {
         return static_cast<std::uint32_t>(image_views.size());
     }
 
-    void SwapChain::create_swapchain_images() {
-        std::uint32_t image_count = images.size();
+    void SwapChain::create_swapchain_images(std::uint32_t image_count) {
         vkGetSwapchainImagesKHR(device, handle, &image_count, nullptr);
-        images.resize(image_count);
-        vkGetSwapchainImagesKHR(device, handle, &image_count, images.data());
+        image_handles.resize(image_count);
+        vkGetSwapchainImagesKHR(device, handle, &image_count, image_handles.data());
 
+        images.reserve(image_count);
         image_views.reserve(image_count);
 
         std::size_t image_index { 0 };
-        for (const auto& image : images) {
+        for (const auto& image_handle : image_handles) {
             std::string image_name { "Swapchain Image #" + std::to_string(image_index++) };
-            DebugMarker::object_name(device, image, VK_OBJECT_TYPE_IMAGE, image_name.c_str());
+            DebugMarker::object_name(device, image_handle, VK_OBJECT_TYPE_IMAGE, image_name.c_str());
+
+            images.emplace_back(device, image_handle,
+                                get_width(), get_height(),
+                                get_color_attachment_format(),
+                                VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                                1, get_sample_count(),
+                                VK_IMAGE_TILING_OPTIMAL,
+                                false);
 
             VkImageViewCreateInfo create_info;
             create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             create_info.pNext = nullptr;
             create_info.flags = 0;
 
-            create_info.image = image;
+            create_info.image = image_handle;
             create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
             create_info.format = format.format;
 

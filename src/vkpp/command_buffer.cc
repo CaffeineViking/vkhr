@@ -90,6 +90,42 @@ namespace vkpp {
                              1, &image_memory_barrier);
     }
 
+    void CommandBuffer::blit_image(Image& source, Image& destination, VkFilter filter) {
+        VkOffset3D blit_size;
+        blit_size.x = destination.get_extent().width;
+        blit_size.y = destination.get_extent().height;
+        blit_size.z = 1;
+
+        VkImageBlit blit_region {  };
+
+        blit_region.srcSubresource.aspectMask = source.get_aspect_mask();
+        blit_region.srcSubresource.layerCount = 1;
+        blit_region.srcOffsets[1] = blit_size;
+
+        blit_region.dstSubresource.aspectMask = destination.get_aspect_mask();
+        blit_region.dstSubresource.layerCount = 1;
+        blit_region.dstOffsets[1] = blit_size;
+
+        vkCmdBlitImage(handle, source.get_handle(), source.get_layout(),
+                       destination.get_handle(), destination.get_layout(),
+                       1, &blit_region, filter);
+    }
+
+    void CommandBuffer::copy_image(Image& source, Image& destination) {
+        VkImageCopy copy_region {  };
+
+        copy_region.srcSubresource.aspectMask = source.get_aspect_mask();
+        copy_region.srcSubresource.layerCount = 1;
+        copy_region.dstSubresource.aspectMask = destination.get_aspect_mask();
+        copy_region.dstSubresource.layerCount = 1;
+
+        copy_region.extent = destination.get_extent();
+
+        vkCmdCopyImage(handle, source.get_handle(), source.get_layout(),
+                       destination.get_handle(), destination.get_layout(),
+                       1, &copy_region);
+    }
+
     void CommandBuffer::copy_buffer(Buffer& source, Buffer& destination,
                                     std::uint32_t source_offset,
                                     std::uint32_t destination_offset) {

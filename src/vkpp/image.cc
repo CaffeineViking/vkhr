@@ -62,8 +62,33 @@ namespace vkpp {
         }
     }
 
+    Image::Image(VkDevice logical_device, VkImage image,
+                 std::uint32_t width, std::uint32_t height, VkFormat format,
+                 VkImageUsageFlags usage, std::uint32_t mip_levels,
+                 VkSampleCountFlagBits samples, VkImageTiling tiling_mode,
+                 bool destroy)
+                : layout { VK_IMAGE_LAYOUT_UNDEFINED },
+                  tiling_mode { VK_IMAGE_TILING_OPTIMAL },
+                  sharing_mode { VK_SHARING_MODE_EXCLUSIVE },
+                  device { logical_device },
+                  handle { image },
+                  destroy { destroy } {
+        this->format       = format;
+
+        if ((usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) != 0)
+            this->aspect_mask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        else
+            this->aspect_mask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+        this->extent = { width, height, 1 };
+        this->mip_levels = mip_levels;
+
+        this->samples = samples;
+        this->usage = usage;
+    }
+
     Image::~Image() noexcept {
-        if (handle != VK_NULL_HANDLE) {
+        if (handle != VK_NULL_HANDLE && destroy) {
             vkDestroyImage(device, handle, nullptr);
         }
     }
@@ -82,6 +107,8 @@ namespace vkpp {
 
         swap(lhs.handle, rhs.handle);
         swap(lhs.device, rhs.device);
+
+        swap(lhs.destroy, rhs.destroy);
 
         swap(lhs.extent, rhs.extent);
         swap(lhs.usage,  rhs.usage);
@@ -207,6 +234,39 @@ namespace vkpp {
         command_buffer.pipeline_barrier(src_stage, dst_stage,
                                         barrier);
         layout = to;
+    }
+
+    void Image::transition(CommandBuffer& command_buffer,
+                           VkAccessFlags src_access, VkAccessFlags dst_access,
+                           VkImageLayout src_layout, VkImageLayout dst_layout,
+                           VkPipelineStageFlags source_pipeline_stage,
+                           VkPipelineStageFlags destination_pipeline_stage) {
+        VkImageMemoryBarrier barrier;
+        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier.pNext = nullptr;
+
+        barrier.oldLayout = src_layout;
+        barrier.newLayout = dst_layout;
+
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+
+        barrier.image = get_handle();
+
+        barrier.subresourceRange.aspectMask = get_aspect_mask();
+
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.baseArrayLayer = 0;
+        barrier.subresourceRange.layerCount = 1;
+
+        barrier.srcAccessMask = src_access;
+        barrier.dstAccessMask = dst_access;
+
+        command_buffer.pipeline_barrier(source_pipeline_stage,
+                                        destination_pipeline_stage,
+                                        barrier);
+        layout = dst_layout;
     }
 
     void swap(DeviceImage& lhs, DeviceImage& rhs) {
