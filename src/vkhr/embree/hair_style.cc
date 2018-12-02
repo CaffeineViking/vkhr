@@ -42,7 +42,7 @@ namespace vkhr {
                                       light_source.get_intensity(),
                                       80.0f, glm::normalize(tangent),
                                       light_source.get_direction(),
-                                      glm::vec3 { 0.0f, 0.0f, 0.0f });
+                                      glm::vec3 { 0.0, 0.0, -1.0f });
             return glm::vec4 { shading, 1.0f };
         }
 
@@ -56,8 +56,8 @@ namespace vkhr {
                                         const glm::vec3& tangent,
                                         const glm::vec3& light,
                                         const glm::vec3& eye) {
-            float cosTL = glm::dot(tangent, light);
-            float cosTE = glm::dot(tangent, eye);
+            float cosTL = std::abs(glm::dot(light, tangent));
+            float cosTE = std::abs(glm::dot(eye,   tangent));
 
             float cosTL_squared = cosTL*cosTL;
             float cosTE_squared = cosTE*cosTE;

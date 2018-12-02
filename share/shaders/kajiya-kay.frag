@@ -27,7 +27,7 @@ void main() {
 
     vec3 shading = kajiya_kay(hair_color, light_color, 80.0,
                               fs_in.tangent, light_position,
-                              vec3(0, 0, 0)); // view space.
+                              vec3(0, 0, -1)); // view space
 
     color = vec4(shading, 1.0f);
 }

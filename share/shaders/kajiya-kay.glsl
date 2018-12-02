@@ -1,6 +1,6 @@
-vec3 kajiya_kay(vec3 diffuse, vec3 specular, float p, vec3 tangent, vec3 dir, vec3 eye) {
-    float cosTL = dot(tangent, dir);
-    float cosTE = dot(tangent, eye);
+vec3 kajiya_kay(vec3 diffuse, vec3 specular, float p, vec3 tangent, vec3 light, vec3 eye) {
+    float cosTL = abs(dot(light, tangent));
+    float cosTE = abs(dot(eye,   tangent));
 
     float cosTL_squared = cosTL*cosTL;
     float cosTE_squared = cosTE*cosTE;
@@ -12,7 +12,7 @@ vec3 kajiya_kay(vec3 diffuse, vec3 specular, float p, vec3 tangent, vec3 dir, ve
     float sinTE = one_minus_cosTE_squared / sqrt(one_minus_cosTE_squared);
 
     vec3 diffuse_colors = diffuse  * sinTL;
-    vec3 specular_color = specular * pow((cosTL * cosTE + sinTL * sinTE), p);
+    vec3 specular_color = specular * pow(cosTL * cosTE + sinTL * sinTE, p);
 
     return diffuse_colors + specular_color;
 }
