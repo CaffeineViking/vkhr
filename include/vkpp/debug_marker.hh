@@ -26,6 +26,7 @@ namespace vkpp {
         static void begin(CommandBuffer&  command_buffer, const char* name, const glm::vec4& = glm::vec4 { 0.0f });  
         static void insert(CommandBuffer& command_buffer, const char* name, const glm::vec4& = glm::vec4 { 0.0f });  
         static void end(CommandBuffer&    command_buffer);
+        static void close(CommandBuffer&  command_buffer);
 
     private:
         static PFN_vkSetDebugUtilsObjectTagEXT vkSetDebugUtilsObjectTagEXT;

@@ -13,8 +13,7 @@ namespace vkhr {
         class Drawable {
         public:
             virtual ~Drawable() noexcept = default;
-            virtual void draw(vkpp::CommandBuffer& command_buffer,
-                              std::size_t framebuffer_number) = 0;
+            virtual void draw(vkpp::CommandBuffer&) = 0;
         };
     }
 }

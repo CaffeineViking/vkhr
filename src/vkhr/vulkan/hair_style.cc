@@ -46,13 +46,13 @@ namespace vkhr {
                                          "Hair Style Index Device Memory");
         }
 
-        void HairStyle::draw(vk::CommandBuffer& command_list, std::size_t i) {
-            command_list.bind_vertex_buffer(0, positions, 0);
-            command_list.bind_vertex_buffer(1, tangents,  0);
+        void HairStyle::draw(vk::CommandBuffer& command_buffer) {
+            command_buffer.bind_vertex_buffer(0, positions, 0);
+            command_buffer.bind_vertex_buffer(1, tangents,  0);
 
-            command_list.bind_index_buffer(vertices);
+            command_buffer.bind_index_buffer(vertices);
 
-            command_list.draw_indexed(vertices.count());
+            command_buffer.draw_indexed(vertices.count());
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {

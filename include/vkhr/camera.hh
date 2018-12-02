@@ -68,9 +68,11 @@ namespace vkhr {
         const glm::mat4& get_view_matrix() const;
         const glm::mat4& get_projection_matrix() const;
 
-        static MVP Identity_Transform;
+        MVP& get_vp() const;
 
-        MVP& get_mvp(const glm::mat4& model) const;
+        MVP& get_mvp(const glm::mat4& model_mat) const;
+
+        static MVP IdentityMVP;
 
     private:
         void recalculate_view_matrix() const;

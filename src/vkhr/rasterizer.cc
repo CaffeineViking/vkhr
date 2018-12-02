@@ -138,28 +138,38 @@ namespace vkhr {
     void Rasterizer::draw(const SceneGraph& scene_graph) {
         auto next_image = swap_chain.acquire_next_image(image_available[frame]);
 
+        auto& camera = scene_graph.get_new_camera();
         light_data[frame].update(scene_graph.light);
         command_buffer_done[frame].wait_and_reset();
 
         command_buffers[frame].begin();
+
         vk::DebugMarker::begin(command_buffers[frame], "Render into Shadow Map");
+        command_buffers[frame].begin_render_pass(depth_pass, shadow_map.frame());
+        depth_view_pipeline.make_current_pipeline(command_buffers[frame], frame);
+
+        shadow_map.update_dynamic_viewport_scissor_depth(command_buffers[frame]);
+        render_node(scene_graph, camera.get_vp(), command_buffers[frame], frame);
+
+        command_buffers[frame].end_render_pass();
+        vk::DebugMarker::close(command_buffers[frame]);
+
         vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        auto camera_node = scene_graph.get_camera();
-
         vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles");
         hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
-        for (auto& hair_styles_node : scene_graph.get_nodes_with_hair_styles()) {
-            auto& mvp = camera_node.get_mvp(hair_styles_node->get_matrix());
-            draw_hair(hair_styles_node, command_buffers[frame], frame, mvp);
-        } vk::DebugMarker::end(command_buffers[frame]);
+
+        render_hair(scene_graph, camera.get_vp(), command_buffers[frame], frame);
+
+        vk::DebugMarker::close(command_buffers[frame]);
 
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::end(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame]);
+
         command_buffers[frame].end();
 
         device.get_graphics_queue().submit(command_buffers[frame], image_available[frame],
@@ -169,13 +179,31 @@ namespace vkhr {
         frame = fetch_next_frame();
     }
 
-    void Rasterizer::draw_hair(const SceneGraph::Node* hair_node,
-                               vk::CommandBuffer& command_buffer,
-                               std::size_t frame, MVP& transform) {
-        this->transform[frame].update(transform); // MVP stuff.
-        for (auto& hair_style : hair_node->get_hair_styles()) {
-            hair_styles[hair_style].draw(command_buffer, frame);
-        }
+    void Rasterizer::render_node(const SceneGraph& scene_graph, MVP& view_projection,
+                                  vk::CommandBuffer& command_list, std::size_t frame) {
+        for (auto& node : scene_graph.get_nodes()) 
+            render_node(&node, view_projection,
+                        command_list, frame);
+    }
+
+    void Rasterizer::render_node(const SceneGraph::Node* node, MVP& view_projection,
+                                 vk::CommandBuffer& command_list, std::size_t frame) {
+        render_hair(node, view_projection, command_list, frame);
+    }
+
+    void Rasterizer::render_hair(const SceneGraph& scene_graph, MVP& view_projection,
+                                  vk::CommandBuffer& command_list, std::size_t frame) {
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles())
+            render_hair(hair_node, view_projection,
+                        command_list, frame);
+    }
+
+    void Rasterizer::render_hair(const SceneGraph::Node* node, MVP& view_projection,
+                                 vk::CommandBuffer& command_buffer, std::size_t frame) {
+        view_projection.model = node->get_model_matrix();
+        transform[frame].update(view_projection);
+        for (auto& hair_style : node->get_hair_styles())
+            hair_styles[hair_style].draw(command_buffer);
     }
 
     void Rasterizer::draw(Image& image) {
@@ -184,20 +212,22 @@ namespace vkhr {
         command_buffer_done[frame].wait_and_reset();
 
         command_buffers[frame].begin();
+
         raytraced_image.update(billboards_pipeline.descriptor_sets[frame], image,
                                command_buffers[frame]); // Staged image upload...
         vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer");
-        billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
+        billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
 
-        transform[frame].update(Camera::Identity_Transform);
-        raytraced_image.draw(command_buffers[frame], frame);
+        transform[frame].update(Camera::IdentityMVP);
+        raytraced_image.draw(command_buffers[frame]);
 
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::end(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame]);
+
         command_buffers[frame].end();
 
         device.get_graphics_queue().submit(command_buffers[next_image], image_available[frame],

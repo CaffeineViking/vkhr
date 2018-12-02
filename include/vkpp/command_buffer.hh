@@ -60,6 +60,12 @@ namespace vkpp {
                                Framebuffer& framebuffer,
                                VkClearValue clear_color);
 
+        void set_viewport(VkViewport& viewport);
+        void set_scissor(VkRect2D& new_scissor);
+        void set_depth_bias(float constant_factor,
+                            float clamp,
+                            float slope_factor);
+
         void bind_pipeline(Pipeline& pipeline);
         void bind_descriptor_set(DescriptorSet& descriptor_set,
                                  Pipeline& pipeline);

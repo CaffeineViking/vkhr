@@ -27,8 +27,7 @@ namespace vkhr {
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& scene_renderer);
 
-            void draw(vk::CommandBuffer& command_buffer,
-                      std::size_t framebuffer) override;
+            void draw(vk::CommandBuffer& command_buffer) override;
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

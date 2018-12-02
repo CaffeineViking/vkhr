@@ -35,8 +35,7 @@ namespace vkhr {
             void update(vk::DescriptorSet&, Image& i, vk::CommandBuffer&);
             void update(vk::DescriptorSet&, vk::ImageView&, vk::Sampler&);
 
-            void draw(vk::CommandBuffer& command_buffer,
-                      std::size_t framebuffer) override;
+            void draw(vk::CommandBuffer& command_buffer) override;
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

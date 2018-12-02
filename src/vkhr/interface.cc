@@ -168,10 +168,10 @@ namespace vkhr {
 
     void Interface::draw(vkpp::CommandBuffer& command_buffer) {
         if (!gui_visibility) {
-            vk::DebugMarker::begin(command_buffer, "Render Interface");
+            vk::DebugMarker::begin(command_buffer, "Render a ImGui Overlay");
             ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
                                             command_buffer.get_handle());
-            vk::DebugMarker::end(command_buffer);
+            vk::DebugMarker::close(command_buffer);
         }
     }
 

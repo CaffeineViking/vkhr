@@ -48,8 +48,8 @@ namespace vkhr {
             descriptor_set.write(1, image_view, image_sampler);
         }
 
-        void Billboard::draw(vk::CommandBuffer& command_list, std::size_t i) {
-            command_list.draw(6, 1); // WARNING: this isn't how a
+        void Billboard::draw(vk::CommandBuffer& command_buffer) {
+            command_buffer.draw(6, 1); // WARNING: this isn't how
             // billboard class should actually look like since it
             // won't perform very well. The proper way is to make
             // a storage buffer and instance draw the billboards!

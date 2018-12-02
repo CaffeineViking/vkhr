@@ -54,6 +54,28 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, sampler, VK_OBJECT_TYPE_SAMPLER, "Depth Map Sampler");
+
+            viewport = VkViewport {
+                0.0f, 0.0f,
+                static_cast<float>(width),
+                static_cast<float>(height),
+                0.0f, 1.0f
+            };
+
+            scissor = VkRect2D {
+                { 0, 0 },
+                { width, height }
+            };
+        }
+
+        void DepthView::update_dynamic_viewport_scissor_depth(vk::CommandBuffer& command_list) {
+            command_list.set_viewport(viewport);
+            command_list.set_scissor(scissor);
+            command_list.set_depth_bias(constant_factor, clamp, slope_factor);
+        }
+
+        vk::Framebuffer& DepthView::frame() {
+            return framebuffer;
         }
 
         VkImageLayout DepthView::get_read_depth_layout() {

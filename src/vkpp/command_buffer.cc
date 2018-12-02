@@ -176,6 +176,22 @@ namespace vkpp {
         vkCmdBeginRenderPass(handle, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
     }
 
+    void CommandBuffer::set_viewport(VkViewport& viewport) {
+        vkCmdSetViewport(handle, 0, 1, &viewport);
+    }
+
+    void CommandBuffer::set_scissor(VkRect2D& new_scissor) {
+        vkCmdSetScissor(handle, 0, 1, &new_scissor);
+    }
+
+    void CommandBuffer::set_depth_bias(float constant_factor,
+                                       float clamp,
+                                       float slope_factor) {
+        vkCmdSetDepthBias(handle, constant_factor,
+                                  clamp,
+                                  slope_factor);
+    }
+
     void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
         vkCmdBindPipeline(handle, pipeline.get_bind_point(), pipeline.get_handle());
     }

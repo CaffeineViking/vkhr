@@ -21,10 +21,14 @@ namespace vkhr {
             DepthView(const std::uint32_t width, const std::uint32_t height,
                       const std::uint32_t depth, Rasterizer& vulkan_renderer);
 
+            void update_dynamic_viewport_scissor_depth(vk::CommandBuffer& cb);
+
             VkFormat          get_attachment_format();
             VkImageLayout     get_read_depth_layout();
             VkImageLayout     get_attachment_layout();
             VkImageUsageFlags get_image_usage_flags();
+
+            vk::Framebuffer& frame();
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
@@ -35,6 +39,13 @@ namespace vkhr {
             vk::ImageView image_view;
             vk::Framebuffer framebuffer;
             vk::Sampler sampler;
+
+            VkViewport viewport;
+            VkRect2D scissor;
+
+            float constant_factor;
+            float clamp;
+            float slope_factor;
         };
     }
 }

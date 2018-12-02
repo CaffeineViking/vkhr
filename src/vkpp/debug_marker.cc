@@ -88,6 +88,12 @@ namespace vkpp {
         }
     }
 
+    void DebugMarker::close(CommandBuffer& command_buffer) {
+        if (vkCmdEndDebugUtilsLabelEXT) {
+            vkCmdEndDebugUtilsLabelEXT(command_buffer.get_handle());
+        }
+    }
+
     PFN_vkSetDebugUtilsObjectTagEXT DebugMarker::vkSetDebugUtilsObjectTagEXT = nullptr;
     PFN_vkSetDebugUtilsObjectNameEXT DebugMarker::vkSetDebugUtilsObjectNameEXT = nullptr;
     PFN_vkCmdBeginDebugUtilsLabelEXT DebugMarker::vkCmdBeginDebugUtilsLabelEXT = nullptr; 

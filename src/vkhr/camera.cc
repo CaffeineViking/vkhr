@@ -157,10 +157,10 @@ namespace vkhr {
         return projection_matrix;
     }
 
-    MVP& Camera::get_mvp(const glm::mat4& mdl) const {
+    MVP& Camera::get_mvp(const glm::mat4& model_mat) const {
         mvp_matrix.view = get_view_matrix();
         mvp_matrix.projection = get_projection_matrix();
-        mvp_matrix.model = mdl;
+        mvp_matrix.model = model_mat;
         return mvp_matrix;
     }
 
@@ -203,7 +203,13 @@ namespace vkhr {
         viewing_plane_dirty = false;
     }
 
-    MVP Camera::Identity_Transform {
+    MVP& Camera::get_vp() const {
+        mvp_matrix.view = get_view_matrix();
+        mvp_matrix.projection = get_projection_matrix();
+        return mvp_matrix;
+    }
+
+    MVP Camera::IdentityMVP {
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f }

@@ -280,6 +280,10 @@ namespace vkhr {
         return camera;
     }
 
+    Camera& SceneGraph::get_new_camera() const {
+        return camera;
+    }
+
     const std::string& SceneGraph::get_scene_path() const {
         return scene_path;
     }

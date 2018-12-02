@@ -32,9 +32,11 @@ namespace vkhr {
 
         void draw(const SceneGraph& scene) override;
         void draw(Image& fullscreen_image);
-        void draw_hair(const SceneGraph::Node* node,
-                  vk::CommandBuffer& command_buffer,
-                  std::size_t fbi, MVP& mvp_matrix);
+
+        void render_node(const SceneGraph& scene_graph, MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void render_node(const SceneGraph::Node* node,  MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void render_hair(const SceneGraph& scene_graph, MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void render_hair(const SceneGraph::Node* node,  MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
 
         void recompile();
 

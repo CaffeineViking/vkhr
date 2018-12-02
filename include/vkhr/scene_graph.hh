@@ -52,7 +52,8 @@ namespace vkhr {
         const std::list<LightSource>& get_light_sources() const;
 
         const Camera& get_camera() const;
-        Camera& get_camera();
+              Camera& get_camera();
+        Camera&   get_new_camera() const;
 
         const std::string& get_scene_path() const;
 
@@ -165,7 +166,7 @@ namespace vkhr {
         std::vector<Node*> model_node_cache;
 
         Node* root;
-        Camera camera;
+        mutable Camera camera;
         std::vector<Node> nodes;
         std::list<LightSource> lights;
 
