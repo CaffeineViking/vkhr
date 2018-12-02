@@ -57,8 +57,8 @@ namespace vkhr {
                                         const glm::vec3& tangent,
                                         const glm::vec3& light,
                                         const glm::vec3& eye) {
-            float cosTL = std::abs(glm::dot(light, tangent));
-            float cosTE = std::abs(glm::dot(eye,   tangent));
+            float cosTL = glm::dot(light, tangent);
+            float cosTE = glm::dot(eye,   tangent);
 
             float cosTL_squared = cosTL*cosTL;
             float cosTE_squared = cosTE*cosTE;
@@ -66,13 +66,13 @@ namespace vkhr {
             float one_minus_cosTL_squared = 1.0f - cosTL_squared;
             float one_minus_cosTE_squared = 1.0f - cosTE_squared;
 
-            float sinTL = one_minus_cosTL_squared / std::sqrt(one_minus_cosTL_squared);
-            float sinTE = one_minus_cosTE_squared / std::sqrt(one_minus_cosTE_squared);
+            float sinTL = std::sqrt(one_minus_cosTL_squared);
+            float sinTE = std::sqrt(one_minus_cosTE_squared);
 
-            glm::vec3 diffuse_colors = diffuse  * sinTL;
-            glm::vec3 specular_color = specular * std::pow((cosTL * cosTE + sinTL * sinTE), p);
+            glm::vec3 diffuse_colors  = diffuse  * sinTL;
+            glm::vec3 specular_colors = specular * glm::clamp(std::pow((cosTL * cosTE + sinTL * sinTE), p), 0.0f, 1.0f);
 
-            return diffuse_colors + specular_color;
+            return diffuse_colors + specular_colors;
         }
     }
 }
