@@ -38,10 +38,11 @@ namespace vkhr {
             auto hair_diffuse = glm::vec3(0.80f, 0.57f, 0.32f) * 0.4f;
             auto tangent = surface_intersection.get_uniform_tangent();
             tangent = projection_camera.get_view_matrix() * tangent;
+            auto light_direction = projection_camera.get_view_matrix() * light_source.get_vector();
             auto shading = kajiya_kay(hair_diffuse,
                                       light_source.get_intensity(),
                                       80.0f, glm::normalize(tangent),
-                                      light_source.get_direction(),
+                                      glm::vec3 { light_direction },
                                       glm::vec3 { 0.0, 0.0, -1.0f });
             return glm::vec4 { shading, 1.0f };
         }

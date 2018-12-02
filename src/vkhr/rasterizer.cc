@@ -147,8 +147,8 @@ namespace vkhr {
         vk::DebugMarker::begin(command_buffers[frame], "Render into Shadow Map");
         command_buffers[frame].begin_render_pass(depth_pass, shadow_map.frame());
         depth_view_pipeline.make_current_pipeline(command_buffers[frame], frame);
-
         shadow_map.update_dynamic_viewport_scissor_depth(command_buffers[frame]);
+
         render_node(scene_graph, camera.get_vp(), command_buffers[frame], frame);
 
         command_buffers[frame].end_render_pass();
