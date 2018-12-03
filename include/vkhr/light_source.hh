@@ -39,7 +39,7 @@ namespace vkhr {
         void update_view_matrix();
         void set_projection(float far, float fov = 45.0f, float near = 1.0f);
 
-        MVP& get_transform() const;
+        MVP& get_mvp(const glm::mat4& model_matrix) const;
 
         glm::vec3 get_intensity() const;
         void set_intensity(const glm::vec3& intensity);

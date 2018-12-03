@@ -1,13 +1,15 @@
 #include <vkhr/vulkan/depth_map.hh>
 
 #include <vkhr/rasterizer.hh>
+#include <vkhr/light_source.hh>
 
 #include <vkpp/debug_marker.hh>
 
 namespace vkhr {
     namespace vulkan {
         DepthView::DepthView(const std::uint32_t width, const std::uint32_t height,
-                             const std::uint32_t depth, Rasterizer& vulkan_renderer) {
+                             Rasterizer& vulkan_renderer, const LightSource* light_source)
+                            : light { light_source } {
             image = vk::Image {
                 vulkan_renderer.device,
                 width, height,
@@ -68,12 +70,27 @@ namespace vkhr {
             };
         }
 
+        DepthView::DepthView(const std::uint32_t width, Rasterizer& vulkan_renderer,
+                             const LightSource& light_source)
+                            : DepthView { width, width,
+                                          vulkan_renderer,
+                                          &light_source } { }
+        DepthView::DepthView(const std::uint32_t width,   const std::uint32_t height,
+                             Rasterizer& vulkan_renderer, const LightSource& light_source)
+                            : DepthView { width, height,
+                                          vulkan_renderer,
+                                          &light_source } { }
+        DepthView::DepthView(Rasterizer& vulkan_renderer)
+                            : DepthView { vulkan_renderer.swap_chain.get_width(),
+                                          vulkan_renderer.swap_chain.get_height(),
+                                          vulkan_renderer, nullptr } { }
+
         void DepthView::update_dynamic_viewport_scissor_depth(vk::CommandBuffer& command_list) {
             command_list.set_viewport(viewport);
             command_list.set_scissor(scissor);
         }
 
-        vk::Framebuffer& DepthView::frame() {
+        vk::Framebuffer& DepthView::get_framebuffer() {
             return framebuffer;
         }
 
@@ -133,7 +150,7 @@ namespace vkhr {
                                                                                 "Depth Map Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0, vulkan_renderer.shadow_map_transform[i]);
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.lights_vp[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

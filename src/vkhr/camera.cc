@@ -209,7 +209,7 @@ namespace vkhr {
         return mvp_matrix;
     }
 
-    MVP Camera::IdentityMVP {
+    MVP Camera::IdentityVPMatrix {
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f }

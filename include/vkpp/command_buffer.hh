@@ -11,6 +11,8 @@
 
 #include <vector>
 
+namespace vkhr::vulkan { class DepthView; }
+
 namespace vkpp {
     class Device;
     class Queue;
@@ -58,7 +60,7 @@ namespace vkpp {
         void copy_buffer_image(Buffer& source, Image& destination);
 
         void begin_render_pass(RenderPass& render_pass,
-                               Framebuffer& framebuffer);
+                               vkhr::vulkan::DepthView&);
         void begin_render_pass(RenderPass& render_pass,
                                Framebuffer& framebuffer,
                                VkClearValue clear_color);

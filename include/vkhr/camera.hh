@@ -72,7 +72,7 @@ namespace vkhr {
 
         MVP& get_mvp(const glm::mat4& model_mat) const;
 
-        static MVP IdentityMVP;
+        static MVP IdentityVPMatrix;
 
     private:
         void recalculate_view_matrix() const;

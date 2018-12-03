@@ -32,7 +32,7 @@ namespace vkhr {
             void load(const vkhr::Billboard& hair_style,
                       vkhr::Rasterizer& vulkan_rendrer);
 
-            void update(vk::DescriptorSet&, Image& i, vk::CommandBuffer&);
+            void send_img(vk::DescriptorSet&, Image&, vk::CommandBuffer&);
             void update(vk::DescriptorSet&, vk::ImageView&, vk::Sampler&);
 
             void draw(vk::CommandBuffer& command_buffer) override;

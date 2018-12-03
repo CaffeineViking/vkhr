@@ -39,8 +39,8 @@ namespace vkhr {
             // TODO: case where an image is already provided...
         }
 
-        void Billboard::update(vk::DescriptorSet& descriptor_set, vkhr::Image& image, vk::CommandBuffer& command_buffer) {
-            billboard_image.staged_copy(image, command_buffer);
+        void Billboard::send_img(vk::DescriptorSet& descriptor_set, vkhr::Image& img, vk::CommandBuffer& command_buffer) {
+            billboard_image.staged_copy(img, command_buffer);
             update(descriptor_set, billboard_view, billboard_sampler);
         }
 
@@ -92,7 +92,7 @@ namespace vkhr {
                                                                                 "Billboards Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0, vulkan_renderer.transform[i]);
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

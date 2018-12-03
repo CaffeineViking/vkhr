@@ -95,8 +95,8 @@ namespace vkhr {
                                                                                 "Hair Style Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0u, vulkan_renderer.transform[i]);
-                pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_data[i]);
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
+                pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_buf[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

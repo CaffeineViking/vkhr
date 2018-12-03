@@ -14,7 +14,7 @@ namespace vkhr {
 
     void SceneGraph::traverse_nodes() {
         destroy_previous_node_caches();
-        build_lights_data_cache(light);
+        build_lights_data_cache(lights);
         const glm::mat4 identity { 1 };
         traverse(*root, identity); // I
     }
@@ -43,8 +43,8 @@ namespace vkhr {
 
         if (auto lights = parser.find("lights"); lights != parser.end()) {
             for (auto& light : *lights) {
-                this->lights.emplace_back(vkhr::LightSource{});
-                if (!parse_light(light, this->lights.back())) {
+                this->light_sources.emplace_back(vkhr::LightSource{});
+                if (!parse_light(light, this->light_sources.back())) {
                     return set_error_state(Error::ReadingLight);
                 }
             }
@@ -274,11 +274,11 @@ namespace vkhr {
     }
 
     const std::list<LightSource>& SceneGraph::get_light_sources() const {
-        return lights;
+        return light_sources;
     }
 
     const std::list<LightSource>& SceneGraph::get_lights() const {
-        return lights;
+        return light_sources;
     }
 
     const Camera& SceneGraph::get_camera() const {
@@ -439,9 +439,9 @@ namespace vkhr {
     }
 
     void SceneGraph::build_lights_data_cache(Lights& buffer) {
-        buffer.lights_enabled_count = lights.size();
+        buffer.lights_enabled_count = light_sources.size();
         std::size_t ln { 0 };
-        for (const auto& light_source : lights) {
+        for (const auto& light_source : light_sources) {
             buffer.lights[ln++] = light_source.get_buffer();
         }
     }

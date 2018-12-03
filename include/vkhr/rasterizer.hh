@@ -27,16 +27,16 @@ namespace vkhr {
         void build_pipelines();
 
         void load(const SceneGraph& scene) override;
+        void update(const SceneGraph& scene_graphs);
 
         std::uint32_t fetch_next_frame();
 
         void draw(const SceneGraph& scene) override;
         void draw(Image& fullscreen_image);
 
-        void render_node(const SceneGraph& scene_graph, MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void render_node(const SceneGraph::Node* node,  MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void render_hair(const SceneGraph& scene_graph, MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void render_hair(const SceneGraph::Node* node,  MVP& view_projection, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void render_scene_into_shadow_map(const SceneGraph& scene_to_render, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void draw_hairs(const SceneGraph& scene_graph, const Camera& camera, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void draw_hairs(const SceneGraph& scene_graph, const LightSource* l, vk::CommandBuffer& command_buffer, std::size_t frame);
 
         void recompile();
 
@@ -60,22 +60,21 @@ namespace vkhr {
 
         std::vector<vkpp::Framebuffer> framebuffers;
         std::vector<vk::Semaphore> image_available, render_complete;
-        std::vector<vk::Fence> command_buffer_done;
+        std::vector<vk::Fence> command_buffer_finished;
 
         std::uint32_t frame { 0 };
 
-        std::vector<vk::UniformBuffer> transform;
-        std::vector<vk::UniformBuffer> light_data;
-
-        std::vector<vk::UniformBuffer> shadow_map_transform;
+        std::vector<vk::UniformBuffer> camera_vp;
+        std::vector<vk::UniformBuffer> lights_vp;
+        std::vector<vk::UniformBuffer> light_buf;
 
         vulkan::Pipeline depth_view_pipeline;
         vulkan::Pipeline billboards_pipeline;
         vulkan::Pipeline hair_style_pipeline;
 
-        vulkan::DepthView shadow_map;
+        std::vector<vulkan::DepthView> shadow_maps;
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
-        vulkan::Billboard raytraced_image;
+        vulkan::Billboard fullscreen_billboard;
 
         Interface imgui;
 

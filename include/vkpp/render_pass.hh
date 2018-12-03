@@ -70,7 +70,7 @@ namespace vkpp {
         bool has_depth_attachment() const;
 
         static void mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& window_swap_chain);
-        static void mk_depth_pass(RenderPass& depth_pass, Device& device, vkhr::vulkan::DepthView& d32);
+        static void mk_depth_pass(RenderPass& depth_pass, Device& device);
 
     private:
         std::vector<VkAttachmentDescription> attachments;

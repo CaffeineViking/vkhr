@@ -1,8 +1,9 @@
-#ifndef VKHR_VULKAN_DEPTH_MAP_HH
-#define VKHR_VULKAN_DEPTH_MAP_HH
+#ifndef VKHR_VULKAN_DEPTH_VIEW_HH
+#define VKHR_VULKAN_DEPTH_VIEW_HH
 
 #include <vkhr/vulkan/pipeline.hh>
 #include <vkhr/vulkan/drawable.hh>
+#include <vkhr/light_source.hh>
 
 #include <vkpp/framebuffer.hh>
 #include <vkpp/image.hh>
@@ -17,21 +18,30 @@ namespace vkhr {
     namespace vulkan {
         class DepthView final {
         public:
+            DepthView(const std::uint32_t width, Rasterizer& vulkan_renderer,
+                      const LightSource& light_source);
+            DepthView(const std::uint32_t width,   const std::uint32_t height,
+                      Rasterizer& vulkan_renderer, const LightSource& light_source);
+            DepthView(const std::uint32_t width,   const std::uint32_t height,
+                      Rasterizer& vulkan_renderer, const LightSource* light_source = nullptr);
+
             DepthView() = default;
-            DepthView(const std::uint32_t width, const std::uint32_t height,
-                      const std::uint32_t depth, Rasterizer& vulkan_renderer);
+
+            DepthView(Rasterizer& vulkan_renderer);
 
             void update_dynamic_viewport_scissor_depth(vk::CommandBuffer& cb);
 
-            VkFormat          get_attachment_format();
-            VkImageLayout     get_read_depth_layout();
-            VkImageLayout     get_attachment_layout();
-            VkImageUsageFlags get_image_usage_flags();
+            static VkFormat          get_attachment_format();
+            static VkImageLayout     get_read_depth_layout();
+            static VkImageLayout     get_attachment_layout();
+            static VkImageUsageFlags get_image_usage_flags();
 
-            vk::Framebuffer& frame();
+            vk::Framebuffer& get_framebuffer();
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
+
+            const LightSource* light { nullptr };
 
         private:
             vk::Image image;

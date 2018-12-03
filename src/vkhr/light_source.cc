@@ -108,7 +108,8 @@ namespace vkhr {
         }
     }
 
-    MVP& LightSource::get_transform() const {
+    MVP& LightSource::get_mvp(const glm::mat4& model_matrix) const {
+        transform.model = model_matrix;
         return transform;
     }
 }

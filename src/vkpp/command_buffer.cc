@@ -1,5 +1,7 @@
 #include <vkpp/command_buffer.hh>
 
+#include <vkhr/vulkan/depth_map.hh>
+
 #include <vkpp/device.hh>
 #include <vkpp/debug_marker.hh>
 #include <vkpp/queue.hh>
@@ -163,25 +165,21 @@ namespace vkpp {
     }
 
     void CommandBuffer::begin_render_pass(RenderPass& render_pass,
-                                          Framebuffer& framebuffer) {
+                                          vkhr::vulkan::DepthView& depth_map) {
         VkRenderPassBeginInfo begin_info;
         begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         begin_info.pNext = nullptr;
 
         begin_info.renderPass = render_pass.get_handle();
-        begin_info.framebuffer = framebuffer.get_handle();
-        begin_info.renderArea.extent = framebuffer.get_extent();
+        begin_info.framebuffer = depth_map.get_framebuffer().get_handle();
+        begin_info.renderArea.extent = depth_map.get_framebuffer().get_extent();
         begin_info.renderArea.offset = { 0, 0 };
 
-        std::vector<VkClearValue> clear_values;
-        if (render_pass.has_depth_attachment()) {
-            VkClearValue depth_clear_value { };
-            depth_clear_value.depthStencil = { 1, 0 };
-            clear_values.push_back(depth_clear_value);
-        }
+        VkClearValue depth_clear_value { };
+        depth_clear_value.depthStencil = { 1.000f, 0u };
 
-        begin_info.pClearValues    = clear_values.data();
-        begin_info.clearValueCount = clear_values.size();
+        begin_info.pClearValues    = &depth_clear_value;
+        begin_info.clearValueCount = 1;
 
         vkCmdBeginRenderPass(handle, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
     }
