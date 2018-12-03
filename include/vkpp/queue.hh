@@ -25,6 +25,10 @@ namespace vkpp {
 
         Queue& submit(CommandBuffer& command_buffer,
                       Semaphore& wait,
+                      Semaphore& signal);
+
+        Queue& submit(CommandBuffer& command_buffer,
+                      Semaphore& wait,
                       VkPipelineStageFlags wait_stage,
                       Semaphore& signal);
 

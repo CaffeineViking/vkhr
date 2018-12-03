@@ -26,6 +26,14 @@ namespace vkpp {
         } return semaphores;
     }
 
+    Semaphore Semaphore::create(Device& device, const char* name) {
+        Semaphore semaphore { device };
+        DebugMarker::object_name(device, semaphore,
+                                 VK_OBJECT_TYPE_SEMAPHORE,
+                                 name);
+        return semaphore;
+    }
+
     Semaphore::Semaphore(Device& logical_device) : device { logical_device.get_handle() } {
         VkSemaphoreCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

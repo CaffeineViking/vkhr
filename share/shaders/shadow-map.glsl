@@ -9,3 +9,13 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
     // We also take into account the transparency of the hair strand to determine how much light might scatter.
     return pow(1.0f - strand_alpha, strand_count); // this gives us "stronger" shadows with deeper hair strand.
 }
+
+float approximate_deep_shadow_4x4_pcf() {
+    float shadow = 0.00f;
+
+    for (float y = -1.5f; y <= +1.5f; y += 1.0f)
+    for (float x = -1.5f; x <= +1.5f; x += 1.0f) {
+    }
+
+    return shadow / 16.0;
+}

@@ -110,7 +110,12 @@ namespace vkhr {
                                   intensity->at(2) });
         } else return set_error_state(Error::ReadingLight);
 
-        light.set_cutoff(parser.value("cutoff", 0.0));
+        light.set_cutoff_factor(parser.value("cutoff", 0.0));
+
+        float distance = glm::distance(camera.get_look_at_point(),
+                                       camera.get_position());
+        light.set_origin(camera.get_look_at_point(), distance);
+        light.set_projection(distance);
 
         return true;
     }

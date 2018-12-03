@@ -119,7 +119,7 @@ namespace vkhr {
         }
 
         shadow_map = vulkan::DepthView {
-            1024, 1024,
+            2048, 2048,
             1,
             *this
         };
@@ -136,7 +136,7 @@ namespace vkhr {
     }
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {
-        auto next_image = swap_chain.acquire_next_image(image_available[frame]);
+        auto frame_image = swap_chain.acquire_next_image(image_available[frame]);
 
         auto& camera = scene_graph.get_new_camera();
         light_data[frame].update(scene_graph.light);
@@ -147,9 +147,10 @@ namespace vkhr {
         vk::DebugMarker::begin(command_buffers[frame], "Render into Shadow Map");
         command_buffers[frame].begin_render_pass(depth_pass, shadow_map.frame());
         depth_view_pipeline.make_current_pipeline(command_buffers[frame], frame);
-        shadow_map.update_dynamic_viewport_scissor_depth(command_buffers[frame]);
 
-        render_node(scene_graph, camera.get_vp(), command_buffers[frame], frame);
+        shadow_map.update_dynamic_viewport_scissor_depth(command_buffers[frame]);
+        auto& light_transform = scene_graph.get_lights().front().get_transform();
+        render_node(scene_graph, light_transform, command_buffers[frame], frame);
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);
@@ -175,7 +176,7 @@ namespace vkhr {
         device.get_graphics_queue().submit(command_buffers[frame], image_available[frame],
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                            render_complete[frame], command_buffer_done[frame]);
-        device.get_present_queue().present(swap_chain, next_image, render_complete[frame]);
+        device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
         frame = fetch_next_frame();
     }
 

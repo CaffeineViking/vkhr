@@ -7,7 +7,8 @@ namespace vkhr {
         set_type(type);
         set_vector(vector);
         set_intensity(intensity);
-        set_cutoff(cutoff_value);
+        set_cutoff_factor(cutoff_value);
+        update_view_matrix();
     }
 
     const LightSource::Buffer& LightSource::get_buffer() const {
@@ -38,6 +39,13 @@ namespace vkhr {
     void LightSource::set_position(const glm::vec3& position) {
         set_type(Type::Point);
         set_vector(position);
+        update_view_matrix();
+    }
+
+    void LightSource::set_projection(float far, float fov, float near) {
+        transform.projection = glm::perspective(glm::radians(fov), 1.0f,
+                                                near, far);
+        transform.projection[1][1] *= -1;
     }
 
     const glm::vec4& LightSource::get_vector() const {
@@ -47,6 +55,7 @@ namespace vkhr {
     void LightSource::set_direction(const glm::vec3& direction) {
         set_type(Type::Directional);
         set_vector(direction);
+        update_view_matrix();
     }
 
     glm::vec3 LightSource::get_direction() const {
@@ -63,11 +72,11 @@ namespace vkhr {
         buffer.intensity[2] = intensity[2];
     }
 
-    void LightSource::set_cutoff(float cutoff) {
+    void LightSource::set_cutoff_factor(float cutoff) {
         buffer.intensity[3] = cutoff;
     }
 
-    float LightSource::get_cutoff() const {
+    float LightSource::get_cutoff_factor() const {
         return buffer.intensity[3];
     }
 
@@ -78,5 +87,28 @@ namespace vkhr {
         buffer.vector[0] = vector[0];
         buffer.vector[1] = vector[1];
         buffer.vector[2] = vector[2];
+    }
+
+    void LightSource::set_origin(const glm::vec3& scene_origin, float distance) {
+        point = scene_origin;
+        if (type == Type::Point) {
+            this->distance = 1.0f;
+        } else {
+            this->distance = distance;
+        }
+        update_view_matrix();
+    }
+
+    void LightSource::update_view_matrix() {
+        if (type == Type::Point) {
+            transform.view = glm::lookAt(get_position(), point, glm::vec3 { 0.0, 1.0, 0.0 });
+        } else {
+            transform.view = glm::lookAt(point + get_direction() * distance,
+                                         point, glm::vec3 { 0.0, 1.0, 0.0 });
+        }
+    }
+
+    MVP& LightSource::get_transform() const {
+        return transform;
     }
 }

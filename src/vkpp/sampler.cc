@@ -18,7 +18,8 @@ namespace vkpp {
                      VkFilter mag_filter,
                      VkSamplerAddressMode wrap_u,
                      VkSamplerAddressMode wrap_v,
-                     bool anisotropy)
+                     bool anisotropy,
+                     bool enable_compare_less_op)
                     : min_filter { min_filter },
                       mag_filter { mag_filter },
                       wrap_u { wrap_u },
@@ -49,8 +50,14 @@ namespace vkpp {
         create_info.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
 
         create_info.unnormalizedCoordinates = VK_FALSE;
-        create_info.compareEnable = VK_FALSE;
-        create_info.compareOp = VK_COMPARE_OP_ALWAYS;
+
+        if (enable_compare_less_op) {
+            create_info.compareEnable = VK_TRUE;
+            create_info.compareOp = VK_COMPARE_OP_LESS;
+        } else {
+            create_info.compareEnable = VK_FALSE;
+            create_info.compareOp = VK_COMPARE_OP_ALWAYS;
+        }
 
         if (VkResult error = vkCreateSampler(device, &create_info, nullptr, &handle)) {
             throw Exception { error, "couldn't create texture sampler!" };

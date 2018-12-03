@@ -18,6 +18,8 @@ namespace vkpp {
 
         static std::vector<Semaphore> create(Device& device, std::uint32_t n = 1, const char* name = "");
 
+        static Semaphore create(Device& device, const char* name);
+
         Semaphore(Semaphore&& semaphore) noexcept;
         Semaphore& operator=(Semaphore&& semaphore) noexcept;
 

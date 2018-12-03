@@ -65,6 +65,31 @@ namespace vkpp {
 
     Queue& Queue::submit(CommandBuffer& command_buffer,
                          Semaphore& wait,
+                         Semaphore& signal) {
+        VkSubmitInfo submit_info {  };
+        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.pNext = nullptr;
+
+        submit_info.waitSemaphoreCount = 1;
+        submit_info.pWaitSemaphores = &wait.get_handle();
+
+        submit_info.pWaitDstStageMask = nullptr;
+
+        submit_info.commandBufferCount = 1;
+        submit_info.pCommandBuffers = &command_buffer.get_handle();
+
+        submit_info.signalSemaphoreCount = 1;
+        submit_info.pSignalSemaphores = &signal.get_handle();
+
+        if (VkResult error = vkQueueSubmit(handle, 1, &submit_info, VK_NULL_HANDLE)) {
+            throw Exception { error, "couldn't submit command buffer to the queue!" };
+        }
+
+        return *this;
+    }
+
+    Queue& Queue::submit(CommandBuffer& command_buffer,
+                         Semaphore& wait,
                          VkPipelineStageFlags wait_stage,
                          Semaphore& signal,
                          Fence& fence) {

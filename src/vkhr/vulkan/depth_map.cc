@@ -71,7 +71,6 @@ namespace vkhr {
         void DepthView::update_dynamic_viewport_scissor_depth(vk::CommandBuffer& command_list) {
             command_list.set_viewport(viewport);
             command_list.set_scissor(scissor);
-            command_list.set_depth_bias(constant_factor, clamp, slope_factor);
         }
 
         vk::Framebuffer& DepthView::frame() {
@@ -109,9 +108,8 @@ namespace vkhr {
 
             pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_VIEWPORT);
             pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_SCISSOR);
-            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_DEPTH_BIAS);
 
-            pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_FRONT_BIT);
+            pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_BACK_BIT);
 
             pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_depth_test();
