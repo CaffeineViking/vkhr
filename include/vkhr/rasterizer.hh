@@ -67,6 +67,8 @@ namespace vkhr {
         std::vector<vk::UniformBuffer> transform;
         std::vector<vk::UniformBuffer> light_data;
 
+        std::vector<vk::UniformBuffer> shadow_map_transform;
+
         vulkan::Pipeline depth_view_pipeline;
         vulkan::Pipeline billboards_pipeline;
         vulkan::Pipeline hair_style_pipeline;

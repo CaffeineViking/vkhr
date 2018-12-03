@@ -97,8 +97,10 @@ namespace vkhr {
         image_available = vk::Semaphore::create(device, swap_chain.size(), "Image Available Semaphore");
         render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
         command_buffer_done = vk::Fence::create(device, swap_chain.size(), "Command Buffer Done Fence");
+
         light_data = vk::UniformBuffer::create(device, sizeof(Lights), swap_chain.size(), "Light Data");
         transform = vk::UniformBuffer::create(device, sizeof(MVP), swap_chain.size(), "Transform Data");
+        shadow_map_transform = vk::UniformBuffer::create(device, sizeof(MVP), swap_chain.size(), "SMT");
 
         build_pipelines();
 
@@ -150,7 +152,13 @@ namespace vkhr {
 
         shadow_map.update_dynamic_viewport_scissor_depth(command_buffers[frame]);
         auto& light_transform = scene_graph.get_lights().front().get_transform();
-        render_node(scene_graph, light_transform, command_buffers[frame], frame);
+
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
+            light_transform.model = hair_node->get_model_matrix();
+            shadow_map_transform[frame].update(light_transform);
+            for (auto& hair_style : hair_node->get_hair_styles())
+                hair_styles[hair_style].draw(command_buffers[frame]);
+        }
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);

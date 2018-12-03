@@ -133,7 +133,7 @@ namespace vkhr {
                                                                                 "Depth Map Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0, vulkan_renderer.transform[i]);
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.shadow_map_transform[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
