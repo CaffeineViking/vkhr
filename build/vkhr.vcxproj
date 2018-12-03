@@ -506,11 +506,11 @@
     <None Include="..\share\shaders\compute-curve\ReduceDepthBuffer.hlsl" />
     <None Include="..\share\shaders\compute-curve\Reorder.hlsl" />
     <None Include="..\share\shaders\compute-curve\ScanBlockBuffer.hlsl" />
-    <None Include="..\share\shaders\depth_pass.vert" />
+    <None Include="..\share\shaders\depth-pass.vert" />
     <None Include="..\share\shaders\kajiya-kay.frag" />
     <None Include="..\share\shaders\kajiya-kay.glsl" />
     <None Include="..\share\shaders\kajiya-kay.vert" />
-    <None Include="..\share\shaders\light_data.glsl" />
+    <None Include="..\share\shaders\light-data.glsl" />
     <None Include="..\share\shaders\shadow-map.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
