@@ -1,4 +1,4 @@
-#include <vkhr/vulkan/depth_map.hh>
+#include <vkhr/vulkan/depth_view.hh>
 
 #include <vkhr/rasterizer.hh>
 #include <vkhr/light_source.hh>
@@ -131,7 +131,7 @@ namespace vkhr {
             pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_depth_test();
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("depth-pass.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("depth_pass.vert"));
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Depth Map Shader");

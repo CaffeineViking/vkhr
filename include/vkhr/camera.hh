@@ -79,8 +79,8 @@ namespace vkhr {
         void recalculate_projection_matrix() const;
         void recalculate_viewing_plane() const;
 
-        float near_distance { .01 };
-        float far_distance { 1000 };
+        float near_distance { .0100f };
+        float far_distance { 1000.0f };
 
         unsigned width { 1280 }, height { 720 };
 

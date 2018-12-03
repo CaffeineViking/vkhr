@@ -70,7 +70,7 @@ namespace vkhr {
 
     bool SceneGraph::parse_camera(nlohmann::json& parser, Camera& scene_camera) {
         if (auto camera = parser.find("camera"); camera != parser.end()) {
-            scene_camera.set_field_of_view(glm::radians(camera->value("fieldOfView", 45.0)));
+            scene_camera.set_field_of_view(glm::radians(camera->value("fieldOfView", 45.0f)));
             if (auto origin = camera->find("origin"); origin != camera->end()) {
                 scene_camera.set_position({ origin->at(0),
                                             origin->at(1),
@@ -110,7 +110,7 @@ namespace vkhr {
                                   intensity->at(2) });
         } else return set_error_state(Error::ReadingLight);
 
-        light.set_cutoff_factor(parser.value("cutoff", 0.0));
+        light.set_cutoff_factor(parser.value("cutoff", 0.0f));
 
         float distance = glm::distance(camera.get_look_at_point(),
                                        camera.get_position());
@@ -439,7 +439,7 @@ namespace vkhr {
     }
 
     void SceneGraph::build_lights_data_cache(Lights& buffer) {
-        buffer.lights_enabled_count = light_sources.size();
+        buffer.lights_enabled_count = static_cast<int>(light_sources.size());
         std::size_t ln { 0 };
         for (const auto& light_source : light_sources) {
             buffer.lights[ln++] = light_source.get_buffer();

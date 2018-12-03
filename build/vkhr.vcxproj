@@ -380,6 +380,7 @@
     <ClInclude Include="..\include\vkhr\light_source.hh" />
     <ClInclude Include="..\include\vkhr\model.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />
+    <ClInclude Include="..\include\vkhr\pipeline.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer.hh" />
     <ClInclude Include="..\include\vkhr\ray.hh" />
     <ClInclude Include="..\include\vkhr\ray_tracer.hh" />
@@ -387,15 +388,13 @@
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\billboard.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\depth_map.hh" />
+    <ClInclude Include="..\include\vkhr\vulkan\depth_view.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\drawable.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\model.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\pipeline.hh" />
     <ClInclude Include="..\include\vkhr\window.hh" />
     <ClInclude Include="..\include\vkpp\append.hh" />
     <ClInclude Include="..\include\vkpp\application.hh" />
-    <ClInclude Include="..\include\vkpp\barrier.hh" />
     <ClInclude Include="..\include\vkpp\buffer.hh" />
     <ClInclude Include="..\include\vkpp\command_buffer.hh" />
     <ClInclude Include="..\include\vkpp\debug_marker.hh" />
@@ -455,7 +454,7 @@
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
       <ObjectFileName>$(IntDir)\billboard2.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\depth_map.cc" />
+    <ClCompile Include="..\src\vkhr\vulkan\depth_view.cc" />
     <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
       <ObjectFileName>$(IntDir)\hair_style2.obj</ObjectFileName>
     </ClCompile>
@@ -463,7 +462,6 @@
       <ObjectFileName>$(IntDir)\model2.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc" />
-    <ClCompile Include="..\src\vkpp\barrier.cc" />
     <ClCompile Include="..\src\vkpp\buffer.cc" />
     <ClCompile Include="..\src\vkpp\command_buffer.cc" />
     <ClCompile Include="..\src\vkpp\debug_marker.cc" />
@@ -495,23 +493,23 @@
     <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\billboards.frag" />
     <None Include="..\share\shaders\billboards.vert" />
-    <None Include="..\share\shaders\compute-curve\ClipCurves.hlsl" />
-    <None Include="..\share\shaders\compute-curve\Commons.hlsl" />
-    <None Include="..\share\shaders\compute-curve\Constants.hlsl" />
-    <None Include="..\share\shaders\compute-curve\Curves.hlsl" />
-    <None Include="..\share\shaders\compute-curve\DrawStrands.hlsl" />
-    <None Include="..\share\shaders\compute-curve\PrefixSum_1.hlsl" />
-    <None Include="..\share\shaders\compute-curve\PrefixSum_2.hlsl" />
-    <None Include="..\share\shaders\compute-curve\Random.hlsl" />
-    <None Include="..\share\shaders\compute-curve\ReduceDepthBuffer.hlsl" />
-    <None Include="..\share\shaders\compute-curve\Reorder.hlsl" />
-    <None Include="..\share\shaders\compute-curve\ScanBlockBuffer.hlsl" />
-    <None Include="..\share\shaders\depth-pass.vert" />
+    <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl" />
+    <None Include="..\share\shaders\compute_curve\Commons.hlsl" />
+    <None Include="..\share\shaders\compute_curve\Constants.hlsl" />
+    <None Include="..\share\shaders\compute_curve\Curves.hlsl" />
+    <None Include="..\share\shaders\compute_curve\DrawStrands.hlsl" />
+    <None Include="..\share\shaders\compute_curve\PrefixSum_1.hlsl" />
+    <None Include="..\share\shaders\compute_curve\PrefixSum_2.hlsl" />
+    <None Include="..\share\shaders\compute_curve\Random.hlsl" />
+    <None Include="..\share\shaders\compute_curve\ReduceDepthBuffer.hlsl" />
+    <None Include="..\share\shaders\compute_curve\Reorder.hlsl" />
+    <None Include="..\share\shaders\compute_curve\ScanBlockBuffer.hlsl" />
+    <None Include="..\share\shaders\depth_pass.vert" />
     <None Include="..\share\shaders\kajiya-kay.frag" />
     <None Include="..\share\shaders\kajiya-kay.glsl" />
     <None Include="..\share\shaders\kajiya-kay.vert" />
-    <None Include="..\share\shaders\light-data.glsl" />
-    <None Include="..\share\shaders\shadow-map.glsl" />
+    <None Include="..\share\shaders\light_info.glsl" />
+    <None Include="..\share\shaders\shadow_map.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

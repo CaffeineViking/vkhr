@@ -6,8 +6,8 @@
 #include <vkhr/vulkan/model.hh>
 #include <vkhr/vulkan/hair_style.hh>
 #include <vkhr/vulkan/billboard.hh>
-#include <vkhr/vulkan/depth_map.hh>
-#include <vkhr/vulkan/pipeline.hh>
+#include <vkhr/vulkan/depth_view.hh>
+#include <vkhr/pipeline.hh>
 
 #include <vkpp/vkpp.hh>
 
@@ -68,9 +68,9 @@ namespace vkhr {
         std::vector<vk::UniformBuffer> lights_vp;
         std::vector<vk::UniformBuffer> light_buf;
 
-        vulkan::Pipeline depth_view_pipeline;
-        vulkan::Pipeline billboards_pipeline;
-        vulkan::Pipeline hair_style_pipeline;
+        Pipeline depth_view_pipeline;
+        Pipeline billboards_pipeline;
+        Pipeline hair_style_pipeline;
 
         std::vector<vulkan::DepthView> shadow_maps;
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
@@ -84,6 +84,7 @@ namespace vkhr {
         friend class vulkan::Billboard;
         friend class ::vkhr::Interface;
         friend class vulkan::DepthView;
+
     };
 }
 

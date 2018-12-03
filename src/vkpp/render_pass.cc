@@ -5,7 +5,7 @@
 #include <vkpp/debug_marker.hh>
 #include <vkpp/exception.hh>
 
-#include <vkhr/vulkan/depth_map.hh>
+#include <vkhr/vulkan/depth_view.hh>
 
 #include <utility>
 
@@ -20,7 +20,7 @@ namespace vkpp {
         create_info.pNext = nullptr;
         create_info.flags = 0;
 
-        create_info.attachmentCount = attachments.size();
+        create_info.attachmentCount = static_cast<std::uint32_t>(attachments.size());
 
         this->attachments.reserve(attachments.size());
 
@@ -44,7 +44,7 @@ namespace vkpp {
             create_info.pAttachments = nullptr;
         }
 
-        create_info.subpassCount = subpasses.size();
+        create_info.subpassCount = static_cast<std::uint32_t>(subpasses.size());
 
         this->subpasses.resize(subpasses.size());
 
@@ -67,7 +67,7 @@ namespace vkpp {
             this->subpasses[i].inputAttachmentCount = 0;
             this->subpasses[i].pInputAttachments = nullptr;
 
-            this->subpasses[i].colorAttachmentCount = subpass_color_references[i].size();
+            this->subpasses[i].colorAttachmentCount = static_cast<std::uint32_t>(subpass_color_references[i].size());
 
             if (subpass_color_references[i].size() != 0) {
                 this->subpasses[i].pColorAttachments = subpass_color_references[i].data();
@@ -96,7 +96,7 @@ namespace vkpp {
             create_info.pSubpasses = nullptr;
         }
 
-        create_info.dependencyCount = this->dependencies.size();
+        create_info.dependencyCount = static_cast<std::uint32_t>(this->dependencies.size());
 
         this->dependencies.reserve(dependencies.size());
 

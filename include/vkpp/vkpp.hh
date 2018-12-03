@@ -3,7 +3,6 @@
 
 #include <vkpp/append.hh>
 #include <vkpp/application.hh>
-#include <vkpp/barrier.hh>
 #include <vkpp/command_buffer.hh>
 #include <vkpp/debug_messenger.hh>
 #include <vkpp/device.hh>

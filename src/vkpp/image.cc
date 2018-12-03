@@ -68,7 +68,7 @@ namespace vkpp {
                  VkSampleCountFlagBits samples, VkImageTiling tiling_mode,
                  bool destroy)
                 : layout { VK_IMAGE_LAYOUT_UNDEFINED },
-                  tiling_mode { VK_IMAGE_TILING_OPTIMAL },
+                  tiling_mode { tiling_mode },
                   sharing_mode { VK_SHARING_MODE_EXCLUSIVE },
                   device { logical_device },
                   handle { image },

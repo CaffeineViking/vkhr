@@ -12,7 +12,7 @@ namespace vkhr {
             const glm::vec3& direction,
             float near_plane_t_value);
 
-        static constexpr float Epsilon { 0.000001 };
+        static constexpr float Epsilon { 0.000001f };
 
         glm::vec3 get_origin() const;
         glm::vec3 get_direction() const;

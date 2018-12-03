@@ -1,8 +1,8 @@
 #version 460 core
 
-#include "light-data.glsl"
-#include "shadow-map.glsl"
 #include "kajiya-kay.glsl"
+#include "light_info.glsl"
+#include "shadow_map.glsl"
 
 layout(location = 0) in PipelineInput {
     vec3 tangent;

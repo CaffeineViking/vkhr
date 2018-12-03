@@ -2,9 +2,8 @@
 #define VKHR_VULKAN_HAIR_STYLE_HH
 
 #include <vkhr/hair_style.hh>
-#include <vkhr/vulkan/pipeline.hh>
+#include <vkhr/pipeline.hh>
 #include <vkhr/vulkan/drawable.hh>
-#include <vkhr/vulkan/depth_map.hh>
 #include <vkhr/camera.hh>
 
 #include <vkpp/buffer.hh>

@@ -1,6 +1,6 @@
 #include <vkpp/command_buffer.hh>
 
-#include <vkhr/vulkan/depth_map.hh>
+#include <vkhr/vulkan/depth_view.hh>
 
 #include <vkpp/device.hh>
 #include <vkpp/debug_marker.hh>
@@ -205,7 +205,7 @@ namespace vkpp {
         }
 
         begin_info.pClearValues    = clear_values.data();
-        begin_info.clearValueCount = clear_values.size();
+        begin_info.clearValueCount = static_cast<std::uint32_t>(clear_values.size());
 
         vkCmdBeginRenderPass(handle, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
     }

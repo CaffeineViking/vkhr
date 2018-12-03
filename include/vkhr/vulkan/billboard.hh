@@ -2,7 +2,7 @@
 #define VKHR_VULKAN_BILLBOARD_HH
 
 #include <vkhr/billboard.hh>
-#include <vkhr/vulkan/pipeline.hh>
+#include <vkhr/pipeline.hh>
 #include <vkhr/vulkan/drawable.hh>
 #include <vkhr/camera.hh>
 #include <vkhr/paths.hh>

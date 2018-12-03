@@ -1,8 +1,7 @@
 #ifndef VKHR_VULKAN_DRAWABLE_HH
 #define VKHR_VULKAN_DRAWABLE_HH
 
-#include <vkhr/vulkan/pipeline.hh>
-#include <vkhr/vulkan/depth_map.hh>
+#include <vkhr/pipeline.hh>
 
 #include <vkpp/command_buffer.hh>
 #include <vkpp/buffer.hh>

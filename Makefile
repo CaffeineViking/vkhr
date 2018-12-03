@@ -36,9 +36,9 @@ program: FORCE
 
 shaders: FORCE
 	@-utils/glslc.py share/shaders
-	@-utils/glslc.py share/shaders/compute-curve
+	@-utils/glslc.py share/shaders/compute_curve
 	@-make --no-print-directory -C share/shaders
-	@-make --no-print-directory -C share/shaders/compute-curve
+	@-make --no-print-directory -C share/shaders/compute_curve
 
 download: download-modules
 download-modules: FORCE

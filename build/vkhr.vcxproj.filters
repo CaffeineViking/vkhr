@@ -73,8 +73,8 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{0F45D591-7B24-542D-843C-DF03F09ABA8E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\compute-curve">
-      <UniqueIdentifier>{8DAB2AE7-F917-E6E1-C20B-7E3F2E37084A}</UniqueIdentifier>
+    <Filter Include="shaders\compute_curve">
+      <UniqueIdentifier>{FF9ACC5B-6B07-8856-34FB-1FB4A026AABE}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
@@ -939,6 +939,9 @@
     <ClInclude Include="..\include\vkhr\paths.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\pipeline.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\rasterizer.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -960,7 +963,7 @@
     <ClInclude Include="..\include\vkhr\vulkan\billboard.hh">
       <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\depth_map.hh">
+    <ClInclude Include="..\include\vkhr\vulkan\depth_view.hh">
       <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vulkan\drawable.hh">
@@ -972,9 +975,6 @@
     <ClInclude Include="..\include\vkhr\vulkan\model.hh">
       <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\pipeline.hh">
-      <Filter>include\vkhr\vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -982,9 +982,6 @@
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\application.hh">
-      <Filter>include\vkpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkpp\barrier.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkpp\buffer.hh">
@@ -1136,7 +1133,7 @@
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
       <Filter>src\vkhr\vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\depth_map.cc">
+    <ClCompile Include="..\src\vkhr\vulkan\depth_view.cc">
       <Filter>src\vkhr\vulkan</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
@@ -1147,9 +1144,6 @@
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkpp\barrier.cc">
-      <Filter>src\vkpp</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkpp\buffer.cc">
       <Filter>src\vkpp</Filter>
@@ -1234,40 +1228,40 @@
     <None Include="..\share\shaders\billboards.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\ClipCurves.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\Commons.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\Commons.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\Constants.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\Constants.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\Curves.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\Curves.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\DrawStrands.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\DrawStrands.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\PrefixSum_1.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\PrefixSum_1.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\PrefixSum_2.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\PrefixSum_2.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\Random.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\Random.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\ReduceDepthBuffer.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\ReduceDepthBuffer.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\Reorder.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\Reorder.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\compute-curve\ScanBlockBuffer.hlsl">
-      <Filter>shaders\compute-curve</Filter>
+    <None Include="..\share\shaders\compute_curve\ScanBlockBuffer.hlsl">
+      <Filter>shaders\compute_curve</Filter>
     </None>
-    <None Include="..\share\shaders\depth-pass.vert">
+    <None Include="..\share\shaders\depth_pass.vert">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\kajiya-kay.frag">
@@ -1279,10 +1273,10 @@
     <None Include="..\share\shaders\kajiya-kay.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\light-data.glsl">
+    <None Include="..\share\shaders\light_info.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\shadow-map.glsl">
+    <None Include="..\share\shaders\shadow_map.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
