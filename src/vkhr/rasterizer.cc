@@ -101,11 +101,22 @@ namespace vkhr {
 
         load(scene_graph);
 
+        imgui = Interface { window_surface.get_glfw_window(), this };
+
         command_buffers = command_pool.allocate(framebuffers.size());
     }
 
     void Rasterizer::load(const SceneGraph& scene_graph) {
-        imgui = Interface { window_surface.get_glfw_window(), *this };
+        device.wait_idle();
+
+        fullscreen_billboard = vulkan::Billboard {
+            scene_graph.get_camera().get_width(),
+            scene_graph.get_camera().get_height(),
+            *this // images needs to be uploaded!
+        };
+
+        hair_styles.clear();
+        shadow_maps.clear();
 
         for (const auto& hair_style : scene_graph.get_hair_styles()) {
             const auto& hair_style_geometry = hair_style.second;
@@ -116,12 +127,6 @@ namespace vkhr {
 
         for (auto& light_source : scene_graph.get_light_sources())
             shadow_maps.emplace_back(2048, *this, light_source);
-
-        fullscreen_billboard = vulkan::Billboard {
-            scene_graph.get_camera().get_width(),
-            scene_graph.get_camera().get_height(),
-            *this // images needs to be uploaded!
-        };
     }
 
     void Rasterizer::update(const SceneGraph& scene_graph) {

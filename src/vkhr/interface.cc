@@ -14,12 +14,12 @@ namespace vkhr {
                   << std::endl;
     }
 
-    Interface::Interface(Window& window, Rasterizer& vulkan_renderer) {
+    Interface::Interface(Window& window, Rasterizer* vulkan_renderer) {
         IMGUI_CHECKVERSION();
         ctx = ImGui::CreateContext();
         ImGui::GetIO().IniFilename = nullptr;
         ImGui_ImplGlfw_InitForVulkan(window.get_handle(), false);
-        load(vulkan_renderer);
+        load(*vulkan_renderer);
     }
 
     Interface::~Interface() noexcept {

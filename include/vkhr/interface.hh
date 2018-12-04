@@ -25,7 +25,7 @@ namespace vkhr {
     public:
         Interface() = default;
 
-        Interface(Window& w, Rasterizer& rasterizer);
+        Interface(Window& w, Rasterizer* rasterizer);
 
         Interface(Interface&& interface) noexcept;
         Interface& operator=(Interface&& interface) noexcept;
