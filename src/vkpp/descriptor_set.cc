@@ -9,6 +9,22 @@
 #include <utility>
 
 namespace vkpp {
+    DescriptorSet::Layout::Layout(Device& logical_device)
+                                 : device { logical_device.get_handle() } {
+        VkDescriptorSetLayoutCreateInfo create_info;
+        create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        create_info.pNext = nullptr;
+        create_info.flags = 0;
+
+        create_info.bindingCount = 0;
+        create_info.pBindings    = nullptr;
+
+        if (VkResult error = vkCreateDescriptorSetLayout(device, &create_info,
+                                                         nullptr, &handle)) {
+            throw Exception { error, "couldn't create descriptor set layout!" };
+        }
+    }
+
     DescriptorSet::Layout::Layout(Device& logical_device,
                                   const std::vector<DescriptorSet::Binding>& bindings)
                                  : device { logical_device.get_handle() },

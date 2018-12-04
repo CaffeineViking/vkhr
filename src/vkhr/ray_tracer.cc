@@ -72,7 +72,7 @@ namespace vkhr {
         auto& viewing_plane = scene_graph.get_camera().get_viewing_plane();
 
         auto& camera = scene_graph.get_camera();
-        auto& light  = scene_graph.get_lights().front();
+        auto& light  = scene_graph.get_light_sources().front();
 
         #pragma omp parallel for schedule(dynamic)
         for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)

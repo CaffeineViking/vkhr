@@ -1,5 +1,7 @@
 #version 460 core
 
+#include "camera.glsl"
+
 vec2 positions[] = {
     { -1.0f, -1.0f },
     { +1.0f, +1.0f },
@@ -18,23 +20,21 @@ vec2 coordinates[] = {
     { 0.0f, 1.0f },
 };
 
-layout(binding = 0) uniform Transform {
+layout(push_constant) uniform Object {
     mat4 model;
-    mat4 view;
-    mat4 projection;
-} transform;
+} object;
 
-layout(location = 0) out PipelineData {
+layout(location = 0) out PipelineOut {
     vec2 coordinate;
 } vs_out;
 
 void main() {
-    mat4 projection_view = transform.projection * transform.view;
+    mat4 projection_view = camera.projection * camera.view;
 
-    vec2 coordinate = coordinates[gl_VertexIndex];
+    vec2 coordinate  = coordinates[gl_VertexIndex];
     vec3 position = vec3(positions[gl_VertexIndex], 0.0f);
 
-    vec4 world_position = transform.model * vec4(position, 1.0f);
+    vec4 world_position = object.model * vec4(position, 1.0f);
 
     vs_out.coordinate = coordinate;
 

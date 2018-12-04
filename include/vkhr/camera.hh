@@ -12,11 +12,12 @@
 #include <glm/glm.hpp>
 
 namespace vkhr {
-    struct MVP {
-        glm::mat4 model;
+    struct ViewProjection {
         glm::mat4 view;
         glm::mat4 projection;
     };
+
+    using VP = ViewProjection;
 
     class Camera final {
     public:
@@ -68,11 +69,9 @@ namespace vkhr {
         const glm::mat4& get_view_matrix() const;
         const glm::mat4& get_projection_matrix() const;
 
-        MVP& get_vp() const;
+        ViewProjection& get_transform() const;
 
-        MVP& get_mvp(const glm::mat4& model_mat) const;
-
-        static MVP IdentityVPMatrix;
+        static ViewProjection IdentityVPMatrix;
 
     private:
         void recalculate_view_matrix() const;
@@ -98,7 +97,7 @@ namespace vkhr {
         mutable bool projection_matrix_dirty { true };
         mutable bool viewing_plane_dirty { true };
 
-        mutable MVP mvp_matrix;
+        mutable ViewProjection view_projection_matrix;
 
         mutable glm::mat4 view_matrix;
         mutable glm::mat4 projection_matrix;

@@ -71,6 +71,13 @@ namespace vkpp {
                             float clamp,
                             float slope_factor);
 
+        template<typename T>
+        void push_constant(Pipeline& pipeline,
+                           std::uint32_t offset,
+                           const T& constant,
+                           VkShaderStageFlags = VK_SHADER_STAGE_ALL,
+                           std::uint32_t size_in_bytes = 0);
+
         void bind_pipeline(Pipeline& pipeline);
         void bind_descriptor_set(DescriptorSet& descriptor_set,
                                  Pipeline& pipeline);
@@ -113,6 +120,23 @@ namespace vkpp {
         VkCommandPool   pool   { VK_NULL_HANDLE };
         VkCommandBuffer handle { VK_NULL_HANDLE };
     };
+
+    template<typename T>
+    void CommandBuffer::push_constant(Pipeline& pipeline,
+                                      std::uint32_t offset,
+                                      const T& data,
+                                      VkShaderStageFlags stages,
+                                      std::uint32_t size_in_bytes) {
+        std::uint32_t size;
+        if (size_in_bytes == 0) {
+            size = sizeof(T);
+        } else {
+            size = size_in_bytes;
+        }
+
+        vkCmdPushConstants(handle, pipeline.get_layout().get_handle(),
+                           stages, offset, size, reinterpret_cast<const void*>(&data));
+    }
 
     class CommandPool final {
     public:

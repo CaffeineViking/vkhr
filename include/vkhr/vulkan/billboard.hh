@@ -37,6 +37,8 @@ namespace vkhr {
 
             void draw(vk::CommandBuffer& command_buffer) override;
 
+            static glm::mat4 Identity;
+
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
 

@@ -277,8 +277,8 @@ namespace vkhr {
         return light_sources;
     }
 
-    const std::list<LightSource>& SceneGraph::get_lights() const {
-        return light_sources;
+    Lights& SceneGraph::get_lights() const {
+        return lights;
     }
 
     const Camera& SceneGraph::get_camera() const {

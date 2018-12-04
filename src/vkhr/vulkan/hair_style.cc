@@ -101,7 +101,10 @@ namespace vkhr {
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
                 vulkan_renderer.device,
-                pipeline.descriptor_set_layout
+                pipeline.descriptor_set_layout,
+                {
+                    { VK_SHADER_STAGE_ALL, 0, sizeof(glm::mat4) } // model.
+                }
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,

@@ -34,9 +34,9 @@ namespace vkhr {
         void draw(const SceneGraph& scene) override;
         void draw(Image& fullscreen_image);
 
-        void render_scene_into_shadow_map(const SceneGraph& scene_to_render, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void draw_hairs(const SceneGraph& scene_graph, const Camera& camera, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void draw_hairs(const SceneGraph& scene_graph, const LightSource* l, vk::CommandBuffer& command_buffer, std::size_t frame);
+        void draw_models(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 = glm::mat4 { 1.0f });
+        void draw_depth(const SceneGraph& scene_graph,  vk::CommandBuffer& command_buffer, std::size_t frame);
+        void draw_hairs(const SceneGraph& scene_graph,  vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 = glm::mat4 { 1.0f });
 
         void recompile();
 
@@ -65,7 +65,6 @@ namespace vkhr {
         std::uint32_t frame { 0 };
 
         std::vector<vk::UniformBuffer> camera_vp;
-        std::vector<vk::UniformBuffer> lights_vp;
         std::vector<vk::UniformBuffer> light_buf;
 
         Pipeline depth_view_pipeline;

@@ -43,9 +43,9 @@ namespace vkhr {
     }
 
     void LightSource::set_projection(float far, float fov, float near) {
-        transform.projection = glm::perspective(glm::radians(fov), 1.0f,
-                                                near, far);
-        transform.projection[1][1] *= -1;
+        view_projection.projection = glm::perspective(glm::radians(fov), 1.0f,
+                                                      near, far);
+        view_projection.projection[1][1] *= -1;
     }
 
     const glm::vec4& LightSource::get_vector() const {
@@ -101,15 +101,14 @@ namespace vkhr {
 
     void LightSource::update_view_matrix() {
         if (type == Type::Point) {
-            transform.view = glm::lookAt(get_position(), point, glm::vec3 { 0.0, 1.0, 0.0 });
+            view_projection.view = glm::lookAt(get_position(), point, glm::vec3 { 0.0, 1.0, 0.0 });
         } else {
-            transform.view = glm::lookAt(point + get_direction() * distance,
-                                         point, glm::vec3 { 0.0, 1.0, 0.0 });
+            view_projection.view = glm::lookAt(point + get_direction() * distance,
+                                               point, glm::vec3 { 0.0, 1.0, 0.0 });
         }
     }
 
-    MVP& LightSource::get_mvp(const glm::mat4& model_matrix) const {
-        transform.model = model_matrix;
-        return transform;
+    ViewProjection& LightSource::get_transform() const {
+        return view_projection;
     }
 }

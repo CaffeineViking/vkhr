@@ -95,8 +95,7 @@ namespace vkhr {
         command_buffer_finished = vk::Fence::create(device, swap_chain.size(), "Commands Finish Fence");
 
         light_buf = vk::UniformBuffer::create(device, sizeof(Lights), swap_chain.size(), "Lights Data");
-        camera_vp = vk::UniformBuffer::create(device, sizeof(MVP), swap_chain.size(), "Camera VP Data");
-        lights_vp = vk::UniformBuffer::create(device, sizeof(MVP), swap_chain.size(), "Lights VP Data");
+        camera_vp = vk::UniformBuffer::create(device, sizeof(VP), swap_chain.size(), "Camera MVP Data");
 
         build_pipelines();
 
@@ -126,7 +125,8 @@ namespace vkhr {
     }
 
     void Rasterizer::update(const SceneGraph& scene_graph) {
-        light_buf[frame].update(scene_graph.lights);
+        camera_vp[frame].update(scene_graph.get_camera().get_transform());
+        light_buf[frame].update(scene_graph.get_lights());
     }
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {
@@ -137,7 +137,7 @@ namespace vkhr {
 
         command_buffers[frame].begin();
 
-        render_scene_into_shadow_map(scene_graph, command_buffers[frame], frame);
+        draw_depth(scene_graph, command_buffers[frame], frame);
 
         vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
@@ -146,7 +146,7 @@ namespace vkhr {
         vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles");
         hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
 
-        draw_hairs(scene_graph, scene_graph.get_camera(), command_buffers[frame], frame);
+        draw_hairs(scene_graph, command_buffers[frame], frame);
 
         vk::DebugMarker::close(command_buffers[frame]);
 
@@ -168,35 +168,30 @@ namespace vkhr {
         return (frame + 1) % swap_chain.size();
     }
 
-    void Rasterizer::render_scene_into_shadow_map(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
-        vk::DebugMarker::begin(command_buffers[frame], "Render into Shadow Map");
-        depth_view_pipeline.make_current_pipeline(command_buffers[frame], frame);
+    void Rasterizer::draw_models(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
+    }
+
+    void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
+        vk::DebugMarker::begin(command_buffer, "Render into Shadow Map");
+        depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 
         for (auto& shadow_map : shadow_maps) {
-            command_buffers[frame].begin_render_pass(depth_pass, shadow_map);
-            shadow_map.update_dynamic_viewport_scissor_depth(command_buffers[frame]);
-            draw_hairs(scene_graph, shadow_map.light, command_buffers[frame], frame);
-            command_buffers[frame].end_render_pass();
+            auto& light_matrices = shadow_map.light->get_transform();
+            auto light_vp = light_matrices.projection  * light_matrices.view;
+            command_buffer.begin_render_pass(depth_pass, shadow_map);
+            shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
+            draw_hairs(scene_graph, command_buffer, frame, light_vp);
+            command_buffer.end_render_pass();
         }
 
-        vk::DebugMarker::close(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffer);
     }
 
-    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, const Camera& camera, vk::CommandBuffer& command_buffer, std::size_t frame) {
+    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
-            auto& mvp_mat = camera.get_mvp(hair_node->get_model_matrix());
-            camera_vp[frame].update(mvp_mat);
+            command_buffer.push_constant(hair_style_pipeline, 0, projection * hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())
                 hair_styles[hair_style].draw(command_buffer);
-        }
-    }
-
-    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, const LightSource* light, vk::CommandBuffer& cmd_buffer, std::size_t frame) {
-        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
-            auto& mvp_mat = light->get_mvp(hair_node->get_model_matrix());
-            lights_vp[frame].update(mvp_mat);
-            for (auto& hair_style : hair_node->get_hair_styles())
-                hair_styles[hair_style].draw(cmd_buffer);
         }
     }
 
@@ -215,6 +210,7 @@ namespace vkhr {
         billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
 
         camera_vp[frame].update(Camera::IdentityVPMatrix);
+        command_buffers[frame].push_constant(billboards_pipeline, 0, vulkan::Billboard::Identity);
         fullscreen_billboard.draw(command_buffers[frame]);
 
         imgui.draw(command_buffers[frame]);
@@ -269,25 +265,25 @@ namespace vkhr {
 
         screenshot_image.bind(screenshot_memory);
 
-        auto command_list = command_pool.allocate_and_begin();
-        screenshot_image.transition(command_list, 0, VK_ACCESS_TRANSFER_WRITE_BIT,
+        auto command_buffer = command_pool.allocate_and_begin();
+        screenshot_image.transition(command_buffer, 0, VK_ACCESS_TRANSFER_WRITE_BIT,
                                     VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-        swap_chain.get_images()[frame].transition(command_list, VK_ACCESS_MEMORY_READ_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+        swap_chain.get_images()[frame].transition(command_buffer, VK_ACCESS_MEMORY_READ_BIT, VK_ACCESS_TRANSFER_READ_BIT,
                                                   VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                                                   VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-        command_list.copy_image(swap_chain.get_images()[frame], screenshot_image);
+        command_buffer.copy_image(swap_chain.get_images()[frame], screenshot_image);
 
-        swap_chain.get_images()[frame].transition(command_list, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_MEMORY_READ_BIT,
+        swap_chain.get_images()[frame].transition(command_buffer, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_MEMORY_READ_BIT,
                                                   VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                                                   VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-        screenshot_image.transition(command_list, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_MEMORY_READ_BIT,
+        screenshot_image.transition(command_buffer, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_MEMORY_READ_BIT,
                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_GENERAL,
                                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-        command_list.end();
-        device.get_graphics_queue().submit(command_list)
+        command_buffer.end();
+        device.get_graphics_queue().submit(command_buffer)
                                    .wait_idle();
 
         vkhr::Image screenshot { swap_chain.get_width(), swap_chain.get_height() };
@@ -301,7 +297,7 @@ namespace vkhr {
     }
 
     void Rasterizer::recompile() {
-        device.wait_idle(); // GPU
+        device.wait_idle();
 
         bool hair_style_pipeline_dirty { false };
         for (auto& hair_style_shader : hair_style_pipeline.shader_stages)
@@ -314,5 +310,11 @@ namespace vkhr {
             billboards_pipeline_dirty |= billboard_shader.recompile();
         if (billboards_pipeline_dirty)
             vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
+
+        bool depth_view_pipeline_dirty  { false };
+        for (auto& depth_map_shader : depth_view_pipeline.shader_stages)
+            billboards_pipeline_dirty |= depth_map_shader.recompile();
+        if (depth_view_pipeline_dirty)
+            vulkan::Billboard::build_pipeline(depth_view_pipeline, *this);
     }
 }

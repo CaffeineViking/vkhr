@@ -49,7 +49,7 @@ namespace vkhr {
 
         mutable Lights lights;
 
-        const std::list<LightSource>& get_lights() const;
+        Lights& get_lights() const;
         const std::list<LightSource>& get_light_sources() const;
 
         const Camera& get_camera() const;

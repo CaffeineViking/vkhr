@@ -39,7 +39,7 @@ namespace vkhr {
         void update_view_matrix();
         void set_projection(float far, float fov = 45.0f, float near = 1.0f);
 
-        MVP& get_mvp(const glm::mat4& model_matrix) const;
+        ViewProjection& get_transform() const;
 
         glm::vec3 get_intensity() const;
         void set_intensity(const glm::vec3& intensity);
@@ -52,7 +52,9 @@ namespace vkhr {
         glm::vec3 point { 0.0f, 0.0f, 0.0f };
         float distance { 1.0f }; // for light
 
-        mutable MVP transform;
+        mutable std::size_t index;
+
+        mutable ViewProjection view_projection;
 
         Type type;
         Buffer buffer;

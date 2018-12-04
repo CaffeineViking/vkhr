@@ -1,10 +1,10 @@
 #version 460 core
 
-layout(location = 0) in PipelineData {
+layout(location = 0) in PipelineIn {
     vec2 coordinate;
 } fs_in;
 
-layout(binding = 1) uniform sampler2D image_sampler;
+layout(binding  = 1) uniform sampler2D image_sampler;
 
 layout(location = 0) out vec4 color;
 

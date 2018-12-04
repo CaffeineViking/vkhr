@@ -157,11 +157,12 @@ namespace vkhr {
         return projection_matrix;
     }
 
-    MVP& Camera::get_mvp(const glm::mat4& model_mat) const {
-        mvp_matrix.view = get_view_matrix();
-        mvp_matrix.projection = get_projection_matrix();
-        mvp_matrix.model = model_mat;
-        return mvp_matrix;
+    ViewProjection& Camera::get_transform() const {
+        if (view_matrix_dirty)
+            recalculate_view_matrix();
+        if (projection_matrix_dirty)
+            recalculate_projection_matrix();
+        return view_projection_matrix;
     }
 
     glm::vec3 Camera::get_left_direction() const {
@@ -178,11 +179,13 @@ namespace vkhr {
         projection_matrix = glm::perspective(field_of_view, aspect_ratio,
                                              near_distance, far_distance);
         projection_matrix[1][1] *= -1; // Since Vulkan uses RHS coord-sys.
+        view_projection_matrix.projection = projection_matrix;
         projection_matrix_dirty = false;
     }
 
     void Camera::recalculate_view_matrix() const {
         view_matrix = glm::lookAt(position, look_at_point, up_direction);
+        view_projection_matrix.view = view_matrix;
         view_matrix_dirty = false;
     }
 
@@ -203,14 +206,7 @@ namespace vkhr {
         viewing_plane_dirty = false;
     }
 
-    MVP& Camera::get_vp() const {
-        mvp_matrix.view = get_view_matrix();
-        mvp_matrix.projection = get_projection_matrix();
-        return mvp_matrix;
-    }
-
-    MVP Camera::IdentityVPMatrix {
-        glm::mat4 { 1.0f },
+    ViewProjection Camera::IdentityVPMatrix {
         glm::mat4 { 1.0f },
         glm::mat4 { 1.0f }
     };

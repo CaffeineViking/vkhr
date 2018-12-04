@@ -44,6 +44,7 @@ namespace vkpp {
         class Layout final {
         public:
             Layout() = default;
+            Layout(Device& device);
             Layout(Device& device,
                    const std::vector<DescriptorSet::Binding>& bindings);
 

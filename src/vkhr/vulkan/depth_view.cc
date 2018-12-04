@@ -137,10 +137,7 @@ namespace vkhr {
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Depth Map Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
-                vulkan_renderer.device,
-                {
-                    { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
-                }
+                vulkan_renderer.device
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
@@ -149,13 +146,12 @@ namespace vkhr {
                                                                                 pipeline.descriptor_set_layout,
                                                                                 "Depth Map Descriptor Set");
 
-            for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0, vulkan_renderer.lights_vp[i]);
-            }
-
             pipeline.pipeline_layout = vk::Pipeline::Layout {
                 vulkan_renderer.device,
-                pipeline.descriptor_set_layout
+                pipeline.descriptor_set_layout,
+                {
+                    { VK_SHADER_STAGE_ALL, 0, sizeof(glm::mat4) } // transforms.
+                }
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,

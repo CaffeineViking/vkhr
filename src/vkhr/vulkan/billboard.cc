@@ -93,11 +93,15 @@ namespace vkhr {
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
+                // the combined image sampler descriptors can only written later.
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
                 vulkan_renderer.device,
-                pipeline.descriptor_set_layout
+                pipeline.descriptor_set_layout,
+                {
+                    { VK_SHADER_STAGE_ALL, 0, sizeof(glm::mat4) } // model.
+                }
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
@@ -114,5 +118,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboards Graphics Pipeline");
         }
+
+        glm::mat4 Billboard::Identity { 1.0f };
     }
 }
