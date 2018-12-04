@@ -126,7 +126,7 @@ namespace vkpp {
         ImageView() = default;
         ImageView(VkDevice& device, VkImageView& image_view);
 
-        ImageView(Device& device, Image& image);
+        ImageView(Device& device, Image& image, VkImageLayout layout =  VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
         ~ImageView() noexcept;
 
@@ -137,12 +137,15 @@ namespace vkpp {
 
         VkImage& get_image();
 
+        VkImageLayout get_layout() const;
+
         VkImageView& get_handle();
 
     private:
-        VkImage image      { VK_NULL_HANDLE };
-        VkDevice device    { VK_NULL_HANDLE };
-        VkImageView handle { VK_NULL_HANDLE };
+        VkImageLayout layout { VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
+        VkImage image        { VK_NULL_HANDLE };
+        VkDevice device      { VK_NULL_HANDLE };
+        VkImageView handle   { VK_NULL_HANDLE };
     };
 
     using CombinedImageSampler = std::pair<ImageView, Sampler>;

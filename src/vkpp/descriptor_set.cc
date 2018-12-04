@@ -172,8 +172,8 @@ namespace vkpp {
                               ImageView& image_view,
                               Sampler& sampler) {
         VkDescriptorImageInfo image_info;
-        image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         image_info.imageView = image_view.get_handle();
+        image_info.imageLayout = image_view.get_layout();
         image_info.sampler   = sampler.get_handle();
 
         VkWriteDescriptorSet write_info;

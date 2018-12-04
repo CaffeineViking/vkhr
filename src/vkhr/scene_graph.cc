@@ -115,7 +115,7 @@ namespace vkhr {
         float distance = glm::distance(camera.get_look_at_point(),
                                        camera.get_position());
         light.set_origin(camera.get_look_at_point(), distance);
-        light.set_projection(distance);
+        light.set_projection(2.0f * distance);
 
         return true;
     }

@@ -404,8 +404,10 @@ namespace vkpp {
     ImageView::ImageView(VkDevice& device, VkImageView& image_view)
                         : device { device }, handle { image_view } { }
 
-    ImageView::ImageView(Device& logical_device, Image& real_image)
-                        : image { real_image.get_handle() },
+    ImageView::ImageView(Device& logical_device, Image& real_image,
+                         VkImageLayout final_layout)
+                        : layout { final_layout },
+                          image { real_image.get_handle() },
                           device { logical_device.get_handle() } {
         VkImageViewCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -433,6 +435,10 @@ namespace vkpp {
         }
     }
 
+    VkImageLayout ImageView::get_layout() const {
+        return layout;
+    }
+
     ImageView::~ImageView() noexcept {
         if (handle != VK_NULL_HANDLE) {
             vkDestroyImageView(device, handle, nullptr);
@@ -454,6 +460,7 @@ namespace vkpp {
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
         swap(lhs.image,  rhs.image);
+        swap(lhs.layout,  rhs.layout);
     }
 
     VkImage& ImageView::get_image() {

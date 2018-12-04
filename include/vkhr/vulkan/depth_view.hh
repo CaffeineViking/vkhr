@@ -36,7 +36,9 @@ namespace vkhr {
             static VkImageLayout     get_attachment_layout();
             static VkImageUsageFlags get_image_usage_flags();
 
+            vk::Sampler& get_sampler();
             vk::Framebuffer& get_framebuffer();
+            vk::ImageView& get_image_view();
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
