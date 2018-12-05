@@ -57,12 +57,12 @@ namespace vkhr {
                                                    .wait_idle();
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
 
-        scene_files.push_back("share/scenes/ponytail.vkhr");
-        scene_file = 0;
-
         renderers.push_back("Rasterizer");
         renderers.push_back("Ray Tracer");
-        renderer = 0;
+
+        scene_files.push_back(SCENE("ponytail.vkhr"));
+
+        renderer = scene_file = 0;
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer) {
@@ -123,6 +123,13 @@ namespace vkhr {
             ImGui::Spacing();
 
             ImGui::Combo("Rendered Scene", &scene_file, get_string_from_vector, static_cast<void*>(&scene_files), scene_files.size());
+
+            // Switch to the new scene by loading it
+            if (scene_file != previous_scene_file) {
+                scene_graph.load(scene_files[scene_file]);
+                rasterizer.load(scene_graph);
+                previous_scene_file = scene_file;
+            }
 
             ImGui::Spacing();
             ImGui::Separator();

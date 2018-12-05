@@ -35,6 +35,8 @@ namespace vkhr {
 
         if (!file) return set_error_state(Error::OpeningFolder);
 
+        cleanup();
+
         auto parser = json::parse(file);
 
         scene_path = file_path.substr(0, file_path.find_last_of("\\/") + 1);
@@ -131,11 +133,13 @@ namespace vkhr {
         } else node.set_scale({ 1, 1, 1 });
 
         if (auto rotate = parser.find("rotate"); rotate != parser.end()) {
-            node.set_rotation({ rotate->at(0),
-                                rotate->at(1),
-                                rotate->at(2),
-                                rotate->at(3) });
-        } else node.set_rotation({ 1, 0, 0, 0 });
+            if (auto axis = rotate->find("axis"); axis != rotate->end()) {
+                node.set_rotation_axis({ axis->at(0),
+                                         axis->at(1),
+                                         axis->at(2) });
+            } else node.set_rotation_axis({0, 1, 0});
+            node.set_rotation_angle(rotate->value("angle", 0.0f));
+        } else node.set_rotation({ 0, 1, 0 }, 0);
 
         if (auto translate = parser.find("translate"); translate != parser.end()) {
             node.set_translation({ translate->at(0),
@@ -209,6 +213,10 @@ namespace vkhr {
 
     HairStyle& SceneGraph::add_style(const std::string& asset_path) {
         auto path = scene_path + asset_path;
+
+        if (hair_styles.find(path) != hair_styles.end())
+            return hair_styles[path];
+
         hair_styles[path] = HairStyle { path };
 
         // If you get this exception, it most likely means you haven't cloned using Git LFS.
@@ -219,11 +227,16 @@ namespace vkhr {
         hair_styles[path].set_default_thickness(0.14f);
         if (!hair_styles[path].has_indices())
             hair_styles[path].generate_indices();
+
         return hair_styles[path];
     }
 
     Model& SceneGraph::add_model(const std::string& asset_path) {
         auto path = scene_path + asset_path;
+
+        if (models.find(path) != models.end())
+            return models[path];
+
         models[path] = Model { path };
 
         // Same thing here, this is likely the failure of not having Git LFS installed.
@@ -233,10 +246,21 @@ namespace vkhr {
     }
 
     void SceneGraph::clear() {
+        destroy_previous_node_caches();
         models.clear();
         hair_styles.clear();
         nodes.clear();
         nodes_by_name.clear();
+        light_sources.clear();
+        root = nullptr;
+    }
+
+    void SceneGraph::cleanup() {
+        destroy_previous_node_caches();
+        nodes.clear();
+        nodes_by_name.clear();
+        light_sources.clear();
+        root = nullptr;
     }
 
     bool SceneGraph::remove(std::unordered_map<std::string, Model>::iterator model) {
@@ -316,9 +340,22 @@ namespace vkhr {
         return models;
     }
 
-    void SceneGraph::Node::set_rotation(const glm::vec4& rotation) {
-        this->rotation = rotation;
+    void SceneGraph::Node::scale(const glm::vec3& scale) {
+        this->scaling *= scale;
+    }
+
+    void SceneGraph::Node::set_rotation(const glm::vec3& axis, float angle) {
+        this->rotation_axis = axis;
+        this->rotation_angle += angle;
         recalculate_transform = true;
+    }
+
+    void SceneGraph::Node::set_rotation_angle(float angle) {
+        rotation_angle = angle;
+    }
+
+    void SceneGraph::Node::set_rotation_axis(const glm::vec3& axis) {
+        rotation_axis = axis;
     }
 
     void SceneGraph::Node::set_translation(const glm::vec3& translation) {
@@ -335,8 +372,12 @@ namespace vkhr {
         return translation;
     }
 
-    const glm::vec4& SceneGraph::Node::get_rotation() const {
-        return rotation;
+    const glm::vec3& SceneGraph::Node::get_rotation_axis() const {
+        return rotation_axis;
+    }
+
+    float SceneGraph::Node::get_rotation_angle() const {
+        return rotation_angle;
     }
 
     const glm::vec3& SceneGraph::Node::get_scale() const {
@@ -354,8 +395,7 @@ namespace vkhr {
     void SceneGraph::Node::recompute_transform() const {
         transform = glm::mat4 { 1.0 };
         transform = glm::translate(transform, translation);
-        auto axis = glm::vec3 { rotation };
-        transform = glm::rotate(transform, rotation.w, axis);
+        transform = glm::rotate(transform, rotation_angle, rotation_axis);
         transform = glm::scale(transform, scaling);
         recalculate_transform = false;
     }

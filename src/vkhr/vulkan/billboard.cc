@@ -36,9 +36,32 @@ namespace vkhr {
             ++id;
         }
 
-        void Billboard::load(const vkhr::Billboard& billboards,
+        void Billboard::load(const vkhr::Billboard& billboard,
                              vkhr::Rasterizer& vulkan_renderer) {
-            // TODO: case where an image is already provided...
+            auto command_list = vulkan_renderer.command_pool.allocate_and_begin();
+            billboard_image = vk::DeviceImage {
+                vulkan_renderer.device,
+                command_list,
+                billboard.get_image()
+            }; command_list.end();
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_image, VK_OBJECT_TYPE_IMAGE, "Billboard Image", id);
+
+            vulkan_renderer.device.get_graphics_queue().submit(command_list)
+                                                       .wait_idle();
+
+            billboard_view = vk::ImageView {
+                vulkan_renderer.device,
+                billboard_image
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Billboard Image View", id);
+
+            billboard_sampler = vk::Sampler { vulkan_renderer.device };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_sampler, VK_OBJECT_TYPE_SAMPLER, "Billboard Sampler", id);
+
+            ++id;
         }
 
         void Billboard::send_img(vk::DescriptorSet& descriptor_set, vkhr::Image& img, vk::CommandBuffer& command_buffer) {

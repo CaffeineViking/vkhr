@@ -12,12 +12,6 @@
             "intensity": [ 0.200,
                            0.154,
                            0.112 ]
-        },
-        {
-            "direction": [2, 2, 2],
-            "intensity": [ 0.200,
-                           0.154,
-                           0.112 ]
         }
     ],
 
@@ -27,9 +21,16 @@
         {
             "scale":     [1, 1, 1],
             "translate": [0, 0, 0],
-            "rotate": [0, 0, 1, 0],
+            "rotate": {
+                "axis": [ 0, 1, 0 ],
+                "angle":  0.0
+            },
 
             "name": "Ponytail Hair",
+
+            "models": [
+                "../models/ponytail/ponytail.obj"
+            ],
 
             "styles": [
                 "../styles/ponytail.hair"

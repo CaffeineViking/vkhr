@@ -50,6 +50,7 @@ namespace vkhr {
 
     private:
         int scene_file { 0 };
+        int previous_scene_file { 0 };
         std::vector<std::string> scene_files;
         std::vector<std::string> renderers;
         int renderer { 0 };

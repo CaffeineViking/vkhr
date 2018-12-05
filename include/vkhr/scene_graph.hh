@@ -58,6 +58,8 @@ namespace vkhr {
 
         const std::string& get_scene_path() const;
 
+        void cleanup();
+
         class Node final {
         public:
             void add(Model* model);
@@ -76,11 +78,16 @@ namespace vkhr {
             const std::vector<HairStyle*>& get_hair_styles() const;
             const std::vector<Model*>& get_models() const;
 
-            void set_rotation(const glm::vec4& rotation);
+            void scale(const glm::vec3& scale);
+
+            void set_rotation_angle(float angle);
+            void set_rotation_axis(const glm::vec3& axis);
+            void set_rotation(const glm::vec3& axis, float angle);
             void set_translation(const glm::vec3& translation);
             void set_scale(const glm::vec3& scale);
 
-            const glm::vec4& get_rotation() const;
+            float get_rotation_angle() const;
+            const glm::vec3& get_rotation_axis() const;
             const glm::vec3& get_translation() const;
             const glm::vec3& get_scale() const;
 
@@ -97,7 +104,8 @@ namespace vkhr {
         private:
             void recompute_transform() const;
 
-            glm::vec4 rotation;
+            float rotation_angle;
+            glm::vec3 rotation_axis;
             glm::vec3 translation;
             glm::vec3 scaling;
 

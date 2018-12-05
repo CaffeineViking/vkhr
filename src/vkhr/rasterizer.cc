@@ -101,8 +101,6 @@ namespace vkhr {
 
         load(scene_graph);
 
-        build_pipelines();
-
         imgui = Interface { window_surface.get_glfw_window(), this };
 
         query_pool = vk::QueryPool { device, VK_QUERY_TYPE_TIMESTAMP, 64 };
@@ -132,6 +130,8 @@ namespace vkhr {
 
         for (auto& light_source : scene_graph.get_light_sources())
             shadow_maps.emplace_back(2048, *this, light_source);
+
+        build_pipelines();
     }
 
     void Rasterizer::update(const SceneGraph& scene_graph) {
