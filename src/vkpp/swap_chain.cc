@@ -95,6 +95,8 @@ namespace vkpp {
         DebugMarker::end(command_buffer);
         command_buffer.end();
 
+        DebugMarker::object_name(device, surface, VK_OBJECT_TYPE_SURFACE_KHR, "Window Surface");
+
         command_pool.get_queue().submit(command_buffer).wait_idle();
     }
 

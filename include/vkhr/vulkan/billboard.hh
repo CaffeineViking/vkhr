@@ -46,6 +46,8 @@ namespace vkhr {
             vk::ImageView billboard_view;
             vk::DeviceImage billboard_image;
             vk::Sampler billboard_sampler;
+
+            static int id;
         };
     }
 }

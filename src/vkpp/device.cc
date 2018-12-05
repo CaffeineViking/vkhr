@@ -71,8 +71,6 @@ namespace vkpp {
             throw Exception { error, "couldn't create device!" };
 
         DebugMarker::object_name(handle, *this, VK_OBJECT_TYPE_DEVICE, "Logical Device");
-        DebugMarker::object_name(handle, physical_device, VK_OBJECT_TYPE_PHYSICAL_DEVICE,
-                                 physical_device.get_name().c_str());
 
         assign_queues(); // Get the queue object from the device.
     }

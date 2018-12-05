@@ -18,7 +18,7 @@ namespace vkhr {
                 get_image_usage_flags()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, image, VK_OBJECT_TYPE_IMAGE, "Depth Map Image");
+            vk::DebugMarker::object_name(vulkan_renderer.device, image, VK_OBJECT_TYPE_IMAGE, "Depth Map Image", id);
 
             memory = vk::DeviceMemory {
                 vulkan_renderer.device,
@@ -28,7 +28,7 @@ namespace vkhr {
 
             image.bind(memory);
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, memory, VK_OBJECT_TYPE_DEVICE_MEMORY, "Depth Map Device Memory");
+            vk::DebugMarker::object_name(vulkan_renderer.device, memory, VK_OBJECT_TYPE_DEVICE_MEMORY, "Depth Map Device Memory", id);
 
             image_view = vk::ImageView {
                 vulkan_renderer.device,
@@ -36,7 +36,7 @@ namespace vkhr {
                 get_read_depth_layout()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, image_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Map Image View");
+            vk::DebugMarker::object_name(vulkan_renderer.device, image_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Map Image View", id);
 
             framebuffer = vk::Framebuffer {
                 vulkan_renderer.device,
@@ -46,7 +46,7 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, framebuffer, VK_OBJECT_TYPE_FRAMEBUFFER, "Depth Map Framebuffer");
+            vk::DebugMarker::object_name(vulkan_renderer.device, framebuffer, VK_OBJECT_TYPE_FRAMEBUFFER, "Depth Map Framebuffer", id);
 
             sampler = vk::Sampler {
                 vulkan_renderer.device,
@@ -56,7 +56,7 @@ namespace vkhr {
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, sampler, VK_OBJECT_TYPE_SAMPLER, "Depth Map Sampler");
+            vk::DebugMarker::object_name(vulkan_renderer.device, sampler, VK_OBJECT_TYPE_SAMPLER, "Depth Map Sampler", id);
 
             viewport = VkViewport {
                 0.0f, 0.0f,
@@ -69,6 +69,8 @@ namespace vkhr {
                 { 0, 0 },
                 { width, height }
             };
+
+            ++id;
         }
 
         DepthView::DepthView(const std::uint32_t width, Rasterizer& vulkan_renderer,
@@ -179,5 +181,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Depth Map Graphics Pipeline");
         }
+
+        int DepthView::id { 0 };
     }
 }

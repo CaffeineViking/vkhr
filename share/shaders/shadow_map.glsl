@@ -1,3 +1,5 @@
+layout(binding = 2) uniform sampler2D shadow_maps[16];
+
 // Based on the "A Survivor Reborn: Tomb Raider on DX11" talk at GDC 2013 by Jason Lacroix and his pseudo-code.
 float approximate_deep_shadow(float shadow_depth, float light_depth, float strand_radius, float strand_alpha) {
     float strand_depth = max(light_depth - shadow_depth, 0.0f); // depth of the current strand inside geometry.

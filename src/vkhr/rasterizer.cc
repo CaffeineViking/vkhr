@@ -58,6 +58,8 @@ namespace vkhr {
             device_features
         };
 
+        instance.label(device.get_handle());
+
         command_pool = vk::CommandPool { device, device.get_graphics_queue() };
 
         auto vsync = window.vsync_requested();
@@ -97,9 +99,9 @@ namespace vkhr {
         light_buf = vk::UniformBuffer::create(device, sizeof(Lights), swap_chain.size(), "Lights Data");
         camera_vp = vk::UniformBuffer::create(device, sizeof(VP), swap_chain.size(), "Camera MVP Data");
 
-        build_pipelines();
-
         load(scene_graph);
+
+        build_pipelines();
 
         imgui = Interface { window_surface.get_glfw_window(), this };
 
@@ -180,7 +182,7 @@ namespace vkhr {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
-        vk::DebugMarker::begin(command_buffer, "Render into Shadow Map");
+        vk::DebugMarker::begin(command_buffer, "Render the Shadow Maps");
         depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 
         for (auto& shadow_map : shadow_maps) {

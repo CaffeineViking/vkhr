@@ -189,6 +189,10 @@ namespace vkpp {
 
     void Instance::label(VkDevice device) {
         DebugMarker::object_name(device, *this, VK_OBJECT_TYPE_INSTANCE, "Instance");
+        for (auto& physical_device : physical_devices)
+            DebugMarker::object_name(device, physical_device,
+                                     VK_OBJECT_TYPE_PHYSICAL_DEVICE,
+                                     physical_device.get_name().c_str());
     }
 
     // Cache the available layers plus extensions.

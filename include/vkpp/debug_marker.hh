@@ -17,10 +17,10 @@ namespace vkpp {
         static void setup_function_pointers(VkInstance instance);
 
         template<typename T>
-        static void object_name(Device& device,   T& object, VkObjectType object_type, const char* name);
+        static void object_name(Device& device,   T& object, VkObjectType object_type, const char* name, int number = -1);
 
         template<typename T>
-        static void object_name(VkDevice& device, T& object, VkObjectType object_type, const char* name);
+        static void object_name(VkDevice& device, T& object, VkObjectType object_type, const char* name, int number = -1);
 
         static void object_name(VkDevice& device, VkImage image_handle, VkObjectType object_type, const char* name);
 
@@ -41,12 +41,12 @@ namespace vkpp {
     };
 
     template<typename T>
-    void DebugMarker::object_name(Device& device, T& object, VkObjectType object_type, const char* name) {
-        object_name(device.get_handle(), object, object_type, name);
+    void DebugMarker::object_name(Device& device, T& object, VkObjectType object_type, const char* name, int number) {
+        object_name(device.get_handle(), object, object_type, name, number);
     }
 
     template<typename T>
-    void DebugMarker::object_name(VkDevice& device, T& object, VkObjectType object_type, const char* name) {
+    void DebugMarker::object_name(VkDevice& device, T& object, VkObjectType object_type, const char* name, int number) {
         if (vkSetDebugUtilsObjectNameEXT) {
             VkDebugUtilsObjectNameInfoEXT name_info;
             name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
@@ -55,7 +55,14 @@ namespace vkpp {
             name_info.objectHandle = reinterpret_cast<std::uint64_t>(object.get_handle());
             name_info.objectType = object_type;
 
-            name_info.pObjectName = name;
+            std::string stringed_name { name };
+
+            if (number != -1) {
+                stringed_name += " #";
+                stringed_name += std::to_string(number);
+            }
+
+            name_info.pObjectName = stringed_name.c_str();
 
             vkSetDebugUtilsObjectNameEXT(device, &name_info);
         }

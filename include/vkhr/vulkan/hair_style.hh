@@ -35,6 +35,8 @@ namespace vkhr {
             vk::IndexBuffer  vertices;
             vk::VertexBuffer positions;
             vk::VertexBuffer tangents;
+
+            static int id;
         };
     }
 }

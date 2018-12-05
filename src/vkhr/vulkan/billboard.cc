@@ -20,18 +20,20 @@ namespace vkhr {
                 vkhr::Image::get_expected_size(width, height)
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_image, VK_OBJECT_TYPE_IMAGE, "Billboard Image");
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_image, VK_OBJECT_TYPE_IMAGE, "Billboard Image", id);
 
             billboard_view = vk::ImageView {
                 vulkan_renderer.device,
                 billboard_image
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Billboard Image View");
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Billboard Image View", id);
 
             billboard_sampler = vk::Sampler { vulkan_renderer.device };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_sampler, VK_OBJECT_TYPE_SAMPLER, "Billboard Sampler");
+            vk::DebugMarker::object_name(vulkan_renderer.device, billboard_sampler, VK_OBJECT_TYPE_SAMPLER, "Billboard Sampler", id);
+
+            ++id;
         }
 
         void Billboard::load(const vkhr::Billboard& billboards,
@@ -120,5 +122,6 @@ namespace vkhr {
         }
 
         glm::mat4 Billboard::Identity { 1.0f };
+        int Billboard::id { 0 };
     }
 }

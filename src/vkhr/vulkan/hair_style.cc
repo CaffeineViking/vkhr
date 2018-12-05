@@ -21,9 +21,9 @@ namespace vkhr {
                 hair_style.get_vertices()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, positions, VK_OBJECT_TYPE_BUFFER, "Hair Style Position Vertex Buffer");
+            vk::DebugMarker::object_name(vulkan_renderer.device, positions, VK_OBJECT_TYPE_BUFFER, "Hair Style Position Vertex Buffer", id);
             vk::DebugMarker::object_name(vulkan_renderer.device, positions.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
-                                         "Hair Style Position Device Memory");
+                                         "Hair Style Position Device Memory", id);
 
             tangents = vk::VertexBuffer {
                 vulkan_renderer.device,
@@ -31,9 +31,9 @@ namespace vkhr {
                 hair_style.get_tangents()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, tangents, VK_OBJECT_TYPE_BUFFER, "Hair Style Tangent Vertex Buffer");
+            vk::DebugMarker::object_name(vulkan_renderer.device, tangents, VK_OBJECT_TYPE_BUFFER, "Hair Style Tangent Vertex Buffer", id);
             vk::DebugMarker::object_name(vulkan_renderer.device, tangents.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
-                                         "Hair Style Tangent Device Memory");
+                                         "Hair Style Tangent Device Memory", id);
 
             vertices = vk::IndexBuffer {
                 vulkan_renderer.device,
@@ -41,9 +41,11 @@ namespace vkhr {
                 hair_style.get_indices()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Hair Style Index Buffer");
+            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Hair Style Index Buffer", id);
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
-                                         "Hair Style Index Device Memory");
+                                         "Hair Style Index Device Memory", id);
+
+            ++id;
         }
 
         void HairStyle::draw(vk::CommandBuffer& command_buffer) {
@@ -80,12 +82,17 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
                                        VK_OBJECT_TYPE_SHADER_MODULE, "Kajiya-Kay Fragment Shader");
 
+            std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
+                { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
+            };
+
+            for (std::uint32_t i { 0 }; i < vulkan_renderer.shadow_maps.size(); ++i)
+                descriptor_bindings.push_back({ 2 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
+
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
-                {
-                    { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                    { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
-                }
+                descriptor_bindings
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
@@ -97,6 +104,9 @@ namespace vkhr {
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_buf[i]);
+                for (std::uint32_t j { 0 }; j < vulkan_renderer.shadow_maps.size(); ++j)
+                    pipeline.descriptor_sets[i].write(2 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
+                                                             vulkan_renderer.shadow_maps[j].get_sampler());
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
@@ -121,5 +131,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Style Graphics Pipeline");
         }
+
+        int HairStyle::id { 0 };
     }
 }

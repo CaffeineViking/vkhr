@@ -58,6 +58,8 @@ namespace vkhr {
             float constant_factor;
             float clamp;
             float slope_factor;
+
+            static int id;
         };
     }
 }
