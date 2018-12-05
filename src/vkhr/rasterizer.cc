@@ -186,8 +186,7 @@ namespace vkhr {
         depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 
         for (auto& shadow_map : shadow_maps) {
-            auto& light_matrices = shadow_map.light->get_transform();
-            auto light_vp = light_matrices.projection  * light_matrices.view;
+            auto& light_vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
             draw_hairs(scene_graph, command_buffer, frame, light_vp);
@@ -261,7 +260,7 @@ namespace vkhr {
             device,
             swap_chain.get_width(),
             swap_chain.get_height(),
-            VK_FORMAT_R8G8B8A8_UNORM,
+            VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_USAGE_TRANSFER_DST_BIT,
             1, VK_SAMPLE_COUNT_1_BIT,
             VK_IMAGE_TILING_LINEAR
@@ -302,6 +301,8 @@ namespace vkhr {
         screenshot_memory.map(0, screenshot.get_size_in_bytes(), (void**) &buffer);
         std::memcpy(screenshot.get_data(), buffer, screenshot.get_size_in_bytes());
         screenshot_memory.unmap();
+
+        screenshot.flip_channels();
 
         return screenshot;
     }

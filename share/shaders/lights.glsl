@@ -3,6 +3,7 @@ struct Light {
     float type;
     vec3 intensity;
     float cutoff;
+    mat4 matrix;
 };
 
 layout(binding = 1) uniform Lights {

@@ -66,6 +66,8 @@ namespace vkhr {
 
         void vertical_flip(); void horizontal_flip();
 
+        void flip_channels();
+
         template<typename F> void filter_neighborhood(F functor);
         template<typename F> void filter(F functor);
 
@@ -79,6 +81,7 @@ namespace vkhr {
 
     template<typename F>
     void Image::filter_neighborhood(F functor) {
+        #pragma omp parallel for schedule(dynamic)
         for (int j = 0; j < get_height(); ++j)
         for (int i = 0; i < get_width();  ++i) {
             Color neighborhood_pixels[9];
@@ -102,8 +105,9 @@ namespace vkhr {
 
     template<typename F>
     void Image::filter(F functor) {
-        for (int j { 0 }; j < get_height(); ++j)
-        for (int i { 0 }; i < get_width();  ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < get_height(); ++j)
+        for (int i = 0; i < get_width();  ++i) {
             set_pixel(i, j,  functor(i, j, get_pixel(i, j)));
         }
     }

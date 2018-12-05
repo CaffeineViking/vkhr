@@ -158,9 +158,9 @@ namespace vkhr {
     }
 
     void Image::clear(const Color& color) {
-        // Not very smart... set bigger chunks?
-        for (unsigned j { 0 }; j < get_height(); ++j)
-        for (unsigned i { 0 }; i < get_width();  ++i)
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < get_height(); ++j)
+        for (int i = 0; i < get_width();  ++i)
             set_pixel(i, j, color);
     }
 
@@ -173,8 +173,9 @@ namespace vkhr {
         const float x_ratio { width  / static_cast<float>(this->width) },
                     y_ratio { height / static_cast<float>(this->height) };
 
-        for (unsigned j { 0 }; j < height; ++j)
-        for (unsigned i { 0 }; i < width;  ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < height; ++j)
+        for (int i { 0 }; i < width;  ++i) {
             int nearest_i = static_cast<int>(i / y_ratio),
                 nearest_j = static_cast<int>(j / x_ratio);
             auto nearest_pixel = get_pixel(nearest_i, nearest_j);
@@ -186,17 +187,28 @@ namespace vkhr {
 
     void Image::horizontal_flip() {
         unsigned half_width { width >> 1  };
-        for (unsigned j { 0 }; j < height; ++j) {
-            for (unsigned i { 0 }; i < half_width; ++i) {
-                auto left_color  = get_pixel(i, j);
-                auto right_color = get_pixel(width - i - 1, j);
-                set_pixel(width - i - 1, j, left_color);
-                set_pixel(i, j, right_color);
-            }
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < height; ++j)
+        for (int i { 0 }; i < half_width; ++i) {
+            auto left_color  = get_pixel(i, j);
+            auto right_color = get_pixel(width - i - 1, j);
+            set_pixel(width - i - 1, j, left_color);
+            set_pixel(i, j, right_color);
         }
     }
 
     void Image::vertical_flip() {
+        // TODO: do this later.
+    }
+
+    void Image::flip_channels() {
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < height; ++j)
+        for (int i { 0 }; i < width; ++i) {
+            auto color = get_pixel(i, j);
+            std::swap(color.r, color.b);
+            set_pixel(i, j, color);
+        }
     }
 
     void Image::free_image_buffers() {

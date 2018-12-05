@@ -16,6 +16,7 @@ namespace vkhr {
         struct Buffer {
             glm::vec4 vector;
             glm::vec4 intensity;
+            glm::mat4 view_projection;
         };
 
         LightSource() = default;
@@ -39,7 +40,7 @@ namespace vkhr {
         void update_view_matrix();
         void set_projection(float far, float fov = 45.0f, float near = 1.0f);
 
-        ViewProjection& get_transform() const;
+        const glm::mat4& get_view_projection() const;
 
         glm::vec3 get_intensity() const;
         void set_intensity(const glm::vec3& intensity);
@@ -54,7 +55,8 @@ namespace vkhr {
 
         mutable std::size_t index;
 
-        mutable ViewProjection view_projection;
+        glm::mat4 view { 1.0f };
+        glm::mat4 projection { 1.0f };
 
         Type type;
         Buffer buffer;
