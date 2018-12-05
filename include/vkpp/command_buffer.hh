@@ -6,6 +6,7 @@
 #include <vkpp/descriptor_set.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/framebuffer.hh>
+#include <vkpp/query.hh>
 
 #include <vulkan/vulkan.h>
 
@@ -112,6 +113,15 @@ namespace vkpp {
         void end_render_pass();
 
         void end();
+
+        void reset_query_pool(QueryPool& query_pool, std::uint32_t first_query, std::uint32_t query_count);
+        void begin_query(QueryPool& query_pool, std::uint32_t index, VkQueryControlFlags flags);
+        void copy_query_pool_results(QueryPool& query_pool,
+                                     std::uint32_t first_query, std::uint32_t query_count,
+                                     Buffer& destination, VkQueryResultFlags result_flags,
+                                     VkDeviceSize offset = 0, VkDeviceSize stride = 0);
+        void write_timestamp(QueryPool& query_pool, VkPipelineStageFlagBits pipeline_stage, std::uint32_t query);
+        void end_query(QueryPool& query_pool, std::uint32_t index);
 
     private:
         Queue* queue_family    { nullptr };

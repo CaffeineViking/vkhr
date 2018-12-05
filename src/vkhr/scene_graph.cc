@@ -50,6 +50,9 @@ namespace vkhr {
             }
         }
 
+        if (light_sources.size() >= 16) // Maximum count
+            return set_error_state(Error::ReadingLight);
+
         if (auto nodes = parser.find("nodes"); nodes != parser.end()) {
             this->nodes.reserve(nodes->size());
             for (auto& node : *nodes) {

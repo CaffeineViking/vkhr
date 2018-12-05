@@ -77,6 +77,8 @@ namespace vkhr {
 
         Interface imgui;
 
+        vk::QueryPool query_pool;
+
         std::vector<vk::CommandBuffer> command_buffers;
 
         friend class vulkan::HairStyle;

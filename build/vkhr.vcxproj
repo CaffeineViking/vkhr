@@ -411,6 +411,7 @@
     <ClInclude Include="..\include\vkpp\layer.hh" />
     <ClInclude Include="..\include\vkpp\physical_device.hh" />
     <ClInclude Include="..\include\vkpp\pipeline.hh" />
+    <ClInclude Include="..\include\vkpp\query.hh" />
     <ClInclude Include="..\include\vkpp\queue.hh" />
     <ClInclude Include="..\include\vkpp\render_pass.hh" />
     <ClInclude Include="..\include\vkpp\sampler.hh" />
@@ -480,6 +481,7 @@
     <ClCompile Include="..\src\vkpp\layer.cc" />
     <ClCompile Include="..\src\vkpp\physical_device.cc" />
     <ClCompile Include="..\src\vkpp\pipeline.cc" />
+    <ClCompile Include="..\src\vkpp\query.cc" />
     <ClCompile Include="..\src\vkpp\queue.cc" />
     <ClCompile Include="..\src\vkpp\render_pass.cc" />
     <ClCompile Include="..\src\vkpp\sampler.cc" />
@@ -493,6 +495,7 @@
     <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\billboards.frag" />
     <None Include="..\share\shaders\billboards.vert" />
+    <None Include="..\share\shaders\camera.glsl" />
     <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl" />
     <None Include="..\share\shaders\compute_curve\Commons.hlsl" />
     <None Include="..\share\shaders\compute_curve\Constants.hlsl" />
@@ -508,7 +511,7 @@
     <None Include="..\share\shaders\kajiya-kay.frag" />
     <None Include="..\share\shaders\kajiya-kay.glsl" />
     <None Include="..\share\shaders\kajiya-kay.vert" />
-    <None Include="..\share\shaders\light_info.glsl" />
+    <None Include="..\share\shaders\lights.glsl" />
     <None Include="..\share\shaders\shadow_map.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

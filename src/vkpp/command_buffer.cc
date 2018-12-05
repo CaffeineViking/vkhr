@@ -294,6 +294,32 @@ namespace vkpp {
         }
     }
 
+    void CommandBuffer::reset_query_pool(QueryPool& query_pool, std::uint32_t first_query, std::uint32_t query_count) {
+        vkCmdResetQueryPool(handle, query_pool.get_handle(), first_query, query_count);
+    }
+
+    void CommandBuffer::begin_query(QueryPool& query_pool, std::uint32_t index, VkQueryControlFlags flags) {
+        vkCmdBeginQuery(handle, query_pool.get_handle(), index, flags);
+    }
+
+    void CommandBuffer::copy_query_pool_results(QueryPool& query_pool,
+                                                std::uint32_t first_query, std::uint32_t query_count,
+                                                Buffer& destination, VkQueryResultFlags result_flags,
+                                                VkDeviceSize offset, VkDeviceSize stride) {
+        vkCmdCopyQueryPoolResults(handle, query_pool.get_handle(),
+                                  first_query, query_count,
+                                  destination.get_handle(), offset, stride,
+                                  result_flags);
+    }
+
+    void CommandBuffer::write_timestamp(QueryPool& query_pool, VkPipelineStageFlagBits pipeline_stage, std::uint32_t query) {
+        vkCmdWriteTimestamp(handle, pipeline_stage, query_pool.get_handle(), query);
+    }
+
+    void CommandBuffer::end_query(QueryPool& query_pool, std::uint32_t index) {
+        vkCmdEndQuery(handle, query_pool.get_handle(), index);
+    }
+
     CommandPool::CommandPool(Device& logical_device, Queue& queue)
                             : queue_family { &queue },
                               device { logical_device.get_handle() } {

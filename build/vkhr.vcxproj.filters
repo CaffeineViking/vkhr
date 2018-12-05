@@ -1032,6 +1032,9 @@
     <ClInclude Include="..\include\vkpp\pipeline.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkpp\query.hh">
+      <Filter>include\vkpp</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkpp\queue.hh">
       <Filter>include\vkpp</Filter>
     </ClInclude>
@@ -1193,6 +1196,9 @@
     <ClCompile Include="..\src\vkpp\pipeline.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkpp\query.cc">
+      <Filter>src\vkpp</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkpp\queue.cc">
       <Filter>src\vkpp</Filter>
     </ClCompile>
@@ -1226,6 +1232,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\billboards.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\camera.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl">
@@ -1273,7 +1282,7 @@
     <None Include="..\share\shaders\kajiya-kay.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\light_info.glsl">
+    <None Include="..\share\shaders\lights.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\shadow_map.glsl">

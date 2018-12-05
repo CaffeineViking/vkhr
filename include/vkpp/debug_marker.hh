@@ -2,6 +2,7 @@
 #define VKPP_DEBUG_MARKER_HH
 
 #include <vkpp/device.hh>
+#include <vkpp/query.hh>
 
 #include <vulkan/vulkan.h>
 
@@ -28,7 +29,10 @@ namespace vkpp {
         static void end(CommandBuffer&    command_buffer);
         static void close(CommandBuffer&  command_buffer);
 
+        static void set_current_query_pool(QueryPool& query_pool);
+
     private:
+        static QueryPool* query_pool;
         static PFN_vkSetDebugUtilsObjectTagEXT vkSetDebugUtilsObjectTagEXT;
         static PFN_vkSetDebugUtilsObjectNameEXT vkSetDebugUtilsObjectNameEXT;
         static PFN_vkCmdBeginDebugUtilsLabelEXT vkCmdBeginDebugUtilsLabelEXT; 

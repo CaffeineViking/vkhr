@@ -89,9 +89,7 @@ namespace vkpp {
     }
 
     void DebugMarker::close(CommandBuffer& command_buffer) {
-        if (vkCmdEndDebugUtilsLabelEXT) {
-            vkCmdEndDebugUtilsLabelEXT(command_buffer.get_handle());
-        }
+        end(command_buffer);
     }
 
     PFN_vkSetDebugUtilsObjectTagEXT DebugMarker::vkSetDebugUtilsObjectTagEXT = nullptr;
@@ -99,4 +97,10 @@ namespace vkpp {
     PFN_vkCmdBeginDebugUtilsLabelEXT DebugMarker::vkCmdBeginDebugUtilsLabelEXT = nullptr; 
     PFN_vkCmdEndDebugUtilsLabelEXT DebugMarker::vkCmdEndDebugUtilsLabelEXT = nullptr;
     PFN_vkCmdInsertDebugUtilsLabelEXT DebugMarker::vkCmdInsertDebugUtilsLabelEXT = nullptr;
+
+    QueryPool* DebugMarker::query_pool { nullptr };
+
+    void DebugMarker::set_current_query_pool(QueryPool& query_pool_candidate) {
+        query_pool = &query_pool_candidate;
+    }
 }

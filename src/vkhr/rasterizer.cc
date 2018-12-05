@@ -103,6 +103,9 @@ namespace vkhr {
 
         imgui = Interface { window_surface.get_glfw_window(), this };
 
+        query_pool = vk::QueryPool { device, VK_QUERY_TYPE_TIMESTAMP, 64 };
+        vk::DebugMarker::set_current_query_pool(query_pool); // for timing.
+
         command_buffers = command_pool.allocate(framebuffers.size());
     }
 
