@@ -46,7 +46,8 @@ namespace vkhr {
         projection = glm::perspective(glm::radians(fov), 1.0f,
                                       near, far);
         projection[1][1] *= -1;
-        buffer.view_projection = projection * view;
+        view_projection        = projection * view;
+        buffer.view_projection = bias * view_projection;
     }
 
     const glm::vec4& LightSource::get_vector() const {
@@ -108,10 +109,18 @@ namespace vkhr {
                                point, glm::vec3 { 0.0, 1.0, 0.0 });
         }
 
-        buffer.view_projection = projection * view;
+        view_projection        = projection * view;
+        buffer.view_projection = bias * view_projection;
     }
 
     const glm::mat4& LightSource::get_view_projection() const {
-        return buffer.view_projection;
+        return view_projection;
     }
+
+    glm::mat4 LightSource::bias {
+        0.5, 0.0, 0.0, 0.0,
+        0.0, 0.5, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.5, 0.5, 0.0, 1.0
+    };
 }

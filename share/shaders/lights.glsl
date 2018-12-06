@@ -8,5 +8,5 @@ struct Light {
 
 layout(binding = 1) uniform Lights {
     Light data[16];
-    int light_size;
+    int   size;
 } lights;

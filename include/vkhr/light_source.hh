@@ -56,7 +56,10 @@ namespace vkhr {
         mutable std::size_t index;
 
         glm::mat4 view { 1.0f };
+        glm::mat4 view_projection { 1.0f };
         glm::mat4 projection { 1.0f };
+
+        static glm::mat4 bias;
 
         Type type;
         Buffer buffer;
