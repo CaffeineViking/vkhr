@@ -4,6 +4,8 @@
 #include <vkhr/scene_graph.hh>
 #include <vkhr/rasterizer.hh>
 
+#include <glm/gtx/rotate_vector.hpp>
+
 #include <iostream>
 #include <utility>
 
@@ -66,6 +68,12 @@ namespace vkhr {
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer) {
+        auto direction = scene_graph.light_sources.front().get_direction();
+        direction = glm::rotateY(direction, 0.005f);
+        direction = glm::rotateX(direction, 0.008f);
+        direction = glm::rotateZ(direction, 0.002f);
+        scene_graph.light_sources.front().set_direction(direction);
+
         if (!gui_visibility) {
             ImGui_ImplVulkan_NewFrame();
             ImGui_ImplGlfw_NewFrame();
