@@ -33,6 +33,8 @@ namespace vkhr {
 
         ~Interface() noexcept;
 
+        void make_custom_style(ImGuiStyle&);
+
         void load(vkhr::Rasterizer& vulkan_renderer);
         void transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer);
         void draw(vkpp::CommandBuffer& command_list);
@@ -45,8 +47,6 @@ namespace vkhr {
         bool raytracing_enabled();
         void toggle_raytracing();
         void show();
-
-        void make_style(ImVec4*);
 
     private:
         int scene_file { 0 };

@@ -49,7 +49,7 @@ namespace vkhr {
 
         ImGui::StyleColorsDark();
         auto& style = ImGui::GetStyle();
-        make_style(style.Colors);
+        make_custom_style(style);
 
         auto command_buffer = vulkan_renderer.command_pool.allocate_and_begin();
         ImGui_ImplVulkan_CreateFontsTexture(command_buffer.get_handle());
@@ -82,7 +82,8 @@ namespace vkhr {
             auto& window = rasterizer.window_surface.get_glfw_window();
 
             ImGui::Begin(" VKHR - a Scalable Strand-Based Hair Renderer",
-                         nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
+                         nullptr, ImGuiWindowFlags_AlwaysAutoResize |
+                                  ImGuiWindowFlags_NoCollapse);
 
             if (ImGui::Button("Toggle Fullscreen"))
                 window.toggle_fullscreen();
@@ -241,7 +242,9 @@ namespace vkhr {
         swap(lhs.renderers, rhs.renderers);
     }
 
-    void Interface::make_style(ImVec4* color) {
+    void Interface::make_custom_style(ImGuiStyle& style) {
+        style.FrameRounding  = 2.0f;
+        style.GrabRounding   = 2.0f;
     }
 
     bool Interface::get_string_from_vector(void* data, int n, const char** str) {
