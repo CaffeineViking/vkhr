@@ -64,11 +64,6 @@ namespace vkhr {
         Type type;
         Buffer buffer;
     };
-
-    struct Lights {
-        LightSource::Buffer lights[16];
-        int lights_enabled_count { 0 };
-    };
 }
 
 #endif

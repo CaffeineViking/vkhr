@@ -14,7 +14,7 @@ namespace vkhr {
 
     void SceneGraph::traverse_nodes() {
         destroy_previous_node_caches();
-        build_lights_data_cache(lights);
+        rebuild_lights_buffer_caches();
         const glm::mat4 identity { 1 };
         traverse(*root, identity); // I
     }
@@ -304,10 +304,6 @@ namespace vkhr {
         return light_sources;
     }
 
-    Lights& SceneGraph::get_lights() const {
-        return lights;
-    }
-
     const Camera& SceneGraph::get_camera() const {
         return camera;
     }
@@ -481,12 +477,19 @@ namespace vkhr {
             hair_style_cache.push_back(&node);
     }
 
-    void SceneGraph::build_lights_data_cache(Lights& buffer) {
-        buffer.lights_enabled_count = static_cast<int>(light_sources.size());
-        std::size_t ln { 0 };
+    void SceneGraph::rebuild_lights_buffer_caches() {
+        if (light_source_buffers.size() != light_sources.size())
+            light_source_buffers.resize(light_sources.size());
+
+        std::size_t i { 0 };
+
         for (const auto& light_source : light_sources) {
-            buffer.lights[ln++] = light_source.get_buffer();
+            light_source_buffers[i++] = light_source.get_buffer();
         }
+    }
+
+    std::vector<LightSource::Buffer>& SceneGraph::fetch_light_source_buffers() const {
+        return light_source_buffers;
     }
 
     void SceneGraph::destroy_previous_node_caches() {

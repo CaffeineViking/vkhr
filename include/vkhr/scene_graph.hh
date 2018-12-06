@@ -47,9 +47,9 @@ namespace vkhr {
         const std::unordered_map<std::string, HairStyle>& get_hair_styles() const;
         const std::unordered_map<std::string, Model>& get_models() const;
 
-        mutable Lights lights;
+        mutable std::vector<LightSource::Buffer> light_source_buffers;
 
-        Lights& get_lights() const;
+        std::vector<LightSource::Buffer>& fetch_light_source_buffers() const;
         const std::list<LightSource>& get_light_sources() const;
 
         const Camera& get_camera() const;
@@ -169,7 +169,7 @@ namespace vkhr {
         void build_node_cache(Node& chnode);
         void destroy_previous_node_caches();
 
-        void build_lights_data_cache(Lights&);
+        void rebuild_lights_buffer_caches();
 
         std::vector<Node*> hair_style_cache;
         std::vector<Node*> model_node_cache;

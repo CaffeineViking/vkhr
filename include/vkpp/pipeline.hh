@@ -289,12 +289,11 @@ namespace vkpp {
         void set_shader_stages(std::vector<ShaderModule>& modules);
 
         FixedFunction fixed_functions;
-
         RenderPass* render_pass { nullptr };
-
         std::uint32_t subpass_index { 0 };
 
         std::vector<VkPipelineShaderStageCreateInfo> shader_stages;
+        std::vector<VkSpecializationInfo> specialization_constants;
     };
 
     class ComputePipeline final : public Pipeline {

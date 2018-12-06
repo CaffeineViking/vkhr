@@ -137,7 +137,7 @@ namespace vkhr {
             pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_VIEWPORT);
             pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_SCISSOR);
 
-            pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_FRONT_BIT);
+            pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_BACK_BIT);
 
             pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_depth_test();

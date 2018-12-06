@@ -53,6 +53,15 @@ namespace vkpp {
         }
     }
 
+    ShaderModule::ShaderModule(Device& device, const std::string& file_path,
+                               const std::vector<VkSpecializationMapEntry>& constants,
+                               void* constants_data, std::size_t constants_data_size)
+                              : ShaderModule { device, file_path } {
+        this->constants = constants;
+        this->constants_data_size = constants_data_size;
+        this->constants_data = constants_data;
+    }
+
     ShaderModule::~ShaderModule() noexcept {
         if (handle != VK_NULL_HANDLE) {
             vkDestroyShaderModule(device, handle, nullptr);
@@ -79,6 +88,10 @@ namespace vkpp {
         swap(lhs.file_size,    rhs.file_size);
         swap(lhs.hashed_spirv, rhs.hashed_spirv);
         swap(lhs.spirv,        rhs.spirv);
+
+        swap(lhs.constants, rhs.constants);
+        swap(lhs.constants_data_size, rhs.constants_data_size);
+        swap(lhs.constants_data, rhs.constants_data);
     }
 
     VkShaderModule& ShaderModule::get_handle() {
@@ -183,6 +196,18 @@ namespace vkpp {
         file.close();
 
         return blob;
+    }
+
+    std::size_t ShaderModule::get_constants_data_size() const {
+        return constants_data_size;
+    }
+
+    const std::vector<VkSpecializationMapEntry>& ShaderModule::get_constants() const {
+        return constants;
+    }
+
+    const void* ShaderModule::get_constants_data() const {
+        return constants_data;
     }
 
     std::uint32_t ShaderModule::djb2a(const std::vector<char>& data) {

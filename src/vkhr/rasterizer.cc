@@ -95,8 +95,6 @@ namespace vkhr {
         image_available = vk::Semaphore::create(device, swap_chain.size(), "Image Available Semaphore");
         render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
         command_buffer_finished = vk::Fence::create(device, swap_chain.size(), "Commands Finish Fence");
-
-        light_buf = vk::UniformBuffer::create(device, sizeof(Lights), swap_chain.size(), "Lights Data");
         camera_vp = vk::UniformBuffer::create(device, sizeof(VP), swap_chain.size(), "Camera MVP Data");
 
         load(scene_graph);
@@ -128,6 +126,9 @@ namespace vkhr {
             };
         }
 
+        light_buf = vk::UniformBuffer::create(device, scene_graph.get_light_sources().size() * sizeof(LightSource::Buffer),
+                                              swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
+
         for (auto& light_source : scene_graph.get_light_sources())
             shadow_maps.emplace_back(2048, *this, light_source);
 
@@ -136,7 +137,7 @@ namespace vkhr {
 
     void Rasterizer::update(const SceneGraph& scene_graph) {
         camera_vp[frame].update(scene_graph.get_camera().get_transform());
-        light_buf[frame].update(scene_graph.get_lights());
+        light_buf[frame].update(scene_graph.fetch_light_source_buffers());
     }
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {

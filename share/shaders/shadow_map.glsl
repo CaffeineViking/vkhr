@@ -1,4 +1,9 @@
-layout(binding = 2) uniform sampler2D shadow_maps[16];
+#ifndef VKHR_SHADOW_MAP_GLSL
+#define VKHR_SHADOW_MAP_GLSL
+
+#include "lights.glsl"
+
+layout(binding = 2) uniform sampler2D shadow_maps[lights_size];
 
 // Based on the "A Survivor Reborn: Tomb Raider on DX11" talk at GDC 2013 by Jason Lacroix and his pseudo-code.
 float approximate_deep_shadow(float shadow_depth, float light_depth, float strand_radius, float strand_alpha) {
@@ -29,3 +34,5 @@ float approximate_deep_shadow_4x4_pcf() {
 
     return shadow / 16.0;
 }
+
+#endif

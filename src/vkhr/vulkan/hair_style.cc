@@ -75,6 +75,12 @@ namespace vkhr {
             pipeline.fixed_stages.enable_depth_test();
             pipeline.fixed_stages.enable_alpha_mix(0);
 
+            struct SpecializationConstants {
+                std::uint32_t lights_size;
+            } specialization_constant_data {
+                vulkan_renderer.shadow_maps.size()
+            };
+
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("kajiya-kay.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Kajiya-Kay Vertex Shader");

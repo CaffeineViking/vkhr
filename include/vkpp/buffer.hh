@@ -194,8 +194,8 @@ namespace vkpp {
 
         static std::vector<UniformBuffer> create(Device& device, VkDeviceSize size, std::size_t n = 1, const char* name = "");
 
-        template<typename T>
-        void update(T& uniform_data_obj);
+        template<typename T> void update(std::vector<T>& vec);
+        template<typename T> void update(T& uniform_data_obj);
     };
 
     template<typename T>
@@ -240,6 +240,12 @@ namespace vkpp {
     void UniformBuffer::update(T& data_object) {
         void* data = reinterpret_cast<void*>(&data_object);
         device_memory.copy(device_memory.get_size(), data);
+    }
+
+    template<typename T>
+    void UniformBuffer::update(std::vector<T>& data_vector) {
+        device_memory.copy(data_vector.size() * sizeof(T),
+                           data_vector.data());
     }
 }
 

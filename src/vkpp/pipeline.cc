@@ -468,7 +468,11 @@ namespace vkpp {
     }
 
     void GraphicsPipeline::set_shader_stages(std::vector<ShaderModule>& shaders) {
+        specialization_constants.clear();
         shader_stages.clear();
+        shader_stages.reserve(shaders.size());
+        specialization_constants.reserve(shaders.size());
+
         for (auto& shader : shaders) {
             VkPipelineShaderStageCreateInfo shader_info;
             shader_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -479,7 +483,17 @@ namespace vkpp {
 
             shader_info.module = shader.get_handle();
             shader_info.pName = "main";
-            shader_info.pSpecializationInfo = nullptr; // TODO: add this to ShaderModule
+
+            VkSpecializationInfo specialization_info;
+
+            specialization_info.mapEntryCount = shader.get_constants().size();
+            specialization_info.pMapEntries = shader.get_constants().data();
+            specialization_info.pData = shader.get_constants_data();
+            specialization_info.dataSize = shader.get_constants_data_size();
+
+            specialization_constants.push_back(specialization_info);
+
+            shader_info.pSpecializationInfo = &specialization_constants.back();
 
             shader_stages.push_back(shader_info);
         }
