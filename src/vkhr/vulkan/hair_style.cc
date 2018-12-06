@@ -75,16 +75,23 @@ namespace vkhr {
             pipeline.fixed_stages.enable_depth_test();
             pipeline.fixed_stages.enable_alpha_mix(0);
 
-            struct SpecializationConstants {
-                std::uint32_t lights_size;
-            } specialization_constant_data {
-                vulkan_renderer.shadow_maps.size()
+            std::uint32_t light_count = vulkan_renderer.shadow_maps.size();
+
+            struct Constants {
+                std::uint32_t light_size;
+            } constant_data {
+                light_count
+            };
+
+            std::vector<VkSpecializationMapEntry> constants {
+                { 0, 0, sizeof(std::uint32_t) } // light size
             };
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("kajiya-kay.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Kajiya-Kay Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("kajiya-kay.frag"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("kajiya-kay.frag"),
+                                                constants, &constant_data, sizeof(constant_data));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
                                        VK_OBJECT_TYPE_SHADER_MODULE, "Kajiya-Kay Fragment Shader");
 
@@ -93,7 +100,7 @@ namespace vkhr {
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
             };
 
-            for (std::uint32_t i { 0 }; i < vulkan_renderer.shadow_maps.size(); ++i)
+            for (std::uint32_t i { 0 }; i < light_count; ++i)
                 descriptor_bindings.push_back({ 2 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
@@ -110,7 +117,7 @@ namespace vkhr {
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_buf[i]);
-                for (std::uint32_t j { 0 }; j < vulkan_renderer.shadow_maps.size(); ++j)
+                for (std::uint32_t j { 0 }; j < light_count; ++j)
                     pipeline.descriptor_sets[i].write(2 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
                                                              vulkan_renderer.shadow_maps[j].get_sampler());
             }
