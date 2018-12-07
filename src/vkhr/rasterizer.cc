@@ -117,14 +117,18 @@ namespace vkhr {
         };
 
         hair_styles.clear();
+        models.clear();
         shadow_maps.clear();
 
-        for (const auto& hair_style : scene_graph.get_hair_styles()) {
-            const auto& hair_style_geometry = hair_style.second;
-            hair_styles[&hair_style_geometry] = vulkan::HairStyle {
-                hair_style_geometry, *this // copies to device mem.
+        for (const auto& model : scene_graph.get_models())
+            models[&model.second] = vulkan::Model {
+                model.second, *this
             };
-        }
+
+        for (const auto& hair_style : scene_graph.get_hair_styles())
+            hair_styles[&hair_style.second] = vulkan::HairStyle {
+                hair_style.second, *this
+            };
 
         light_buf = vk::UniformBuffer::create(device, scene_graph.get_light_sources().size() * sizeof(LightSource::Buffer),
                                               swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
@@ -240,6 +244,7 @@ namespace vkhr {
     void Rasterizer::build_pipelines() {
         vulkan::DepthView::build_pipeline(depth_view_pipeline, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
+        vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
 
@@ -309,24 +314,17 @@ namespace vkhr {
     }
 
     void Rasterizer::recompile() {
-        device.wait_idle();
+        device.wait_idle(); // If any pipeline is still in use we need to wait until execution is complete to recompile it.
+        if (recompile_pipeline_shaders(depth_view_pipeline)) vulkan::DepthView::build_pipeline(depth_view_pipeline, *this);
+        if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
+        if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
+        if (recompile_pipeline_shaders(billboards_pipeline)) vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
+    }
 
-        bool hair_style_pipeline_dirty { false };
-        for (auto& hair_style_shader : hair_style_pipeline.shader_stages)
-            hair_style_pipeline_dirty |= hair_style_shader.recompile();
-        if (hair_style_pipeline_dirty)
-            vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
-
-        bool billboards_pipeline_dirty  { false };
-        for (auto& billboard_shader : billboards_pipeline.shader_stages)
-            billboards_pipeline_dirty |= billboard_shader.recompile();
-        if (billboards_pipeline_dirty)
-            vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
-
-        bool depth_view_pipeline_dirty  { false };
-        for (auto& depth_map_shader : depth_view_pipeline.shader_stages)
-            billboards_pipeline_dirty |= depth_map_shader.recompile();
-        if (depth_view_pipeline_dirty)
-            vulkan::Billboard::build_pipeline(depth_view_pipeline, *this);
+    bool Rasterizer::recompile_pipeline_shaders(Pipeline& pipeline) {
+        bool pipeline_dirty { false };
+        for (auto& shader_module : pipeline.shader_stages)
+            pipeline_dirty |= shader_module.recompile();
+        return pipeline_dirty;
     }
 }

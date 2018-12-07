@@ -9,8 +9,9 @@ namespace vkhr {
 
     bool Model::load(const std::string& file_path) {
         std::string error_msg { "" };
+        std::string base_path { file_path.substr(0, file_path.find_last_of("\\/") + 1) };
         success = tinyobj::LoadObj(&attributes, &shapes, &materials,
-                                 &error_msg, file_path.c_str());
+                                 &error_msg, file_path.c_str(), base_path.c_str());
         if (!error_msg.empty()) std::cerr << error_msg << std::endl;
         if (!success) return false;
 
