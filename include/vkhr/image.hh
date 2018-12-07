@@ -37,6 +37,8 @@ namespace vkhr {
         bool load(const std::string& file_path);
         bool save(const std::string& file_path) const;
 
+        bool save_timestamp() const;
+
         void set_quality(int quality); // saving JPEG.
 
         unsigned get_width() const;

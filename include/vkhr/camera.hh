@@ -19,6 +19,8 @@ namespace vkhr {
 
     using VP = ViewProjection;
 
+    class Interface;
+
     class Camera final {
     public:
         Camera() = default;
@@ -83,6 +85,8 @@ namespace vkhr {
 
         unsigned width { 1280 }, height { 720 };
 
+        float aspect_ratio { width / (float) height };
+
         float field_of_view { glm::quarter_pi<float>() };
 
         glm::vec3 position      { 0.0, 0.0, 4.0 };
@@ -101,6 +105,8 @@ namespace vkhr {
 
         mutable glm::mat4 view_matrix;
         mutable glm::mat4 projection_matrix;
+
+        friend class Interface;
     };
 }
 

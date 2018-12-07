@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 namespace vkhr {
+    class Interface;
     class LightSource {
     public:
         enum class Type {
@@ -63,6 +64,8 @@ namespace vkhr {
 
         Type type;
         Buffer buffer;
+
+        friend class Interface;
     };
 }
 

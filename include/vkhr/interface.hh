@@ -53,6 +53,8 @@ namespace vkhr {
         int previous_scene_file { 0 };
         std::vector<std::string> scene_files;
         std::vector<std::string> renderers;
+        std::vector<std::string> simulations;
+        int simulation { 0 };
         int renderer { 0 };
 
         static bool get_string_from_vector(void*, int, const char**);

@@ -6,7 +6,9 @@
 #include <stb_image_write.h>
 #include <stb_image.h>
 
+#include <ctime>
 #include <cstring>
+#include <cstdio>
 
 namespace vkhr {
     Image::Image(const unsigned width, const unsigned height)
@@ -96,6 +98,21 @@ namespace vkhr {
         else return false; // Specify file extension.
 
         return !error;
+    }
+
+    bool Image::save_timestamp() const {
+        time_t current_time { time(0) };
+        struct tm time_structure;
+        char current_time_buffer[80];
+
+        time_structure = *localtime(&current_time);
+        strftime(current_time_buffer, sizeof(current_time_buffer),
+                 "%F %H-%M-%S", &time_structure);
+
+        std::string date { current_time_buffer };
+        std::string file { date + ".png" };
+
+        return save(file);
     }
 
     // Values between 0 -> 100 as the RFC.

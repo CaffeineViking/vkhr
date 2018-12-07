@@ -122,6 +122,8 @@ namespace vkhr {
             Node* parent { nullptr };
 
             std::string node_name;
+
+            friend class Interface;
         };
 
         Node* find_node_by_name(const std::string& name);
@@ -138,6 +140,8 @@ namespace vkhr {
         Node& add(Node&& node);
 
         bool remove(std::vector<Node>::iterator node);
+
+        unsigned get_root_index();
 
         Node& get_root_node();
 
@@ -164,7 +168,7 @@ namespace vkhr {
 
         bool parse_camera(nlohmann::json& parser, Camera& camera);
         bool parse_light(nlohmann::json& parser,  LightSource& light);
-        bool parse_node(nlohmann::json& parser,   Node& node);
+        bool parse_node(nlohmann::json& parser,   Node& node, int i);
 
         void build_node_cache(Node& chnode);
         void destroy_previous_node_caches();
@@ -175,6 +179,7 @@ namespace vkhr {
         std::vector<Node*> model_node_cache;
 
         Node* root;
+        unsigned root_index = 0;
         mutable Camera camera;
         std::vector<Node> nodes;
         std::list<LightSource> light_sources;

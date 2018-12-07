@@ -36,11 +36,10 @@ int main(int argc, char** argv) {
     vkhr::InputMap input_map { window };
 
     input_map.bind("quit", vkhr::Input::Key::Escape);
+    input_map.bind("toggle_ui", vkhr::Input::Key::GraveAccent);
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
-    input_map.bind("switch_renderer", vkhr::Input::Key::Tab);
-    input_map.bind("toggle_ui", vkhr::Input::Key::U);
-    input_map.bind("toggle_fullscreen", vkhr::Input::Key::F);
-    input_map.bind("take_screenshot", vkhr::Input::Key::S);
+    input_map.bind("toggle_fullscreen", vkhr::Input::Key::F11);
+    input_map.bind("take_screenshot", vkhr::Input::Key::PrintScreen);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
     vkhr::Rasterizer rasterizer { window, scene_graph };
@@ -57,13 +56,10 @@ int main(int argc, char** argv) {
             window.close();
         } else if (input_map.just_pressed("toggle_ui")) {
             imgui.toggle_visibility();
-        } else if (input_map.just_pressed("switch_renderer")) {
-            imgui.toggle_raytracing();
         } else if (input_map.just_pressed("toggle_fullscreen")) {
             window.toggle_fullscreen();
         } else if (input_map.just_pressed("take_screenshot")) {
-            rasterizer.get_screenshot()
-                      .save("out.png");
+            rasterizer.get_screenshot().save_timestamp();
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile();
         }

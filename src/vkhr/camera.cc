@@ -48,6 +48,8 @@ namespace vkhr {
 
     void Camera::set_resolution(unsigned width, unsigned height) {
         set_width(width); set_height(height);
+        aspect_ratio = static_cast<float>(width) /
+                       static_cast<float>(height);
     }
 
     unsigned Camera::get_height() const {
@@ -55,8 +57,7 @@ namespace vkhr {
     }
 
     float Camera::get_aspect_ratio() const {
-        return static_cast<float>(width) /
-               static_cast<float>(height);
+        return aspect_ratio;
     }
 
     void Camera::set_field_of_view(const float field_of_view) {

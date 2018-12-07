@@ -5,6 +5,7 @@
 #include <vkhr/rasterizer.hh>
 
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <utility>
@@ -64,7 +65,9 @@ namespace vkhr {
 
         scene_files.push_back(SCENE("ponytail.vkhr"));
 
-        renderer = scene_file = 0;
+        simulations.push_back("No Effects");
+
+        renderer = scene_file = simulation = 0;
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer) {
@@ -81,9 +84,15 @@ namespace vkhr {
 
             auto& window = rasterizer.window_surface.get_glfw_window();
 
-            ImGui::Begin(" VKHR - a Scalable Strand-Based Hair Renderer",
+            ImGui::Begin(" VKHR or \"Scalable Strand-Based Hair Rendering\"",
                          nullptr, ImGuiWindowFlags_AlwaysAutoResize |
                                   ImGuiWindowFlags_NoCollapse);
+
+            ImGui::TextWrapped("");
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
 
             if (ImGui::Button("Toggle Fullscreen"))
                 window.toggle_fullscreen();
@@ -92,11 +101,11 @@ namespace vkhr {
 
             if (ImGui::Button("Take Screenshot"))
                 rasterizer.get_screenshot()
-                          .save("out.png");
+                          .save_timestamp();
 
             ImGui::SameLine();
 
-            if (ImGui::Button("Hide UI"))
+            if (ImGui::Button("Close GUI"))
                 toggle_visibility();
 
             ImGui::Spacing();
@@ -110,7 +119,7 @@ namespace vkhr {
 
             ImGui::SameLine(0.0, 4.0);
 
-            if (ImGui::Button("Toggle Render"))
+            if (ImGui::Button("Toggle Renderer"))
                 toggle_raytracing();
 
             ImGui::Spacing();
@@ -131,7 +140,7 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("Rendered Scene", &scene_file, get_string_from_vector, static_cast<void*>(&scene_files), scene_files.size());
+            ImGui::Combo("Scene Graph File", &scene_file, get_string_from_vector, static_cast<void*>(&scene_files), scene_files.size());
 
             // Switch to the new scene by loading it
             if (scene_file != previous_scene_file) {
@@ -146,14 +155,23 @@ namespace vkhr {
 
             if (ImGui::CollapsingHeader("Scene Hierarchy")) {
                 if (ImGui::TreeNode("Camera")) {
+                    if (ImGui::SliderAngle("Field of View", &scene_graph.camera.field_of_view, 0.0f, 180.0f))
+                        scene_graph.camera.recalculate_projection_matrix();
+                    if (ImGui::SliderFloat("Screen Aspect", &scene_graph.camera.aspect_ratio, 1.00f, 2.370f, "%.4f"))
+                        scene_graph.camera.recalculate_projection_matrix();
+                    if (ImGui::DragFloat3("View Position", glm::value_ptr(scene_graph.camera.position)))
+                        scene_graph.camera.recalculate_view_matrix();
+                    if (ImGui::DragFloat3("Look at Point", glm::value_ptr(scene_graph.camera.look_at_point)))
+                        scene_graph.camera.recalculate_view_matrix();
+
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode("Light Sources")) {
+                if (ImGui::TreeNode("Lights")) {
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode("Node")) {
+                if (ImGui::TreeNode(scene_graph.get_root_node().node_name.c_str())) {
                     ImGui::TreePop();
                 }
             }
@@ -167,7 +185,13 @@ namespace vkhr {
 
             ImGui::SameLine(0.0, 9.0);
 
-            ImGui::Button("Toggle Shadow Map Viewer");
+            ImGui::Button("Toggle Lighting Billboards");
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::Combo("Animation Effect", &simulation, get_string_from_vector, static_cast<void*>(&simulations), simulations.size());
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -176,6 +200,13 @@ namespace vkhr {
             if (ImGui::CollapsingHeader("Shader Profiler")) {
             }
 
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::TextWrapped("");
+
+            ImGui::Spacing();
             ImGui::End();
 
             ImGui::Render();
@@ -192,7 +223,7 @@ namespace vkhr {
     }
 
     bool Interface::wants_focus() const {
-        return ImGui::GetIO().WantCaptureMouse && !gui_visibility;
+        return ImGui::GetIO().WantCaptureMouse    && !gui_visibility;
     }
 
     bool Interface::typing_text() const {
@@ -240,6 +271,8 @@ namespace vkhr {
         swap(lhs.scene_file, rhs.scene_file);
         swap(lhs.scene_files, rhs.scene_files);
         swap(lhs.renderers, rhs.renderers);
+        swap(lhs.simulations, rhs.simulations);
+        swap(lhs.simulation, rhs.simulation);
     }
 
     void Interface::make_custom_style(ImGuiStyle& style) {

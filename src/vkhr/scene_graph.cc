@@ -55,11 +55,12 @@ namespace vkhr {
         if (light_sources.size() >= 16) // Maximum count
             return set_error_state(Error::ReadingLight);
 
+        int i = 0;
         if (auto nodes = parser.find("nodes"); nodes != parser.end()) {
             this->nodes.reserve(nodes->size());
             for (auto& node : *nodes) {
                 auto& current_node = push_back_node();
-                if (!parse_node(node, current_node)) {
+                if (!parse_node(node, current_node, i++)) {
                     return set_error_state(Error::ReadingNode);
                 }
             }
@@ -69,6 +70,7 @@ namespace vkhr {
 
         auto root = parser.value("root", 0);
         this->root = &nodes[root];
+        this->root_index  = root;
 
         return true;
     }
@@ -125,7 +127,7 @@ namespace vkhr {
         return true;
     }
 
-    bool SceneGraph::parse_node(nlohmann::json& parser, Node& node) {
+    bool SceneGraph::parse_node(nlohmann::json& parser, Node& node, int i) {
         if (auto scale = parser.find("scale"); scale != parser.end()) {
             node.set_scale({ scale->at(0),
                              scale->at(1),
@@ -147,7 +149,11 @@ namespace vkhr {
                                    translate->at(2) });
         } else node.set_translation({ 0, 0, 0 });
 
-        node.set_node_name(parser.value("name", "None"));
+        auto node_name = parser.value("name", "");
+
+        if (!node_name.empty()) node.set_node_name(node_name);
+        else node.set_node_name("Node " + std::to_string(i));
+
         nodes_by_name[node.get_node_name()] = &node;
 
         if (auto styles = parser.find("styles"); styles != parser.end()) {
@@ -503,6 +509,10 @@ namespace vkhr {
 
     SceneGraph::Node& SceneGraph::get_root_node() {
         return *root;
+    }
+
+    unsigned SceneGraph::get_root_index() {
+        return root_index;
     }
 
     SceneGraph::operator bool() const {
