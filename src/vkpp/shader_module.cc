@@ -19,24 +19,31 @@ namespace vkpp {
                                const std::string& file_path)
                               : file_path { file_path },
                                 device { logical_device.get_handle() } {
-        std::string ext { file_path.substr(file_path.find_last_of(".") + 1) };
+        file_extension = file_path.substr(file_path.find_last_of(".") + 1);
+        file_name      = file_path.substr(0, file_path.find_first_of("."));
 
-        if (ext == "vert") {
+        if (file_extension == "vert") {
             shader_type = Type::Vertex;
-        } else if (ext == "tesc") {
+        } else if (file_extension == "tesc") {
             shader_type = Type::TesselationControl;
-        } else if (ext == "tese") {
+        } else if (file_extension == "tese") {
             shader_type = Type::TesselationEvaluation;
-        } else if (ext == "frag") {
+        } else if (file_extension == "frag") {
             shader_type = Type::Fragment;
-        } else if (ext == "comp") {
+        } else if (file_extension == "comp") {
+            shader_type = Type::Compute;
+        } else if (file_extension == "hlsl") {
             shader_type = Type::Compute;
         } else {
             throw Exception { "couldn't create shader module!",
             "the shader at '" + file_path + "' isn't a stage" };
         }
 
-        spirv = load(file_path + ".spv");
+        if (file_extension == "hlsl") {
+            spirv = load(file_name + ".spv");
+        } else {
+            spirv = load(file_path + ".spv");
+        }
 
         hashed_spirv = djb2a(spirv);
 
@@ -84,7 +91,11 @@ namespace vkpp {
         swap(lhs.device, rhs.device);
 
         swap(lhs.shader_type,  rhs.shader_type);
-        swap(lhs.file_path,    rhs.file_path);
+
+        swap(lhs.file_path,      rhs.file_path);
+        swap(lhs.file_name,      rhs.file_name);
+        swap(lhs.file_extension, rhs.file_extension);
+
         swap(lhs.file_size,    rhs.file_size);
         swap(lhs.hashed_spirv, rhs.hashed_spirv);
         swap(lhs.spirv,        rhs.spirv);
@@ -99,19 +110,31 @@ namespace vkpp {
     }
 
     bool ShaderModule::recompile() {
-        std::string compiler { VKPP_SHADER_MODULE_COMPILER };
-        std::string shader_file { get_file_path() };
-        compiler.append(" -o " + shader_file + ".spv ");
-        std::string glslc_compile { compiler + shader_file };
+        std::string compiler;
+        std::string shader_module_path;
+
+        if (file_extension == "hlsl") {
+            compiler = VKPP_SHADER_MODULE_HLSLC;
+            std::string entry_point { file_name.substr(file_name.find_last_of("\\/") + 1) };
+            compiler.append(entry_point);
+            compiler.append(" -c -o " + file_name + ".spv");
+            shader_module_path = file_name + ".spv";
+        } else {
+            compiler = VKPP_SHADER_MODULE_GLSLC;
+            compiler.append(" -o " + file_path + ".spv");
+            shader_module_path = file_path + ".spv";
+        }
+
+        compiler.append(" " + file_path);
 
 #ifndef WINDOWS
-        system(glslc_compile.c_str());
+        system(compiler.c_str());
 #else
         PROCESS_INFORMATION process_info {   };
         STARTUPINFOW startup_info {   };
         startup_info.cb = sizeof(startup_info);
 
-        auto wide_glslc_cmd = to_lpcwstr(glslc_compile);
+        auto wide_glslc_cmd = to_lpcwstr(compiler);
 
         BOOL result = CreateProcessW(nullptr, (LPWSTR) wide_glslc_cmd.c_str(),
                                      nullptr, nullptr, false,
@@ -125,8 +148,8 @@ namespace vkpp {
         }
 #endif
 
-        auto spirv_candidate = load(shader_file + ".spv");
-        auto hash = djb2a(spirv_candidate);
+        auto spirv_candidate = load(shader_module_path);
+        auto hash            = djb2a(spirv_candidate);
 
         if (hash != hashed_spirv) {
             spirv = spirv_candidate;

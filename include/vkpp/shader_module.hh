@@ -1,7 +1,8 @@
 #ifndef VKPP_SHADER_MODULE_HH
 #define VKPP_SHADER_MODULE_HH
 
-#define VKPP_SHADER_MODULE_COMPILER "glslc -O -g -c"
+#define VKPP_SHADER_MODULE_GLSLC "glslc -O -g -c"
+#define VKPP_SHADER_MODULE_HLSLC "glslc -O -g -fshader-stage=compute -fentry-point="
 
 #include <vulkan/vulkan.h>
 
@@ -57,6 +58,8 @@ namespace vkpp {
 
         Type shader_type;
         std::string file_path;
+        std::string file_name;
+        std::string file_extension;
         std::size_t file_size { 0 };
         std::uint32_t hashed_spirv;
         std::vector<char> spirv;
