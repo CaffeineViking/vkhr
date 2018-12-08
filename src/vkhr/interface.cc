@@ -285,4 +285,21 @@ namespace vkhr {
         *str = v->at(n).c_str();
         return true;
     }
+
+    void Interface::record_shader_performance_timestamp(const std::unordered_map<std::string, double>& timestamps) {
+        for (const auto& timestamp : timestamps) {
+            auto profile = profiles.find(timestamp.first);
+            if (profile == profiles.end()) {
+                profiles[timestamp.first] = ProfilePair { {}, 0 };
+                profile = profiles.find(timestamp.first);
+                profile->second.timestamps.resize(profile_limit);
+                std::fill(profile->second.timestamps.begin(),
+                          profile->second.timestamps.end(), 0.00);
+            }
+
+            profile->second.timestamps[profile->second.offset] = timestamp.second;
+
+            profile->second.offset = (profile->second.offset + 1) % profile_limit;
+        }
+    }
 }

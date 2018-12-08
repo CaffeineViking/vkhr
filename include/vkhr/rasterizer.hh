@@ -80,7 +80,7 @@ namespace vkhr {
 
         Interface imgui;
 
-        vk::QueryPool query_pool;
+        std::vector<vk::QueryPool> query_pools;
 
         std::vector<vk::CommandBuffer> command_buffers;
 

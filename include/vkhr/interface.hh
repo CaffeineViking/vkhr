@@ -48,6 +48,8 @@ namespace vkhr {
         void toggle_raytracing();
         void show();
 
+        void record_shader_performance_timestamp(const std::unordered_map<std::string, double>& timestamps);
+
     private:
         int scene_file { 0 };
         int previous_scene_file { 0 };
@@ -56,6 +58,14 @@ namespace vkhr {
         std::vector<std::string> simulations;
         int simulation { 0 };
         int renderer { 0 };
+
+        struct ProfilePair {
+            std::vector<double> timestamps;
+            int offset;
+        };
+
+        static constexpr int profile_limit { 60 };
+        std::unordered_map<std::string, ProfilePair> profiles;
 
         static bool get_string_from_vector(void*, int, const char**);
 

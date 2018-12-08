@@ -27,10 +27,10 @@ namespace vkpp {
             std::uint32_t end;
         };
 
-        void clear_timestamps();
         void set_begin_timestamp(const std::string& name, std::uint32_t i);
         const TimestampPair& get_timestamp(const std::string& names) const;
         void set_end_timestamp(const std::string& name, std::uint32_t idx);
+
         std::uint32_t get_timestamp_query_count() const;
 
         std::unordered_map<std::string, double>& calculate_timestamp_queries();
@@ -49,6 +49,9 @@ namespace vkpp {
                              VkDeviceSize size, void* buffer,
                              VkQueryResultFlags result_flags,
                              VkDeviceSize stride = 0);
+
+        static std::vector<QueryPool> create(std::size_t count, Device& device, VkQueryType query_type, std::uint32_t query_count,
+                                             VkQueryPipelineStatisticFlags pipeline_stats = 0); 
 
     private:
         VkQueryType query_types;

@@ -71,11 +71,23 @@ namespace vkpp {
     }
 
     void QueryPool::set_begin_timestamp(const std::string& name, std::uint32_t query) {
-        timestamps[name].begin = query;
+        auto timestamp = timestamps.find(name);
+        if (timestamp == timestamps.end()) {
+            timestamps[name] = TimestampPair { 0, 0 };
+            timestamp = timestamps.find(name);
+        }
+
+        timestamp->second.begin = query;
     }
 
     void QueryPool::set_end_timestamp(const std::string& name,   std::uint32_t query) {
-        timestamps[name].end   = query;
+        auto timestamp = timestamps.find(name);
+        if (timestamp == timestamps.end()) {
+            timestamps[name] = TimestampPair { 0, 0 };
+            timestamp = timestamps.find(name);
+        }
+
+        timestamp->second.end = query;
     }
 
     VkQueryPool& QueryPool::get_handle() {
@@ -92,11 +104,6 @@ namespace vkpp {
 
     std::uint32_t QueryPool::get_query_count() const {
         return query_count;
-    }
-
-    void QueryPool::clear_timestamps() {
-        timestamp_ms_time.clear();
-        timestamps.clear();
     }
 
     double QueryPool::get_ns_per_unit() const {
@@ -120,12 +127,24 @@ namespace vkpp {
                     sizeof(std::uint64_t));
 
         for (const auto& timestamp : timestamps) {
-            auto begin_timestamp = timestamp_buffer[timestamp.second.begin];
-            auto end_timestamp   = timestamp_buffer[timestamp.second.end];
+            std::int64_t begin_timestamp = timestamp_buffer[timestamp.second.begin];
+            std::int64_t end_timestamp   = timestamp_buffer[timestamp.second.end];
             auto duration_in_ns  = (end_timestamp - begin_timestamp) * get_ns_per_unit();
             timestamp_ms_time[timestamp.first] = duration_in_ns / 1e6;
         }
 
         return timestamp_ms_time;
+    }
+
+    std::vector<QueryPool> QueryPool::create(std::size_t count, Device& device, VkQueryType query_type, std::uint32_t query_count,
+                                             VkQueryPipelineStatisticFlags pipeline_stats) {
+        std::vector<QueryPool> query_pools;
+        query_pools.reserve(count);
+
+        for (std::size_t i { 0 }; i < count; ++i) {
+            query_pools.emplace_back(device, query_type, query_count, pipeline_stats);
+        }
+
+        return query_pools;
     }
 }
