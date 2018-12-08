@@ -157,7 +157,7 @@ namespace vkhr {
 
         draw_depth(scene_graph, command_buffers[frame], frame);
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Scene Graph", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Scene Graph");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
@@ -168,10 +168,10 @@ namespace vkhr {
 
         vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
-        imgui.draw(command_buffers[frame]);
+        imgui.draw(command_buffers[frame], query_pools[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame], "Draw Scene Graph", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame]);
 
         command_buffers[frame].end();
 

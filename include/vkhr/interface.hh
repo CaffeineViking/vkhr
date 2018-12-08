@@ -10,6 +10,7 @@
 #include <vkpp/descriptor_set.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/command_buffer.hh>
+#include <vkpp/query.hh>
 
 #include <vulkan/vulkan.h>
 
@@ -37,6 +38,7 @@ namespace vkhr {
 
         void load(vkhr::Rasterizer& vulkan_renderer);
         void transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer);
+        void draw(vkpp::CommandBuffer& command_list, vkpp::QueryPool& query_pool);
         void draw(vkpp::CommandBuffer& command_list);
 
         bool wants_focus() const;
@@ -62,9 +64,10 @@ namespace vkhr {
         struct ProfilePair {
             std::vector<float> timestamps;
             int offset;
+            std::string output { "??.??ms" };
         };
 
-        static constexpr int profile_limit { 120 };
+        static constexpr int profile_limit { 60 };
         std::unordered_map<std::string, ProfilePair> profiles;
 
         static bool get_string_from_vector(void*, int, const char**);

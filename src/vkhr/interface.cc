@@ -6,6 +6,7 @@
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <sstream>
 
 #include <iostream>
 #include <utility>
@@ -202,7 +203,8 @@ namespace vkhr {
                     ImGui::PlotLines(profile.first.c_str(),
                                      profile.second.timestamps.data(),
                                      profile.second.timestamps.size(),
-                                     profile.second.offset);
+                                     profile.second.offset,
+                                     profile.second.output.c_str());
             }
 
             ImGui::Spacing();
@@ -218,9 +220,18 @@ namespace vkhr {
         }
     }
 
+    void Interface::draw(vkpp::CommandBuffer& command_buffer, vkpp::QueryPool& query_pool) {
+        if (!gui_visibility) {
+            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay", query_pool);
+            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                            command_buffer.get_handle());
+            vk::DebugMarker::close(command_buffer, "Draw GUI Overlay", query_pool);
+        }
+    }
+
     void Interface::draw(vkpp::CommandBuffer& command_buffer) {
         if (!gui_visibility) {
-            vk::DebugMarker::begin(command_buffer, "Render a ImGui Overlay");
+            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay");
             ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
                                             command_buffer.get_handle());
             vk::DebugMarker::close(command_buffer);
@@ -303,6 +314,14 @@ namespace vkhr {
             }
 
             profile->second.timestamps[profile->second.offset] = timestamp.second;
+
+            if (profile->second.offset == (profile_limit - 1)) {
+                auto sum = std::accumulate(profile->second.timestamps.begin(),
+                                           profile->second.timestamps.end(), 0.0f);
+                auto average = sum / profile->second.timestamps.size();
+                profile->second.output.resize(10);
+                std::snprintf(&profile->second.output[0], 10, "%5.2fms", average);
+            }
 
             profile->second.offset = (profile->second.offset + 1) % profile_limit;
         }
