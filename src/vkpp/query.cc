@@ -106,7 +106,7 @@ namespace vkpp {
         return query_count;
     }
 
-    double QueryPool::get_ns_per_unit() const {
+    float QueryPool::get_ns_per_unit() const {
         return ns_per_unit;
     }
 
@@ -120,8 +120,8 @@ namespace vkpp {
                                      result_flags);
     }
 
-    std::unordered_map<std::string, double>& QueryPool::calculate_timestamp_queries() {
-        get_results(0, get_timestamp_query_count(),
+    std::unordered_map<std::string, float>& QueryPool::calculate_timestamp_queries() {
+        get_results(0, get_query_count(),
                     sizeof(std::uint64_t) * get_query_count(),
                     timestamp_buffer, VK_QUERY_RESULT_64_BIT,
                     sizeof(std::uint64_t));

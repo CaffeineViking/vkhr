@@ -33,13 +33,13 @@ namespace vkpp {
 
         std::uint32_t get_timestamp_query_count() const;
 
-        std::unordered_map<std::string, double>& calculate_timestamp_queries();
+        std::unordered_map<std::string, float>& calculate_timestamp_queries();
 
         VkQueryType get_query_type() const;
         VkQueryPipelineStatisticFlags get_pipeline_statistics_flag() const;
         std::uint32_t get_query_count() const;
 
-        double get_ns_per_unit() const;
+        float get_ns_per_unit() const;
 
         VkQueryPool& get_handle();
 
@@ -61,7 +61,7 @@ namespace vkpp {
         float ns_per_unit;
 
         std::unordered_map<std::string, TimestampPair> timestamps;
-        std::unordered_map<std::string, double> timestamp_ms_time;
+        std::unordered_map<std::string, float> timestamp_ms_time;
 
         std::uint64_t* timestamp_buffer { nullptr };
 

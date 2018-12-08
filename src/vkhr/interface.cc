@@ -198,6 +198,11 @@ namespace vkhr {
             ImGui::Spacing();
 
             if (ImGui::CollapsingHeader("Shader Profiler")) {
+                for (auto& profile : profiles)
+                    ImGui::PlotLines(profile.first.c_str(),
+                                     profile.second.timestamps.data(),
+                                     profile.second.timestamps.size(),
+                                     profile.second.offset);
             }
 
             ImGui::Spacing();
@@ -286,7 +291,7 @@ namespace vkhr {
         return true;
     }
 
-    void Interface::record_shader_performance_timestamp(const std::unordered_map<std::string, double>& timestamps) {
+    void Interface::record_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps) {
         for (const auto& timestamp : timestamps) {
             auto profile = profiles.find(timestamp.first);
             if (profile == profiles.end()) {
@@ -294,7 +299,7 @@ namespace vkhr {
                 profile = profiles.find(timestamp.first);
                 profile->second.timestamps.resize(profile_limit);
                 std::fill(profile->second.timestamps.begin(),
-                          profile->second.timestamps.end(), 0.00);
+                          profile->second.timestamps.end(), 0.0f);
             }
 
             profile->second.timestamps[profile->second.offset] = timestamp.second;

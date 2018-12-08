@@ -135,7 +135,7 @@ namespace vkhr {
                                               swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
 
         for (auto& light_source : scene_graph.get_light_sources())
-            shadow_maps.emplace_back(2048, *this, light_source);
+            shadow_maps.emplace_back(1024, *this, light_source);
 
         build_pipelines();
     }
@@ -157,21 +157,21 @@ namespace vkhr {
 
         draw_depth(scene_graph, command_buffers[frame], frame);
 
-        vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Scene Graph", query_pools[frame]);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
         hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
 
         draw_hairs(scene_graph, command_buffers[frame], frame);
 
-        vk::DebugMarker::close(command_buffers[frame], "Render the Hair Styles", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame], "Render the Scene Graph", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Scene Graph", query_pools[frame]);
 
         command_buffers[frame].end();
 
@@ -192,7 +192,7 @@ namespace vkhr {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
-        vk::DebugMarker::begin(command_buffer, "Render the Shadow Maps", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffer, "Draw Shadow Maps", query_pools[frame]);
         depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 
         for (auto& shadow_map : shadow_maps) {
@@ -204,7 +204,7 @@ namespace vkhr {
             command_buffer.end_render_pass();
         }
 
-        vk::DebugMarker::close(command_buffer, "Render the Shadow Maps", query_pools[frame]);
+        vk::DebugMarker::close(command_buffer, "Draw Shadow Maps", query_pools[frame]);
     }
 
     void Rasterizer::draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
@@ -222,11 +222,9 @@ namespace vkhr {
 
         command_buffers[frame].begin();
 
-        command_buffers[frame].reset_query_pool(query_pools[frame], 0, query_pools[frame].get_query_count());
-
         fullscreen_billboard.send_img(billboards_pipeline.descriptor_sets[frame],
                                       fullscreen_images, command_buffers[frame]);
-        vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame],  "Fullscreen Image Blit");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
         billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
@@ -238,7 +236,7 @@ namespace vkhr {
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame], "Render the Framebuffer", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame]);
 
         command_buffers[frame].end();
 
@@ -247,7 +245,6 @@ namespace vkhr {
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
         frame = fetch_next_frame();
-        imgui.record_shader_performance_timestamp(query_pools[frame].calculate_timestamp_queries());
     }
 
     void Rasterizer::build_pipelines() {
