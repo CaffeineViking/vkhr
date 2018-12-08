@@ -25,14 +25,14 @@ namespace vkpp {
         static void object_name(VkDevice& device, VkImage image_handle, VkObjectType object_type, const char* name);
 
         static void begin(CommandBuffer&  command_buffer, const char* name, const glm::vec4& = glm::vec4 { 0.0f });  
+        static void begin(CommandBuffer&  command_buffer, const char* name, QueryPool& query_pool, const glm::vec4& = glm::vec4 { 0.0f });  
         static void insert(CommandBuffer& command_buffer, const char* name, const glm::vec4& = glm::vec4 { 0.0f });  
         static void end(CommandBuffer&    command_buffer);
+        static void end(CommandBuffer&    command_buffer, const char* name, QueryPool& query_pool);
+        static void close(CommandBuffer&  command_buffer, const char* name, QueryPool& query_pool);
         static void close(CommandBuffer&  command_buffer);
 
-        static void set_current_query_pool(QueryPool& query_pool);
-
     private:
-        static QueryPool* query_pool;
         static PFN_vkSetDebugUtilsObjectTagEXT vkSetDebugUtilsObjectTagEXT;
         static PFN_vkSetDebugUtilsObjectNameEXT vkSetDebugUtilsObjectNameEXT;
         static PFN_vkCmdBeginDebugUtilsLabelEXT vkCmdBeginDebugUtilsLabelEXT; 

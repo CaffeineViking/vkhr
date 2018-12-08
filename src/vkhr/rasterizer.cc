@@ -82,9 +82,9 @@ namespace vkhr {
         descriptor_pool = vkpp::DescriptorPool {
             device,
             {
-                { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,         1024 },
-                { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1024 },
-                { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         1024 }
+                { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,         64 },
+                { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 64 },
+                { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         64 }
             }
         };
 
@@ -94,15 +94,20 @@ namespace vkhr {
 
         image_available = vk::Semaphore::create(device, swap_chain.size(), "Image Available Semaphore");
         render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
-        command_buffer_finished = vk::Fence::create(device, swap_chain.size(), "Commands Finish Fence");
+        command_buffer_finished = vk::Fence::create(device, swap_chain.size(), "Buffer Finished Fence");
         camera_vp = vk::UniformBuffer::create(device, sizeof(VP), swap_chain.size(), "Camera MVP Data");
 
         load(scene_graph);
 
+        fullscreen_billboard = vulkan::Billboard {
+            static_cast<std::uint32_t>(window.get_width()),
+            static_cast<std::uint32_t>(window.get_height()),
+            *this // needs to upload image descriptor later.
+        };
+
         imgui = Interface { window_surface.get_glfw_window(), this };
 
         query_pool = vk::QueryPool { device, VK_QUERY_TYPE_TIMESTAMP, 64 };
-        vk::DebugMarker::set_current_query_pool(query_pool); // for timing.
 
         command_buffers = command_pool.allocate(framebuffers.size());
     }
@@ -110,25 +115,21 @@ namespace vkhr {
     void Rasterizer::load(const SceneGraph& scene_graph) {
         device.wait_idle();
 
-        fullscreen_billboard = vulkan::Billboard {
-            scene_graph.get_camera().get_width(),
-            scene_graph.get_camera().get_height(),
-            *this // images needs to be uploaded!
-        };
-
         hair_styles.clear();
         models.clear();
         shadow_maps.clear();
 
-        for (const auto& model : scene_graph.get_models())
+        for (const auto& model : scene_graph.get_models()) {
             models[&model.second] = vulkan::Model {
                 model.second, *this
             };
+        }
 
-        for (const auto& hair_style : scene_graph.get_hair_styles())
+        for (const auto& hair_style : scene_graph.get_hair_styles()) {
             hair_styles[&hair_style.second] = vulkan::HairStyle {
                 hair_style.second, *this
             };
+        }
 
         light_buf = vk::UniformBuffer::create(device, scene_graph.get_light_sources().size() * sizeof(LightSource::Buffer),
                                               swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
@@ -152,23 +153,25 @@ namespace vkhr {
 
         command_buffers[frame].begin();
 
+        command_buffers[frame].reset_query_pool(query_pool, 0, query_pool.get_query_count());
+
         draw_depth(scene_graph, command_buffers[frame], frame);
 
-        vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph");
+        vk::DebugMarker::begin(command_buffers[frame], "Render the Scene Graph", query_pool);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles");
+        vk::DebugMarker::begin(command_buffers[frame], "Render the Hair Styles", query_pool);
         hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
 
         draw_hairs(scene_graph, command_buffers[frame], frame);
 
-        vk::DebugMarker::close(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Render the Hair Styles", query_pool);
 
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Render the Scene Graph", query_pool);
 
         command_buffers[frame].end();
 
@@ -177,17 +180,19 @@ namespace vkhr {
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
         frame = fetch_next_frame();
+
+        query_pool.calculate_timestamp_queries();
     }
 
     std::uint32_t Rasterizer::fetch_next_frame() {
         return (frame + 1) % swap_chain.size();
     }
 
-    void Rasterizer::draw_models(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
+    void Rasterizer::draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
-        vk::DebugMarker::begin(command_buffer, "Render the Shadow Maps");
+        vk::DebugMarker::begin(command_buffer, "Render the Shadow Maps", query_pool);
         depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 
         for (auto& shadow_map : shadow_maps) {
@@ -195,10 +200,11 @@ namespace vkhr {
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
             draw_hairs(scene_graph, command_buffer, frame, light_vp);
+            draw_model(scene_graph, command_buffer, frame, light_vp);
             command_buffer.end_render_pass();
         }
 
-        vk::DebugMarker::close(command_buffer);
+        vk::DebugMarker::close(command_buffer, "Render the Shadow Maps", query_pool);
     }
 
     void Rasterizer::draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
@@ -216,9 +222,11 @@ namespace vkhr {
 
         command_buffers[frame].begin();
 
+        command_buffers[frame].reset_query_pool(query_pool, 0, query_pool.get_query_count());
+
         fullscreen_billboard.send_img(billboards_pipeline.descriptor_sets[frame],
                                       fullscreen_images, command_buffers[frame]);
-        vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer");
+        vk::DebugMarker::begin(command_buffers[frame], "Render the Framebuffer", query_pool);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
         billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
@@ -230,7 +238,7 @@ namespace vkhr {
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Render the Framebuffer", query_pool);
 
         command_buffers[frame].end();
 
@@ -239,6 +247,8 @@ namespace vkhr {
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
         frame = fetch_next_frame();
+
+        query_pool.calculate_timestamp_queries();
     }
 
     void Rasterizer::build_pipelines() {

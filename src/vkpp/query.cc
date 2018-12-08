@@ -25,14 +25,17 @@ namespace vkpp {
 
         ns_per_unit = device.get_physical_device().get_properties().limits.timestampPeriod;
 
+        timestamp_buffer = new std::uint64_t[query_count];
+
         if (VkResult error = vkCreateQueryPool(this->device, &create_info, nullptr, &handle))
             throw Exception { error, "couldn't create query pool!" };
     }
 
     QueryPool::~QueryPool() noexcept {
-        if (handle != VK_NULL_HANDLE) {
+        if (handle != VK_NULL_HANDLE)
             vkDestroyQueryPool(device, handle, nullptr);
-        }
+        if (timestamp_buffer != nullptr)
+            delete timestamp_buffer;
     }
 
     QueryPool::QueryPool(QueryPool&& command_pool) noexcept {
@@ -51,7 +54,28 @@ namespace vkpp {
         swap(lhs.pipeline_statistics, rhs.pipeline_statistics);
         swap(lhs.query_count, rhs.query_count);
         swap(lhs.query_types, rhs.query_types);
+        swap(lhs.ns_per_unit, rhs.ns_per_unit);
         swap(lhs.query, rhs.query);
+
+        swap(lhs.timestamps, rhs.timestamps);
+        swap(lhs.timestamp_ms_time, rhs.timestamp_ms_time);
+        swap(lhs.timestamp_buffer, rhs.timestamp_buffer);
+    }
+
+    std::uint32_t QueryPool::get_timestamp_query_count() const {
+        return 2 * timestamps.size();
+    }
+
+    const QueryPool::TimestampPair& QueryPool::get_timestamp(const std::string& query_name) const {
+        return timestamps.at(query_name);
+    }
+
+    void QueryPool::set_begin_timestamp(const std::string& name, std::uint32_t query) {
+        timestamps[name].begin = query;
+    }
+
+    void QueryPool::set_end_timestamp(const std::string& name,   std::uint32_t query) {
+        timestamps[name].end   = query;
     }
 
     VkQueryPool& QueryPool::get_handle() {
@@ -70,7 +94,12 @@ namespace vkpp {
         return query_count;
     }
 
-    float QueryPool::get_ns_per_unit() const {
+    void QueryPool::clear_timestamps() {
+        timestamp_ms_time.clear();
+        timestamps.clear();
+    }
+
+    double QueryPool::get_ns_per_unit() const {
         return ns_per_unit;
     }
 
@@ -82,5 +111,21 @@ namespace vkpp {
                                      first_query, query_count,
                                      size, buffer, stride,
                                      result_flags);
+    }
+
+    std::unordered_map<std::string, double>& QueryPool::calculate_timestamp_queries() {
+        get_results(0, get_timestamp_query_count(),
+                    sizeof(std::uint64_t) * get_query_count(),
+                    timestamp_buffer, VK_QUERY_RESULT_64_BIT,
+                    sizeof(std::uint64_t));
+
+        for (const auto& timestamp : timestamps) {
+            auto begin_timestamp = timestamp_buffer[timestamp.second.begin];
+            auto end_timestamp   = timestamp_buffer[timestamp.second.end];
+            auto duration_in_ns  = (end_timestamp - begin_timestamp) * get_ns_per_unit();
+            timestamp_ms_time[timestamp.first] = duration_in_ns / 1e6;
+        }
+
+        return timestamp_ms_time;
     }
 }

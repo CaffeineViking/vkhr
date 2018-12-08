@@ -4,6 +4,8 @@
 #include <vulkan/vulkan.h>
 
 #include <cstdint>
+#include <unordered_map>>
+#include <string>
 
 namespace vkpp {
     class Device;
@@ -20,11 +22,24 @@ namespace vkpp {
         QueryPool& operator=(QueryPool&& command_pool) noexcept;
         friend void swap(QueryPool& lhs, QueryPool& rhs);
 
+        struct TimestampPair {
+            std::uint32_t begin;
+            std::uint32_t end;
+        };
+
+        void clear_timestamps();
+        void set_begin_timestamp(const std::string& name, std::uint32_t i);
+        const TimestampPair& get_timestamp(const std::string& names) const;
+        void set_end_timestamp(const std::string& name, std::uint32_t idx);
+        std::uint32_t get_timestamp_query_count() const;
+
+        std::unordered_map<std::string, double>& calculate_timestamp_queries();
+
         VkQueryType get_query_type() const;
         VkQueryPipelineStatisticFlags get_pipeline_statistics_flag() const;
         std::uint32_t get_query_count() const;
 
-        float get_ns_per_unit() const;
+        double get_ns_per_unit() const;
 
         VkQueryPool& get_handle();
 
@@ -41,6 +56,11 @@ namespace vkpp {
         std::uint32_t query_count;
 
         float ns_per_unit;
+
+        std::unordered_map<std::string, TimestampPair> timestamps;
+        std::unordered_map<std::string, double> timestamp_ms_time;
+
+        std::uint64_t* timestamp_buffer { nullptr };
 
         VkDevice device    { VK_NULL_HANDLE };
         VkQueryPool handle { VK_NULL_HANDLE };

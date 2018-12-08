@@ -68,6 +68,14 @@ namespace vkpp {
         }
     }
 
+    void DebugMarker::begin(CommandBuffer& command_buffer, const char* name, QueryPool& query_pool, const glm::vec4& color) {
+        begin(command_buffer, name, color);
+        query_pool.set_begin_timestamp(name, query_pool.query);
+        command_buffer.write_timestamp(query_pool,
+                                       VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                                       query_pool.query++);
+    }
+
     void DebugMarker::insert(CommandBuffer& command_buffer, const char* name, const glm::vec4& color) {
         if (vkCmdInsertDebugUtilsLabelEXT) {
             VkDebugUtilsLabelEXT label_info;
@@ -88,6 +96,18 @@ namespace vkpp {
         }
     }
 
+    void DebugMarker::end(CommandBuffer& command_buffer, const char* name, QueryPool& query_pool) {
+        query_pool.set_end_timestamp(name, query_pool.query);
+        command_buffer.write_timestamp(query_pool,
+                                       VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                                       query_pool.query++);
+        end(command_buffer);
+    }
+
+    void DebugMarker::close(CommandBuffer& command_buffer, const char* name, QueryPool& query_pool) {
+        end(command_buffer, name, query_pool);
+    }
+
     void DebugMarker::close(CommandBuffer& command_buffer) {
         end(command_buffer);
     }
@@ -97,10 +117,4 @@ namespace vkpp {
     PFN_vkCmdBeginDebugUtilsLabelEXT DebugMarker::vkCmdBeginDebugUtilsLabelEXT = nullptr; 
     PFN_vkCmdEndDebugUtilsLabelEXT DebugMarker::vkCmdEndDebugUtilsLabelEXT = nullptr;
     PFN_vkCmdInsertDebugUtilsLabelEXT DebugMarker::vkCmdInsertDebugUtilsLabelEXT = nullptr;
-
-    QueryPool* DebugMarker::query_pool { nullptr };
-
-    void DebugMarker::set_current_query_pool(QueryPool& query_pool_candidate) {
-        query_pool = &query_pool_candidate;
-    }
 }
