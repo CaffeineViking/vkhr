@@ -65,7 +65,7 @@ namespace vkhr {
         auto vsync = window.vsync_requested();
 
         auto presentation_mode = vsync ? vk::SwapChain::PresentationMode::Fifo
-                                   : vk::SwapChain::PresentationMode::MailBox;
+                                 : vk::SwapChain::PresentationMode::Immediate;
 
         swap_chain = vk::SwapChain {
             device,
