@@ -4,8 +4,9 @@
 #include <vulkan/vulkan.h>
 
 #include <cstdint>
-#include <unordered_map>>
+#include <unordered_map>
 #include <string>
+#include <vector>
 
 namespace vkpp {
     class Device;
@@ -33,7 +34,7 @@ namespace vkpp {
 
         std::uint32_t get_timestamp_query_count() const;
 
-        std::unordered_map<std::string, float>& calculate_timestamp_queries();
+        std::unordered_map<std::string, float>& request_timestamp_queries();
 
         VkQueryType get_query_type() const;
         VkQueryPipelineStatisticFlags get_pipeline_statistics_flag() const;
@@ -50,7 +51,8 @@ namespace vkpp {
                              VkQueryResultFlags result_flags,
                              VkDeviceSize stride = 0);
 
-        static std::vector<QueryPool> create(std::size_t count, Device& device, VkQueryType query_type, std::uint32_t query_count,
+        static std::vector<QueryPool> create(std::size_t count, Device& device,
+                                             VkQueryType query_type, std::uint32_t query_count,
                                              VkQueryPipelineStatisticFlags pipeline_stats = 0); 
 
     private:

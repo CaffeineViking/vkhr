@@ -11,8 +11,9 @@ namespace vkpp {
                          std::uint32_t query_count,
                          VkQueryPipelineStatisticFlags pipeline_stats)
                         : query_types { query_type },
-                          query_count { query_count },
                           pipeline_statistics { pipeline_stats },
+                          query_count { query_count },
+                          
                           device { device.get_handle() } {
         VkQueryPoolCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
@@ -120,7 +121,7 @@ namespace vkpp {
                                      result_flags);
     }
 
-    std::unordered_map<std::string, float>& QueryPool::calculate_timestamp_queries() {
+    std::unordered_map<std::string, float>& QueryPool::request_timestamp_queries() {
         get_results(0, get_query_count(),
                     sizeof(std::uint64_t) * get_query_count(),
                     timestamp_buffer, VK_QUERY_RESULT_64_BIT,

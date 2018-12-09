@@ -51,7 +51,7 @@ namespace vkhr {
         void toggle_raytracing();
         bool show();
 
-        void store_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps);
+        void record_performance(const std::unordered_map<std::string, float>& timestamps);
 
     private:
         int scene_file { 0 };

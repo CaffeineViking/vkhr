@@ -316,7 +316,7 @@ namespace vkhr {
         return true;
     }
 
-    void Interface::store_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps) {
+    void Interface::record_performance(const std::unordered_map<std::string, float>& timestamps) {
         for (const auto& timestamp : timestamps) {
             auto profile = profiles.find(timestamp.first);
             if (profile == profiles.end()) {

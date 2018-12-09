@@ -147,6 +147,7 @@ namespace vkhr {
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {
         command_buffer_finished[frame].wait_and_reset();
+        imgui.record_performance(query_pools[frame].request_timestamp_queries());
         update(scene_graph); // updates descriptor sets.
 
         auto frame_image = swap_chain.acquire_next_image(image_available[frame]);
@@ -182,8 +183,6 @@ namespace vkhr {
 
         latest_drawn_frame = frame;
         frame = fetch_next_frame();
-
-        imgui.store_shader_performance_timestamp(query_pools[frame].calculate_timestamp_queries());
     }
 
     std::uint32_t Rasterizer::fetch_next_frame() {
