@@ -93,8 +93,13 @@ namespace vkhr {
     }
 
     void Window::toggle_fullscreen(bool fullscreen) {
-        if (this->fullscreen != fullscreen) {
-            toggle_fullscreen();
+        if (fullscreen) {
+            glfwSetWindowMonitor(handle, monitor, 0, 0,
+                                 monitor_width, monitor_height,
+                                 monitor_refresh_rate);
+        } else {
+            glfwSetWindowMonitor(handle, nullptr, window_x, window_y,
+                                 width, height, monitor_refresh_rate);
         }
     }
 

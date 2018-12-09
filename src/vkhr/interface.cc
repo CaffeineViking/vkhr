@@ -95,7 +95,8 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Checkbox("Fullscreen", &window.fullscreen);
+            if (ImGui::Checkbox("Fullscreen", &window.fullscreen))
+                window.toggle_fullscreen(window.fullscreen);
 
             ImGui::SameLine(0.0f, 10.0f);
 
