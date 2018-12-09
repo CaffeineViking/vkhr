@@ -100,7 +100,7 @@ namespace vkhr {
         return !error;
     }
 
-    bool Image::save_timestamp() const {
+    bool Image::save_time() const {
         time_t current_time { time(0) };
         struct tm time_structure;
         char current_time_buffer[80];

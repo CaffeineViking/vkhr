@@ -101,8 +101,8 @@ namespace vkhr {
             ImGui::SameLine();
 
             if (ImGui::Button("Take Screenshot"))
-                rasterizer.get_screenshot()
-                          .save_timestamp();
+                rasterizer.get_screenshot(scene_graph, raytracer)
+                          .save_time();
 
             ImGui::SameLine();
 
@@ -246,8 +246,14 @@ namespace vkhr {
         return ImGui::GetIO().WantCaptureKeyboard && !gui_visibility;
     }
 
-    void Interface::hide() {
+    void Interface::set_visibility(bool visible) {
+        gui_visibility = visible;
+    }
+
+    bool Interface::hide() {
+        auto previous_visibility = gui_visibility;
         gui_visibility = true;
+        return previous_visibility;
     }
 
     void Interface::toggle_visibility() {
@@ -259,8 +265,10 @@ namespace vkhr {
         renderer       =  raytrace_scene;
     }
 
-    void Interface::show() {
+    bool Interface::show() {
+        auto previous_visibility = gui_visibility;
         gui_visibility = false;
+        return previous_visibility;
     }
 
     bool Interface::raytracing_enabled() {
@@ -302,7 +310,7 @@ namespace vkhr {
         return true;
     }
 
-    void Interface::record_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps) {
+    void Interface::store_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps) {
         for (const auto& timestamp : timestamps) {
             auto profile = profiles.find(timestamp.first);
             if (profile == profiles.end()) {

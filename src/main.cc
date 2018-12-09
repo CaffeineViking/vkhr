@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
         } else if (input_map.just_pressed("toggle_fullscreen")) {
             window.toggle_fullscreen();
         } else if (input_map.just_pressed("take_screenshot")) {
-            rasterizer.get_screenshot().save_timestamp();
+            rasterizer.get_screenshot(scene_graph, ray_tracer).save_time();
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile();
         }

@@ -44,13 +44,14 @@ namespace vkhr {
         bool wants_focus() const;
         bool typing_text() const;
 
-        void hide();
+        bool hide();
         void toggle_visibility();
+        void set_visibility(bool visible);
         bool raytracing_enabled();
         void toggle_raytracing();
-        void show();
+        bool show();
 
-        void record_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps);
+        void store_shader_performance_timestamp(const std::unordered_map<std::string, float>& timestamps);
 
     private:
         int scene_file { 0 };

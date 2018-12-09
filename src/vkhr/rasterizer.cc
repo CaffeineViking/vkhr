@@ -179,9 +179,11 @@ namespace vkhr {
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
+
+        latest_drawn_frame = frame;
         frame = fetch_next_frame();
 
-        imgui.record_shader_performance_timestamp(query_pools[frame].calculate_timestamp_queries());
+        imgui.store_shader_performance_timestamp(query_pools[frame].calculate_timestamp_queries());
     }
 
     std::uint32_t Rasterizer::fetch_next_frame() {
@@ -240,10 +242,12 @@ namespace vkhr {
 
         command_buffers[frame].end();
 
-        device.get_graphics_queue().submit(command_buffers[frame_image], image_available[frame],
+        device.get_graphics_queue().submit(command_buffers[frame], image_available[frame],
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
+
+        latest_drawn_frame = frame;
         frame = fetch_next_frame();
     }
 
@@ -267,7 +271,17 @@ namespace vkhr {
         return imgui;
     }
 
-    Image Rasterizer::get_screenshot() {
+    Image Rasterizer::get_screenshot(SceneGraph& scene_graph, Raytracer& ray_tracer) {
+        bool previous_visibility { imgui.hide() };
+
+        if (imgui.raytracing_enabled())
+            draw(ray_tracer.get_framebuffer());
+        else draw(scene_graph); // hides ImGui.
+
+        imgui.set_visibility(previous_visibility);
+
+        device.wait_idle();
+
         vk::Image screenshot_image {
             device,
             swap_chain.get_width(),
@@ -290,15 +304,15 @@ namespace vkhr {
         screenshot_image.transition(command_buffer, 0, VK_ACCESS_TRANSFER_WRITE_BIT,
                                     VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-        swap_chain.get_images()[frame].transition(command_buffer, VK_ACCESS_MEMORY_READ_BIT, VK_ACCESS_TRANSFER_READ_BIT,
-                                                  VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                                  VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+        swap_chain.get_images()[latest_drawn_frame].transition(command_buffer, VK_ACCESS_MEMORY_READ_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+                                                               VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                                               VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-        command_buffer.copy_image(swap_chain.get_images()[frame], screenshot_image);
+        command_buffer.copy_image(swap_chain.get_images()[latest_drawn_frame], screenshot_image);
 
-        swap_chain.get_images()[frame].transition(command_buffer, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_MEMORY_READ_BIT,
-                                                  VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                                                  VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+        swap_chain.get_images()[latest_drawn_frame].transition(command_buffer, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_MEMORY_READ_BIT,
+                                                               VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                                                               VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
         screenshot_image.transition(command_buffer, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_MEMORY_READ_BIT,
                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_GENERAL,

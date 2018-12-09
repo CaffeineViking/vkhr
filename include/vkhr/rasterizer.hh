@@ -42,7 +42,8 @@ namespace vkhr {
         void recompile();
 
         Interface& get_imgui();
-        Image get_screenshot();
+        Image get_screenshot(SceneGraph& scene_graph,
+                             Raytracer& ray_tracer);
 
     private:
         vk::Instance instance;
@@ -64,6 +65,7 @@ namespace vkhr {
         std::vector<vk::Fence> command_buffer_finished;
 
         std::uint32_t frame { 0 };
+        std::uint32_t latest_drawn_frame { 0 };
 
         std::vector<vk::UniformBuffer> camera_vp;
         std::vector<vk::UniformBuffer> light_buf;
@@ -89,7 +91,6 @@ namespace vkhr {
         friend class vulkan::Model;
         friend class ::vkhr::Interface;
         friend class vulkan::DepthView;
-
     };
 }
 
