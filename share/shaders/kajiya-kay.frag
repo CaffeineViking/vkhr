@@ -36,7 +36,7 @@ void main() {
         float depth = tex2Dproj(shadow_maps[0], light_space_frag,
                                 poisson_disk[i] / 256.0f).r;
         if (depth < light_space_frag.z / light_space_frag.w)
-            visibility -= 0.25;
+            visibility -= 0.225f;
     }
 
     color = vec4(shading * visibility, 1.0f);

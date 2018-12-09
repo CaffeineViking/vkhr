@@ -11,6 +11,7 @@
 #include <embree3/rtcore.h>
 
 namespace vkhr {
+    class Interface;
     class Raytracer final : public Renderer {
     public:
         Raytracer(const SceneGraph& scene_graph);
@@ -33,7 +34,7 @@ namespace vkhr {
         void set_flush_to_zero();
         void set_denormal_zero();
 
-        bool shadows_off = false;
+        bool shadows_on = true;
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
@@ -43,6 +44,8 @@ namespace vkhr {
         std::vector<embree::HairStyle> hair_style_geometry;
 
         friend class embree::HairStyle;
+
+        friend class Interface;
     };
 }
 

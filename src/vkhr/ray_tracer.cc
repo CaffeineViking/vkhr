@@ -101,7 +101,7 @@ namespace vkhr {
                     Ray::Epsilon
                 };
 
-                if (!shadow_ray.occluded_by(scene, context) || shadows_off) {
+                if (!shadow_ray.occluded_by(scene, context) || !shadows_on) {
                     auto& hair { hair_style_geometry[ray.get_geometry_id()] };
                     frag_color = hair.shade(ray, light, camera); // Kajiya-Kay
                 }
@@ -125,7 +125,7 @@ namespace vkhr {
     }
 
     void Raytracer::toggle_shadows() {
-        shadows_off = !shadows_off;
+        shadows_on = !shadows_on;
     }
 
     Raytracer::Raytracer(Raytracer&& raytracer) noexcept {

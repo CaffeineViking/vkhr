@@ -45,6 +45,16 @@ namespace vkhr {
 
             const LightSource* light { nullptr };
 
+            enum SamplingMethod {
+                Uniform,
+                Poisson
+            };
+
+            enum Technique {
+                ShadowMaps,
+                ApproximatedDeepShadowMaps
+            };
+
         private:
             vk::Image image;
             vk::DeviceMemory memory;

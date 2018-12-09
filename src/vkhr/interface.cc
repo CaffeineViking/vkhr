@@ -71,43 +71,45 @@ namespace vkhr {
         renderer = scene_file = simulation = 0;
     }
 
-    void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer) {
+    void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
         auto direction = scene_graph.light_sources.front().get_direction();
         direction = glm::rotateY(direction, 0.005f);
         direction = glm::rotateX(direction, 0.008f);
         direction = glm::rotateZ(direction, 0.002f);
         scene_graph.light_sources.front().set_direction(direction);
 
-        if (!gui_visibility) {
-            ImGui_ImplVulkan_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
+        if (gui_visible) {
             auto& window = rasterizer.window_surface.get_glfw_window();
 
-            ImGui::Begin(" Scalable Strand-Based Hair Renderer in Vulkan",
-                         nullptr, ImGuiWindowFlags_AlwaysAutoResize |
-                                  ImGuiWindowFlags_NoCollapse);
+            ImGui::Begin(" VKHR - a Scalable Strand-Based Hair Renderer",
+                         &gui_visible, ImGuiWindowFlags_AlwaysAutoResize |
+                                       ImGuiWindowFlags_NoCollapse);
 
-            ImGui::TextWrapped("");
+            // ImGui::TextWrapped("");
+            // ImGui::Spacing();
 
-            ImGui::Spacing();
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::Button("Toggle Fullscreen"))
-                window.toggle_fullscreen();
+            ImGui::Checkbox("Fullscreen", &window.fullscreen);
 
-            ImGui::SameLine();
+            ImGui::SameLine(0.0f, 10.0f);
+
+            ImGui::Checkbox("VSync", &window.vsync);
+
+            ImGui::SameLine(0.0f, 10.0f);
 
             if (ImGui::Button("Take Screenshot"))
-                rasterizer.get_screenshot(scene_graph, raytracer)
+                rasterizer.get_screenshot(scene_graph, ray_tracer)
                           .save_time();
 
             ImGui::SameLine();
 
-            if (ImGui::Button("Close GUI"))
-                toggle_visibility();
+            ImGui::Button("Help");
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -129,10 +131,12 @@ namespace vkhr {
 
             if (ImGui::CollapsingHeader("Render Settings")) {
                 if (ImGui::TreeNode("Rasterizer")) {
+                    ImGui::Checkbox("Shadows", &rasterizer.shadows_on);
                     ImGui::TreePop();
                 }
 
                 if (ImGui::TreeNode("Ray Tracer")) {
+                    ImGui::Checkbox("Shadows", &ray_tracer.shadows_on);
                     ImGui::TreePop();
                 }
             }
@@ -184,9 +188,9 @@ namespace vkhr {
             if (ImGui::Button("Recompile Shaders"))
                 rasterizer.recompile();
 
-            ImGui::SameLine(0.0, 9.0);
+            ImGui::SameLine();
 
-            ImGui::Button("Toggle Lighting Billboards");
+            ImGui::Checkbox("Display Sources of Light", &light_debugger);
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -209,55 +213,50 @@ namespace vkhr {
 
             ImGui::Spacing();
             ImGui::Separator();
-            ImGui::Spacing();
 
-            ImGui::TextWrapped("");
+            // ImGui::Spacing();
+            // ImGui::TextWrapped("");
 
-            ImGui::Spacing();
             ImGui::End();
-
-            ImGui::Render();
         }
+
+        ImGui::Render();
     }
 
     void Interface::draw(vkpp::CommandBuffer& command_buffer, vkpp::QueryPool& query_pool) {
-        if (!gui_visibility) {
-            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay", query_pool);
-            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                            command_buffer.get_handle());
-            vk::DebugMarker::close(command_buffer, "Draw GUI Overlay", query_pool);
-        }
+        vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay", query_pool);
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                        command_buffer.get_handle());
+        vk::DebugMarker::close(command_buffer, "Draw GUI Overlay", query_pool);
     }
 
     void Interface::draw(vkpp::CommandBuffer& command_buffer) {
-        if (!gui_visibility) {
-            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay");
-            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                            command_buffer.get_handle());
-            vk::DebugMarker::close(command_buffer);
-        }
+        vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay");
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                        command_buffer.get_handle());
+        vk::DebugMarker::close(command_buffer);
     }
 
     bool Interface::wants_focus() const {
-        return ImGui::GetIO().WantCaptureMouse    && !gui_visibility;
+        return ImGui::GetIO().WantCaptureMouse    && gui_visible;
     }
 
     bool Interface::typing_text() const {
-        return ImGui::GetIO().WantCaptureKeyboard && !gui_visibility;
+        return ImGui::GetIO().WantCaptureKeyboard && gui_visible;
     }
 
     void Interface::set_visibility(bool visible) {
-        gui_visibility = visible;
+        gui_visible = visible;
     }
 
     bool Interface::hide() {
-        auto previous_visibility = gui_visibility;
-        gui_visibility = true;
+        auto previous_visibility = gui_visible;
+        gui_visible = false;
         return previous_visibility;
     }
 
     void Interface::toggle_visibility() {
-        gui_visibility = !gui_visibility;
+        gui_visible = !gui_visible;
     }
 
     void Interface::toggle_raytracing() {
@@ -266,8 +265,8 @@ namespace vkhr {
     }
 
     bool Interface::show() {
-        auto previous_visibility = gui_visibility;
-        gui_visibility = false;
+        auto previous_visibility = gui_visible;
+        gui_visible = true;
         return previous_visibility;
     }
 
@@ -288,7 +287,7 @@ namespace vkhr {
         using std::swap;
 
         swap(lhs.ctx, rhs.ctx);
-        swap(lhs.gui_visibility, rhs.gui_visibility);
+        swap(lhs.gui_visible, rhs.gui_visible);
         swap(lhs.raytrace_scene, rhs.raytrace_scene);
 
         swap(lhs.renderer, rhs.renderer);
@@ -297,6 +296,9 @@ namespace vkhr {
         swap(lhs.renderers, rhs.renderers);
         swap(lhs.simulations, rhs.simulations);
         swap(lhs.simulation, rhs.simulation);
+        swap(lhs.profiles, rhs.profiles);
+
+        swap(lhs.light_debugger, rhs.light_debugger);
     }
 
     void Interface::make_custom_style(ImGuiStyle& style) {

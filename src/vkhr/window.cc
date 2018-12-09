@@ -92,6 +92,12 @@ namespace vkhr {
         }
     }
 
+    void Window::toggle_fullscreen(bool fullscreen) {
+        if (this->fullscreen != fullscreen) {
+            toggle_fullscreen();
+        }
+    }
+
     void Window::enable_vsync(bool sync) {
         vsync = sync;
     }

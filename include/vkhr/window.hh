@@ -14,6 +14,7 @@
 #include <vector>
 
 namespace vkhr {
+    class Interface;
     class Window final {
     public:
         Window(const int width, const int height, const std::string& title,
@@ -27,6 +28,7 @@ namespace vkhr {
         bool is_fullscreen() const;
 
         void toggle_fullscreen();
+        void toggle_fullscreen(bool f);
         void hide(); void show();
 
         int get_width()  const;
@@ -85,6 +87,8 @@ namespace vkhr {
         float frame_time { -1 },
               last_frame_time { 0 },
               fps_update { 0 };
+
+        friend class Interface;
     };
 }
 
