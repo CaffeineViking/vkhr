@@ -1,0 +1,7 @@
+#ifndef VKHR_MATH_H_GLSL
+#define VKHR_MATH_H_GLSL
+
+#define M_PI 3.14159265358979323846
+#define M_E  2.71828182845904523536
+
+#endif

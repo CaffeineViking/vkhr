@@ -72,11 +72,11 @@ namespace vkhr {
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
-        auto direction = scene_graph.light_sources.front().get_direction();
-        direction = glm::rotateY(direction, 0.005f);
-        direction = glm::rotateX(direction, 0.008f);
-        direction = glm::rotateZ(direction, 0.002f);
-        scene_graph.light_sources.front().set_direction(direction);
+        // auto direction = scene_graph.light_sources.front().get_direction();
+        // direction = glm::rotateY(direction, 0.005f);
+        // direction = glm::rotateX(direction, 0.008f);
+        // direction = glm::rotateZ(direction, 0.002f);
+        // scene_graph.light_sources.front().set_direction(direction);
 
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -224,17 +224,21 @@ namespace vkhr {
     }
 
     void Interface::draw(vkpp::CommandBuffer& command_buffer, vkpp::QueryPool& query_pool) {
-        vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay", query_pool);
-        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                        command_buffer.get_handle());
-        vk::DebugMarker::close(command_buffer, "Draw GUI Overlay", query_pool);
+        if (gui_visible) {
+            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay", query_pool);
+            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                            command_buffer.get_handle());
+            vk::DebugMarker::close(command_buffer, "Draw GUI Overlay", query_pool);
+        }
     }
 
     void Interface::draw(vkpp::CommandBuffer& command_buffer) {
-        vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay");
-        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                        command_buffer.get_handle());
-        vk::DebugMarker::close(command_buffer);
+        if (gui_visible) {
+            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay");
+            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                            command_buffer.get_handle());
+            vk::DebugMarker::close(command_buffer);
+        }
     }
 
     bool Interface::wants_focus() const {

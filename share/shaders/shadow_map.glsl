@@ -2,14 +2,15 @@
 #define VKHR_SHADOW_MAPS_GLSL
 
 #include "lights.glsl"
+#include "math.h.glsl"
 
 layout(binding = 2) uniform sampler2D shadow_maps[lights_size];
 
-vec4 tex2Dproj(sampler2D image, vec4 position, vec2 uv_offset) {
+vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
     vec4 texel = vec4(1.0f);
     vec3 projected_position = position.xyz / position.w;
-    if (projected_position.z > -1.0 && projected_position.z < 1.0)
-        texel = texture(image, projected_position.st + uv_offset);
+    if (projected_position.z > -1.0f && projected_position.z < 1.0f)
+        texel = texture(image, projected_position.st + displacement);
     return texel;
 }
 
@@ -25,18 +26,68 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
     return pow(1.0f - strand_alpha, strand_count); // this gives us "stronger" shadows with deeper hair strand.
 }
 
-float approximate_deep_shadows(sampler2D shadow_map, vec4 light_space_strand) {
-    float shadow = 0.00f;
+float approximate_deep_shadows(sampler2D shadow_map,
+                               float kernel_width,
+                               vec4 light_space_strand,
+                               float inv_strand_width,
+                               float strand_alpha) {
+    float shadow = 0.0f;
 
-    for (float y = -1.0f; y <= 1.0f; y += 1.0f)
-    for (float x = -1.0f; x <= 1.0f; x += 1.0f) {
+    vec2 shadow_map_size = textureSize(shadow_map, 0);
+    float kernel_range = (kernel_width - 1.0f) / 2.0f;
+    float sigma_stddev = (kernel_width / 2.0f) / 2.4f;
+    float sigma_squared = sigma_stddev * sigma_stddev;
+
+    float light_depth = light_space_strand.z / light_space_strand.w;
+
+    float weight = 0.0f;
+
+    for (float y = -kernel_range; y <= +kernel_range; y += 1.0f)
+    for (float x = -kernel_range; x <= +kernel_range; x += 1.0f) {
+        float exponent =     -1.0f * (x*x + y*y) / 2.0f*sigma_squared;
+        float local_weight = +1.0f / (2.0f*M_PI*sigma_squared) * pow(M_E, exponent);
+
+        float shadow_depth = tex2Dproj(shadow_map, light_space_strand, vec2(x, y) / (shadow_map_size / 1.0f)).r;
+        float local_shadow = approximate_deep_shadow(shadow_depth, light_depth, inv_strand_width, strand_alpha);
+
+        shadow += local_shadow * local_weight;
+        weight += local_weight;
     }
 
-    return shadow / 9.0f;
+    return shadow / weight;
 }
 
-float approximate_blue_noise_sampled_deep_shadows() {
-    return 0.0f;
+float approximate_smoothed_deep_shadows(sampler2D shadow_map,
+                                        float pcf_kernel_width,
+                                        float smoothing_factor,
+                                        vec4 light_space_strand,
+                                        float strand_radius,
+                                        float strand_opacity) {
+    float shadow = 0.0f;
+
+    vec2 shadow_map_size = textureSize(shadow_map, 0);
+    float kernel_range = (pcf_kernel_width - 1.0f) / 2.0f;
+    float sigma_stddev = (pcf_kernel_width / 2.0f) / 2.4f;
+    float sigma_squared = sigma_stddev * sigma_stddev;
+
+    float light_depth = light_space_strand.z / light_space_strand.w;
+    vec2 shadow_map_stride_scale = shadow_map_size/smoothing_factor;
+
+    float weight = 0.0f;
+
+    for (float y = -kernel_range; y <= +kernel_range; y += 1.0f)
+    for (float x = -kernel_range; x <= +kernel_range; x += 1.0f) {
+        float exponent =     -1.0f * (x*x + y*y) / 2.0f*sigma_squared;
+        float local_weight = +1.0f / (2.0f*M_PI*sigma_squared) * pow(M_E, exponent);
+
+        float shadow_depth = tex2Dproj(shadow_map, light_space_strand, vec2(x, y) / shadow_map_stride_scale).r;
+        float local_shadow = approximate_deep_shadow(shadow_depth, light_depth, strand_radius, strand_opacity);
+
+        shadow += local_shadow * local_weight;
+        weight += local_weight;
+    }
+
+    return shadow / weight;
 }
 
 #endif
