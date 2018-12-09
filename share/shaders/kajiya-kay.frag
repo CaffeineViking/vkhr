@@ -28,7 +28,7 @@ void main() {
 
     shadows = approximate_smoothed_deep_shadows(shadow_maps[0],
                                                3, // an 3x3 PCF
-                                               8, // smoothing!
+                                               4, // smoothing!
                                                light_space_frag,
                                                1136.0f, 0.80f);
 

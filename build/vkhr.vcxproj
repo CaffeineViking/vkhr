@@ -512,6 +512,7 @@
     <None Include="..\share\shaders\kajiya-kay.glsl" />
     <None Include="..\share\shaders\kajiya-kay.vert" />
     <None Include="..\share\shaders\lights.glsl" />
+    <None Include="..\share\shaders\math.h.glsl" />
     <None Include="..\share\shaders\shadow_map.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
