@@ -69,6 +69,11 @@ namespace vkhr {
         void set_default_color(const glm::vec3& default_color);
         glm::vec3 get_default_color() const;
 
+        void compute_bounding_sphere();
+
+        glm::vec3 get_sphere_center() const;
+        float     get_sphere_radius() const;
+
         std::string get_information() const;
         void set_information(const std::string& information);
 
@@ -124,7 +129,10 @@ namespace vkhr {
                      default_transparency;
             float    default_color[3];
 
-            char information[88];
+            char information[72];
+
+            float    sphere_center[3];
+            float    sphere_radius;
         } file_header;
 
         bool valid_signature() const;

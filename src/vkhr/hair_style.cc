@@ -132,6 +132,16 @@ namespace vkhr {
                            file_header.default_color[2] };
     }
 
+    glm::vec3 HairStyle::get_sphere_center() const {
+        return glm::vec3 { file_header.sphere_center[0],
+                           file_header.sphere_center[1],
+                           file_header.sphere_center[2] };
+    }
+
+    float     HairStyle::get_sphere_radius() const {
+        return file_header.sphere_radius;
+    }
+
     std::string HairStyle::get_information() const {
         return file_header.information;
     }
@@ -182,6 +192,27 @@ namespace vkhr {
 
             ++vertex; // Skips the last one.
         }
+    }
+
+    void HairStyle::compute_bounding_sphere() {
+        glm::vec3 min_aabb { 0.0f, 0.0f, 0.0f },
+                  max_aabb { 0.0f, 0.0f, 0.0f };
+        for (const auto& position : vertices) {
+            min_aabb.x = glm::min(position.x, min_aabb.x);
+            min_aabb.y = glm::min(position.y, min_aabb.y);
+            min_aabb.z = glm::min(position.z, min_aabb.z);
+            max_aabb.x = glm::max(position.x, max_aabb.x);
+            max_aabb.y = glm::max(position.y, max_aabb.y);
+            max_aabb.z = glm::max(position.z, max_aabb.z);
+        }
+
+        glm::vec3 center { (min_aabb + max_aabb) / 2.0f };
+        float width { glm::distance(min_aabb, max_aabb) };
+
+        file_header.sphere_center[0] = center.x;
+        file_header.sphere_center[1] = center.y;
+        file_header.sphere_center[2] = center.z;
+        file_header.sphere_radius = width / 2.0;
     }
 
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {
