@@ -66,11 +66,9 @@ namespace vkhr {
         std::vector<std::string> shadow_maps;
         std::vector<std::string> shadow_samplers;
 
-        int shader { 0 };
-        int shadow_map { 0 };
-        int shadow_sampler { 0 };
-        int simulation { 0 };
-        int renderer { 0 };
+        int simulation_effect { 0 };
+
+        Renderer::Type current_renderer { Renderer::Rasterizer };
 
         struct ProfilePair {
             std::vector<float> timestamps;

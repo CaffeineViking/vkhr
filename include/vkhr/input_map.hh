@@ -150,6 +150,8 @@ namespace vkhr {
         bool released(const std::string& id) const;
 
         glm::vec2 get_mouse_position() const;
+        glm::vec2 get_scroll_offset() const;
+        void reset_scrolling_offset();
 
         void freeze_cursor();
         void unlock_cursor();
@@ -173,6 +175,8 @@ namespace vkhr {
         std::unordered_map<Input::MouseButton, Input::State> mouse_button_state;
         std::unordered_multimap<std::string, Input::MouseButton> mouse_button_map;
         std::unordered_multimap<std::string, Input::Key> key_map;
+
+        glm::vec2 scroll_offsets { 0.0f };
 
         bool mouse_locked { false };
         GLFWwindow* handle;

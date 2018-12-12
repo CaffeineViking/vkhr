@@ -45,13 +45,15 @@ namespace vkhr {
 
             const LightSource* light { nullptr };
 
-            enum SamplingMethod {
-                Uniform, Poisson
+            enum SamplingMethod : int  {
+                Uniform = 0,
+                Poisson = 1,
+                Laplace = 2
             };
 
-            enum Technique {
-                ConventionalShadowMaps,
-                ApproximateDeepShadows
+            enum Technique : int  {
+                ConventionalShadowMaps = 0,
+                ApproximateDeepShadows = 1
             };
 
         private:

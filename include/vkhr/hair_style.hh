@@ -105,6 +105,10 @@ namespace vkhr {
         const std::vector<glm::vec3>& get_tangents() const;
         const std::vector<unsigned>&  get_indices()  const;
 
+        enum ShadingModel : int {
+            Kajiya_Kay
+        };
+
     private:
         mutable struct FileHeader {
             char signature[4]; // H, A, I, R.

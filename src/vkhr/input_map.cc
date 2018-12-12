@@ -62,6 +62,9 @@ namespace vkhr {
     }
 
     void InputMap::scroll_callback(GLFWwindow* window, double scroll_x, double scroll_y) {
+        InputMap* mapper { callback_map[window] };
+        mapper->scroll_offsets.x = scroll_x;
+        mapper->scroll_offsets.y = scroll_y;
         ImGui_ImplGlfw_ScrollCallback(window, scroll_x, scroll_y);
     }
 
@@ -250,6 +253,14 @@ namespace vkhr {
         glm::dvec2 position;
         glfwGetCursorPos(handle, &position.x, &position.y);
         return position;
+    }
+
+    glm::vec2 InputMap::get_scroll_offset() const {
+        return scroll_offsets;
+    }
+
+    void InputMap::reset_scrolling_offset() {
+        scroll_offsets = { 0.0f, 0.0f };
     }
 
     void InputMap::freeze_cursor() {

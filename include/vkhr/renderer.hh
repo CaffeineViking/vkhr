@@ -9,6 +9,11 @@ namespace vkhr {
         virtual ~Renderer() noexcept  =  default;
         virtual void load(const SceneGraph&) = 0;
         virtual void draw(const SceneGraph&) = 0;
+
+        enum Type : int {
+            Rasterizer,
+            Ray_Tracer
+        };
     };
 }
 

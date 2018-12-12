@@ -86,10 +86,7 @@ namespace vkhr {
         shadow_samplers.push_back("  Poisson");
         shadow_samplers.push_back("  Laplace");
 
-        renderer = shader = 0;
-        shadow_map = 1;
-        shadow_sampler = 2;
-        scene_file = simulation = 0;
+        scene_file = simulation_effect = 0;
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
@@ -131,13 +128,21 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("##Renderer", &renderer,
+            ImGui::Combo("##Renderer",
+                         reinterpret_cast<int*>(&current_renderer),
                          get_string_from_vector,
                          static_cast<void*>(&renderers),
                          renderers.size());
 
-            if (renderer == 0) raytrace_scene = 0;
-            else               raytrace_scene = 1;
+            switch (current_renderer) {
+            case Renderer::Rasterizer:
+                raytrace_scene = false;
+                break;
+            case Renderer::Ray_Tracer:
+                raytrace_scene = true;
+                break;
+            default: break;
+            }
 
             ImGui::SameLine(0.0, 4.0);
 
@@ -148,7 +153,8 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("Reflection Model", &shader,
+            ImGui::Combo("Reflection Model",
+                         reinterpret_cast<int*>(&rasterizer.shading_model),
                          get_string_from_vector,
                          static_cast<void*>(&shaders),
                          shaders.size());
@@ -160,7 +166,8 @@ namespace vkhr {
             if (ImGui::CollapsingHeader("Render Settings")) {
                 if (ImGui::TreeNode("Rasterizer")) {
                     ImGui::PushItemWidth(195);
-                    ImGui::Combo("##Shadow Technique", &shadow_map,
+                    ImGui::Combo("##Shadow Technique",
+                                 reinterpret_cast<int*>(&rasterizer.shadow_method),
                                  get_string_from_vector,
                                  static_cast<void*>(&shadow_maps),
                                  shadow_maps.size());
@@ -171,21 +178,22 @@ namespace vkhr {
                     ImGui::Checkbox("Shadow Maps", &rasterizer.shadows_on);
 
                     ImGui::PushItemWidth(171);
-                    ImGui::SliderFloat("PCF", &rasterizer.shadow_pcf_kernel_size, 1.0f, 8.0f, "%.1f");
+                    ImGui::SliderFloat("PCF", &rasterizer.shadow_kernel_size, 1.0f, 8.0f, "%.1f");
                     ImGui::PopItemWidth();
 
                     ImGui::SameLine();
 
                     ImGui::PushItemWidth(99);
-                    ImGui::Combo("##Shadow Sampler", &shadow_sampler,
+                    ImGui::Combo("##Shadow Sampler",
+                                 reinterpret_cast<int*>(&rasterizer.shadow_sampler),
                                  get_string_from_vector,
                                  static_cast<void*>(&shadow_samplers),
                                  shadow_samplers.size());
                     ImGui::PopItemWidth();
 
-                    if (shadow_map == 1) { // Approximate Deep Shadows
+                    if (rasterizer.shadow_method == vulkan::DepthView::ApproximateDeepShadows) {
                         ImGui::PushItemWidth(171);
-                        ImGui::SliderFloat("\"Smoothing\" Stride", &rasterizer.shadow_smoothing_value, 1.0f, 16.0f, "%.1f");
+                        ImGui::SliderFloat("\"Smoothing\" Stride", &rasterizer.shadow_stride_size, 1.0f, 16.0f, "%.1f");
                         ImGui::PopItemWidth();
                     }
 
@@ -226,12 +234,12 @@ namespace vkhr {
                 if (ImGui::TreeNode("Camera")) {
                     if (ImGui::SliderAngle("Field of View", &scene_graph.camera.field_of_view, 0.0f, 180.0f))
                         scene_graph.camera.recalculate_projection_matrix();
-                    if (ImGui::SliderFloat("Screen Aspect", &scene_graph.camera.aspect_ratio, 1.00f, 2.370f, "%.4f"))
-                        scene_graph.camera.recalculate_projection_matrix();
                     if (ImGui::DragFloat3("View Position", glm::value_ptr(scene_graph.camera.position)))
-                        scene_graph.camera.recalculate_view_matrix();
+                        scene_graph.camera.set_position(scene_graph.camera.position);
                     if (ImGui::DragFloat3("Look at Point", glm::value_ptr(scene_graph.camera.look_at_point)))
-                        scene_graph.camera.recalculate_view_matrix();
+                        scene_graph.camera.set_look_at_point(scene_graph.camera.look_at_point);
+                    if (ImGui::DragFloat("View Distance", &scene_graph.camera.distance, 1.0f, 0.0f, 0.0f, "%.2f"))
+                        scene_graph.camera.set_distance(scene_graph.camera.distance);
 
                     ImGui::TreePop();
                 }
@@ -267,7 +275,8 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("Animation Effect", &simulation,
+            ImGui::Combo("Animation Effect",
+                         &simulation_effect,
                          get_string_from_vector,
                          static_cast<void*>(&simulations),
                          simulations.size());
@@ -333,7 +342,10 @@ namespace vkhr {
 
     void Interface::toggle_raytracing() {
         raytrace_scene = !raytrace_scene;
-        renderer       =  raytrace_scene;
+        if (raytrace_scene)
+            current_renderer = Renderer::Ray_Tracer;
+        else
+            current_renderer = Renderer::Rasterizer;
     }
 
     bool Interface::show() {
@@ -362,17 +374,13 @@ namespace vkhr {
         swap(lhs.gui_visible, rhs.gui_visible);
         swap(lhs.raytrace_scene, rhs.raytrace_scene);
 
-        swap(lhs.renderer, rhs.renderer);
         swap(lhs.scene_file, rhs.scene_file);
         swap(lhs.scene_files, rhs.scene_files);
         swap(lhs.renderers, rhs.renderers);
         swap(lhs.simulations, rhs.simulations);
-        swap(lhs.simulation, rhs.simulation);
+        swap(lhs.simulation_effect, rhs.simulation_effect);
         swap(lhs.shaders, rhs.shaders);
-        swap(lhs.shader, rhs.shader);
-        swap(lhs.shadow_map, rhs.shadow_map);
         swap(lhs.shadow_maps, rhs.shadow_maps);
-        swap(lhs.shadow_sampler, rhs.shadow_sampler);
         swap(lhs.shadow_samplers, rhs.shadow_samplers);
 
         swap(lhs.profiles, rhs.profiles);

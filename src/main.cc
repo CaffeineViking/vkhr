@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
     input_map.bind("toggle_fullscreen", vkhr::Input::Key::F11);
     input_map.bind("take_screenshot", vkhr::Input::Key::PrintScreen);
+    input_map.bind("pan", vkhr::Input::MouseButton::Middle);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
     vkhr::Rasterizer rasterizer { window, scene_graph };

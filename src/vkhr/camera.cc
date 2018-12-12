@@ -76,12 +76,14 @@ namespace vkhr {
 
     void Camera::set_position(const glm::vec3& position) {
         this->position = position;
+        distance = glm::distance(position, look_at_point);
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
     }
 
     void Camera::set_look_at_point(const glm::vec3& look_at_point) {
         this->look_at_point = look_at_point;
+        distance = glm::distance(position, look_at_point);
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
     }
@@ -101,28 +103,45 @@ namespace vkhr {
     }
 
     void Camera::control(InputMap& input_map, const float delta_time, bool imgui_focused) {
-        if (input_map.just_released("grab")) {
+        if (input_map.just_released("grab") ||
+            input_map.just_released("pan")) {
             input_map.unlock_cursor();
         } else if (!imgui_focused) {
-            if (input_map.just_pressed("grab")) {
-                input_map.freeze_cursor();
+            if (input_map.just_pressed("grab") ||
+                input_map.just_pressed("pan")) {
                 last_mouse_position = input_map.get_mouse_position();
-            } else if (input_map.pressed("grab")) {
+            } else if (input_map.pressed("grab") ||
+                       input_map.pressed("pan")) {
                 glm::vec2 cursor_movement { 0.0f, 0.0f };
                 auto mouse_position = input_map.get_mouse_position();
                 cursor_movement = mouse_position - last_mouse_position;
                 last_mouse_position = mouse_position;
-                cursor_movement *= delta_time * 0.2f;
-                arcball_relative_to(cursor_movement);
+                cursor_movement *= delta_time;
+
+                if (input_map.pressed("grab")) {
+                    arcball_relative_to(cursor_movement * 0.20f);
+                } else if (input_map.pressed("pan")) {
+                    pan_relative_to(cursor_movement * distance / 20.0f);
+                }
             }
+
+            zoom(input_map.get_scroll_offset().y * delta_time * 2.0f * distance);
+            input_map.reset_scrolling_offset();
         }
     }
 
-    void Camera::arcball_relative_to(const glm::vec2& cursor, const float scroll) {
+    void Camera::pan_relative_to(const glm::vec2& cursor) {
+        translate(get_left_direction() * cursor.x +
+                  get_up_direction()   * cursor.y);
+    }
+
+    void Camera::arcball_relative_to(const glm::vec2& cursor) {
         glm::vec2 cursor_delta { cursor };
 
         position = glm::rotate(position - look_at_point, -cursor_delta.x, +(get_up_direction())) + look_at_point;
         position = glm::rotate(position - look_at_point, -cursor_delta.y, -get_left_direction()) + look_at_point;
+
+        distance = glm::distance(position, look_at_point);
 
         up_direction = glm::rotate(up_direction, -cursor_delta.x, +(get_up_direction()));
         up_direction = glm::rotate(up_direction, -cursor_delta.y, -get_left_direction());
@@ -131,11 +150,28 @@ namespace vkhr {
         viewing_plane_dirty = true;
     }
 
+    void Camera::zoom(float distance) {
+        this->distance += distance;
+        set_distance(this->distance);
+    }
+
+    void Camera::set_distance(float value) {
+        distance = glm::clamp(value, near_distance, far_distance);
+        set_position(look_at_point + -get_forward_direction() * distance);
+    }
+
+    float Camera::get_distance() const {
+        return distance;
+    }
+
     void Camera::look_at(const glm::vec3& point, const glm::vec3& eye,
                          const glm::vec3& up) {
         this->position = eye;
         this->up_direction = glm::normalize(up);
         this->look_at_point = point;
+
+        distance = glm::distance(position, look_at_point);
+
         view_matrix_dirty   = true;
         viewing_plane_dirty = true;
     }

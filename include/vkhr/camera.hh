@@ -50,14 +50,20 @@ namespace vkhr {
         void set_up_direction(const glm::vec3& up_direction);
         const glm::vec3& get_up_direction() const;
 
+        void pan_relative_to(const glm::vec2& mouse_movement);
         void control(InputMap& input_map, const float delta_time, const bool imgui_focused);
-        void arcball_relative_to(const glm::vec2& mouse_movement, const float scroll = 0.0);
+        void arcball_relative_to(const glm::vec2& mouse_movement);
 
         void look_at(const glm::vec3& point, const glm::vec3& eye,
                      const glm::vec3& up = { 0.0f, 1.0f, 0.0f });
 
         glm::vec3 get_left_direction() const;
         glm::vec3 get_forward_direction() const;
+
+        void zoom(float amount);
+
+        void  set_distance(float distance);
+        float get_distance() const;
 
         struct ViewingPlane {
             glm::vec3 x;
@@ -89,9 +95,11 @@ namespace vkhr {
 
         float field_of_view { glm::quarter_pi<float>() };
 
-        glm::vec3 position      { 0.0, 0.0, 4.0 };
+        glm::vec3 position      { 0.0, 0.0, 0.0 };
         glm::vec3 look_at_point { 0.0, 0.0, 0.0 };
         glm::vec3 up_direction  { 0.0, 1.0, 0.0 };
+
+        mutable float distance { 0.0f };
 
         glm::vec2 last_mouse_position;
 
