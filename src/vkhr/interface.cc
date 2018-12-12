@@ -61,6 +61,15 @@ namespace vkhr {
                                                    .wait_idle();
         ImGui_ImplVulkan_InvalidateFontUploadObjects();
 
+        default_parameters();
+    }
+
+    void Interface::default_parameters() {
+        renderers.clear();
+        simulations.clear();
+        scene_files.clear();
+        shaders.clear();
+
         renderers.push_back("Rasterizer");
         renderers.push_back("Ray Tracer");
 
@@ -68,7 +77,19 @@ namespace vkhr {
 
         simulations.push_back("No Effects");
 
-        renderer = scene_file = simulation = 0;
+        shaders.push_back("Kajiya-Kay and Blinn-Phong");
+
+        shadow_maps.push_back("Conventional Shadow Maps");
+        shadow_maps.push_back("Approximate Deep Shadows");
+
+        shadow_samplers.push_back("  Uniform");
+        shadow_samplers.push_back("  Poisson");
+        shadow_samplers.push_back("  Laplace");
+
+        renderer = shader = 0;
+        shadow_map = 1;
+        shadow_sampler = 2;
+        scene_file = simulation = 0;
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
@@ -88,12 +109,6 @@ namespace vkhr {
             ImGui::Begin(" VKHR - a Scalable Strand-Based Hair Renderer",
                          &gui_visible, ImGuiWindowFlags_AlwaysAutoResize |
                                        ImGuiWindowFlags_NoCollapse);
-
-            // ImGui::TextWrapped("");
-            // ImGui::Spacing();
-
-            ImGui::Separator();
-            ImGui::Spacing();
 
             if (ImGui::Checkbox("Fullscreen", &window.fullscreen))
                 window.toggle_fullscreen(window.fullscreen);
@@ -116,7 +131,10 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("", &renderer, get_string_from_vector, static_cast<void*>(&renderers), renderers.size());
+            ImGui::Combo("##Renderer", &renderer,
+                         get_string_from_vector,
+                         static_cast<void*>(&renderers),
+                         renderers.size());
 
             if (renderer == 0) raytrace_scene = 0;
             else               raytrace_scene = 1;
@@ -130,14 +148,56 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
+            ImGui::Combo("Reflection Model", &shader,
+                         get_string_from_vector,
+                         static_cast<void*>(&shaders),
+                         shaders.size());
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
             if (ImGui::CollapsingHeader("Render Settings")) {
                 if (ImGui::TreeNode("Rasterizer")) {
-                    ImGui::Checkbox("Shadows", &rasterizer.shadows_on);
+                    ImGui::PushItemWidth(195);
+                    ImGui::Combo("##Shadow Technique", &shadow_map,
+                                 get_string_from_vector,
+                                 static_cast<void*>(&shadow_maps),
+                                 shadow_maps.size());
+                    ImGui::PopItemWidth();
+
+                    ImGui::SameLine();
+
+                    ImGui::Checkbox("Shadow Maps", &rasterizer.shadows_on);
+
+                    ImGui::PushItemWidth(171);
+                    ImGui::SliderFloat("PCF", &rasterizer.shadow_pcf_kernel_size, 1.0f, 8.0f, "%.1f");
+                    ImGui::PopItemWidth();
+
+                    ImGui::SameLine();
+
+                    ImGui::PushItemWidth(99);
+                    ImGui::Combo("##Shadow Sampler", &shadow_sampler,
+                                 get_string_from_vector,
+                                 static_cast<void*>(&shadow_samplers),
+                                 shadow_samplers.size());
+                    ImGui::PopItemWidth();
+
+                    if (shadow_map == 1) { // Approximate Deep Shadows
+                        ImGui::PushItemWidth(171);
+                        ImGui::SliderFloat("\"Smoothing\" Stride", &rasterizer.shadow_smoothing_value, 1.0f, 16.0f, "%.1f");
+                        ImGui::PopItemWidth();
+                    }
+
                     ImGui::TreePop();
                 }
 
                 if (ImGui::TreeNode("Ray Tracer")) {
-                    ImGui::Checkbox("Shadows", &ray_tracer.shadows_on);
+                    ImGui::PushItemWidth(171);
+                    ImGui::SliderInt("SPP", &ray_tracer.sampling_count, 1, 32);
+                    ImGui::PopItemWidth();
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Shadow Rays", &ray_tracer.shadows_on);
                     ImGui::TreePop();
                 }
             }
@@ -146,7 +206,10 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("Scene Graph File", &scene_file, get_string_from_vector, static_cast<void*>(&scene_files), scene_files.size());
+            ImGui::Combo("Scene Graph File", &scene_file,
+                         get_string_from_vector,
+                         static_cast<void*>(&scene_files),
+                         scene_files.size());
 
             // Switch to the new scene by loading it
             if (scene_file != previous_scene_file) {
@@ -174,6 +237,13 @@ namespace vkhr {
                 }
 
                 if (ImGui::TreeNode("Lights")) {
+                    for (auto& light : scene_graph.light_sources) {
+                        if (ImGui::TreeNode(light.get_type_name().c_str())) {
+                            ImGui::ColorEdit3("Highlights", glm::value_ptr(light.buffer.intensity), ImGuiColorEditFlags_Float);
+                            ImGui::TreePop();
+                        }
+                    }
+
                     ImGui::TreePop();
                 }
 
@@ -197,7 +267,10 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("Animation Effect", &simulation, get_string_from_vector, static_cast<void*>(&simulations), simulations.size());
+            ImGui::Combo("Animation Effect", &simulation,
+                         get_string_from_vector,
+                         static_cast<void*>(&simulations),
+                         simulations.size());
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -211,12 +284,6 @@ namespace vkhr {
                                      profile.second.offset,
                                      profile.second.output.c_str());
             }
-
-            ImGui::Spacing();
-            ImGui::Separator();
-
-            // ImGui::Spacing();
-            // ImGui::TextWrapped("");
 
             ImGui::End();
         }
@@ -301,6 +368,13 @@ namespace vkhr {
         swap(lhs.renderers, rhs.renderers);
         swap(lhs.simulations, rhs.simulations);
         swap(lhs.simulation, rhs.simulation);
+        swap(lhs.shaders, rhs.shaders);
+        swap(lhs.shader, rhs.shader);
+        swap(lhs.shadow_map, rhs.shadow_map);
+        swap(lhs.shadow_maps, rhs.shadow_maps);
+        swap(lhs.shadow_sampler, rhs.shadow_sampler);
+        swap(lhs.shadow_samplers, rhs.shadow_samplers);
+
         swap(lhs.profiles, rhs.profiles);
 
         swap(lhs.light_debugger, rhs.light_debugger);

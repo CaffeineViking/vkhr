@@ -1,0 +1,6 @@
+#ifndef VKHR_BLINN_PHONG_GLSL
+#define VKHR_BLINN_PHONG_GLSL
+
+
+
+#endif

@@ -41,6 +41,8 @@ namespace vkhr {
         void draw(vkpp::CommandBuffer& command_list, vkpp::QueryPool& query_pool);
         void draw(vkpp::CommandBuffer& command_list);
 
+        void default_parameters();
+
         bool wants_focus() const;
         bool typing_text() const;
 
@@ -56,9 +58,17 @@ namespace vkhr {
     private:
         int scene_file { 0 };
         int previous_scene_file { 0 };
+
         std::vector<std::string> scene_files;
         std::vector<std::string> renderers;
         std::vector<std::string> simulations;
+        std::vector<std::string> shaders;
+        std::vector<std::string> shadow_maps;
+        std::vector<std::string> shadow_samplers;
+
+        int shader { 0 };
+        int shadow_map { 0 };
+        int shadow_sampler { 0 };
         int simulation { 0 };
         int renderer { 0 };
 

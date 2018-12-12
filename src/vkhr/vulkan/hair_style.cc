@@ -87,13 +87,13 @@ namespace vkhr {
                 { 0, 0, sizeof(std::uint32_t) } // light size
             };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("kajiya-kay.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strands.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Kajiya-Kay Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("kajiya-kay.frag"),
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Vertex Shader");
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strands.frag"),
                                                 constants, &constant_data, sizeof(constant_data));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                       VK_OBJECT_TYPE_SHADER_MODULE, "Kajiya-Kay Fragment Shader");
+                                       VK_OBJECT_TYPE_SHADER_MODULE, "Strand Fragment Shader");
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },

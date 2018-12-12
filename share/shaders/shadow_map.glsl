@@ -2,7 +2,7 @@
 #define VKHR_SHADOW_MAPS_GLSL
 
 #include "lights.glsl"
-#include "math.h.glsl"
+#include "math.glsl"
 
 layout(binding = 2) uniform sampler2D shadow_maps[lights_size];
 

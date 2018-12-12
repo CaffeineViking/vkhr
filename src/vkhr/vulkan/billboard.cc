@@ -95,10 +95,10 @@ namespace vkhr {
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboards Vertex Shader");
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards.frag"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                       VK_OBJECT_TYPE_SHADER_MODULE, "Billboards Fragmnet Shader");
+                                       VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Fragment Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,

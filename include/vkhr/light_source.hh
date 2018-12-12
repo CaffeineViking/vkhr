@@ -29,6 +29,7 @@ namespace vkhr {
         const Buffer& get_buffer() const;
 
         Type get_type() const;
+        const std::string& get_type_name() const;
         void set_type(Type light_source_type);
 
         glm::vec3 get_position() const;
@@ -64,6 +65,8 @@ namespace vkhr {
 
         Type type;
         Buffer buffer;
+
+        mutable std::string type_string;
 
         friend class Interface;
     };

@@ -87,10 +87,11 @@ namespace vkhr {
         std::vector<vk::CommandBuffer> command_buffers;
 
         bool shadows_on { true };
-        unsigned shadow_pcf_kernel_size { 3 };
+        float shadow_pcf_kernel_size { 3.0f };
+        float shadow_smoothing_value { 8.0f };
         vulkan::DepthView::SamplingMethod shadow_sampler { vulkan::DepthView::Poisson };
         vulkan::DepthView::Technique shadow_technique {
-            vulkan::DepthView::ShadowMaps
+            vulkan::DepthView::ApproximateDeepShadows
         };
 
         friend class vulkan::HairStyle;

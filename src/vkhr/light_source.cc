@@ -19,6 +19,18 @@ namespace vkhr {
         return type;
     }
 
+    const std::string& LightSource::get_type_name() const {
+        switch (type) {
+        case Type::Point:
+            type_string = "Point";
+            break;
+        case Type::Directional:
+            type_string = "Directional";
+            break;
+        default: return "What?!";
+        }
+    }
+
     void LightSource::set_type(Type light_source_type) {
         type = light_source_type;
         switch (type) {
