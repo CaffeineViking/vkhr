@@ -109,6 +109,7 @@ namespace vkhr {
         } else if (!imgui_focused) {
             if (input_map.just_pressed("grab") ||
                 input_map.just_pressed("pan")) {
+                input_map.freeze_cursor();
                 last_mouse_position = input_map.get_mouse_position();
             } else if (input_map.pressed("grab") ||
                        input_map.pressed("pan")) {
@@ -125,7 +126,7 @@ namespace vkhr {
                 }
             }
 
-            zoom(input_map.get_scroll_offset().y * delta_time * 2.0f * distance);
+            zoom(input_map.get_scroll_offset().y * delta_time * -2.0f * distance);
             input_map.reset_scrolling_offset();
         }
     }
