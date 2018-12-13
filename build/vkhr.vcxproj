@@ -386,6 +386,7 @@
     <ClInclude Include="..\include\vkhr\ray_tracer.hh" />
     <ClInclude Include="..\include\vkhr\renderer.hh" />
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
+    <ClInclude Include="..\include\vkhr\simulation.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\billboard.hh" />
     <ClInclude Include="..\include\vkhr\vulkan\depth_view.hh" />
@@ -452,6 +453,7 @@
     <ClCompile Include="..\src\vkhr\ray.cc" />
     <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
     <ClCompile Include="..\src\vkhr\scene_graph.cc" />
+    <ClCompile Include="..\src\vkhr\simulation.cc" />
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
       <ObjectFileName>$(IntDir)\billboard2.obj</ObjectFileName>
     </ClCompile>

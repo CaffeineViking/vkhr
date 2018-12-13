@@ -957,6 +957,9 @@
     <ClInclude Include="..\include\vkhr\scene_graph.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\simulation.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -1131,6 +1134,9 @@
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\scene_graph.cc">
+      <Filter>src\vkhr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\simulation.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
