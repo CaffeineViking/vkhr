@@ -74,7 +74,7 @@ namespace vkhr {
         glm::vec3 get_sphere_center() const;
         float     get_sphere_radius() const;
 
-        std::string get_information() const;
+        const char* get_information() const;
         void set_information(const std::string& information);
 
         void generate_tangents();

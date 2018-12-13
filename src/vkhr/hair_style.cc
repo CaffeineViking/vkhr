@@ -142,7 +142,7 @@ namespace vkhr {
         return file_header.sphere_radius;
     }
 
-    std::string HairStyle::get_information() const {
+    const char* HairStyle::get_information() const {
         return file_header.information;
     }
 

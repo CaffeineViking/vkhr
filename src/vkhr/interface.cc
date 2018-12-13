@@ -323,15 +323,15 @@ namespace vkhr {
             for (auto hair_style : node->get_hair_styles()) {
                 if (ImGui::TreeNode("Hair Style")) {
                     if (ImGui::TreeNode("Headers")) {
-                        ImGui::BulletText("magic id: H A I R");
-                        ImGui::BulletText("vertices: %d", hair_style->get_vertex_count());
-                        ImGui::BulletText("segments: %d", hair_style->get_segment_count());
-                        ImGui::BulletText("feature bitfield:");
                         ImGui::Indent();
-                            ImGui::Text("0 1 0 0 0 1 1 0 0");
-                        ImGui::Unindent();
-                        ImGui::BulletText("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
+                        ImGui::Text("magic id: H A I R");
+                        ImGui::Text("vertices: %d", hair_style->get_vertex_count());
+                        ImGui::Text("segments: %d", hair_style->get_segment_count());
+                        ImGui::Text("feature bitfield:");
+                        ImGui::Text("0 1 0 0 0 1 1 0 0");
+                        ImGui::Text("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
                         ImGui::TreePop();
+                        ImGui::Unindent();
                     }
 
                     ImGui::TreePop();
