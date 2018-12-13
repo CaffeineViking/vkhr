@@ -296,6 +296,7 @@ namespace vkpp {
 
     void CommandBuffer::reset_query_pool(QueryPool& query_pool, std::uint32_t first_query, std::uint32_t query_count) {
         vkCmdResetQueryPool(handle, query_pool.get_handle(), first_query, query_count);
+        query_pool.clear_timestamps();
         query_pool.query = 0;
     }
 

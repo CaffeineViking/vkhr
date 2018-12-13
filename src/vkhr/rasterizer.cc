@@ -195,6 +195,9 @@ namespace vkhr {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
+        if (!shadows_on)
+            return;
+
         vk::DebugMarker::begin(command_buffer, "Draw Shadow Maps", query_pools[frame]);
         depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 

@@ -32,6 +32,8 @@ namespace vkpp {
         const TimestampPair& get_timestamp(const std::string& names) const;
         void set_end_timestamp(const std::string& name, std::uint32_t idx);
 
+        void clear_timestamps();
+
         std::uint32_t get_timestamp_query_count() const;
 
         std::unordered_map<std::string, float>& request_timestamp_queries();

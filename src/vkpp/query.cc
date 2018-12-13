@@ -148,4 +148,9 @@ namespace vkpp {
 
         return query_pools;
     }
+
+    void QueryPool::clear_timestamps() {
+        timestamp_ms_time.clear();
+        timestamps.clear();
+    }
 }

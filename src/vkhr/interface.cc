@@ -445,6 +445,12 @@ namespace vkhr {
     }
 
     void Interface::record_performance(const std::unordered_map<std::string, float>& timestamps) {
+        for (auto profile = profiles.begin(); profile != profiles.end();) {
+            if (timestamps.find(profile->first) == timestamps.end())
+                profiles.erase(profile++);
+            else profile++;
+        }
+
         for (const auto& timestamp : timestamps) {
             auto profile = profiles.find(timestamp.first);
             if (profile == profiles.end()) {
