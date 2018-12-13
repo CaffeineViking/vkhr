@@ -1234,6 +1234,9 @@
     <None Include="..\share\shaders\billboards.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\blinn-phong.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\camera.glsl">
       <Filter>shaders</Filter>
     </None>
@@ -1273,22 +1276,22 @@
     <None Include="..\share\shaders\depth_pass.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\kajiya-kay.frag">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="..\share\shaders\kajiya-kay.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\kajiya-kay.vert">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\lights.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\math.h.glsl">
+    <None Include="..\share\shaders\math.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\shadow_map.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\strands.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\strands.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

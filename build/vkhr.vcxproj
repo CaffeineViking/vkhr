@@ -495,6 +495,7 @@
     <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\billboards.frag" />
     <None Include="..\share\shaders\billboards.vert" />
+    <None Include="..\share\shaders\blinn-phong.glsl" />
     <None Include="..\share\shaders\camera.glsl" />
     <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl" />
     <None Include="..\share\shaders\compute_curve\Commons.hlsl" />
@@ -508,12 +509,12 @@
     <None Include="..\share\shaders\compute_curve\Reorder.hlsl" />
     <None Include="..\share\shaders\compute_curve\ScanBlockBuffer.hlsl" />
     <None Include="..\share\shaders\depth_pass.vert" />
-    <None Include="..\share\shaders\kajiya-kay.frag" />
     <None Include="..\share\shaders\kajiya-kay.glsl" />
-    <None Include="..\share\shaders\kajiya-kay.vert" />
     <None Include="..\share\shaders\lights.glsl" />
-    <None Include="..\share\shaders\math.h.glsl" />
+    <None Include="..\share\shaders\math.glsl" />
     <None Include="..\share\shaders\shadow_map.glsl" />
+    <None Include="..\share\shaders\strands.frag" />
+    <None Include="..\share\shaders\strands.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
