@@ -195,7 +195,7 @@ namespace vkhr {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
-        if (!shadows_on)
+        if (!shadow_map.enabled)
             return;
 
         vk::DebugMarker::begin(command_buffer, "Draw Shadow Maps", query_pools[frame]);
@@ -224,13 +224,16 @@ namespace vkhr {
     void Rasterizer::draw(Image& fullscreen_images) {
         command_buffer_finished[frame].wait_and_reset();
 
+        imgui.record_performance(query_pools[frame].request_timestamp_queries());
         auto frame_image = swap_chain.acquire_next_image(image_available[frame]);
 
         command_buffers[frame].begin();
 
+        command_buffers[frame].reset_query_pool(query_pools[frame], 0, query_pools[frame].get_query_count());
+
         fullscreen_billboard.send_img(billboards_pipeline.descriptor_sets[frame],
                                       fullscreen_images, command_buffers[frame]);
-        vk::DebugMarker::begin(command_buffers[frame],  "Fullscreen Image Blit");
+        vk::DebugMarker::begin(command_buffers[frame], "Blit Framebuffer", query_pools[frame]);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
         billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
@@ -242,7 +245,7 @@ namespace vkhr {
         imgui.draw(command_buffers[frame]);
 
         command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Blit Framebuffer", query_pools[frame]);
 
         command_buffers[frame].end();
 

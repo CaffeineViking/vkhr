@@ -87,13 +87,12 @@ namespace vkhr {
 
         std::vector<vk::CommandBuffer> command_buffers;
 
-        bool shadows_on { true };
-
         vulkan::DepthView::ShadowMap shadow_map {
             3,
             vulkan::DepthView::ApproximateDeepShadows,
             vulkan::DepthView::Laplace,
-            8
+            8,
+            true
         };
 
         friend class vulkan::HairStyle;

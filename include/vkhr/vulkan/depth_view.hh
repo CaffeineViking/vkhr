@@ -61,6 +61,7 @@ namespace vkhr {
                 ShadowTechnique type;
                 SamplingMethod sampling_type;
                 int stride_size;
+                int enabled;
             };
 
         private:

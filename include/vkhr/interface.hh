@@ -82,7 +82,7 @@ namespace vkhr {
         struct ProfilePair {
             std::vector<float> timestamps;
             int offset;
-            std::string output { " ?.??ms" };
+            std::string output { "" };
         };
 
         static constexpr int profile_limit { 60 };

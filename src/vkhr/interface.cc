@@ -175,7 +175,7 @@ namespace vkhr {
 
                     ImGui::SameLine();
 
-                    ImGui::Checkbox("Shadow Maps", &rasterizer.shadows_on);
+                    ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&rasterizer.shadow_map.enabled));
 
                     ImGui::PushItemWidth(171);
                     ImGui::SliderInt("PCF", &rasterizer.shadow_map.kernel_size, 1, 5);

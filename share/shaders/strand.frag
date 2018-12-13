@@ -24,13 +24,13 @@ void main() {
                               fs_in.tangent, view_space_light,
                               vec3(0, 0, -1)); // camera space
 
-    float shadows = 0.0f;
+    float visibility = 0.0f;
 
-    shadows = approximate_deep_shadows(shadow_maps[0],
-                                       shadow_map.kernel_size,
-                                       shadow_map.stride_size,
-                                       light_space_frag,
-                                       1136.0f, 0.8f);
+    visibility = approximate_deep_shadows(shadow_maps[0],
+                                          shadows.kernel_size,
+                                          shadows.stride_size,
+                                          light_space_frag,
+                                          1136.0f, 0.8f);
 
-    color = vec4(shading * shadows, 1.0f);
+    color = vec4(shading * visibility, 1.0f);
 }

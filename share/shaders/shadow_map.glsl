@@ -11,7 +11,8 @@ layout(binding = 2) uniform ShadowMap {
     int type;
     int sampling_type;
     int stride_size;
-} shadow_map;
+    int enabled;
+} shadows;
 
 // Projects a 3-D position onto a 2-D plane for sampling a texture.
 vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
@@ -41,6 +42,9 @@ float approximate_deep_shadows(sampler2D shadow_map,
                                float strand_radius,
                                float strand_opacity) {
     float shadow = 0.0f;
+
+    if (shadows.enabled == 0)
+        return 1.0f;
 
     vec2 shadow_map_size = textureSize(shadow_map, 0);
     float kernel_range = (pcf_kernel_width - 1.0f) / 2.0f;
