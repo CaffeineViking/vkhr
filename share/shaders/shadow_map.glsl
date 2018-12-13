@@ -1,7 +1,7 @@
 #ifndef VKHR_SHADOW_MAPS_GLSL
 #define VKHR_SHADOW_MAPS_GLSL
 
-#include "lights.glsl"
+#include "light.glsl"
 #include "math.glsl"
 
 layout(binding = 3) uniform sampler2D shadow_maps[lights_size];
@@ -13,6 +13,7 @@ layout(binding = 2) uniform ShadowMap {
     int stride_size;
 } shadow_map;
 
+// Projects a 3-D position onto a 2-D plane for sampling a texture.
 vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
     vec4 texel = vec4(1.0f);
     vec3 projected_position = position.xyz / position.w;

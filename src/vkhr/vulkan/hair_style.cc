@@ -87,10 +87,10 @@ namespace vkhr {
                 { 0, 0, sizeof(std::uint32_t) } // light size
             };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strands.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Strand Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strands.frag"),
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand.frag"),
                                                 constants, &constant_data, sizeof(constant_data));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
                                        VK_OBJECT_TYPE_SHADER_MODULE, "Strand Fragment Shader");

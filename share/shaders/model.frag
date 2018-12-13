@@ -3,7 +3,7 @@
 #include "camera.glsl"
 #include "blinn-phong.glsl"
 #include "shadow_map.glsl"
-#include "lights.glsl"
+#include "light.glsl"
 
 layout(location = 0) in PipelineIn {
     vec4 position;

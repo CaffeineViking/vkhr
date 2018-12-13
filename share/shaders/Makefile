@@ -1,22 +1,22 @@
-all: billboards.vert.spv depth_pass.vert.spv models.vert.spv strands.vert.spv billboards.frag.spv models.frag.spv strands.frag.spv
+all: billboard.vert.spv depth_pass.vert.spv model.vert.spv strand.vert.spv billboard.frag.spv model.frag.spv strand.frag.spv
 
-billboards.vert.spv: billboards.vert camera.glsl
-	glslc -O -g -c billboards.vert
+billboard.vert.spv: billboard.vert camera.glsl
+	glslc -O -g -c billboard.vert
 
 depth_pass.vert.spv: depth_pass.vert
 	glslc -O -g -c depth_pass.vert
 
-models.vert.spv: models.vert camera.glsl
-	glslc -O -g -c models.vert
+model.vert.spv: model.vert camera.glsl
+	glslc -O -g -c model.vert
 
-strands.vert.spv: strands.vert camera.glsl
-	glslc -O -g -c strands.vert
+strand.vert.spv: strand.vert camera.glsl
+	glslc -O -g -c strand.vert
 
-billboards.frag.spv: billboards.frag
-	glslc -O -g -c billboards.frag
+billboard.frag.spv: billboard.frag
+	glslc -O -g -c billboard.frag
 
-models.frag.spv: models.frag camera.glsl blinn-phong.glsl lights.glsl shadow_map.glsl math.glsl
-	glslc -O -g -c models.frag
+model.frag.spv: model.frag camera.glsl blinn-phong.glsl shadow_map.glsl math.glsl light.glsl
+	glslc -O -g -c model.frag
 
-strands.frag.spv: strands.frag camera.glsl lights.glsl shadow_map.glsl kajiya-kay.glsl math.glsl
-	glslc -O -g -c strands.frag
+strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl math.glsl light.glsl
+	glslc -O -g -c strand.frag
