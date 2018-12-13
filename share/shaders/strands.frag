@@ -26,11 +26,11 @@ void main() {
 
     float shadows = 0.0f;
 
-    shadows = approximate_smoothed_deep_shadows(shadow_maps[0],
-                                               3, // an 3x3 PCF
-                                               8, // smoothing!
-                                               light_space_frag,
-                                               1136.0f, 0.80f);
+    shadows = approximate_deep_shadows(shadow_maps[0],
+                                       shadow_map.kernel_size,
+                                       shadow_map.stride_size,
+                                       light_space_frag,
+                                       1136.0f, 0.8f);
 
     color = vec4(shading * shadows, 1.0f);
 }

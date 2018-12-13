@@ -51,9 +51,16 @@ namespace vkhr {
                 Laplace = 2
             };
 
-            enum Technique : int  {
+            enum ShadowTechnique : int {
                 ConventionalShadowMaps = 0,
                 ApproximateDeepShadows = 1
+            };
+
+            struct ShadowMap {
+                int kernel_size;
+                ShadowTechnique type;
+                SamplingMethod sampling_type;
+                int stride_size;
             };
 
         private:
@@ -73,6 +80,9 @@ namespace vkhr {
             static int id;
         };
     }
+
+
+    using SM = vulkan::DepthView::ShadowMap;
 }
 
 #endif

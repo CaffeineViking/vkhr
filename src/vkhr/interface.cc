@@ -154,7 +154,7 @@ namespace vkhr {
             ImGui::Spacing();
 
             ImGui::Combo("Reflection Model",
-                         reinterpret_cast<int*>(&rasterizer.shading_model),
+                         reinterpret_cast<int*>(&shading),
                          get_string_from_vector,
                          static_cast<void*>(&shaders),
                          shaders.size());
@@ -167,7 +167,7 @@ namespace vkhr {
                 if (ImGui::TreeNode("Rasterizer")) {
                     ImGui::PushItemWidth(195);
                     ImGui::Combo("##Shadow Technique",
-                                 reinterpret_cast<int*>(&rasterizer.shadow_method),
+                                 reinterpret_cast<int*>(&rasterizer.shadow_map.type),
                                  get_string_from_vector,
                                  static_cast<void*>(&shadow_maps),
                                  shadow_maps.size());
@@ -178,22 +178,22 @@ namespace vkhr {
                     ImGui::Checkbox("Shadow Maps", &rasterizer.shadows_on);
 
                     ImGui::PushItemWidth(171);
-                    ImGui::SliderFloat("PCF", &rasterizer.shadow_kernel_size, 1.0f, 8.0f, "%.1f");
+                    ImGui::SliderInt("PCF", &rasterizer.shadow_map.kernel_size, 1, 5);
                     ImGui::PopItemWidth();
 
                     ImGui::SameLine();
 
                     ImGui::PushItemWidth(99);
                     ImGui::Combo("##Shadow Sampler",
-                                 reinterpret_cast<int*>(&rasterizer.shadow_sampler),
+                                 reinterpret_cast<int*>(&rasterizer.shadow_map.sampling_type),
                                  get_string_from_vector,
                                  static_cast<void*>(&shadow_samplers),
                                  shadow_samplers.size());
                     ImGui::PopItemWidth();
 
-                    if (rasterizer.shadow_method == vulkan::DepthView::ApproximateDeepShadows) {
+                    if (rasterizer.shadow_map.type == vulkan::DepthView::ApproximateDeepShadows) {
                         ImGui::PushItemWidth(171);
-                        ImGui::SliderFloat("\"Smoothing\" Stride", &rasterizer.shadow_stride_size, 1.0f, 16.0f, "%.1f");
+                        ImGui::SliderInt("\"Smoothing\" Stride", &rasterizer.shadow_map.stride_size, 1, 15, "%.1f");
                         ImGui::PopItemWidth();
                     }
 

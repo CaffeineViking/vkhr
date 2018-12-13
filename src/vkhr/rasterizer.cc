@@ -96,6 +96,7 @@ namespace vkhr {
         render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
         command_buffer_finished = vk::Fence::create(device, swap_chain.size(), "Buffer Finished Fence");
         camera_vp = vk::UniformBuffer::create(device, sizeof(VP), swap_chain.size(), "Camera MVP Data");
+        sm_params = vk::UniformBuffer::create(device, sizeof(SM), swap_chain.size(), "Shadow Map Data");
 
         load(scene_graph);
 
@@ -143,6 +144,7 @@ namespace vkhr {
     void Rasterizer::update(const SceneGraph& scene_graph) {
         camera_vp[frame].update(scene_graph.get_camera().get_transform());
         light_buf[frame].update(scene_graph.fetch_light_source_buffers());
+        sm_params[frame].update(shadow_map); // shadow map PCF kernel size
     }
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {

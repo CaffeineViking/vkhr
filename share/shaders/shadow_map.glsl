@@ -4,7 +4,14 @@
 #include "lights.glsl"
 #include "math.glsl"
 
-layout(binding = 2) uniform sampler2D shadow_maps[lights_size];
+layout(binding = 3) uniform sampler2D shadow_maps[lights_size];
+
+layout(binding = 2) uniform ShadowMap {
+    int kernel_size;
+    int type;
+    int sampling_type;
+    int stride_size;
+} shadow_map;
 
 vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
     vec4 texel = vec4(1.0f);
@@ -27,42 +34,11 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
 }
 
 float approximate_deep_shadows(sampler2D shadow_map,
-                               float kernel_width,
+                               float pcf_kernel_width,
+                               float smoothing_factor,
                                vec4 light_space_strand,
-                               float inv_strand_width,
-                               float strand_alpha) {
-    float shadow = 0.0f;
-
-    vec2 shadow_map_size = textureSize(shadow_map, 0);
-    float kernel_range = (kernel_width - 1.0f) / 2.0f;
-    float sigma_stddev = (kernel_width / 2.0f) / 2.4f;
-    float sigma_squared = sigma_stddev * sigma_stddev;
-
-    float light_depth = light_space_strand.z / light_space_strand.w;
-
-    float weight = 0.0f;
-
-    for (float y = -kernel_range; y <= +kernel_range; y += 1.0f)
-    for (float x = -kernel_range; x <= +kernel_range; x += 1.0f) {
-        float exponent =     -1.0f * (x*x + y*y) / 2.0f*sigma_squared;
-        float local_weight = +1.0f / (2.0f*M_PI*sigma_squared) * pow(M_E, exponent);
-
-        float shadow_depth = tex2Dproj(shadow_map, light_space_strand, vec2(x, y) / (shadow_map_size / 1.0f)).r;
-        float local_shadow = approximate_deep_shadow(shadow_depth, light_depth, inv_strand_width, strand_alpha);
-
-        shadow += local_shadow * local_weight;
-        weight += local_weight;
-    }
-
-    return shadow / weight;
-}
-
-float approximate_smoothed_deep_shadows(sampler2D shadow_map,
-                                        float pcf_kernel_width,
-                                        float smoothing_factor,
-                                        vec4 light_space_strand,
-                                        float strand_radius,
-                                        float strand_opacity) {
+                               float strand_radius,
+                               float strand_opacity) {
     float shadow = 0.0f;
 
     vec2 shadow_map_size = textureSize(shadow_map, 0);

@@ -69,6 +69,7 @@ namespace vkhr {
 
         std::vector<vk::UniformBuffer> camera_vp;
         std::vector<vk::UniformBuffer> light_buf;
+        std::vector<vk::UniformBuffer> sm_params;
 
         Pipeline depth_view_pipeline;
         Pipeline billboards_pipeline;
@@ -87,14 +88,13 @@ namespace vkhr {
         std::vector<vk::CommandBuffer> command_buffers;
 
         bool shadows_on { true };
-        float shadow_kernel_size { 3.0f },
-              shadow_stride_size { 8.0f };
-        vulkan::DepthView::SamplingMethod shadow_sampler { vulkan::DepthView::Laplace };
-        vulkan::DepthView::Technique shadow_method {
-            vulkan::DepthView::ApproximateDeepShadows
-        };
 
-        HairStyle::ShadingModel shading_model { HairStyle::Kajiya_Kay };
+        vulkan::DepthView::ShadowMap shadow_map {
+            3,
+            vulkan::DepthView::ApproximateDeepShadows,
+            vulkan::DepthView::Laplace,
+            8
+        };
 
         friend class vulkan::HairStyle;
         friend class vulkan::Billboard;

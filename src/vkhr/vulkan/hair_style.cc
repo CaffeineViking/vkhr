@@ -97,11 +97,12 @@ namespace vkhr {
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
+                { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
             };
 
             for (std::uint32_t i { 0 }; i < light_count; ++i)
-                descriptor_bindings.push_back({ 2 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
+                descriptor_bindings.push_back({ 3 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
@@ -117,8 +118,9 @@ namespace vkhr {
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_buf[i]);
+                pipeline.descriptor_sets[i].write(2, vulkan_renderer.sm_params[i]);
                 for (std::uint32_t j { 0 }; j < light_count; ++j)
-                    pipeline.descriptor_sets[i].write(2 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
+                    pipeline.descriptor_sets[i].write(3 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
                                                              vulkan_renderer.shadow_maps[j].get_sampler());
             }
 

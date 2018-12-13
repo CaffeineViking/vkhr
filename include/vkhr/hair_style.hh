@@ -106,7 +106,7 @@ namespace vkhr {
         const std::vector<unsigned>&  get_indices()  const;
 
         enum ShadingModel : int {
-            Kajiya_Kay
+            KajiyaKay
         };
 
     private:

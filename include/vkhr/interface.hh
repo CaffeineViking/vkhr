@@ -69,6 +69,7 @@ namespace vkhr {
         int simulation_effect { 0 };
 
         Renderer::Type current_renderer { Renderer::Rasterizer };
+        HairStyle::ShadingModel shading { HairStyle::KajiyaKay };
 
         struct ProfilePair {
             std::vector<float> timestamps;
