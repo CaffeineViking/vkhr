@@ -154,7 +154,7 @@ namespace vkhr {
             ImGui::Spacing();
 
             ImGui::Combo("Reflection Model",
-                         reinterpret_cast<int*>(&shading),
+                         reinterpret_cast<int*>(&shading_model),
                          get_string_from_vector,
                          static_cast<void*>(&shaders),
                          shaders.size());
@@ -255,9 +255,7 @@ namespace vkhr {
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode(scene_graph.get_root_node().node_name.c_str())) {
-                    ImGui::TreePop();
-                }
+                traverse(scene_graph);
             }
 
             ImGui::Spacing();
@@ -298,6 +296,53 @@ namespace vkhr {
         }
 
         ImGui::Render();
+    }
+
+    void Interface::traverse(SceneGraph& scene_graph) {
+        traverse(&scene_graph.get_root_node());
+    }
+
+    void Interface::traverse(SceneGraph::Node* node) {
+        if (node == nullptr) {
+            return;
+        }
+
+        if (ImGui::TreeNode(node->get_node_name().c_str())) {
+            if (ImGui::TreeNode("Transforms")) {
+                if (ImGui::DragFloat3("T", glm::value_ptr(node->translation), 0.1f))
+                    node->set_translation(node->translation);
+                if (ImGui::DragFloat3("R", glm::value_ptr(node->rotation_axis), 0.01f))
+                    node->set_rotation_axis(node->rotation_axis);
+                if (ImGui::DragFloat("##angle", &node->rotation_angle, 0.01f))
+                    node->set_rotation_angle(node->rotation_angle);
+                if (ImGui::DragFloat3("S", glm::value_ptr(node->scaling), 0.01))
+                    node->set_scale(node->scaling);
+                ImGui::TreePop();
+            }
+
+            for (auto hair_style : node->get_hair_styles()) {
+                if (ImGui::TreeNode("Hair Style")) {
+                    if (ImGui::TreeNode("Headers")) {
+                        ImGui::BulletText("magic id: H A I R");
+                        ImGui::BulletText("vertices: %d", hair_style->get_vertex_count());
+                        ImGui::BulletText("segments: %d", hair_style->get_segment_count());
+                        ImGui::BulletText("feature bitfield:");
+                        ImGui::Indent();
+                            ImGui::Text("0 1 0 0 0 1 1 0 0");
+                        ImGui::Unindent();
+                        ImGui::BulletText("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::TreePop();
+                }
+            }
+
+            for (auto child : node->get_children())
+                traverse(child);
+
+            ImGui::TreePop();
+        }
     }
 
     void Interface::draw(vkpp::CommandBuffer& command_buffer, vkpp::QueryPool& query_pool) {

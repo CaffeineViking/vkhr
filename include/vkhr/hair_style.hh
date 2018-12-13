@@ -105,9 +105,7 @@ namespace vkhr {
         const std::vector<glm::vec3>& get_tangents() const;
         const std::vector<unsigned>&  get_indices()  const;
 
-        enum ShadingModel : int {
-            KajiyaKay
-        };
+        std::size_t get_size() const;
 
     private:
         mutable struct FileHeader {

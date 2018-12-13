@@ -344,20 +344,23 @@ namespace vkhr {
 
     void SceneGraph::Node::scale(const glm::vec3& scale) {
         this->scaling *= scale;
+        recalculate_transform = true;
     }
 
     void SceneGraph::Node::set_rotation(const glm::vec3& axis, float angle) {
-        this->rotation_axis = axis;
+        this->rotation_axis = glm::normalize(axis);
         this->rotation_angle += angle;
         recalculate_transform = true;
     }
 
     void SceneGraph::Node::set_rotation_angle(float angle) {
         rotation_angle = angle;
+        recalculate_transform = true;
     }
 
     void SceneGraph::Node::set_rotation_axis(const glm::vec3& axis) {
-        rotation_axis = axis;
+        rotation_axis = glm::normalize(axis);
+        recalculate_transform = true;
     }
 
     void SceneGraph::Node::set_translation(const glm::vec3& translation) {

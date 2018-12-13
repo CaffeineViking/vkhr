@@ -56,6 +56,9 @@ namespace vkhr {
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
 
     private:
+        void traverse(SceneGraph& scene_graph);
+        void traverse(SceneGraph::Node* node);
+
         int scene_file { 0 };
         int previous_scene_file { 0 };
 
@@ -69,7 +72,12 @@ namespace vkhr {
         int simulation_effect { 0 };
 
         Renderer::Type current_renderer { Renderer::Rasterizer };
-        HairStyle::ShadingModel shading { HairStyle::KajiyaKay };
+
+        enum ShadingModel : int {
+            KajiyaKay
+        };
+
+        ShadingModel shading_model { KajiyaKay };
 
         struct ProfilePair {
             std::vector<float> timestamps;

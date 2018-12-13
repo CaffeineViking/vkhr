@@ -416,4 +416,16 @@ namespace vkhr {
             return write_field(file, indices);
         } return true;
     }
+
+    std::size_t HairStyle::get_size() const {
+        std::size_t size_in_bytes { 0 };
+        size_in_bytes += segments.size() * sizeof(segments[0]);
+        size_in_bytes += vertices.size() * sizeof(vertices[0]);
+        size_in_bytes += thickness.size() * sizeof(thickness[0]);
+        size_in_bytes += color.size() * sizeof(color[0]);
+        size_in_bytes += tangents.size() * sizeof(tangents[0]);
+        size_in_bytes += indices.size() * sizeof(indices[0]);
+        size_in_bytes += sizeof(FileHeader);
+        return size_in_bytes;
+    }
 }
