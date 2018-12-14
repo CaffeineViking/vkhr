@@ -14,15 +14,6 @@ layout(binding = 2) uniform ShadowMap {
     int enabled;
 } shadows;
 
-// Projects a 3-D position onto a 2-D plane for sampling a texture.
-vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
-    vec4 texel = vec4(1.0f);
-    vec3 projected_position = position.xyz / position.w;
-    if (projected_position.z > -1.0f && projected_position.z < 1.0f)
-        texel = texture(image, projected_position.st + displacement);
-    return texel;
-}
-
 // Based on the "A Survivor Reborn: Tomb Raider on DX11" talk at GDC 2013 by Jason Lacroix and his pseudo-code.
 float approximate_deep_shadow(float shadow_depth, float light_depth, float strand_radius, float strand_alpha) {
     float strand_depth = max(light_depth - shadow_depth, 0.0f); // depth of the current strand inside geometry.
@@ -33,6 +24,15 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
 
     // We also take into account the transparency of the hair strand to determine how much light might scatter.
     return pow(1.0f - strand_alpha, strand_count); // this gives us "stronger" shadows with deeper hair strand.
+}
+
+// Projects a 3-D position onto a 2-D plane for sampling a texture.
+vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
+    vec4 texel = vec4(1.0f);
+    vec3 projected_position = position.xyz / position.w;
+    if (projected_position.z > -1.0f && projected_position.z < 1.0f)
+        texel = texture(image, projected_position.st + displacement);
+    return texel;
 }
 
 float approximate_deep_shadows(sampler2D shadow_map,
