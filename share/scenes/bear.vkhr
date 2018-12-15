@@ -1,0 +1,43 @@
+{
+    "camera": {
+      "fieldOfView": 45.0,
+        "lookAt": [ 0.0,  60, -55 ],
+        "origin": [ -197, 60, -55 ],
+        "upward": [ 0.0,   1, 0.0 ]
+    },
+
+    "lights": [
+        {
+            "direction": [1, 2, 1],
+            "intensity": [ 0.200,
+                           0.154,
+                           0.112 ]
+        }
+    ],
+
+    "root": 0,
+
+    "nodes": [
+        {
+            "children": [ 1 ]
+        },
+        {
+            "scale":     [1, 1, 1],
+            "translate": [0, 0, 0],
+            "rotate": {
+                "axis": [ 0, 1, 0 ],
+                "angle":  0.0
+            },
+
+            "name": "Large Bear",
+
+            "models": [
+                "../models/bear/bear.obj"
+            ],
+
+            "styles": [
+                "../styles/bear.hair"
+            ]
+        }
+    ]
+}

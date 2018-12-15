@@ -73,6 +73,7 @@ namespace vkhr {
         renderers.push_back("Ray Tracer");
 
         scene_files.push_back(SCENE("ponytail.vkhr"));
+        scene_files.push_back(SCENE("bear.vkhr"));
 
         simulations.push_back("No Effects");
 
