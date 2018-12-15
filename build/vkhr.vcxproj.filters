@@ -1231,13 +1231,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\share\scenes\bear.vkhr">
+      <Filter>scenes</Filter>
+    </None>
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
-    <None Include="..\share\shaders\billboards.frag">
+    <None Include="..\share\shaders\billboard.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\billboards.vert">
+    <None Include="..\share\shaders\billboard.vert">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\blinn-phong.glsl">
@@ -1285,19 +1288,31 @@
     <None Include="..\share\shaders\kajiya-kay.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\lights.glsl">
+    <None Include="..\share\shaders\light.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\marschner-scheuermann.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\math.glsl">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\model.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\model.vert">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\shadow_map.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\strands.frag">
+    <None Include="..\share\shaders\strand.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\strands.vert">
+    <None Include="..\share\shaders\strand.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelize.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
