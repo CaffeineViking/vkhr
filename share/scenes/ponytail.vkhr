@@ -31,6 +31,10 @@
 
             "name": "Lara Croft",
 
+            "models": [
+                "../models/ponytail/ponytail.obj"
+            ],
+
             "styles": [
                 "../styles/ponytail.hair"
             ]
