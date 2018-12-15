@@ -32,6 +32,9 @@ namespace vkhr {
                                        Rasterizer& vulkan_renderer);
 
         private:
+            vk::IndexBuffer  elements;
+            vk::VertexBuffer vertices;
+
             static int id;
         };
     }

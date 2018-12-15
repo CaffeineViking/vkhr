@@ -88,6 +88,7 @@ namespace vkpp {
         std::uint32_t attribute;
         VkFormat format;
         std::uint32_t stride;
+        std::uint32_t offset { 0 };
     };
 
     class GraphicsPipeline final : public Pipeline {

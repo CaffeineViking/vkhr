@@ -90,12 +90,6 @@ namespace vkhr {
     }
 
     void Interface::transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
-        auto direction = scene_graph.light_sources.front().get_direction();
-        direction = glm::rotateY(direction, 0.005f);
-        direction = glm::rotateX(direction, 0.008f);
-        direction = glm::rotateZ(direction, 0.002f);
-        scene_graph.light_sources.front().set_direction(direction);
-
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();

@@ -275,7 +275,8 @@ namespace vkpp {
         add_vertex_binding({ attribute.binding, attribute.stride, VK_VERTEX_INPUT_RATE_VERTEX });
         add_vertex_attribute(VertexAttribute { attribute.attribute,
                                                attribute.binding,
-                                               attribute.format, 0 });
+                                               attribute.format,
+                                               attribute.offset });
     }
 
     VkPrimitiveTopology GraphicsPipeline::FixedFunction::get_topology() const {
