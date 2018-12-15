@@ -17,11 +17,11 @@ void main() {
     vec4 light_position = vec4(lights[0].vector, 0.0f);
     vec3 light_color    = lights[0].intensity;
 
-    vec3 view_space_light = (camera.view     * light_position).xyz;
-    vec4 light_space_frag = lights[0].matrix * fs_in.position;
+    vec3 camera_space_lights = (camera.view     * light_position).xyz;
+    vec4 light_space_strands = lights[0].matrix * fs_in.position;
 
     vec3 shading = kajiya_kay(hair_color, light_color, 50.00f,
-                              fs_in.tangent, view_space_light,
+                              fs_in.tangent, camera_space_lights,
                               vec3(0, 0, -1)); // camera space
 
     float visibility = 0.0f;
@@ -29,7 +29,7 @@ void main() {
     visibility = approximate_deep_shadows(shadow_maps[0],
                                           shadows.kernel_size,
                                           shadows.stride_size,
-                                          light_space_frag,
+                                          light_space_strands,
                                           1136.0f, 0.8f);
 
     color = vec4(shading * visibility, 1.0f);
