@@ -71,7 +71,8 @@ namespace vkhr {
         std::vector<vk::UniformBuffer> light_buf;
         std::vector<vk::UniformBuffer> sm_params;
 
-        Pipeline depth_view_pipeline;
+        Pipeline hair_depth_pipeline;
+        Pipeline mesh_depth_pipeline;
         Pipeline billboards_pipeline;
         Pipeline hair_style_pipeline;
         Pipeline model_mesh_pipeline;

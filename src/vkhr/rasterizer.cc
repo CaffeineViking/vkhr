@@ -136,7 +136,7 @@ namespace vkhr {
                                               swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
 
         for (auto& light_source : scene_graph.get_light_sources())
-            shadow_maps.emplace_back(1024, *this, light_source);
+            shadow_maps.emplace_back(2048, *this, light_source);
 
         build_pipelines();
     }
@@ -207,13 +207,15 @@ namespace vkhr {
             return;
 
         vk::DebugMarker::begin(command_buffer, "Draw Shadow Maps", query_pools[frame]);
-        depth_view_pipeline.make_current_pipeline(command_buffer, frame);
 
         for (auto& shadow_map : shadow_maps) {
             auto& light_vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
+            hair_depth_pipeline.make_current_pipeline(command_buffer, frame);
             draw_hairs(scene_graph, command_buffer, frame, light_vp);
+            mesh_depth_pipeline.make_current_pipeline(command_buffer, frame);
+            draw_model(scene_graph, command_buffer, frame, light_vp);
             command_buffer.end_render_pass();
         }
 
@@ -266,7 +268,8 @@ namespace vkhr {
     }
 
     void Rasterizer::build_pipelines() {
-        vulkan::DepthView::build_pipeline(depth_view_pipeline, *this);
+        vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
+        vulkan::Model::depth_pipeline(mesh_depth_pipeline,     *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
@@ -349,7 +352,8 @@ namespace vkhr {
 
     void Rasterizer::recompile() {
         device.wait_idle(); // If any pipeline is still in use we need to wait until execution is complete to recompile it.
-        if (recompile_pipeline_shaders(depth_view_pipeline)) vulkan::DepthView::build_pipeline(depth_view_pipeline, *this);
+        if (recompile_pipeline_shaders(hair_depth_pipeline)) vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
+        if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline,     *this);
         if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
         if (recompile_pipeline_shaders(billboards_pipeline)) vulkan::Billboard::build_pipeline(billboards_pipeline, *this);

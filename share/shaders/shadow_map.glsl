@@ -76,4 +76,42 @@ float approximate_deep_shadows(sampler2D shadow_map,
     return shadow / weight;
 }
 
+float pcf_shadows(sampler2D shadow_map,
+                  vec4 light_space_vertex,
+                  float pcf_kernel_width,
+                  float bias) {
+    float shadow = 0.0f;
+
+    if (shadows.enabled == 0)
+        return 1.0f;
+
+    vec2 shadow_map_size = textureSize(shadow_map, 0);
+    float kernel_range = (pcf_kernel_width - 1.0f) / 2.0f;
+    float sigma_stddev = (pcf_kernel_width / 2.0f) / 2.4f;
+    float sigma_squared = sigma_stddev * sigma_stddev;
+
+    float light_depth = light_space_vertex.z / light_space_vertex.w;
+
+    float weight = 0.0f;
+
+    for (float y = -kernel_range; y <= +kernel_range; y += 1.0f)
+    for (float x = -kernel_range; x <= +kernel_range; x += 1.0f) {
+        float exponent =     -1.0f * (x*x + y*y) / 2.0f*sigma_squared;
+        float local_weight = +1.0f / (2.0f*M_PI*sigma_squared) * pow(M_E, exponent);
+
+        float shadow_depth = tex2Dproj(shadow_map, light_space_vertex, vec2(x, y) / shadow_map_size).r;
+
+        float local_shadow = 1.0f;
+
+        if (shadow_depth > light_depth - bias)
+            local_shadow   = 0.0f;
+
+        shadow += local_shadow * local_weight;
+        weight += local_weight;
+    }
+
+    return 1 - shadow / weight;
+}
+
+
 #endif

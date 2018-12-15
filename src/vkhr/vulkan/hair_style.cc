@@ -147,7 +147,63 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Style Graphics Pipeline");
         }
 
-        void HairStyle::voxel_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
+        void HairStyle::depth_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
+            pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
+
+            pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
+
+            pipeline.fixed_stages.set_scissor({ 0, 0, vulkan_renderer.swap_chain.get_extent() });
+            pipeline.fixed_stages.set_viewport({ 0.0, 0.0,
+                                                 static_cast<float>(vulkan_renderer.swap_chain.get_width()),
+                                                 static_cast<float>(vulkan_renderer.swap_chain.get_height()),
+                                                 0.0, 1.0 });
+
+            pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_VIEWPORT);
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_SCISSOR);
+
+            pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_BACK_BIT);
+
+            pipeline.fixed_stages.set_line_width(1.0);
+            pipeline.fixed_stages.enable_depth_test();
+
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("depth_pass.vert"));
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Depth Shader");
+
+            pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
+                vulkan_renderer.device
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Depth Descriptor Set Layout");
+            pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
+                                                                                pipeline.descriptor_set_layout,
+                                                                                "Hair Depth Descriptor Set");
+
+            pipeline.pipeline_layout = vk::Pipeline::Layout {
+                vulkan_renderer.device,
+                pipeline.descriptor_set_layout,
+                {
+                    { VK_SHADER_STAGE_ALL, 0, sizeof(glm::mat4) } // transforms.
+                }
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
+                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+                                         "Hair Depth Pipeline Layout");
+
+            pipeline.pipeline = vk::GraphicsPipeline {
+                vulkan_renderer.device,
+                pipeline.shader_stages,
+                pipeline.fixed_stages,
+                pipeline.pipeline_layout,
+                vulkan_renderer.depth_pass
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Depth Graphics Pipeline");
         }
 
         int HairStyle::id { 0 };

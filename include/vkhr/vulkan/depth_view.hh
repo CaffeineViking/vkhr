@@ -40,9 +40,6 @@ namespace vkhr {
             vk::Framebuffer& get_framebuffer();
             vk::ImageView& get_image_view();
 
-            static void build_pipeline(Pipeline& pipeline_reference,
-                                       Rasterizer& vulkan_renderer);
-
             const LightSource* light { nullptr };
 
             enum SamplingMethod : int  {
