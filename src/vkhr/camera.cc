@@ -218,6 +218,8 @@ namespace vkhr {
                                              near_distance, far_distance);
         projection_matrix[1][1] *= -1; // Since Vulkan uses RHS coord-sys.
         view_projection_matrix.projection = projection_matrix;
+        view_projection_matrix.near = near_distance;
+        view_projection_matrix.far  = far_distance;
         projection_matrix_dirty = false;
     }
 

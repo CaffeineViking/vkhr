@@ -60,6 +60,8 @@ namespace vkhr {
         projection[1][1] *= -1;
         view_projection        = projection * view;
         buffer.view_projection = bias * view_projection;
+        buffer.near_z = near;
+        buffer.far_z = far;
     }
 
     const glm::vec4& LightSource::get_vector() const {

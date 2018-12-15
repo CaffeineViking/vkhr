@@ -7,6 +7,8 @@ struct Light {
     vec3 intensity;
     float cutoff;
     mat4 matrix;
+    float near;
+    float far;
 };
 
 layout(constant_id = 0) const uint lights_size = 1;

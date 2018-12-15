@@ -15,6 +15,8 @@ namespace vkhr {
     struct ViewProjection {
         glm::mat4 view;
         glm::mat4 projection;
+        float near;
+        float far;
     };
 
     using VP = ViewProjection;

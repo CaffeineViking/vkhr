@@ -30,6 +30,8 @@ namespace vkhr {
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
+            static void voxel_pipeline(Pipeline& pipeline_reference,
+                                       Rasterizer& vulkan_renderer);
 
         private:
             vk::IndexBuffer  vertices;

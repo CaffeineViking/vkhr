@@ -35,6 +35,10 @@ vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
     return texel;
 }
 
+float linearize_depth(float depth, float near, float far) {
+    return (2.0f * near) / (far+near - depth * (far-near));
+}
+
 float approximate_deep_shadows(sampler2D shadow_map,
                                float pcf_kernel_width,
                                float smoothing_factor,
