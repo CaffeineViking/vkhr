@@ -4,6 +4,8 @@ build/
 docs/build/
 vkhr.zip
 
+imgui.ini
+
 vkhr.ico
 vkhr.lnk
 

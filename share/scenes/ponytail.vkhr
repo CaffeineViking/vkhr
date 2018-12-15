@@ -1,8 +1,8 @@
 {
     "camera": {
-        "fieldOfView": 45.0,
-        "lookAt": [ 0.0, 60, 0.0 ],
-        "origin": [ 200, 35, 200 ],
+      "fieldOfView": 45.0,
+        "lookAt": [ 2.0, 80, 0.0 ],
+        "origin": [ 2.0, 80, 130 ],
         "upward": [ 0.0,  1, 0.0 ]
     },
 

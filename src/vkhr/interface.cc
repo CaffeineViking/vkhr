@@ -21,7 +21,6 @@ namespace vkhr {
     Interface::Interface(Window& window, Rasterizer* vulkan_renderer) {
         IMGUI_CHECKVERSION();
         ctx = ImGui::CreateContext();
-        ImGui::GetIO().IniFilename = nullptr;
         ImGui_ImplGlfw_InitForVulkan(window.get_handle(), false);
         load(*vulkan_renderer);
     }
@@ -161,8 +160,8 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::CollapsingHeader("Render Settings")) {
-                if (ImGui::TreeNode("Rasterizer")) {
+            if (ImGui::CollapsingHeader("Render Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+                if (ImGui::TreeNodeEx("Rasterizer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(195);
                     ImGui::Combo("##Shadow Technique",
                                  reinterpret_cast<int*>(&rasterizer.shadow_map.type),
@@ -281,7 +280,7 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::CollapsingHeader("Shader Profiler")) {
+            if (ImGui::CollapsingHeader("Shader Profiler", ImGuiTreeNodeFlags_DefaultOpen)) {
                 for (auto& profile : profiles)
                     ImGui::PlotLines(profile.first.c_str(),
                                      profile.second.timestamps.data(),
