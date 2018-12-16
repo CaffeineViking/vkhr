@@ -166,12 +166,12 @@ namespace vkhr {
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
         model_mesh_pipeline.make_current_pipeline(command_buffers[frame], frame);
-        draw_model(scene_graph, command_buffers[frame], frame);
+        draw_model(scene_graph, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
         hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
-        draw_hairs(scene_graph, command_buffers[frame], frame);
+        draw_hairs(scene_graph, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
         imgui.draw(command_buffers[frame], query_pools[frame]);
@@ -194,7 +194,7 @@ namespace vkhr {
         return (frame + 1) % swap_chain.size();
     }
 
-    void Rasterizer::draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
+    void Rasterizer::draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
         for (auto& model_node : scene_graph.get_nodes_with_models()) {
             command_buffer.push_constant(model_mesh_pipeline, 0, projection * model_node->get_model_matrix());
             for (auto& model_mesh : model_node->get_models())
@@ -213,16 +213,16 @@ namespace vkhr {
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
             hair_depth_pipeline.make_current_pipeline(command_buffer, frame);
-            draw_hairs(scene_graph, command_buffer, frame, light_vp);
+            draw_hairs(scene_graph, command_buffer, light_vp);
             mesh_depth_pipeline.make_current_pipeline(command_buffer, frame);
-            draw_model(scene_graph, command_buffer, frame, light_vp);
+            draw_model(scene_graph, command_buffer, light_vp);
             command_buffer.end_render_pass();
         }
 
         vk::DebugMarker::close(command_buffer, "Draw Shadow Maps", query_pools[frame]);
     }
 
-    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 projection) {
+    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
             command_buffer.push_constant(hair_style_pipeline, 0, projection * hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())

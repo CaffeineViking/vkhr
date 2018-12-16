@@ -27,8 +27,12 @@ namespace vkhr {
         case Type::Directional:
             type_string = "Directional";
             break;
-        default: return "What?!";
+        default:
+            type_string = "What?";
+            break;
         }
+
+        return type_string;
     }
 
     void LightSource::set_type(Type light_source_type) {

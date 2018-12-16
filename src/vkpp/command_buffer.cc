@@ -284,6 +284,16 @@ namespace vkpp {
                          first_index, vertex_offset, first_instance);
     }
 
+    void CommandBuffer::dispatch(std::uint32_t group_count_x,
+                                 std::uint32_t group_count_y,
+                                 std::uint32_t group_count_z) {
+        vkCmdDispatch(handle, group_count_x, group_count_y, group_count_z);
+    }
+
+    void CommandBuffer::dispatch_indirect(Buffer& buffer, VkDeviceSize offset) {
+        vkCmdDispatchIndirect(handle, buffer.get_handle(), offset);
+    }
+
     void CommandBuffer::end_render_pass() {
         vkCmdEndRenderPass(handle);
     }

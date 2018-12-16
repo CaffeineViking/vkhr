@@ -34,9 +34,9 @@ namespace vkhr {
         void draw(const SceneGraph& scene) override;
         void draw(Image& fullscreen_image);
 
-        void draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 = glm::mat4 { 1.0f });
+        void draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
         void draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame, glm::mat4 = glm::mat4 { 1.0f });
+        void draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
 
         bool recompile_pipeline_shaders(Pipeline& pipeline);
         void recompile();

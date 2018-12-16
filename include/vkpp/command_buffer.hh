@@ -112,6 +112,12 @@ namespace vkpp {
 
         void end_render_pass();
 
+        void dispatch(std::uint32_t group_count_x,
+                      std::uint32_t group_count_y,
+                      std::uint32_t group_count_z);
+
+        void dispatch_indirect(Buffer& buffer, VkDeviceSize offset = 0);
+
         void end();
 
         void reset_query_pool(QueryPool& query_pool, std::uint32_t first_query, std::uint32_t query_count);
