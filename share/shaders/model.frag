@@ -21,10 +21,10 @@ void main() {
 
     float visibility = 1.0f;
 
-    visibility = pcf_shadows(shadow_maps[0],
-                             light_space_vertex,
-                             shadows.kernel_size,
-                             0.0001f);
+    visibility = filtered_shadows(shadow_maps[0],
+                                  light_space_vertex,
+                                  shadows.kernel_size,
+                                  0.0001f);
 
     float diffuse = dot(camera_space_light, fs_in.normal);
 

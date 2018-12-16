@@ -27,9 +27,9 @@ void main() {
     float visibility = 0.0f;
 
     visibility = approximate_deep_shadows(shadow_maps[0],
+                                          light_space_strands,
                                           shadows.kernel_size,
                                           shadows.stride_size,
-                                          light_space_strands,
                                           1136.0f, 0.8f);
 
     color = vec4(shading * visibility, 1.0f);

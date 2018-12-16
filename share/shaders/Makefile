@@ -1,4 +1,4 @@
-all: billboard.vert.spv depth_pass.vert.spv model.vert.spv strand.vert.spv billboard.frag.spv model.frag.spv strand.frag.spv
+all: billboard.vert.spv depth_pass.vert.spv model.vert.spv strand.vert.spv billboard.frag.spv model.frag.spv strand.frag.spv voxelize.comp.spv
 
 billboard.vert.spv: billboard.vert camera.glsl
 	glslc -O -g -c billboard.vert
@@ -20,3 +20,6 @@ model.frag.spv: model.frag camera.glsl blinn-phong.glsl shadow_map.glsl math.gls
 
 strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl math.glsl light.glsl
 	glslc -O -g -c strand.frag
+
+voxelize.comp.spv: voxelize.comp
+	glslc -O -g -c voxelize.comp
