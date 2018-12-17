@@ -195,6 +195,14 @@ namespace vkhr {
         return projection_matrix;
     }
 
+    const glm::mat4& Camera::get_view_projection() const {
+        if (view_matrix_dirty)
+            recalculate_view_matrix();
+        if (projection_matrix_dirty)
+            recalculate_projection_matrix();
+        return view_projection;
+    }
+
     ViewProjection& Camera::get_transform() const {
         if (view_matrix_dirty)
             recalculate_view_matrix();
@@ -220,12 +228,14 @@ namespace vkhr {
         view_projection_matrix.projection = projection_matrix;
         view_projection_matrix.near = near_distance;
         view_projection_matrix.far  = far_distance;
+        view_projection = projection_matrix * view_matrix;
         projection_matrix_dirty = false;
     }
 
     void Camera::recalculate_view_matrix() const {
         view_matrix = glm::lookAt(position, look_at_point, up_direction);
         view_projection_matrix.view = view_matrix;
+        view_projection = projection_matrix * view_matrix;
         view_matrix_dirty = false;
     }
 

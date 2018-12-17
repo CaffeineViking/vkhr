@@ -78,6 +78,7 @@ namespace vkhr {
         Pipeline model_mesh_pipeline;
         Pipeline billboards_pipeline;
 
+        vulkan::DepthView depth_view;
         std::vector<vulkan::DepthView> shadow_maps;
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
         std::unordered_map<const Model*, vulkan::Model> models;

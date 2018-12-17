@@ -77,6 +77,7 @@ namespace vkhr {
 
         const glm::mat4& get_view_matrix() const;
         const glm::mat4& get_projection_matrix() const;
+        const glm::mat4& get_view_projection() const;
 
         ViewProjection& get_transform() const;
 
@@ -114,6 +115,7 @@ namespace vkhr {
 
         mutable glm::mat4 view_matrix;
         mutable glm::mat4 projection_matrix;
+        mutable glm::mat4 view_projection;
 
         friend class Interface;
     };

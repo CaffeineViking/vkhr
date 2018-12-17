@@ -98,10 +98,16 @@ namespace vkhr {
 
         load(scene_graph);
 
+        depth_view = vulkan::DepthView {
+            swap_chain.get_width(),
+            swap_chain.get_height(),
+            *this
+        };
+
         fullscreen_billboard = vulkan::Billboard {
-            static_cast<std::uint32_t>(window.get_width()),
-            static_cast<std::uint32_t>(window.get_height()),
-            *this // needs to upload image descriptor later.
+            swap_chain.get_width(),
+            swap_chain.get_height(),
+            *this
         };
 
         imgui = Interface { window_surface.get_glfw_window(), this };
