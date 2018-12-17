@@ -1312,7 +1312,7 @@
     <None Include="..\share\shaders\strand.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\voxelize.glsl">
+    <None Include="..\share\shaders\voxelize.comp">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
