@@ -33,11 +33,10 @@ namespace vkhr {
                       vkhr::Rasterizer& vulkan_rendrer);
 
             void send_img(vk::DescriptorSet&, Image&, vk::CommandBuffer&);
-            void update(vk::DescriptorSet&, vk::ImageView&, vk::Sampler&);
 
-            void draw(vk::CommandBuffer& command_buffer) override;
-
-            static glm::mat4 Identity;
+            void draw(Pipeline& pipeline,
+                      vk::DescriptorSet& descriptor_set,
+                      vk::CommandBuffer& command_buffer) override;
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

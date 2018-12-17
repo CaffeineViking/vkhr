@@ -16,16 +16,14 @@ namespace vkhr {
         std::vector<vk::ShaderModule> shader_stages;
         vk::Pipeline::Layout pipeline_layout;
         vk::GraphicsPipeline pipeline;
+        vk::ComputePipeline  compute_pipeline;
         vk::DescriptorSet::Layout descriptor_set_layout;
         std::vector<vk::DescriptorSet> descriptor_sets;
 
         operator vk::Pipeline&() {
+            if (compute_pipeline.get_handle() != VK_NULL_HANDLE)
+                return compute_pipeline;
             return pipeline;
-        }
-
-        void make_current_pipeline(vk::CommandBuffer& command_list, std::size_t frame) {
-            command_list.bind_pipeline(pipeline);
-            command_list.bind_descriptor_set(descriptor_sets[frame], pipeline);
         }
     };
 }

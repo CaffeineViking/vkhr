@@ -66,18 +66,12 @@ namespace vkhr {
 
         void Billboard::send_img(vk::DescriptorSet& descriptor_set, vkhr::Image& img, vk::CommandBuffer& command_buffer) {
             billboard_image.staged_copy(img, command_buffer);
-            update(descriptor_set, billboard_view, billboard_sampler);
         }
 
-        void Billboard::update(vk::DescriptorSet& descriptor_set, vk::ImageView& image_view, vk::Sampler& image_sampler) {
-            descriptor_set.write(1, image_view, image_sampler);
-        }
-
-        void Billboard::draw(vk::CommandBuffer& command_buffer) {
-            command_buffer.draw(6, 1); // WARNING: this isn't how
-            // billboard class should actually look like since it
-            // won't perform very well. The proper way is to make
-            // a storage buffer and instance draw the billboards!
+        void Billboard::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            descriptor_set.write(1, billboard_view, billboard_sampler);
+            command_buffer.bind_descriptor_set(descriptor_set, pipeline);
+            command_buffer.draw(6, 1);
         }
 
         void Billboard::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
@@ -144,7 +138,6 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboards Graphics Pipeline");
         }
 
-        glm::mat4 Billboard::Identity { 1.0f };
         int Billboard::id { 0 };
     }
 }

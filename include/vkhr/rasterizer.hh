@@ -34,9 +34,9 @@ namespace vkhr {
         void draw(const SceneGraph& scene) override;
         void draw(Image& fullscreen_image);
 
-        void draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
-        void draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame);
-        void draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
+        void draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
+        void draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer);
+        void draw_hairs(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
 
         bool recompile_pipeline_shaders(Pipeline& pipeline);
         void recompile();
@@ -73,9 +73,10 @@ namespace vkhr {
 
         Pipeline hair_depth_pipeline;
         Pipeline mesh_depth_pipeline;
-        Pipeline billboards_pipeline;
+        Pipeline hair_voxel_pipeline;
         Pipeline hair_style_pipeline;
         Pipeline model_mesh_pipeline;
+        Pipeline billboards_pipeline;
 
         std::vector<vulkan::DepthView> shadow_maps;
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;

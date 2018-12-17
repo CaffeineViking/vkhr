@@ -11,6 +11,7 @@
 namespace vkpp {
     class Queue;
     class CommandPool;
+    class CommandBuffer;
     class Device;
 
     class Buffer {
@@ -69,6 +70,8 @@ namespace vkpp {
                      const void* buffer,
                      VkDeviceSize size,
                      VkBufferUsageFlags usage);
+
+        DeviceBuffer(Device& device, VkDeviceSize size, VkBufferUsageFlags usage);
 
         DeviceMemory& get_device_memory();
 
@@ -151,6 +154,21 @@ namespace vkpp {
         StorageBuffer(Device& device,
                       const T& buffer,
                       VkDeviceSize size);
+
+        StorageBuffer(Device& device, VkDeviceSize size);
+
+        Buffer& get_staging_buffer();
+
+        DeviceMemory& get_staging_memory();
+
+        template<typename T> void staged_copy(T& object,              CommandBuffer& command_buffer);
+        template<typename T> void staged_copy(T& object,              CommandPool& command_pool);
+        template<typename T> void staged_copy(std::vector<T>& vector, CommandBuffer& command_buffer);
+        template<typename T> void staged_copy(std::vector<T>& vector, CommandPool& command_pool);
+
+    private:
+        Buffer       staging_buffer;
+        DeviceMemory staging_memory;
     };
 
     class HostBuffer : public Buffer {
@@ -199,6 +217,46 @@ namespace vkpp {
     };
 
     template<typename T>
+    void StorageBuffer::staged_copy(T& object, CommandBuffer& command_buffer) {
+        void* data = reinterpret_cast<void*>(&data_object);
+        staging_memory.copy(sizeof(T), data);
+        command_buffer.copy_buffer(staging_buffer, *this);
+    }
+
+    template<typename T>
+    void StorageBuffer::staged_copy(T& object, CommandPool& command_pool) {
+        auto command_buffer = command_pool.allocate_and_begin();
+        command_buffer.copy_buffer(*this, staging_buffer);
+        command_buffer.end();
+
+        T* data { nullptr };
+        staging_memory.map(0, get_size(), (void**) &data);
+        std::memcpy(&object, data, get_size());
+        staging_memory.unmap();
+    }
+
+    template<typename T>
+    void StorageBuffer::staged_copy(std::vector<T>& vector, CommandPool& command_pool) {
+        auto command_buffer = command_pool.allocate_and_begin();
+        command_buffer.copy_buffer(*this, staging_buffer);
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer).wait_idle();
+
+        T* data { nullptr };
+        vector.resize(get_size() / sizeof(T));
+        staging_memory.map(0, get_size(), (void**) &data);
+        std::memcpy(vector.data(), data, get_size());
+        staging_memory.unmap();
+    }
+
+    template<typename T>
+    void StorageBuffer::staged_copy(std::vector<T>& vector, CommandBuffer& command_buffer) {
+        staging_memory.copy(sizeof(T) * vector.size(), vector.data());
+        command_buffer.copy_buffer(staging_buffer, *this);
+    }
+
+    template<typename T>
     VertexBuffer::VertexBuffer(Device& device,
                                CommandPool& command_buffer,
                                const std::vector<T>& vertices,
@@ -219,7 +277,7 @@ namespace vkpp {
 
         this->element_count = vertices.size();
 
-        this->binding  = { binding, sizeof(vertices[0]), VK_VERTEX_INPUT_RATE_VERTEX };
+        this->binding = { binding, sizeof(vertices[0]), VK_VERTEX_INPUT_RATE_VERTEX };
     }
 
     template<typename T>

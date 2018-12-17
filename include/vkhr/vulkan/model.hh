@@ -26,7 +26,9 @@ namespace vkhr {
             void load(const vkhr::Model& wavefront_model,
                       vkhr::Rasterizer& vulkan_renderer);
 
-            void draw(vk::CommandBuffer& command_buffer) override;
+            void draw(Pipeline& pipeline,
+                      vk::DescriptorSet& descriptor_set,
+                      vk::CommandBuffer& command_buffer) override;
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

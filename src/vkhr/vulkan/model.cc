@@ -38,8 +38,9 @@ namespace vkhr {
             ++id;
         }
 
-        void Model::draw(vk::CommandBuffer& command_buffer) {
-            command_buffer.bind_vertex_buffer(0,vertices);
+        void Model::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            command_buffer.bind_descriptor_set(descriptor_set, pipeline);
+            command_buffer.bind_vertex_buffer(0, vertices);
             command_buffer.bind_index_buffer(elements, 0);
             command_buffer.draw_indexed(elements.count());
         }
@@ -168,10 +169,10 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Mesh Depth Descriptor Set Layout");
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Model Depth Descriptor Set Layout");
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
-                                                                                "Mesh Depth Descriptor Set");
+                                                                                "Model Depth Descriptor Set");
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
                 vulkan_renderer.device,
@@ -183,7 +184,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
                                          VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Mesh Depth Pipeline Layout");
+                                         "Model Depth Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -193,7 +194,7 @@ namespace vkhr {
                 vulkan_renderer.depth_pass
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Mesh Depth Graphics Pipeline");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Model Depth Graphics Pipeline");
         }
 
         int Model::id { 0 };

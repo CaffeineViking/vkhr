@@ -117,6 +117,8 @@ namespace vkhr {
 
         friend class Interface;
     };
+
+    static glm::mat4 Identity { 1.0f };
 }
 
 #endif

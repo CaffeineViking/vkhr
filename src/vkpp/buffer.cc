@@ -169,6 +169,23 @@ namespace vkpp {
                                 .wait_idle();
     }
 
+    DeviceBuffer::DeviceBuffer(Device& device,
+                               VkDeviceSize size,
+                               VkBufferUsageFlags usage)
+                              : Buffer { device,
+                                         size,
+                                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage } {
+        auto buffer_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            buffer_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
+    }
+
     void swap(DeviceBuffer& lhs, DeviceBuffer& rhs) {
         using std::swap;
 
@@ -364,9 +381,36 @@ namespace vkpp {
         } return uniform_buffers;
     }
 
+    StorageBuffer::StorageBuffer(Device& device,
+                                 VkDeviceSize size_in_bytes)
+                                : DeviceBuffer { device, size_in_bytes,
+                                                 VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
+                                                 VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {
+        staging_buffer = Buffer {
+            device,
+            size_in_bytes,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
+            VK_BUFFER_USAGE_TRANSFER_DST_BIT
+        };
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        staging_memory = DeviceMemory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+    }
+
     void swap(StorageBuffer& lhs, StorageBuffer& rhs) {
         using std::swap;
+
         swap(static_cast<DeviceBuffer&>(lhs), static_cast<DeviceBuffer&>(rhs));
+
+        swap(lhs.staging_buffer, rhs.staging_buffer);
+        swap(lhs.staging_memory, rhs.staging_memory);
     }
 
     StorageBuffer& StorageBuffer::operator=(StorageBuffer&& buffer) noexcept {
@@ -376,5 +420,13 @@ namespace vkpp {
 
     StorageBuffer::StorageBuffer(StorageBuffer&& buffer) noexcept {
         swap(*this, buffer);
+    }
+
+    Buffer& StorageBuffer::get_staging_buffer() {
+        return staging_buffer;
+    }
+
+    DeviceMemory& StorageBuffer::get_staging_memory() {
+        return staging_memory;
     }
 }

@@ -21,9 +21,9 @@ namespace vkhr {
                 hair_style.get_vertices()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, positions, VK_OBJECT_TYPE_BUFFER, "Hair Style Position Vertex Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, positions, VK_OBJECT_TYPE_BUFFER, "Hair Position Vertex Buffer", id);
             vk::DebugMarker::object_name(vulkan_renderer.device, positions.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
-                                         "Hair Style Position Device Memory", id);
+                                         "Hair Position Device Memory", id);
 
             tangents = vk::VertexBuffer {
                 vulkan_renderer.device,
@@ -31,9 +31,9 @@ namespace vkhr {
                 hair_style.get_tangents()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, tangents, VK_OBJECT_TYPE_BUFFER, "Hair Style Tangent Vertex Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, tangents, VK_OBJECT_TYPE_BUFFER, "Hair Tangent Vertex Buffer", id);
             vk::DebugMarker::object_name(vulkan_renderer.device, tangents.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
-                                         "Hair Style Tangent Device Memory", id);
+                                         "Hair Tangent Device Memory", id);
 
             vertices = vk::IndexBuffer {
                 vulkan_renderer.device,
@@ -41,14 +41,16 @@ namespace vkhr {
                 hair_style.get_indices()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Hair Style Index Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Hair Index Buffer", id);
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
-                                         "Hair Style Index Device Memory", id);
+                                         "Hair Index Device Memory", id);
 
             ++id;
         }
 
-        void HairStyle::draw(vk::CommandBuffer& command_buffer) {
+        void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            command_buffer.bind_descriptor_set(descriptor_set, pipeline);
+
             command_buffer.bind_vertex_buffer(0, positions, 0);
             command_buffer.bind_vertex_buffer(1, tangents,  0);
 
@@ -105,15 +107,14 @@ namespace vkhr {
                 descriptor_bindings.push_back({ 3 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
-                vulkan_renderer.device,
-                descriptor_bindings
+                vulkan_renderer.device, descriptor_bindings
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Style Descriptor Set Layout");
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Descriptor Set Layout");
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
-                                                                                "Hair Style Descriptor Set");
+                                                                                "Hair Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
@@ -134,7 +135,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
                                          VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Hair Style Pipeline Layout");
+                                         "Hair Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -144,7 +145,7 @@ namespace vkhr {
                 vulkan_renderer.color_pass
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Style Graphics Pipeline");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Graphics Pipeline");
         }
 
         void HairStyle::depth_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
@@ -204,6 +205,46 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Hair Depth Graphics Pipeline");
+        }
+
+        void HairStyle::voxel_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
+            pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
+
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("voxelize.comp"));
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Voxel Shader");
+
+            pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
+                vulkan_renderer.device,
+                {
+                    { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER }
+                }
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Voxel Descriptor Set Layout");
+            pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
+                                                                                pipeline.descriptor_set_layout,
+                                                                                "Hair Voxel Descriptor Set");
+
+            pipeline.pipeline_layout = vk::Pipeline::Layout {
+                vulkan_renderer.device,
+                pipeline.descriptor_set_layout
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
+                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+                                         "Hair Voxel Pipeline Layout");
+
+            pipeline.compute_pipeline = vk::ComputePipeline {
+                vulkan_renderer.device,
+                pipeline.shader_stages[0],
+                pipeline.pipeline_layout
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.compute_pipeline,
+                                         VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Graphics Pipeline");
         }
 
         int HairStyle::id { 0 };

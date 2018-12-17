@@ -58,8 +58,6 @@ namespace vkhr {
             device_features
         };
 
-        instance.label(device.get_handle());
-
         command_pool = vk::CommandPool { device, device.get_graphics_queue() };
 
         auto vsync = window.vsync_requested();
@@ -120,17 +118,15 @@ namespace vkhr {
         models.clear();
         shadow_maps.clear();
 
-        for (const auto& model : scene_graph.get_models()) {
+        for (const auto& model : scene_graph.get_models())
             models[&model.second] = vulkan::Model {
                 model.second, *this
             };
-        }
 
-        for (const auto& hair_style : scene_graph.get_hair_styles()) {
+        for (const auto& hair_style : scene_graph.get_hair_styles())
             hair_styles[&hair_style.second] = vulkan::HairStyle {
                 hair_style.second, *this
             };
-        }
 
         light_buf = vk::UniformBuffer::create(device, scene_graph.get_light_sources().size() * sizeof(LightSource::Buffer),
                                               swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
@@ -156,22 +152,23 @@ namespace vkhr {
 
         command_buffers[frame].begin();
 
-        command_buffers[frame].reset_query_pool(query_pools[frame], 0, query_pools[frame].get_query_count());
+        command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
+                                                query_pools[frame].get_query_count());
 
-        draw_depth(scene_graph, command_buffers[frame], frame);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
+        draw_depth(scene_graph, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Scene Graph");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        model_mesh_pipeline.make_current_pipeline(command_buffers[frame], frame);
-        draw_model(scene_graph, command_buffers[frame]);
+        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
-        hair_style_pipeline.make_current_pipeline(command_buffers[frame], frame);
-        draw_hairs(scene_graph, command_buffers[frame]);
+        draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
         imgui.draw(command_buffers[frame], query_pools[frame]);
@@ -194,62 +191,58 @@ namespace vkhr {
         return (frame + 1) % swap_chain.size();
     }
 
-    void Rasterizer::draw_model(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
+    void Rasterizer::draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
+        command_buffer.bind_pipeline(pipeline); // Color / Depth Pass.
         for (auto& model_node : scene_graph.get_nodes_with_models()) {
             command_buffer.push_constant(model_mesh_pipeline, 0, projection * model_node->get_model_matrix());
             for (auto& model_mesh : model_node->get_models())
-                models[model_mesh].draw(command_buffer);
+                models[model_mesh].draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
         }
     }
 
-    void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, std::size_t frame) {
-        if (!shadow_map.enabled)
-            return;
-
-        vk::DebugMarker::begin(command_buffer, "Draw Shadow Maps", query_pools[frame]);
-
+    void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         for (auto& shadow_map : shadow_maps) {
-            auto& light_vp = shadow_map.light->get_view_projection();
+            auto& vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
-            hair_depth_pipeline.make_current_pipeline(command_buffer, frame);
-            draw_hairs(scene_graph, command_buffer, light_vp);
-            mesh_depth_pipeline.make_current_pipeline(command_buffer, frame);
-            draw_model(scene_graph, command_buffer, light_vp);
+            draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
+            draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
             command_buffer.end_render_pass();
         }
-
-        vk::DebugMarker::close(command_buffer, "Draw Shadow Maps", query_pools[frame]);
     }
 
-    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
+    void Rasterizer::draw_hairs(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
+        command_buffer.bind_pipeline(pipeline); // Color / Depth / Voxels.
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
             command_buffer.push_constant(hair_style_pipeline, 0, projection * hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())
-                hair_styles[hair_style].draw(command_buffer);
+                hair_styles[hair_style].draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
         }
     }
 
-    void Rasterizer::draw(Image& fullscreen_images) {
+    void Rasterizer::draw(Image& fullscreen_image) {
         command_buffer_finished[frame].wait_and_reset();
-
         imgui.record_performance(query_pools[frame].request_timestamp_queries());
+
         auto frame_image = swap_chain.acquire_next_image(image_available[frame]);
 
         command_buffers[frame].begin();
 
-        command_buffers[frame].reset_query_pool(query_pools[frame], 0, query_pools[frame].get_query_count());
+        command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
+                                                query_pools[frame].get_query_count());
 
         fullscreen_billboard.send_img(billboards_pipeline.descriptor_sets[frame],
-                                      fullscreen_images, command_buffers[frame]);
+                                      fullscreen_image, command_buffers[frame]);
+
         vk::DebugMarker::begin(command_buffers[frame], "Blit Framebuffer", query_pools[frame]);
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
-        billboards_pipeline.make_current_pipeline(command_buffers[frame], frame);
 
+        command_buffers[frame].bind_pipeline(billboards_pipeline);
         camera_vp[frame].update(Camera::IdentityVPMatrix);
-        command_buffers[frame].push_constant(billboards_pipeline, 0, vulkan::Billboard::Identity);
-        fullscreen_billboard.draw(command_buffers[frame]);
+        command_buffers[frame].push_constant(billboards_pipeline, 0, Identity);
+        fullscreen_billboard.draw(billboards_pipeline, billboards_pipeline.descriptor_sets[frame],
+                                  command_buffers[frame]);
 
         imgui.draw(command_buffers[frame]);
 
@@ -270,6 +263,7 @@ namespace vkhr {
     void Rasterizer::build_pipelines() {
         vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
         vulkan::Model::depth_pipeline(mesh_depth_pipeline,     *this);
+        vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
@@ -354,6 +348,7 @@ namespace vkhr {
         device.wait_idle(); // If any pipeline is still in use we need to wait until execution is complete to recompile it.
         if (recompile_pipeline_shaders(hair_depth_pipeline)) vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
         if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline,     *this);
+        if (recompile_pipeline_shaders(hair_voxel_pipeline)) vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
         if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
         if (recompile_pipeline_shaders(billboards_pipeline)) vulkan::Billboard::build_pipeline(billboards_pipeline, *this);

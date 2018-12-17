@@ -12,7 +12,9 @@ namespace vkhr {
         class Drawable {
         public:
             virtual ~Drawable() noexcept = default;
-            virtual void draw(vkpp::CommandBuffer&) = 0;
+            virtual void draw(Pipeline&,
+                              vkpp::DescriptorSet&,
+                              vkpp::CommandBuffer&) = 0;
         };
     }
 }

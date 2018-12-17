@@ -26,17 +26,23 @@ namespace vkhr {
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& scene_renderer);
 
-            void draw(vk::CommandBuffer& command_buffer) override;
+            void draw(Pipeline& pipeline,
+                      vk::DescriptorSet& descriptor_set,
+                      vk::CommandBuffer& command_buffer) override;
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
             static void depth_pipeline(Pipeline& pipeline_reference,
+                                       Rasterizer& vulkan_renderer);
+            static void voxel_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);
 
         private:
             vk::IndexBuffer  vertices;
             vk::VertexBuffer positions;
             vk::VertexBuffer tangents;
+
+            vk::StorageBuffer voxels;
 
             static int id;
         };
