@@ -75,9 +75,12 @@ namespace vkhr {
 
         enum ShadingModel : int {
             KajiyaKay
-        };
+        } shading_model { KajiyaKay };
 
-        ShadingModel shading_model { KajiyaKay };
+        enum ShadowTechnique : int {
+            ConventionalShadowMaps = 0,
+            ApproximateDeepShadows = 1
+        } shadow_technique { ApproximateDeepShadows };
 
         struct ProfilePair {
             std::vector<float> timestamps;

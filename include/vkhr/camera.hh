@@ -27,8 +27,8 @@ namespace vkhr {
         Camera() = default;
         Camera(const float field_of_view,
                const unsigned width, const unsigned height,
-               const float znear = 0.01,
-               const float zfar = 1000);
+               const float znear = 1.0,
+               const float zfar = 10000);
 
         void rotate(const glm::vec3& around_axis, const float angle);
         void translate(const glm::vec3& translation);
@@ -88,8 +88,8 @@ namespace vkhr {
         void recalculate_projection_matrix() const;
         void recalculate_viewing_plane() const;
 
-        float near_distance { .0100f };
-        float far_distance { 1000.0f };
+        float near_distance { 1.0f };
+        float far_distance { 10000.0f };
 
         unsigned width { 1280 }, height { 720 };
 

@@ -92,9 +92,12 @@ namespace vkhr {
 
         vulkan::DepthView::ShadowMap shadow_map {
             3,
-            vulkan::DepthView::ApproximateDeepShadows,
-            vulkan::DepthView::Laplace,
+            vulkan::DepthView::Poisson,
             8,
+            true,
+            3,
+            vulkan::DepthView::Uniform,
+            0.0001f,
             true
         };
 

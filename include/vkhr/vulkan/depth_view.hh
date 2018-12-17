@@ -44,21 +44,19 @@ namespace vkhr {
 
             enum SamplingMethod : int  {
                 Uniform = 0,
-                Poisson = 1,
-                Laplace = 2
-            };
-
-            enum ShadowTechnique : int {
-                ConventionalShadowMaps = 0,
-                ApproximateDeepShadows = 1
+                Poisson = 1
             };
 
             struct ShadowMap {
-                int kernel_size;
-                ShadowTechnique type;
-                SamplingMethod sampling_type;
-                int stride_size;
-                int enabled;
+                int adsm_kernel_size;
+                SamplingMethod adsm_sampling_type;
+                int adsm_stride_size;
+                int adsm_on;
+
+                int ctsm_kernel_size;
+                SamplingMethod ctsm_sampling_type;
+                float ctsm_bias;
+                int ctsm_on;
             };
 
         private:

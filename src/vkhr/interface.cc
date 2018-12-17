@@ -84,7 +84,6 @@ namespace vkhr {
 
         shadow_samplers.push_back("  Uniform");
         shadow_samplers.push_back("  Poisson");
-        shadow_samplers.push_back("  Laplace");
 
         scene_file = simulation_effect = 0;
     }
@@ -94,9 +93,9 @@ namespace vkhr {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        auto direction = scene_graph.light_sources.front().get_direction();
-        direction = glm::rotateY(direction, 0.005f);
-        scene_graph.light_sources.front().set_direction(direction);
+        // auto direction = scene_graph.light_sources.front().get_direction();
+        // direction = glm::rotateY(direction, 0.005f);
+        // scene_graph.light_sources.front().set_direction(direction);
 
         if (gui_visible) {
             auto& window = rasterizer.window_surface.get_glfw_window();
@@ -165,7 +164,7 @@ namespace vkhr {
                 if (ImGui::TreeNodeEx("Rasterizer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(195);
                     ImGui::Combo("##Shadow Technique",
-                                 reinterpret_cast<int*>(&rasterizer.shadow_map.type),
+                                 reinterpret_cast<int*>(&shadow_technique),
                                  get_string_from_vector,
                                  static_cast<void*>(&shadow_maps),
                                  shadow_maps.size());
@@ -173,27 +172,46 @@ namespace vkhr {
 
                     ImGui::SameLine();
 
-                    ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&rasterizer.shadow_map.enabled));
+                    if (shadow_technique == ApproximateDeepShadows) {
+                        ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&rasterizer.shadow_map.adsm_on));
+                    } else if (shadow_technique == ConventionalShadowMaps) {
+                        ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&rasterizer.shadow_map.ctsm_on));
+                    }
 
                     ImGui::PushItemWidth(171);
-                    ImGui::SliderInt("PCF", &rasterizer.shadow_map.kernel_size, 1, 5);
+                    if (shadow_technique == ApproximateDeepShadows) {
+                        ImGui::SliderInt("PCF", &rasterizer.shadow_map.adsm_kernel_size, 1, 9);
+                    } else if (shadow_technique == ConventionalShadowMaps) {
+                        ImGui::SliderInt("PCF", &rasterizer.shadow_map.ctsm_kernel_size, 1, 9);
+                    }
                     ImGui::PopItemWidth();
 
                     ImGui::SameLine();
 
                     ImGui::PushItemWidth(99);
-                    ImGui::Combo("##Shadow Sampler",
-                                 reinterpret_cast<int*>(&rasterizer.shadow_map.sampling_type),
-                                 get_string_from_vector,
-                                 static_cast<void*>(&shadow_samplers),
-                                 shadow_samplers.size());
+                    if (shadow_technique == ApproximateDeepShadows) {
+                        ImGui::Combo("##Shadow Sampler",
+                                     reinterpret_cast<int*>(&rasterizer.shadow_map.adsm_sampling_type),
+                                     get_string_from_vector,
+                                     static_cast<void*>(&shadow_samplers),
+                                     shadow_samplers.size());
+                    } else if (shadow_technique == ConventionalShadowMaps) {
+                        ImGui::Combo("##Shadow Sampler",
+                                     reinterpret_cast<int*>(&rasterizer.shadow_map.ctsm_sampling_type),
+                                     get_string_from_vector,
+                                     static_cast<void*>(&shadow_samplers),
+                                     shadow_samplers.size());
+                    }
                     ImGui::PopItemWidth();
 
-                    if (rasterizer.shadow_map.type == vulkan::DepthView::ApproximateDeepShadows) {
-                        ImGui::PushItemWidth(171);
-                        ImGui::SliderInt("\"Smoothing\" Stride", &rasterizer.shadow_map.stride_size, 1, 15, "%.1f");
-                        ImGui::PopItemWidth();
+                    ImGui::PushItemWidth(171);
+                    if (shadow_technique == ApproximateDeepShadows) {
+                        ImGui::SliderInt("Shadow \"Smoothing\"", &rasterizer.shadow_map.adsm_stride_size, 1, 15, "%.1f");
+                    } else if (shadow_technique == ConventionalShadowMaps) {
+                        if (ImGui::DragFloat("Shadow Bias Values", &rasterizer.shadow_map.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
+                            rasterizer.shadow_map.ctsm_bias = std::max(rasterizer.shadow_map.ctsm_bias, 0.0f);
                     }
+                    ImGui::PopItemWidth();
 
                     ImGui::TreePop();
                 }

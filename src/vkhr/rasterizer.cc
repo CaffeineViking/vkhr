@@ -138,7 +138,7 @@ namespace vkhr {
                                               swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
 
         for (auto& light_source : scene_graph.get_light_sources())
-            shadow_maps.emplace_back(2048, *this, light_source);
+            shadow_maps.emplace_back(1024, *this, light_source);
 
         build_pipelines();
     }
@@ -211,8 +211,10 @@ namespace vkhr {
             auto& vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
-            draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
-            draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
+
+            if (this->shadow_map.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
+            if (this->shadow_map.ctsm_on) draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
+
             command_buffer.end_render_pass();
         }
     }
