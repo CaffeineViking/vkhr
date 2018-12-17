@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 #include <vector>
+#include <cstring>
 #include <set>
 
 namespace vkpp {
@@ -218,7 +219,7 @@ namespace vkpp {
 
     template<typename T>
     void StorageBuffer::staged_copy(T& object, CommandBuffer& command_buffer) {
-        void* data = reinterpret_cast<void*>(&data_object);
+        void* data = reinterpret_cast<void*>(&object);
         staging_memory.copy(sizeof(T), data);
         command_buffer.copy_buffer(staging_buffer, *this);
     }
