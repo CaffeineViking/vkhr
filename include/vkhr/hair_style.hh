@@ -59,6 +59,7 @@ namespace vkhr {
         bool has_color() const;
         bool has_tangents() const;
         bool has_indices() const;
+        bool has_bounding_box() const;
 
         unsigned get_default_segment_count() const;
         void set_default_segment_count(const unsigned default_segment_count);
@@ -69,10 +70,14 @@ namespace vkhr {
         void set_default_color(const glm::vec3& default_color);
         glm::vec3 get_default_color() const;
 
-        void compute_bounding_sphere();
+        struct AABB {
+            glm::vec3 min;
+            glm::vec3 max;
+        };
 
-        glm::vec3 get_sphere_center() const;
-        float     get_sphere_radius() const;
+        void generate_bounding_box();
+
+        AABB get_bounding_box();
 
         const char* get_information() const;
         void set_information(const std::string& information);
@@ -122,8 +127,8 @@ namespace vkhr {
                          has_color        : 1,
                          has_tangents     : 1,
                          has_indices      : 1,
-                         future_extension : 25;
-
+                         has_bounding_box : 1,
+                         future_extension : 24;
             } field;
 
             unsigned default_segment_count;
@@ -131,10 +136,10 @@ namespace vkhr {
                      default_transparency;
             float    default_color[3];
 
-            char information[72];
+            char information[64];
 
-            float    sphere_center[3];
-            float    sphere_radius;
+            float    bounding_box_min[3];
+            float    bounding_box_max[3];
         } file_header;
 
         bool valid_signature() const;

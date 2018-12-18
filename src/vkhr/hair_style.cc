@@ -94,6 +94,11 @@ namespace vkhr {
     bool HairStyle::has_tangents() const { return tangents.size(); }
     bool HairStyle::has_indices() const { return indices.size(); }
 
+    // Pre-generated AABB for the hair styles.
+    bool HairStyle::has_bounding_box() const {
+        return file_header.field.has_bounding_box;
+    }
+
     // Below follows boilerplate for writing to the header.
 
     unsigned HairStyle::get_default_segment_count() const {
@@ -130,16 +135,6 @@ namespace vkhr {
         return glm::vec3 { file_header.default_color[0],
                            file_header.default_color[1],
                            file_header.default_color[2] };
-    }
-
-    glm::vec3 HairStyle::get_sphere_center() const {
-        return glm::vec3 { file_header.sphere_center[0],
-                           file_header.sphere_center[1],
-                           file_header.sphere_center[2] };
-    }
-
-    float     HairStyle::get_sphere_radius() const {
-        return file_header.sphere_radius;
     }
 
     const char* HairStyle::get_information() const {
@@ -194,9 +189,10 @@ namespace vkhr {
         }
     }
 
-    void HairStyle::compute_bounding_sphere() {
+    void HairStyle::generate_bounding_box() {
         glm::vec3 min_aabb { 0.0f, 0.0f, 0.0f },
                   max_aabb { 0.0f, 0.0f, 0.0f };
+
         for (const auto& position : vertices) {
             min_aabb.x = glm::min(position.x, min_aabb.x);
             min_aabb.y = glm::min(position.y, min_aabb.y);
@@ -206,13 +202,23 @@ namespace vkhr {
             max_aabb.z = glm::max(position.z, max_aabb.z);
         }
 
-        glm::vec3 center { (min_aabb + max_aabb) / 2.0f };
-        float width { glm::distance(min_aabb, max_aabb) };
+        std::memcpy(&file_header.bounding_box_min[0],
+                    &min_aabb[0], sizeof(min_aabb));
+        std::memcpy(&file_header.bounding_box_max[0],
+                    &max_aabb[0], sizeof(max_aabb));
 
-        file_header.sphere_center[0] = center.x;
-        file_header.sphere_center[1] = center.y;
-        file_header.sphere_center[2] = center.z;
-        file_header.sphere_radius = width / 2.0;
+        file_header.field.has_bounding_box = true;
+    }
+
+    HairStyle::AABB HairStyle::get_bounding_box() {
+        return HairStyle::AABB {
+            { file_header.bounding_box_min[0],
+              file_header.bounding_box_min[1],
+              file_header.bounding_box_min[2] },
+            { file_header.bounding_box_max[0],
+              file_header.bounding_box_max[1],
+              file_header.bounding_box_max[2] },
+        };
     }
 
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {

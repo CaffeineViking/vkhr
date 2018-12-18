@@ -341,11 +341,12 @@ namespace vkhr {
                     if (ImGui::TreeNode("Headers")) {
                         ImGui::Indent();
                         ImGui::Text("magic id: H A I R");
+                        ImGui::Text("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
                         ImGui::Text("vertices: %d", hair_style->get_vertex_count());
                         ImGui::Text("segments: %d", hair_style->get_segment_count());
+                        ImGui::Text("%d segment/strand", hair_style->get_default_segment_count());
                         ImGui::Text("feature bitfield:");
-                        ImGui::Text("0 1 0 0 0 1 1 0 0");
-                        ImGui::Text("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
+                        ImGui::Text("0 1 0 0 0 1 1 1 0");
                         ImGui::TreePop();
                         ImGui::Unindent();
                     }

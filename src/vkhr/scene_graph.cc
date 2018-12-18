@@ -233,6 +233,8 @@ namespace vkhr {
         hair_styles[path].set_default_thickness(0.14f);
         if (!hair_styles[path].has_indices())
             hair_styles[path].generate_indices();
+        if (!hair_styles[path].has_bounding_box())
+            hair_styles[path].generate_bounding_box();
 
         return hair_styles[path];
     }
