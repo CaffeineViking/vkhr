@@ -41,8 +41,7 @@ namespace vkhr {
             vk::IndexBuffer  vertices;
             vk::VertexBuffer positions;
             vk::VertexBuffer tangents;
-
-            vk::StorageBuffer voxels;
+            vk::StorageBuffer density;
 
             static int id;
         };

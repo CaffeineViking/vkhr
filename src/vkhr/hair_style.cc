@@ -221,6 +221,54 @@ namespace vkhr {
         };
     }
 
+    HairStyle::Volume HairStyle::voxelize(std::size_t width, std::size_t height, std::size_t depth) {
+        Volume volume {
+            {
+                width,
+                height,
+                depth
+            },
+            get_bounding_box()
+        };
+
+        volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
+
+        glm::vec3 volume_size { volume.bounds.max - volume.bounds.min };
+        glm::vec3 voxel_size { volume_size / volume.resolution };
+        glm::vec3 volume_origin { volume.bounds.min + glm::vec3 { 0 } };
+
+        auto layer = width * height;
+
+        for (const auto& vertex : vertices) {
+            auto voxel_position = (vertex - volume_origin) / voxel_size;
+            glm::uvec3 voxel { glm::floor(voxel_position) };
+
+            if (voxel.z >= volume.resolution.z)
+                voxel.z = volume.resolution.z - 1;
+            if (voxel.x >= volume.resolution.x)
+                voxel.x = volume.resolution.x - 1;
+            if (voxel.y >= volume.resolution.y)
+                voxel.y = volume.resolution.y - 1;
+
+            std::size_t idx { voxel.x + voxel.y*width + voxel.z*layer };
+            if (volume.data[idx] != 255) ++volume.data[idx]; // 0 to 255
+        }
+
+        return volume;
+    }
+
+    bool HairStyle::Volume::save(const std::string& file_path) {
+        std::ofstream file { file_path, std::ios::binary };
+        if (!file) return false; // Couldn't write to file.
+
+        // Write voxels in one go (assume they are laid out right).
+        if (!file.write(reinterpret_cast<const char*>(data.data()),
+                        data.size() * sizeof(data[0])))
+            return false;
+
+        return true;
+    }
+
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {
         std::vector<glm::vec4> position_thicknesses(get_vertex_count());
         #pragma omp parallel for schedule(dynamic)
