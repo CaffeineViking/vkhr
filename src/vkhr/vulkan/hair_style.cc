@@ -45,12 +45,12 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto volume = hair_style.voxelize(64, 64, 64);
+            auto voxelized_strands = hair_style.voxelize(256, 256, 256);
 
             density = vk::StorageBuffer {
                 vulkan_renderer.device,
                 vulkan_renderer.command_pool,
-                volume.data
+                voxelized_strands.data
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density, VK_OBJECT_TYPE_BUFFER, "Hair Density Buffer", id);

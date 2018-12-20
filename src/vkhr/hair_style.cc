@@ -257,6 +257,55 @@ namespace vkhr {
         return volume;
     }
 
+    HairStyle::Volume HairStyle::voxelize(std::size_t width, std::size_t height, std::size_t depth, float step) const {
+        Volume volume {
+            {
+                width,
+                height,
+                depth
+            },
+            get_bounding_box()
+        };
+
+        volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
+
+        glm::vec3 volume_size { volume.bounds.max - volume.bounds.min };
+        glm::vec3 voxel_size { volume_size / volume.resolution };
+        glm::vec3 volume_origin { volume.bounds.min + glm::vec3 { 0 } };
+
+        auto layer = width * height;
+
+        for (std::size_t i { 0 }; i < indices.size() - 1; ++i) {
+            auto root = (vertices[indices[i]]     - volume_origin) / voxel_size;
+            auto tip  = (vertices[indices[i + 1]] - volume_origin) / voxel_size;
+            auto direction = tip - root;
+
+            int latest_id { -1 };
+            for (float t { 0.0f }; t < 1.0f; t += step) {
+                glm::uvec3 position = glm::floor(root + direction * t);
+
+                if (position.z >= volume.resolution.z)
+                    position.z = volume.resolution.z - 1;
+                if (position.x >= volume.resolution.x)
+                    position.x = volume.resolution.x - 1;
+                if (position.y >= volume.resolution.y)
+                    position.y = volume.resolution.y - 1;
+
+                std::size_t id { position.x       +
+                                 position.y*width +
+                                 position.z*layer };
+
+                if (static_cast<int>(id) != latest_id)
+                    if (volume.data[id] != 255)
+                        ++volume.data[id];
+
+                latest_id = id;
+            }
+        }
+
+        return volume;
+    }
+
     bool HairStyle::Volume::save(const std::string& file_path) {
         std::ofstream file { file_path, std::ios::binary };
         if (!file) return false; // Couldn't write to file.

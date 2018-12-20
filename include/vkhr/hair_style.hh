@@ -87,6 +87,7 @@ namespace vkhr {
         };
 
         Volume voxelize(std::size_t width, std::size_t height, std::size_t depth) const;
+        Volume voxelize(std::size_t width, std::size_t height, std::size_t depth, float step) const;
 
         const char* get_information() const;
         void set_information(const std::string& information);
