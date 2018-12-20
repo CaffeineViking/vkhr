@@ -26,6 +26,8 @@ namespace vkhr {
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& scene_renderer);
 
+            void voxelize(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+
             void draw(Pipeline& pipeline,
                       vk::DescriptorSet& descriptor_set,
                       vk::CommandBuffer& command_buffer) override;

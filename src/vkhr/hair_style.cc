@@ -210,7 +210,7 @@ namespace vkhr {
         file_header.field.has_bounding_box = true;
     }
 
-    HairStyle::AABB HairStyle::get_bounding_box() {
+    HairStyle::AABB HairStyle::get_bounding_box() const {
         return HairStyle::AABB {
             { file_header.bounding_box_min[0],
               file_header.bounding_box_min[1],
@@ -221,7 +221,7 @@ namespace vkhr {
         };
     }
 
-    HairStyle::Volume HairStyle::voxelize(std::size_t width, std::size_t height, std::size_t depth) {
+    HairStyle::Volume HairStyle::voxelize(std::size_t width, std::size_t height, std::size_t depth) const {
         Volume volume {
             {
                 width,

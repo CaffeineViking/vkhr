@@ -77,7 +77,7 @@ namespace vkhr {
 
         void generate_bounding_box();
 
-        AABB get_bounding_box();
+        AABB get_bounding_box() const;
 
         struct Volume {
             glm::vec3 resolution;
@@ -86,7 +86,7 @@ namespace vkhr {
             bool save(const std::string& file_path);
         };
 
-        Volume voxelize(std::size_t width, std::size_t height, std::size_t depth);
+        Volume voxelize(std::size_t width, std::size_t height, std::size_t depth) const;
 
         const char* get_information() const;
         void set_information(const std::string& information);

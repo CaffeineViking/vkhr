@@ -11,8 +11,9 @@
 
 namespace vkpp {
     Image::Image(Device& logical_device, std::uint32_t width, std::uint32_t height,
-                 VkFormat format, VkImageUsageFlags usage, std::uint32_t mip_levels,
-                 VkSampleCountFlagBits samples, VkImageTiling tiling_mode)
+                 std::uint32_t depth, VkFormat format, VkImageUsageFlags usage,
+                 std::uint32_t mip_levels, VkSampleCountFlagBits samples,
+                 VkImageTiling tiling_mode)
                 : layout { VK_IMAGE_LAYOUT_UNDEFINED },
                   tiling_mode { VK_IMAGE_TILING_OPTIMAL },
                   sharing_mode { VK_SHARING_MODE_EXCLUSIVE },
@@ -35,9 +36,9 @@ namespace vkpp {
 
         create_info.extent.width  = width;
         create_info.extent.height = height;
-        create_info.extent.depth  = 1;
+        create_info.extent.depth  = depth;
 
-        this->extent = { width, height, 1 };
+        this->extent = { width, height, depth };
 
         this->mip_levels      = mip_levels;
         create_info.mipLevels = mip_levels;
@@ -61,6 +62,14 @@ namespace vkpp {
             throw Exception { error, "couldn't create image!" };
         }
     }
+
+    Image::Image(Device& logical_device, std::uint32_t width, std::uint32_t height,
+                 VkFormat format, VkImageUsageFlags usage,
+                 std::uint32_t mip_levels, VkSampleCountFlagBits samples,
+                 VkImageTiling tiling_mode)
+                : Image { logical_device, width, height, 1,
+                          format, usage, mip_levels, samples,
+                          tiling_mode } { }
 
     Image::Image(VkDevice logical_device, VkImage image,
                  std::uint32_t width, std::uint32_t height, VkFormat format,

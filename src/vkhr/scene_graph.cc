@@ -236,10 +236,6 @@ namespace vkhr {
         if (!hair_styles[path].has_bounding_box())
             hair_styles[path].generate_bounding_box();
 
-        auto file_name = path.substr(0, path.find_last_of('.'));
-        auto voxelized_hair = hair_styles[path].voxelize(64, 64, 64);
-        voxelized_hair.save(file_name + ".raw"); // use ParaView
-
         return hair_styles[path];
     }
 

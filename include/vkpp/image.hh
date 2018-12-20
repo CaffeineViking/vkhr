@@ -24,6 +24,12 @@ namespace vkpp {
         virtual ~Image() noexcept;
 
         Image(Device& device, std::uint32_t width, std::uint32_t height,
+              std::uint32_t depth, VkFormat format, VkImageUsageFlags usage,
+              std::uint32_t mip_levels = 1,
+              VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT,
+              VkImageTiling tiling_mode = VK_IMAGE_TILING_OPTIMAL);
+
+        Image(Device& device, std::uint32_t width, std::uint32_t height,
               VkFormat format, VkImageUsageFlags usage,
               std::uint32_t mip_levels = 1,
               VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT,

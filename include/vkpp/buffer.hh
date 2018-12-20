@@ -153,8 +153,13 @@ namespace vkpp {
 
         template<typename T>
         StorageBuffer(Device& device,
-                      const T& buffer,
-                      VkDeviceSize size);
+                      CommandPool& command_pool,
+                      const T& buffer);
+
+        template<typename T>
+        StorageBuffer(Device& device,
+                      CommandPool& command_pool,
+                      const std::vector<T>& vector);
 
         StorageBuffer(Device& device, VkDeviceSize size);
 
@@ -205,8 +210,11 @@ namespace vkpp {
 
         template<typename T>
         UniformBuffer(Device& device,
-                      const T& buffer,
-                      VkDeviceSize size);
+                      const T& buffer);
+
+        template<typename T>
+        UniformBuffer(Device& device,
+                      const std::vector<T>& vector);
 
         UniformBuffer(Device& device,
                       VkDeviceSize size);
@@ -283,16 +291,29 @@ namespace vkpp {
 
     template<typename T>
     StorageBuffer::StorageBuffer(Device& device,
-                                 const T& buffer,
-                                 VkDeviceSize size_in_bytes)
-                                : DeviceBuffer { device, &buffer, size_in_bytes,
+                                 CommandPool& command_pool,
+                                 const T& buffer)
+                                : DeviceBuffer { device, command_pool, &buffer, sizeof(T),
+                                                 VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {  }
+
+    template<typename T>
+    StorageBuffer::StorageBuffer(Device& device,
+                                 CommandPool& command_pool,
+                                 const std::vector<T>& vector)
+                                : DeviceBuffer { device, command_pool, vector.data(),
+                                                 vector.size() * sizeof(T),
                                                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {  }
 
     template<typename T>
     UniformBuffer::UniformBuffer(Device& device,
-                                 const T& buffer,
-                                 VkDeviceSize size_in_bytes)
-                                : HostBuffer { device, &buffer, size_in_bytes,
+                                 const T& buffer)
+                                : HostBuffer { device, &buffer, sizeof(T),
+                                               VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT } { }
+
+    template<typename T>
+    UniformBuffer::UniformBuffer(Device& device,
+                                 const std::vector<T>& vector)
+                                : HostBuffer { device, vector.data(), ,
                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT } { }
 
     template<typename T>
