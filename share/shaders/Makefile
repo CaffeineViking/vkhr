@@ -21,5 +21,5 @@ model.frag.spv: model.frag camera.glsl blinn-phong.glsl shadow_map.glsl math.gls
 strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl math.glsl light.glsl
 	glslc -O -g -c strand.frag
 
-voxelize.comp.spv: voxelize.comp
+voxelize.comp.spv: voxelize.comp volume.glsl
 	glslc -O -g -c voxelize.comp
