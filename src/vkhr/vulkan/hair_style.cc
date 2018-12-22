@@ -45,7 +45,7 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto voxelized_strands = hair_style.voxelize(256, 256, 256, 0.1f);
+            auto voxelized_strands = hair_style.voxelize(256, 256, 256);
 
             density = vk::StorageBuffer {
                 vulkan_renderer.device,
@@ -54,6 +54,35 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density, VK_OBJECT_TYPE_BUFFER, "Hair Density Buffer", id);
+
+            density_sampler = vk::Sampler {
+                vulkan_renderer.device,
+                VK_FILTER_LINEAR,
+                VK_FILTER_LINEAR,
+                VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
+                VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
+                VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
+
+            density_volume = vk::DeviceImage {
+                vulkan_renderer.device,
+                static_cast<std::uint32_t>(voxelized_strands.resolution.x),
+                static_cast<std::uint32_t>(voxelized_strands.resolution.y),
+                static_cast<std::uint32_t>(voxelized_strands.resolution.z),
+                vulkan_renderer.command_pool,
+                voxelized_strands.data
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Image", id);
+
+            density_view = vk::ImageView {
+                vulkan_renderer.device,
+                density_volume
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
             ++id;
         }

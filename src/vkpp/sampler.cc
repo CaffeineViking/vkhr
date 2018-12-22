@@ -18,6 +18,7 @@ namespace vkpp {
                      VkFilter mag_filter,
                      VkSamplerAddressMode wrap_u,
                      VkSamplerAddressMode wrap_v,
+                     VkSamplerAddressMode wrap_w,
                      bool anisotropy,
                      bool enable_compare_less_op)
                     : min_filter { min_filter },
@@ -36,7 +37,7 @@ namespace vkpp {
 
         create_info.addressModeU = wrap_u;
         create_info.addressModeV = wrap_v;
-        create_info.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        create_info.addressModeW = wrap_w;
 
         create_info.anisotropyEnable = anisotropy;
         if (anisotropy)

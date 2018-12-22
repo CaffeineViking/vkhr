@@ -16,6 +16,7 @@ namespace vkpp {
                 VkFilter mag_filter = VK_FILTER_LINEAR,
                 VkSamplerAddressMode wrap_u = VK_SAMPLER_ADDRESS_MODE_REPEAT,
                 VkSamplerAddressMode wrap_v = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+                VkSamplerAddressMode wrap_w = VK_SAMPLER_ADDRESS_MODE_REPEAT,
                 bool anisotropy = true, bool enable_compare_less_op = false);
 
         Sampler(Sampler&& sampler) noexcept;

@@ -23,7 +23,11 @@ namespace vkpp {
         create_info.pNext = nullptr;
         create_info.flags = 0;
 
-        create_info.imageType = VK_IMAGE_TYPE_2D;
+        if (depth == 1) {
+            create_info.imageType = VK_IMAGE_TYPE_2D;
+        } else {
+            create_info.imageType = VK_IMAGE_TYPE_3D;
+        }
 
         create_info.format = format;
         this->format       = format;
@@ -297,7 +301,7 @@ namespace vkpp {
         swap(*this, image);
     }
 
-    DeviceImage::DeviceImage(Device& device, CommandBuffer& command_buffer,
+    DeviceImage::DeviceImage(Device& device, CommandPool& command_pool,
                              vkhr::Image& image,
                              std::uint32_t mip_levels)
                             : Image { device,
@@ -340,6 +344,8 @@ namespace vkpp {
 
         bind(device_memory);
 
+        auto command_buffer = command_pool.allocate_and_begin();
+
         transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -347,6 +353,11 @@ namespace vkpp {
 
         transition(command_buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer)
+                                .wait_idle();
     }
 
     DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes,
@@ -386,8 +397,82 @@ namespace vkpp {
         bind(device_memory);
     }
 
+    DeviceImage::DeviceImage(Device& device,
+                             std::uint32_t width, std::uint32_t height, std::uint32_t depth,
+                             CommandPool& command_pool,
+                             std::vector<unsigned char>& volume,
+                             std::uint32_t mip_levels)
+                            : Image { device,
+                                      width,
+                                      height,
+                                      depth,
+                                      VK_FORMAT_R8_UNORM,
+                                      VK_IMAGE_USAGE_SAMPLED_BIT |
+                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                                      mip_levels,
+                                      VK_SAMPLE_COUNT_1_BIT,
+                                      VK_IMAGE_TILING_OPTIMAL } {
+        staging_buffer = Buffer {
+            device,
+            volume.size() * sizeof(unsigned char),
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+
+        auto size = volume.size() * sizeof(unsigned char);
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        auto buffer = volume.data();
+
+        staging_memory = DeviceMemory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+        staging_memory.copy(size, buffer);
+
+        auto image_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            image_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
+
+        auto command_buffer = command_pool.allocate_and_begin();
+
+        transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
+                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        command_buffer.copy_buffer_image(staging_buffer, *this);
+
+        transition(command_buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer)
+                                .wait_idle();
+    }
+
     void DeviceImage::staged_copy(vkhr::Image& image, CommandBuffer& command_buffer) {
         staging_memory.copy(image.get_size_in_bytes(), image.get_data());
+
+        transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
+                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        command_buffer.copy_buffer_image(staging_buffer, *this);
+
+        transition(command_buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    }
+
+    void DeviceImage::staged_copy(std::vector<unsigned char>& volume, CommandBuffer& command_buffer) {
+        staging_memory.copy(volume.size() * sizeof(unsigned char), volume.data());
 
         transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -425,7 +510,12 @@ namespace vkpp {
 
         create_info.image = image;
 
-        create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        if (real_image.get_extent().depth != 1) {
+            create_info.viewType = VK_IMAGE_VIEW_TYPE_3D;
+        } else {
+            create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        }
+
         create_info.format = real_image.get_format();
 
         create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;

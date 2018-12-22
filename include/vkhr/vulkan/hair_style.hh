@@ -43,7 +43,12 @@ namespace vkhr {
             vk::IndexBuffer  vertices;
             vk::VertexBuffer positions;
             vk::VertexBuffer tangents;
+
             vk::StorageBuffer density;
+
+            vk::ImageView density_view;
+            vk::DeviceImage density_volume;
+            vk::Sampler density_sampler;
 
             static int id;
         };

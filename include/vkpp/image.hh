@@ -104,7 +104,7 @@ namespace vkpp {
         DeviceImage& operator=(DeviceImage&& image) noexcept;
         DeviceImage(DeviceImage&& image) noexcept;
 
-        DeviceImage(Device& device, CommandBuffer& command_buffer,
+        DeviceImage(Device& device, CommandPool& command_pool,
                     vkhr::Image& image,
                     std::uint32_t mip_levels = 1);
 
@@ -112,13 +112,20 @@ namespace vkpp {
                     VkFormat format = VK_FORMAT_R8G8B8A8_UNORM,
                     VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 
+        DeviceImage(Device& device,
+                    std::uint32_t width, std::uint32_t height, std::uint32_t depth,
+                    CommandPool& command_pool,
+                    std::vector<unsigned char>& volume,
+                    std::uint32_t mip_levels = 1);
+
         DeviceMemory& get_device_memory();
 
         Buffer& get_staging_buffer();
 
         DeviceMemory& get_staging_memory();
 
-        void staged_copy(vkhr::Image& image, CommandBuffer& command_buffer);
+        void staged_copy(vkhr::Image& image,                 CommandBuffer& command_buffer);
+        void staged_copy(std::vector<unsigned char>& volume, CommandBuffer& command_buffer);
 
     private:
         Buffer       staging_buffer;

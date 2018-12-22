@@ -38,17 +38,13 @@ namespace vkhr {
 
         void Billboard::load(const vkhr::Billboard& billboard,
                              vkhr::Rasterizer& vulkan_renderer) {
-            auto command_list = vulkan_renderer.command_pool.allocate_and_begin();
             billboard_image = vk::DeviceImage {
                 vulkan_renderer.device,
-                command_list,
+                vulkan_renderer.command_pool,
                 billboard.get_image()
-            }; command_list.end();
+            };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, billboard_image, VK_OBJECT_TYPE_IMAGE, "Billboard Image", id);
-
-            vulkan_renderer.device.get_graphics_queue().submit(command_list)
-                                                       .wait_idle();
 
             billboard_view = vk::ImageView {
                 vulkan_renderer.device,
