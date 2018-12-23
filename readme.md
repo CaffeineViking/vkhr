@@ -3,7 +3,7 @@ Real-Time Hair Renderer
 
 
 <p align="center">
-    <img src="https://eriksvjansson.net/images/vkhr/screenshot.png" alt="VKHR 1920x1080 Ponytail"/>
+    <img src="https://eriksvjansson.net/images/vkhr/screenshot-2.png" alt="VKHR 1920x1080 Ponytail"/>
     <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-23-bear-3.png" alt="VKHR 1280x720 Bear"/>
     <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-09-smoothed-deep-shadows.png" alt="VKHR 1280x720 ADSM"/>
     <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-09-smooth-deep-shadows-shaded.png" alt="VKRHR 1280x720 Shaded ADSM"/>
