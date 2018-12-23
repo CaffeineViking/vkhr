@@ -44,10 +44,19 @@ namespace vkhr {
             vk::VertexBuffer positions;
             vk::VertexBuffer tangents;
 
-            vk::StorageBuffer density;
+            struct Settings {
+                AABB volume_bounds;
+                glm::vec3 volume_resolution;
+                float strand_radius;
+                glm::vec3 hair_color;
+                float hair_shininess;
+            } settings_buffer;
 
+            vk::UniformBuffer settings;
+
+            vk::StorageBuffer density;
             vk::ImageView density_view;
-            vk::DeviceImage density_volume;
+            vk::DeviceImage density_image;
             vk::Sampler density_sampler;
 
             static int id;

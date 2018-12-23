@@ -210,14 +210,24 @@ namespace vkhr {
         file_header.field.has_bounding_box = true;
     }
 
-    HairStyle::AABB HairStyle::get_bounding_box() const {
-        return HairStyle::AABB {
-            { file_header.bounding_box_min[0],
-              file_header.bounding_box_min[1],
-              file_header.bounding_box_min[2] },
-            { file_header.bounding_box_max[0],
-              file_header.bounding_box_max[1],
-              file_header.bounding_box_max[2] },
+    AABB HairStyle::get_bounding_box() const {
+        glm::vec3 origin {
+            file_header.bounding_box_min[0],
+            file_header.bounding_box_min[1],
+            file_header.bounding_box_min[2]
+        };
+
+        glm::vec3 size {
+             file_header.bounding_box_max[0] - file_header.bounding_box_min[0],
+             file_header.bounding_box_max[1] - file_header.bounding_box_min[1],
+             file_header.bounding_box_max[2] - file_header.bounding_box_min[2]
+        };
+
+        return AABB {
+            origin,
+            glm::length(size),
+            size,
+            size.x * size.y * size.z
         };
     }
 
@@ -232,15 +242,12 @@ namespace vkhr {
         };
 
         volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
-
-        glm::vec3 volume_size { volume.bounds.max - volume.bounds.min };
-        glm::vec3 voxel_size { volume_size / volume.resolution };
-        glm::vec3 volume_origin { volume.bounds.min + glm::vec3 { 0 } };
+        glm::vec3 voxel_size { volume.bounds.size / volume.resolution };
 
         auto layer = width * height;
 
         for (const auto& vertex : vertices) {
-            auto voxel_position = (vertex - volume_origin) / voxel_size;
+            auto voxel_position = (vertex - volume.bounds.origin) / voxel_size;
             glm::uvec3 voxel { glm::floor(voxel_position) };
 
             if (voxel.z >= volume.resolution.z)
@@ -268,19 +275,18 @@ namespace vkhr {
         };
 
         volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
-
-        glm::vec3 volume_size { volume.bounds.max - volume.bounds.min };
-        glm::vec3 voxel_size { volume_size / volume.resolution };
-        glm::vec3 volume_origin { volume.bounds.min + glm::vec3 { 0 } };
+        glm::vec3 voxel_size { volume.bounds.size / volume.resolution };
 
         auto layer = width * height;
 
         for (std::size_t i { 0 }; i < indices.size() - 1; ++i) {
-            auto root = (vertices[indices[i]]     - volume_origin) / voxel_size;
-            auto tip  = (vertices[indices[i + 1]] - volume_origin) / voxel_size;
+            auto root = (vertices[indices[i]]     - volume.bounds.origin) / voxel_size;
+            auto tip  = (vertices[indices[i + 1]] - volume.bounds.origin) / voxel_size;
+
             auto direction = tip - root;
 
             int latest_id { -1 };
+
             for (float t { 0.0f }; t < 1.0f; t += step) {
                 glm::uvec3 position = glm::floor(root + direction * t);
 

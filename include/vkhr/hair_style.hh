@@ -8,6 +8,13 @@
 #include <vector>
 
 namespace vkhr {
+    struct AABB {
+        glm::vec3 origin;
+        float radius;
+        glm::vec3 size;
+        float volume;
+    };
+
     class HairStyle final {
     public:
         HairStyle() = default;
@@ -69,11 +76,6 @@ namespace vkhr {
         void set_default_transparency(const float default_transparency);
         void set_default_color(const glm::vec3& default_color);
         glm::vec3 get_default_color() const;
-
-        struct AABB {
-            glm::vec3 min;
-            glm::vec3 max;
-        };
 
         void generate_bounding_box();
 

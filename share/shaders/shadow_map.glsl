@@ -1,22 +1,22 @@
-#ifndef VKHR_SHADOW_MAPS_GLSL
-#define VKHR_SHADOW_MAPS_GLSL
+#ifndef VKHR_SHADOW_MAP_GLSL
+#define VKHR_SHADOW_MAP_GLSL
 
 #include "light.glsl"
 #include "math.glsl"
 
-layout(binding = 3) uniform sampler2D shadow_maps[lights_size];
+layout(binding = 5) uniform sampler2D shadow_maps[lights_size];
 
-layout(binding = 2) uniform ShadowMap {
-    int adsm_kernel_size;
-    int adsm_sampling_type;
-    int adsm_stride_size;
-    int adsm_on;
+layout(binding = 4) uniform ShadowMap {
+    int deep_shadows_kernel_size;
+    int deep_shadows_sampling_type;
+    int deep_shadows_stride_size;
+    int deep_shadows_on;
 
-    int ctsm_kernel_size;
-    int ctsm_sampling_type;
-    float ctsm_bias;
-    int ctsm_on;
-} shadows;
+    int shadow_map_kernel_size;
+    int shadow_map_sampling_type;
+    float shadow_map_bias;
+    int shadow_map_on;
+};
 
 // Projects a 3-D position onto a 2-D plane for sampling a texture.
 vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
@@ -55,7 +55,7 @@ float approximate_deep_shadows(sampler2D shadow_map, // the non-linearized shado
                                float strand_opacity) { // inv. proportional to amount of light passing through.
     float visibility = 0.0f;
 
-    if (shadows.adsm_on == 0)
+    if (deep_shadows_on == 0)
         return 1.0f;
 
     vec2 shadow_map_size = textureSize(shadow_map, 0);
@@ -90,7 +90,7 @@ float filtered_shadows(sampler2D shadow_map, // the non-linearized shadow map.
                        float shadow_map_bias) { // bias to remove shadow acne.
     float visibility = 1.0f;
 
-    if (shadows.ctsm_on == 0)
+    if (shadow_map_on == 0)
         return 1.0f;
 
     vec2 shadow_map_size = textureSize(shadow_map, 0);

@@ -23,8 +23,8 @@ void main() {
 
     visibility = filtered_shadows(shadow_maps[0],
                                   light_space_vertex,
-                                  shadows.ctsm_kernel_size,
-                                  shadows.ctsm_bias);
+                                  shadow_map_kernel_size,
+                                  shadow_map_bias);
 
     float diffuse = dot(camera_space_light, fs_in.normal);
 

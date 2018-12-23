@@ -45,7 +45,7 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto voxelized_strands = hair_style.voxelize(256, 256, 256);
+            auto voxelized_strands = hair_style.voxelize(256, 256, 256, 0.1f);
 
             density = vk::StorageBuffer {
                 vulkan_renderer.device,
@@ -66,7 +66,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
-            density_volume = vk::DeviceImage {
+            density_image = vk::DeviceImage {
                 vulkan_renderer.device,
                 static_cast<std::uint32_t>(voxelized_strands.resolution.x),
                 static_cast<std::uint32_t>(voxelized_strands.resolution.y),
@@ -75,14 +75,27 @@ namespace vkhr {
                 voxelized_strands.data
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Image", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, density_image, VK_OBJECT_TYPE_IMAGE, "Hair Density Image", id);
 
             density_view = vk::ImageView {
                 vulkan_renderer.device,
-                density_volume
+                density_image
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
+
+            settings_buffer.volume_bounds     = hair_style.get_bounding_box();
+            settings_buffer.strand_radius     = 0.80f;
+            settings_buffer.volume_resolution = voxelized_strands.resolution;
+            settings_buffer.hair_shininess    = 50.0f;
+            settings_buffer.hair_color        = glm::vec3 { .32, .228, .128 };
+
+            settings = vk::UniformBuffer {
+                vulkan_renderer.device,
+                settings_buffer
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, settings, VK_OBJECT_TYPE_BUFFER, "Hair Settings Buffer", id);
 
             ++id;
         }
@@ -94,6 +107,11 @@ namespace vkhr {
         }
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            if (descriptor_set.get_layout().get_bindings().size()) {
+                descriptor_set.write(2, settings);
+                descriptor_set.write(3, density_view, density_sampler);
+            }
+
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 
             command_buffer.bind_vertex_buffer(0, positions, 0);
@@ -145,11 +163,13 @@ namespace vkhr {
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
+                { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
+                { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
             };
 
             for (std::uint32_t i { 0 }; i < light_count; ++i)
-                descriptor_bindings.push_back({ 3 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
+                descriptor_bindings.push_back({ 5 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device, descriptor_bindings
@@ -164,9 +184,9 @@ namespace vkhr {
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_buf[i]);
-                pipeline.descriptor_sets[i].write(2, vulkan_renderer.sm_params[i]);
+                pipeline.descriptor_sets[i].write(4, vulkan_renderer.sm_params[i]);
                 for (std::uint32_t j { 0 }; j < light_count; ++j)
-                    pipeline.descriptor_sets[i].write(3 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
+                    pipeline.descriptor_sets[i].write(5 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
                                                              vulkan_renderer.shadow_maps[j].get_sampler());
             }
 
