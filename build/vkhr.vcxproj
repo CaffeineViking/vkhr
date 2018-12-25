@@ -521,6 +521,7 @@
     <None Include="..\share\shaders\shadow_map.glsl" />
     <None Include="..\share\shaders\strand.frag" />
     <None Include="..\share\shaders\strand.vert" />
+    <None Include="..\share\shaders\volume.glsl" />
     <None Include="..\share\shaders\voxelize.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
