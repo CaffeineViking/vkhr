@@ -1,6 +1,14 @@
 Real-Time Hair Renderer
 =======================
 
+
+<p align="center">
+    <img src="https://eriksvjansson.net/images/vkhr/screenshot-2.png" alt="VKHR 1920x1080 Ponytail"/>
+    <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-23-bear-3.png" alt="VKHR 1280x720 Bear"/>
+    <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-09-smoothed-deep-shadows.png" alt="VKHR 1280x720 ADSM"/>
+    <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-09-smooth-deep-shadows-shaded.png" alt="VKRHR 1280x720 Shaded ADSM"/>
+</p>
+
 List of Features
 ----------------
 
@@ -31,7 +39,7 @@ Usage and Documents
 
 * `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
 * `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--width 1280 --height 720` , `--no-fullscreen` , `--no-msaa` , `--no-vsync` , `--no-profiling`  and `--ui`.
+* **Arguments:** `--width 1280`, `--height 720` , `--fullscreen no` , `--msaa off` , `--vsync on` , `--profile off`, `--ui on`.
 * **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **imgui** to modify everything else.
 
 System Requirements
@@ -91,6 +99,8 @@ Acknowledgements
 ----------------
 
 All hair styles are courtesy of Cem Yuksel's great [HAIR model files](http://www.cemyuksel.com/research/hairmodels/) repository.
+
+The ponytail and bear hair geometry are from the [TressFX 3.1](https://github.com/GPUOpen-Effects/TressFX/tree/3.1.1) repository, and proper rights have been granted by AMD Inc.
 
 The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
 
