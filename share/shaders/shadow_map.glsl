@@ -22,8 +22,7 @@ layout(binding = 4) uniform ShadowMap {
 vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {
     vec4 texel = vec4(1.0f);
     vec3 projected_position = position.xyz / position.w;
-    if (projected_position.z > -1.0f && projected_position.z < 1.0f)
-        texel = texture(image, projected_position.st + displacement);
+    texel = texture(image, projected_position.st + displacement);
     return texel;
 }
 
