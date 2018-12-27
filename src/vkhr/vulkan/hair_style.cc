@@ -45,9 +45,7 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto voxelized_segments = hair_style.voxelize_segments(256, 256, 256);
-
-            voxelized_segments.save("cross-check.raw");
+            auto voxelized_segments = hair_style.voxelize_segments(128, 128, 128);
 
             density = vk::StorageBuffer {
                 vulkan_renderer.device,

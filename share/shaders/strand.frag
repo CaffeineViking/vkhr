@@ -43,7 +43,7 @@ void main() {
 
     float density = sample_volume(density_texture, fs_in.position.xyz,
                                   volume_resolution, fs_in.origin.xyz,
-                                  volume_bounds.size).r * 8;
+                                  volume_bounds.size).r * 4;
 
     color = vec4(shading * (1 - density) * visibility, 1.0f);
 }
