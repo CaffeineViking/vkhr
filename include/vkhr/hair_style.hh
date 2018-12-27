@@ -1,7 +1,11 @@
 #ifndef VKHR_HAIR_STYLE_HH
 #define VKHR_HAIR_STYLE_HH
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
+
+#include <glm/gtx/component_wise.hpp>
 
 #include <string>
 #include <fstream>
@@ -88,8 +92,8 @@ namespace vkhr {
             bool save(const std::string& file_path);
         };
 
-        Volume voxelize(std::size_t width, std::size_t height, std::size_t depth) const;
-        Volume voxelize(std::size_t width, std::size_t height, std::size_t depth, float step) const;
+        Volume voxelize_vertices(std::size_t width, std::size_t height, std::size_t depth) const;
+        Volume voxelize_segments(std::size_t width, std::size_t height, std::size_t depth) const;
 
         const char* get_information() const;
         void set_information(const std::string& information);

@@ -231,7 +231,7 @@ namespace vkhr {
         };
     }
 
-    HairStyle::Volume HairStyle::voxelize(std::size_t width, std::size_t height, std::size_t depth) const {
+    HairStyle::Volume HairStyle::voxelize_vertices(std::size_t width, std::size_t height, std::size_t depth) const {
         Volume volume {
             {
                 width,
@@ -244,27 +244,17 @@ namespace vkhr {
         volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
         glm::vec3 voxel_size { volume.bounds.size / volume.resolution };
 
-        auto layer = width * height;
-
         for (const auto& vertex : vertices) {
-            auto voxel_position = (vertex - volume.bounds.origin) / voxel_size;
-            glm::uvec3 voxel { glm::floor(voxel_position) };
-
-            if (voxel.z >= volume.resolution.z)
-                voxel.z = volume.resolution.z - 1;
-            if (voxel.x >= volume.resolution.x)
-                voxel.x = volume.resolution.x - 1;
-            if (voxel.y >= volume.resolution.y)
-                voxel.y = volume.resolution.y - 1;
-
-            std::size_t idx { voxel.x + voxel.y*width + voxel.z*layer };
-            if (volume.data[idx] != 255) ++volume.data[idx]; // 0 to 255
+            glm::vec3 voxel { (vertex - volume.bounds.origin) / voxel_size };
+            voxel = glm::min(glm::floor(voxel), volume.resolution - 1.0000f);
+            std::size_t pos = voxel.x + voxel.y*width + voxel.z*width*height;
+            if (volume.data[pos] != 255) ++volume.data[pos]; // 8-bit voxels.
         }
 
         return volume;
     }
 
-    HairStyle::Volume HairStyle::voxelize(std::size_t width, std::size_t height, std::size_t depth, float step) const {
+    HairStyle::Volume HairStyle::voxelize_segments(std::size_t width, std::size_t height, std::size_t depth) const {
         Volume volume {
             {
                 width,
@@ -277,35 +267,19 @@ namespace vkhr {
         volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
         glm::vec3 voxel_size { volume.bounds.size / volume.resolution };
 
-        auto layer = width * height;
+        for (std::size_t i { 0 }; i < indices.size() - 1; i += 2) {
+            auto root { (vertices[indices[i]]     - volume.bounds.origin) / voxel_size };
+            auto tip  { (vertices[indices[i + 1]] - volume.bounds.origin) / voxel_size };
 
-        for (std::size_t i { 0 }; i < indices.size() - 1; ++i) {
-            auto root = (vertices[indices[i]]     - volume.bounds.origin) / voxel_size;
-            auto tip  = (vertices[indices[i + 1]] - volume.bounds.origin) / voxel_size;
+            auto direction { tip - root };
+            float steps { glm::compMax(glm::abs(direction)) };
+            direction /= steps; // [-1, 1]
 
-            auto direction = tip - root;
-
-            int latest_id { -1 };
-
-            for (float t { 0.0f }; t < 1.0f; t += step) {
-                glm::uvec3 position = glm::floor(root + direction * t);
-
-                if (position.z >= volume.resolution.z)
-                    position.z = volume.resolution.z - 1;
-                if (position.x >= volume.resolution.x)
-                    position.x = volume.resolution.x - 1;
-                if (position.y >= volume.resolution.y)
-                    position.y = volume.resolution.y - 1;
-
-                std::size_t id { position.x       +
-                                 position.y*width +
-                                 position.z*layer };
-
-                if (static_cast<int>(id) != latest_id)
-                    if (volume.data[id] != 255)
-                        ++volume.data[id];
-
-                latest_id = id;
+            while (steps-- > 0.0f) {
+                auto voxel = glm::min(glm::floor(root), volume.resolution-1.0f);
+                int voxel_index = voxel.x + voxel.y*width + voxel.z*width*height;
+                if (volume.data[voxel_index] != 255) ++volume.data[voxel_index];
+                root += direction; // Move to the voxel we're going to rasterize
             }
         }
 

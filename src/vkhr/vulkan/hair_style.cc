@@ -45,12 +45,14 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto voxelized_strands = hair_style.voxelize(256, 256, 256, 0.1f);
+            auto voxelized_segments = hair_style.voxelize_segments(256, 256, 256);
+
+            voxelized_segments.save("cross-check.raw");
 
             density = vk::StorageBuffer {
                 vulkan_renderer.device,
                 vulkan_renderer.command_pool,
-                voxelized_strands.data
+                voxelized_segments.data
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density, VK_OBJECT_TYPE_BUFFER, "Hair Density Buffer", id);
@@ -68,11 +70,11 @@ namespace vkhr {
 
             density_image = vk::DeviceImage {
                 vulkan_renderer.device,
-                static_cast<std::uint32_t>(voxelized_strands.resolution.x),
-                static_cast<std::uint32_t>(voxelized_strands.resolution.y),
-                static_cast<std::uint32_t>(voxelized_strands.resolution.z),
+                static_cast<std::uint32_t>(voxelized_segments.resolution.x),
+                static_cast<std::uint32_t>(voxelized_segments.resolution.y),
+                static_cast<std::uint32_t>(voxelized_segments.resolution.z),
                 vulkan_renderer.command_pool,
-                voxelized_strands.data
+                voxelized_segments.data
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_image, VK_OBJECT_TYPE_IMAGE, "Hair Density Image", id);
@@ -86,7 +88,7 @@ namespace vkhr {
 
             settings_buffer.volume_bounds     = hair_style.get_bounding_box();
             settings_buffer.strand_radius     = 0.80f;
-            settings_buffer.volume_resolution = voxelized_strands.resolution;
+            settings_buffer.volume_resolution = voxelized_segments.resolution;
             settings_buffer.hair_shininess    = 50.0f;
             settings_buffer.hair_color        = glm::vec3 { .32, .228, .128 };
 
