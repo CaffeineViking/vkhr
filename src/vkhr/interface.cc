@@ -78,6 +78,9 @@ namespace vkhr {
         simulations.push_back("No Effects");
 
         shaders.push_back("Kajiya-Kay and Blinn-Phong");
+        shaders.push_back("Marschner with Blinn-Phong");
+        shaders.push_back("Local Shadow Map Occlusion");
+        shaders.push_back("Voxelized Strand Densities");
 
         shadow_maps.push_back("Conventional Shadow Maps");
         shadow_maps.push_back("Approximate Deep Shadows");
@@ -206,7 +209,7 @@ namespace vkhr {
 
                     ImGui::PushItemWidth(171);
                     if (shadow_technique == ApproximateDeepShadows) {
-                        ImGui::SliderInt("Shadow \"Smoothing\"", &rasterizer.shadow_map.adsm_stride_size, 1, 15, "%.1f");
+                        ImGui::SliderInt("Shadow Map Scaling", &rasterizer.shadow_map.adsm_stride_size, 1, 15, "%.1f");
                     } else if (shadow_technique == ConventionalShadowMaps) {
                         if (ImGui::DragFloat("Shadow Bias Values", &rasterizer.shadow_map.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
                             rasterizer.shadow_map.ctsm_bias = std::max(rasterizer.shadow_map.ctsm_bias, 0.0f);
@@ -216,7 +219,7 @@ namespace vkhr {
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode("Ray Tracer")) {
+                if (ImGui::TreeNodeEx("Ray Tracer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(171);
                     ImGui::SliderInt("SPP", &ray_tracer.sampling_count, 1, 32);
                     ImGui::PopItemWidth();
@@ -246,7 +249,7 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::CollapsingHeader("Scene Hierarchy")) {
+            if (ImGui::CollapsingHeader("Scene Hierarchy", ImGuiTreeNodeFlags_DefaultOpen)) {
                 if (ImGui::TreeNode("Camera")) {
                     if (ImGui::SliderAngle("Field of View", &scene_graph.camera.field_of_view, 0.0f, 180.0f))
                         scene_graph.camera.recalculate_projection_matrix();
