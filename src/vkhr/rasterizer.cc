@@ -98,7 +98,7 @@ namespace vkhr {
 
         load(scene_graph);
 
-        depth_view = vulkan::DepthView {
+        display_depth_buffer = vulkan::DepthView {
             swap_chain.get_width(),
             swap_chain.get_height(),
             *this
@@ -161,26 +161,8 @@ namespace vkhr {
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
                                                 query_pools[frame].get_query_count());
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
         draw_depth(scene_graph, command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
-
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Scene Graph");
-        command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
-                                                 { 1.00f, 1.00f, 1.00f, 1.00f });
-
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
-        draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
-
-        imgui.draw(command_buffers[frame], query_pools[frame]);
-
-        command_buffers[frame].end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame]);
+        draw_color(scene_graph, command_buffers[frame]);
 
         command_buffers[frame].end();
 
@@ -197,6 +179,25 @@ namespace vkhr {
         return (frame + 1) % swap_chain.size();
     }
 
+    void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
+        vk::DebugMarker::begin(command_buffers[frame], "Scene Graph Color Pass");
+        command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
+                                                 { 1.00f, 1.00f, 1.00f, 1.00f });
+
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
+        draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
+
+        imgui.draw(command_buffers[frame], query_pools[frame]);
+
+        command_buffers[frame].end_render_pass();
+        vk::DebugMarker::close(command_buffers[frame]);
+    }
+
     void Rasterizer::draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
         command_buffer.bind_pipeline(pipeline); // Color / Depth Pass.
         for (auto& model_node : scene_graph.get_nodes_with_models()) {
@@ -207,6 +208,16 @@ namespace vkhr {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
+        vk::DebugMarker::begin(command_buffers[frame], "Scene Graph Depth Pass");
+
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Depth Value", query_pools[frame]);
+        command_buffer.begin_render_pass(depth_pass, display_depth_buffer);
+        display_depth_buffer.update_dynamic_viewport_scissor_depth(command_buffer);
+        draw_model(scene_graph, mesh_depth_pipeline, command_buffer, scene_graph.get_camera().get_view_projection());
+        command_buffer.end_render_pass();
+        vk::DebugMarker::close(command_buffers[frame], "Draw Depth Value", query_pools[frame]);
+
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
         for (auto& shadow_map : shadow_maps) {
             auto& vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
@@ -217,6 +228,9 @@ namespace vkhr {
 
             command_buffer.end_render_pass();
         }
+        vk::DebugMarker::close(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
+
+        vk::DebugMarker::close(command_buffers[frame]);
     }
 
     void Rasterizer::draw_hairs(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
