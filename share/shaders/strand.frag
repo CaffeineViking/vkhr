@@ -5,20 +5,13 @@
 #include "volume.glsl"
 #include "shadow_map.glsl"
 #include "light.glsl"
+#include "strand.glsl"
 
 layout(location = 0) in PipelineIn {
     vec4 position;
     vec4 origin;
     vec3 tangent;
 } fs_in;
-
-layout(binding = 2) uniform Strand {
-    AABB volume_bounds;
-    vec3 volume_resolution;
-    float strand_radius;
-    vec3 hair_color;
-    float hair_shininess;
-};
 
 layout(location = 0) out vec4 color;
 

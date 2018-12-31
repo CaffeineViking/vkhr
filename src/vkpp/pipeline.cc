@@ -515,24 +515,37 @@ namespace vkpp {
 
     void swap(ComputePipeline& lhs, ComputePipeline& rhs) {
         using std::swap;
-
         swap(static_cast<Pipeline&>(lhs), static_cast<Pipeline&>(rhs));
-
-        swap(lhs.shader_stage, rhs.shader_stage);
     }
 
     ComputePipeline::ComputePipeline(Device& logical_device,
                                      ShaderModule& shader_module,
                                      Pipeline::Layout& pipeline_layout)
                                     : Pipeline { logical_device, pipeline_layout } {
-        set_shader(shader_module);
+        VkPipelineShaderStageCreateInfo shader_info;
+        shader_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        shader_info.pNext = nullptr;
+        shader_info.flags = 0;
+
+        shader_info.stage = static_cast<VkShaderStageFlagBits>(shader_module.get_stage());
+
+        if (shader_module.get_stage() != ShaderModule::Type::Compute) {
+            throw Exception { "couldn't create compute pipeline!",
+            "are you crazy? Don't pass other types of shaders!" };
+        }
+
+        std::string entry_point { shader_module.get_entry_point() };
+
+        shader_info.module = shader_module.get_handle();
+        shader_info.pName = entry_point.c_str();
+        shader_info.pSpecializationInfo = nullptr;
 
         VkComputePipelineCreateInfo create_info;
         create_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
         create_info.pNext = nullptr;
         create_info.flags = 0;
 
-        create_info.stage = shader_stage;
+        create_info.stage = shader_info;
 
         auto layout = pipeline_layout.get_handle();
 
@@ -545,25 +558,5 @@ namespace vkpp {
                                                       &create_info, nullptr, &handle)) {
             throw Exception { error, "couldn't create a compute pipeline!" };
         }
-    }
-
-    void ComputePipeline::set_shader(ShaderModule& shader) {
-        VkPipelineShaderStageCreateInfo shader_info;
-        shader_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-        shader_info.pNext = nullptr;
-        shader_info.flags = 0;
-
-        shader_info.stage = static_cast<VkShaderStageFlagBits>(shader.get_stage());
-
-        if (shader.get_stage() != ShaderModule::Type::Compute) {
-            throw Exception { "couldn't create compute pipeline!",
-            "are you crazy? Don't pass other types of shaders!" };
-        }
-
-        shader_info.module = shader.get_handle();
-        shader_info.pName = "main";
-        shader_info.pSpecializationInfo = nullptr; // TODO: add this to ShaderModule
-
-        shader_stage = shader_info;
     }
 }

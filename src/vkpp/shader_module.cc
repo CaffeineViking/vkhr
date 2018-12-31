@@ -45,6 +45,8 @@ namespace vkpp {
             spirv = load(file_path + ".spv");
         }
 
+        file_size = spirv.size();
+
         hashed_spirv = djb2a(spirv);
 
         VkShaderModuleCreateInfo create_info;
@@ -115,8 +117,7 @@ namespace vkpp {
 
         if (file_extension == "hlsl") {
             compiler = VKPP_SHADER_MODULE_HLSLC;
-            std::string entry_point { file_name.substr(file_name.find_last_of("\\/") + 1) };
-            compiler.append(entry_point);
+            compiler.append(get_entry_point());
             compiler.append(" -c -o " + file_name + ".spv");
             shader_module_path = file_name + ".spv";
         } else {
@@ -198,6 +199,13 @@ namespace vkpp {
 
     const std::string& ShaderModule::get_file_path() const {
         return file_path;
+    }
+
+    std::string ShaderModule::get_entry_point() const {
+        if (file_extension == "hlsl")
+            return file_name.substr(file_name.find_last_of("\\/") + 1);
+        else
+            return "main";
     }
 
     std::vector<char> ShaderModule::load(const std::string& file_path) {

@@ -311,11 +311,6 @@ namespace vkpp {
         ComputePipeline& operator=(ComputePipeline&& pipeline) noexcept;
 
         friend void swap(ComputePipeline& lhs, ComputePipeline& rhs);
-
-        void set_shader(ShaderModule& compute_shader);
-
-    private:
-        VkPipelineShaderStageCreateInfo shader_stage;
     };
 }
 

@@ -46,6 +46,8 @@ namespace vkpp {
         const std::string& get_file_path() const;
         const std::vector<char>& get_spirv() const;
         std::uint32_t get_hash() const;
+        
+        std::string get_entry_point() const;
 
         const void* get_constants_data() const;
         const std::vector<VkSpecializationMapEntry>& get_constants() const;

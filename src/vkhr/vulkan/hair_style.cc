@@ -102,6 +102,8 @@ namespace vkhr {
 
         void HairStyle::voxelize(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             descriptor_set.write(0, density);
+            descriptor_set.write(2, settings);
+            descriptor_set.write(3, density_view, density_sampler);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
             command_buffer.dispatch(1, 1, 1);
         }
@@ -120,6 +122,24 @@ namespace vkhr {
             command_buffer.bind_index_buffer(vertices);
 
             command_buffer.draw_indexed(vertices.count());
+        }
+
+        void HairStyle::reduce_depth_buffer(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+        }
+
+        void HairStyle::clip_curves(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+        }
+
+        void HairStyle::prefix_sum_1(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+        }
+
+        void HairStyle::prefix_sum_2(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+        }
+
+        void HairStyle::reorder(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+        }
+
+        void HairStyle::draw_strands(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
@@ -283,7 +303,9 @@ namespace vkhr {
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
                 {
-                    { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER }
+                    { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+                    { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                    { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
                 }
             };
 
@@ -309,7 +331,47 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.compute_pipeline,
-                                         VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Graphics Pipeline");
+                                         VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Pipeline");
+        }
+
+        void HairStyle::compute_curve_pipelines(std::unordered_map<ComputeCurve, Pipeline>& pipelines, Rasterizer& rasterizer) {
+            pipelines[ReduceDepthBuffer] = {  };
+            pipelines[ReduceDepthBuffer].shader_stages.emplace_back(rasterizer.device, SHADER("compute_curve/ReduceDepthBuffer.hlsl"));
+            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].shader_stages[0],
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Reduce Depth Buffer Shader");
+
+            pipelines[ReduceDepthBuffer].descriptor_set_layout = vk::DescriptorSet::Layout {
+                rasterizer.device,
+                {
+                    { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
+                }
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].descriptor_set_layout,
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT,
+                                         "Reduce Depth Buffer Descriptor Set Layout");
+
+            pipelines[ReduceDepthBuffer].descriptor_sets = rasterizer.descriptor_pool.allocate(rasterizer.swap_chain.size(),
+                                                                                pipelines[ReduceDepthBuffer].descriptor_set_layout,
+                                                                                "Reduce Depth Buffer Descriptor Set");
+
+            pipelines[ReduceDepthBuffer].pipeline_layout = vk::Pipeline::Layout {
+                rasterizer.device,
+                pipelines[ReduceDepthBuffer].descriptor_set_layout
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].pipeline_layout,
+                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+                                         "Reduce Depth Buffer Pipeline Layout");
+
+            pipelines[ReduceDepthBuffer].compute_pipeline = vk::ComputePipeline {
+                rasterizer.device,
+                pipelines[ReduceDepthBuffer].shader_stages[0],
+                pipelines[ReduceDepthBuffer].pipeline_layout
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].compute_pipeline,
+                                         VK_OBJECT_TYPE_PIPELINE, "Reduce Depth Buffer Pipeline");
         }
 
         int HairStyle::id { 0 };

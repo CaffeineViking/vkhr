@@ -18,8 +18,8 @@ billboard.frag.spv: billboard.frag
 model.frag.spv: model.frag camera.glsl blinn-phong.glsl shadow_map.glsl math.glsl light.glsl
 	glslc -O -g -c model.frag
 
-strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl math.glsl light.glsl volume.glsl
+strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl math.glsl light.glsl volume.glsl strand.glsl
 	glslc -O -g -c strand.frag
 
-voxelize.comp.spv: voxelize.comp volume.glsl
+voxelize.comp.spv: voxelize.comp volume.glsl strand.glsl
 	glslc -O -g -c voxelize.comp

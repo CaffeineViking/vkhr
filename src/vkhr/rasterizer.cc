@@ -284,10 +284,11 @@ namespace vkhr {
 
     void Rasterizer::build_pipelines() {
         vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
-        vulkan::Model::depth_pipeline(mesh_depth_pipeline,     *this);
+        vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
+        vulkan::HairStyle::compute_curve_pipelines(compute_curve_pipelines, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
-        vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
+        vulkan::Model::build_pipeline(model_mesh_pipeline, *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
 
@@ -369,10 +370,19 @@ namespace vkhr {
     void Rasterizer::recompile() {
         device.wait_idle(); // If any pipeline is still in use we need to wait until execution is complete to recompile it.
         if (recompile_pipeline_shaders(hair_depth_pipeline)) vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
-        if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline,     *this);
+        if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         if (recompile_pipeline_shaders(hair_voxel_pipeline)) vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
+
+        bool recompile_compute_curve_pipelines { false };
+        for (auto& compute_curve_pipeline : compute_curve_pipelines) {
+            for (auto& shader_module : compute_curve_pipeline.second.shader_stages)
+                recompile_compute_curve_pipelines |= shader_module.recompile();
+        }
+
+        if (recompile_compute_curve_pipelines) vulkan::HairStyle::compute_curve_pipelines(compute_curve_pipelines, *this);
+
         if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
-        if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline,     *this);
+        if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline, *this);
         if (recompile_pipeline_shaders(billboards_pipeline)) vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
     }
 
