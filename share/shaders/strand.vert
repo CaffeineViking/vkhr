@@ -1,7 +1,7 @@
 #version 460 core
 
+#include "strand.glsl"
 #include "camera.glsl"
-#include "volume.glsl"
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 tangent;
@@ -9,14 +9,6 @@ layout(location = 1) in vec3 tangent;
 layout(push_constant) uniform Object {
     mat4 model;
 } object;
-
-layout(binding = 2) uniform Settings {
-    AABB volume_bounds;
-    vec3 volume_resolution;
-    float strand_radius;
-    vec3 hair_color;
-    float hair_shininess;
-};
 
 layout(location = 0) out PipelineOut {
     vec4 position;

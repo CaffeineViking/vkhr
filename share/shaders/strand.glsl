@@ -1,3 +1,8 @@
+#ifndef VKHR_STRAND_GLSL
+#define VKHR_STRAND_GLSL
+
+#include "aabb.glsl"
+
 layout(binding = 2) uniform Strand {
     AABB volume_bounds;
     vec3 volume_resolution;
@@ -5,3 +10,5 @@ layout(binding = 2) uniform Strand {
     vec3 hair_color;
     float hair_shininess;
 };
+
+#endif

@@ -9,7 +9,7 @@ depth_pass.vert.spv: depth_pass.vert
 model.vert.spv: model.vert camera.glsl
 	glslc -O -g -c model.vert
 
-strand.vert.spv: strand.vert camera.glsl volume.glsl
+strand.vert.spv: strand.vert strand.glsl aabb.glsl camera.glsl
 	glslc -O -g -c strand.vert
 
 billboard.frag.spv: billboard.frag
@@ -18,8 +18,8 @@ billboard.frag.spv: billboard.frag
 model.frag.spv: model.frag camera.glsl blinn-phong.glsl shadow_map.glsl math.glsl light.glsl
 	glslc -O -g -c model.frag
 
-strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl math.glsl light.glsl volume.glsl strand.glsl
+strand.frag.spv: strand.frag camera.glsl shadow_map.glsl kajiya-kay.glsl aabb.glsl math.glsl light.glsl volume.glsl strand.glsl
 	glslc -O -g -c strand.frag
 
-voxelize.comp.spv: voxelize.comp volume.glsl strand.glsl
+voxelize.comp.spv: voxelize.comp aabb.glsl volume.glsl strand.glsl
 	glslc -O -g -c voxelize.comp
