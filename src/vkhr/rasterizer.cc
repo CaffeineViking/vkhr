@@ -98,7 +98,7 @@ namespace vkhr {
 
         load(scene_graph);
 
-        display_depth_buffer = vulkan::DepthView {
+        depth_buffer = vulkan::DepthView {
             swap_chain.get_width(),
             swap_chain.get_height(),
             *this
@@ -211,8 +211,8 @@ namespace vkhr {
         vk::DebugMarker::begin(command_buffers[frame], "Scene Graph Depth Pass");
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Depth Value", query_pools[frame]);
-        command_buffer.begin_render_pass(depth_pass, display_depth_buffer);
-        display_depth_buffer.update_dynamic_viewport_scissor_depth(command_buffer);
+        command_buffer.begin_render_pass(depth_pass, depth_buffer);
+        depth_buffer.update_dynamic_viewport_scissor_depth(command_buffer);
         draw_model(scene_graph, mesh_depth_pipeline, command_buffer, scene_graph.get_camera().get_view_projection());
         command_buffer.end_render_pass();
         vk::DebugMarker::close(command_buffers[frame], "Draw Depth Value", query_pools[frame]);

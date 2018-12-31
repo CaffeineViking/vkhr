@@ -303,7 +303,6 @@ namespace vkhr {
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
                 {
-                    { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
                     { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                     { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
                 }
@@ -343,7 +342,8 @@ namespace vkhr {
             pipelines[ReduceDepthBuffer].descriptor_set_layout = vk::DescriptorSet::Layout {
                 rasterizer.device,
                 {
-                    { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
+                    { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
+                    { 4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE }
                 }
             };
 
