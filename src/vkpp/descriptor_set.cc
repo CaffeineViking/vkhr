@@ -169,12 +169,38 @@ namespace vkpp {
     }
 
     void DescriptorSet::write(std::uint32_t binding,
+                              ImageView& image_view) {
+        VkDescriptorImageInfo image_info;
+        image_info.imageView = image_view.get_handle();
+        image_info.imageLayout = image_view.get_layout();
+        image_info.sampler = nullptr;
+
+        VkWriteDescriptorSet write_info;
+        write_info.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write_info.pNext = nullptr;
+
+        write_info.dstSet     = handle;
+        write_info.dstBinding = binding;
+
+        write_info.dstArrayElement = 0;
+
+        write_info.descriptorCount = 1;
+        write_info.descriptorType = layout->get_binding(binding).type;
+
+        write_info.pImageInfo       = &image_info;
+        write_info.pBufferInfo      = nullptr;
+        write_info.pTexelBufferView = nullptr;
+
+        vkUpdateDescriptorSets(device, 1, &write_info, 0, nullptr);
+    }
+
+    void DescriptorSet::write(std::uint32_t binding,
                               ImageView& image_view,
                               Sampler& sampler) {
         VkDescriptorImageInfo image_info;
         image_info.imageView = image_view.get_handle();
         image_info.imageLayout = image_view.get_layout();
-        image_info.sampler   = sampler.get_handle();
+        image_info.sampler = sampler.get_handle();
 
         VkWriteDescriptorSet write_info;
         write_info.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

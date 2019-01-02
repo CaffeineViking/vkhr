@@ -15,14 +15,14 @@ namespace vkhr {
 
         void HairStyle::load(const vkhr::HairStyle& hair_style,
                              vkhr::Rasterizer& vulkan_renderer) {
-            positions = vk::VertexBuffer {
+            vertices = vk::VertexBuffer {
                 vulkan_renderer.device,
                 vulkan_renderer.command_pool,
                 hair_style.get_vertices()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, positions, VK_OBJECT_TYPE_BUFFER, "Hair Position Vertex Buffer", id);
-            vk::DebugMarker::object_name(vulkan_renderer.device, positions.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
+            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Hair Position Vertex Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Position Device Memory", id);
 
             tangents = vk::VertexBuffer {
@@ -35,30 +35,22 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, tangents.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Tangent Device Memory", id);
 
-            vertices = vk::IndexBuffer {
+            segments = vk::IndexBuffer {
                 vulkan_renderer.device,
                 vulkan_renderer.command_pool,
                 hair_style.get_indices()
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Hair Index Buffer", id);
-            vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
+            vk::DebugMarker::object_name(vulkan_renderer.device, segments, VK_OBJECT_TYPE_BUFFER, "Hair Index Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, segments.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto voxelized_segments = hair_style.voxelize_segments(128, 128, 128);
-
-            density = vk::StorageBuffer {
-                vulkan_renderer.device,
-                vulkan_renderer.command_pool,
-                voxelized_segments.data
-            };
-
-            vk::DebugMarker::object_name(vulkan_renderer.device, density, VK_OBJECT_TYPE_BUFFER, "Hair Density Buffer", id);
+            auto voxelized_segments = hair_style.voxelize_segments(64, 64, 64);
 
             density_sampler = vk::Sampler {
                 vulkan_renderer.device,
-                VK_FILTER_LINEAR,
-                VK_FILTER_LINEAR,
+                VK_FILTER_NEAREST,
+                VK_FILTER_NEAREST,
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER
@@ -101,11 +93,12 @@ namespace vkhr {
         }
 
         void HairStyle::voxelize(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            descriptor_set.write(0, density);
+            descriptor_set.write(0, segments);
+            descriptor_set.write(1, vertices);
             descriptor_set.write(2, settings);
-            descriptor_set.write(3, density_view, density_sampler);
+            descriptor_set.write(3, density_view);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
-            command_buffer.dispatch(1, 1, 1);
+            command_buffer.dispatch(1);
         }
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
@@ -116,12 +109,12 @@ namespace vkhr {
 
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 
-            command_buffer.bind_vertex_buffer(0, positions, 0);
-            command_buffer.bind_vertex_buffer(1, tangents,  0);
+            command_buffer.bind_vertex_buffer(0, vertices, 0);
+            command_buffer.bind_vertex_buffer(1, tangents, 0);
 
-            command_buffer.bind_index_buffer(vertices);
+            command_buffer.bind_index_buffer(segments);
 
-            command_buffer.draw_indexed(vertices.count());
+            command_buffer.draw_indexed(segments.count());
         }
 
         void HairStyle::reduce_depth_buffer(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
@@ -303,8 +296,10 @@ namespace vkhr {
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
                 {
+                    { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+                    { 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
                     { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                    { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
+                    { 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
                 }
             };
 

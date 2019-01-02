@@ -112,9 +112,9 @@ namespace vkpp {
 
         void end_render_pass();
 
-        void dispatch(std::uint32_t group_count_x,
-                      std::uint32_t group_count_y,
-                      std::uint32_t group_count_z);
+        void dispatch(std::uint32_t group_count_x = 1,
+                      std::uint32_t group_count_y = 1,
+                      std::uint32_t group_count_z = 1);
 
         void dispatch_indirect(Buffer& buffer, VkDeviceSize offset = 0);
 

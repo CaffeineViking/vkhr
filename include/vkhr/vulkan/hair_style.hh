@@ -57,8 +57,8 @@ namespace vkhr {
             static void compute_curve_pipelines(std::unordered_map<ComputeCurve, Pipeline>& pipelines, Rasterizer&);
 
         private:
-            vk::IndexBuffer  vertices;
-            vk::VertexBuffer positions;
+            vk::IndexBuffer  segments;
+            vk::VertexBuffer vertices;
             vk::VertexBuffer tangents;
 
             struct Settings {
@@ -71,7 +71,6 @@ namespace vkhr {
 
             vk::UniformBuffer settings;
 
-            vk::StorageBuffer density;
             vk::ImageView density_view;
             vk::DeviceImage density_image;
             vk::Sampler density_sampler;

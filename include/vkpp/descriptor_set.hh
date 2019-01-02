@@ -38,6 +38,9 @@ namespace vkpp {
                    VkDeviceSize size = VK_WHOLE_SIZE);
 
         void write(std::uint32_t binding,
+                   ImageView& image_view);
+
+        void write(std::uint32_t binding,
                    ImageView& image_view,
                    Sampler& sampler);
 
