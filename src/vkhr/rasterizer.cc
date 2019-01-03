@@ -161,6 +161,12 @@ namespace vkhr {
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
                                                 query_pools[frame].get_query_count());
 
+        command_buffers[frame].bind_pipeline(hair_voxel_pipeline);
+        for (auto& hair_style : scene_graph.get_hair_styles())
+            hair_styles[&hair_style.second].voxelize(hair_voxel_pipeline,
+                                                     hair_voxel_pipeline.descriptor_sets[frame],
+                                                     command_buffers[frame]);
+
         draw_depth(scene_graph, command_buffers[frame]);
         draw_color(scene_graph, command_buffers[frame]);
 

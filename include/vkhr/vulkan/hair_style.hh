@@ -72,7 +72,7 @@ namespace vkhr {
             vk::UniformBuffer settings;
 
             vk::ImageView density_view;
-            vk::DeviceImage density_image;
+            vk::DeviceImage density_volume;
             vk::Sampler density_sampler;
 
             static int id;

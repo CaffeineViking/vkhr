@@ -306,7 +306,8 @@ namespace vkpp {
                                              command_pool,
                                              indices.data(),
                                              sizeof(indices[0]) * indices.size(),
-                                             VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
+                                             VK_BUFFER_USAGE_INDEX_BUFFER_BIT |
+                                             VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {
         this->element_count = indices.size();
         this->index_type    = VK_INDEX_TYPE_UINT32;
     }
@@ -318,7 +319,8 @@ namespace vkpp {
                                              command_pool,
                                              indices.data(),
                                              sizeof(indices[0]) * indices.size(),
-                                             VK_BUFFER_USAGE_INDEX_BUFFER_BIT } {
+                                             VK_BUFFER_USAGE_INDEX_BUFFER_BIT |
+                                             VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {
         this->element_count = indices.size();
         this->index_type    = VK_INDEX_TYPE_UINT16;
     }

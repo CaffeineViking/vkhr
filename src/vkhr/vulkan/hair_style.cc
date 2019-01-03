@@ -45,8 +45,6 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, segments.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            auto voxelized_segments = hair_style.voxelize_segments(64, 64, 64);
-
             density_sampler = vk::Sampler {
                 vulkan_renderer.device,
                 VK_FILTER_NEAREST,
@@ -58,27 +56,25 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
-            density_image = vk::DeviceImage {
+            density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                static_cast<std::uint32_t>(voxelized_segments.resolution.x),
-                static_cast<std::uint32_t>(voxelized_segments.resolution.y),
-                static_cast<std::uint32_t>(voxelized_segments.resolution.z),
-                vulkan_renderer.command_pool,
-                voxelized_segments.data
+                64, 64, 64, (64*64*64),
+                vulkan_renderer.command_pool
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, density_image, VK_OBJECT_TYPE_IMAGE, "Hair Density Image", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
 
             density_view = vk::ImageView {
                 vulkan_renderer.device,
-                density_image
+                density_volume,
+                VK_IMAGE_LAYOUT_GENERAL
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
             settings_buffer.volume_bounds     = hair_style.get_bounding_box();
             settings_buffer.strand_radius     = 0.80f;
-            settings_buffer.volume_resolution = voxelized_segments.resolution;
+            settings_buffer.volume_resolution = glm::vec3 { 64, 64, 64 };
             settings_buffer.hair_shininess    = 50.0f;
             settings_buffer.hair_color        = glm::vec3 { .32, .228, .128 };
 
@@ -98,7 +94,9 @@ namespace vkhr {
             descriptor_set.write(2, settings);
             descriptor_set.write(3, density_view);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
-            command_buffer.dispatch(1);
+            command_buffer.dispatch(density_volume.get_extent().width,
+                                    density_volume.get_extent().height,
+                                    density_volume.get_extent().depth);
         }
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {

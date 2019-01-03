@@ -275,7 +275,8 @@ namespace vkpp {
                                                command_buffer,
                                                vertices.data(),
                                                sizeof(vertices[0]) * vertices.size(),
-                                               VK_BUFFER_USAGE_VERTEX_BUFFER_BIT } {
+                                               VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
+                                               VK_BUFFER_USAGE_STORAGE_BUFFER_BIT } {
         this->attributes.reserve(attributes.size());
         for (const auto& attribute : attributes) {
             this->attributes.push_back({ attribute.location,

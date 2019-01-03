@@ -15,7 +15,7 @@ namespace vkpp {
                  std::uint32_t mip_levels, VkSampleCountFlagBits samples,
                  VkImageTiling tiling_mode)
                 : layout { VK_IMAGE_LAYOUT_UNDEFINED },
-                  tiling_mode { VK_IMAGE_TILING_OPTIMAL },
+                  tiling_mode { tiling_mode },
                   sharing_mode { VK_SHARING_MODE_EXCLUSIVE },
                   device { logical_device.get_handle() } {
         VkImageCreateInfo create_info;
@@ -360,7 +360,60 @@ namespace vkpp {
                                 .wait_idle();
     }
 
-    DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height, VkDeviceSize size_in_bytes,
+    DeviceImage::DeviceImage(Device& device,
+                             std::uint32_t width, std::uint32_t height, std::uint32_t depth,
+                             VkDeviceSize size_in_bytes,
+                             CommandPool& command_pool,
+                             VkFormat format, VkImageUsageFlags usage)
+                            : Image { device,
+                                      width,
+                                      height,
+                                      depth,
+                                      format,
+                                      usage,
+                                      1,
+                                      VK_SAMPLE_COUNT_1_BIT,
+                                      VK_IMAGE_TILING_OPTIMAL } {
+        staging_buffer = Buffer {
+            device,
+            size_in_bytes,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        staging_memory = DeviceMemory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+
+        auto image_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            image_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
+
+        auto command_buffer = command_pool.allocate_and_begin();
+        transition(command_buffer, 0, 0,
+                   VK_IMAGE_LAYOUT_UNDEFINED,
+                   VK_IMAGE_LAYOUT_GENERAL,
+                   VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                   VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer)
+                                .wait_idle();
+    }
+
+    DeviceImage::DeviceImage(Device& device, std::uint32_t width, std::uint32_t height,
+                             VkDeviceSize size_in_bytes,
                              VkFormat format, VkImageUsageFlags usage)
                             : Image { device,
                                       width,
