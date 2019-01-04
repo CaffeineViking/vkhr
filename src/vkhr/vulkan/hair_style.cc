@@ -47,8 +47,7 @@ namespace vkhr {
 
             density_sampler = vk::Sampler {
                 vulkan_renderer.device,
-                VK_FILTER_NEAREST,
-                VK_FILTER_NEAREST,
+                VK_FILTER_LINEAR,      VK_FILTER_LINEAR,
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
                 VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER
@@ -58,7 +57,7 @@ namespace vkhr {
 
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                64, 64, 64, (64*64*64),
+                128, 128, 128, (128*128*128),
                 vulkan_renderer.command_pool
             };
 
@@ -74,7 +73,7 @@ namespace vkhr {
 
             settings_buffer.volume_bounds     = hair_style.get_bounding_box();
             settings_buffer.strand_radius     = 0.80f;
-            settings_buffer.volume_resolution = glm::vec3 { 64, 64, 64 };
+            settings_buffer.volume_resolution = glm::vec3 { 128,  128,  128 };
             settings_buffer.hair_shininess    = 50.0f;
             settings_buffer.hair_color        = glm::vec3 { .32, .228, .128 };
 
@@ -94,9 +93,7 @@ namespace vkhr {
             descriptor_set.write(2, settings);
             descriptor_set.write(3, density_view);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
-            command_buffer.dispatch(density_volume.get_extent().width,
-                                    density_volume.get_extent().height,
-                                    density_volume.get_extent().depth);
+            command_buffer.dispatch(vertices.count() / 512);
         }
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {

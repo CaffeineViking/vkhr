@@ -36,9 +36,5 @@ void main() {
                                           deep_shadows_stride_size,
                                           1136.0f, strand_radius);
 
-    float density = sample_volume(density_volume, fs_in.position.xyz,
-                                  volume_resolution, fs_in.origin.xyz,
-                                  volume_bounds.size).r;
-
-    color = vec4(vec3(1.0f - density), 1.0f);
+    color = vec4(shading * visibility, 1.0f);
 }

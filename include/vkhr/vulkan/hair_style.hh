@@ -33,11 +33,11 @@ namespace vkhr {
                       vk::CommandBuffer& command_buffer) override;
 
             void reduce_depth_buffer(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
-            void clip_curves(Pipeline& pipeline,         vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
-            void prefix_sum_1(Pipeline& pipeline,        vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
-            void prefix_sum_2(Pipeline& pipeline,        vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
-            void reorder(Pipeline& pipeline,             vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
-            void draw_strands(Pipeline& pipeline,        vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void clip_curves(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void prefix_sum_1(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void prefix_sum_2(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void reorder(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void draw_strands(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
 
             static void build_pipeline(Pipeline& pipeline_reference,
                                        Rasterizer& vulkan_renderer);

@@ -7,14 +7,16 @@ layout(std430, binding = 0) buffer Segments {
     uint segments[];
 };
 
-layout(std430, binding = 1) buffer Positions {
+layout(std430, binding = 1) buffer Vertices {
     vec3 positions[];
 };
 
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 512) in;
 
 layout(binding = 3, r8) uniform image3D density_volume;
 
 void main() {
-    imageStore(density_volume, ivec3(gl_GlobalInvocationID.xyz), vec4(0.0f));
+    vec3 voxel_size = volume_bounds.size / volume_resolution;
+    vec3 voxel = (positions[gl_GlobalInvocationID.x] - volume_bounds.origin) / voxel_size;
+    imageStore(density_volume, ivec3(voxel), vec4(1.0));
 }
