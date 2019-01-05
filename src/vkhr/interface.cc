@@ -154,7 +154,7 @@ namespace vkhr {
             ImGui::Spacing();
 
             ImGui::Combo("Reflection Model",
-                         reinterpret_cast<int*>(&shading_model),
+                         reinterpret_cast<int*>(&parameters.shading_model),
                          get_string_from_vector,
                          static_cast<void*>(&shaders),
                          shaders.size());
@@ -167,7 +167,7 @@ namespace vkhr {
                 if (ImGui::TreeNodeEx("Rasterizer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(195);
                     ImGui::Combo("##Shadow Technique",
-                                 reinterpret_cast<int*>(&shadow_technique),
+                                 reinterpret_cast<int*>(&parameters.shadow_technique),
                                  get_string_from_vector,
                                  static_cast<void*>(&shadow_maps),
                                  shadow_maps.size());
@@ -175,32 +175,32 @@ namespace vkhr {
 
                     ImGui::SameLine();
 
-                    if (shadow_technique == ApproximateDeepShadows) {
-                        ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&rasterizer.shadow_map.adsm_on));
-                    } else if (shadow_technique == ConventionalShadowMaps) {
-                        ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&rasterizer.shadow_map.ctsm_on));
+                    if (parameters.shadow_technique == ApproximateDeepShadows) {
+                        ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&parameters.adsm_on));
+                    } else if (parameters.shadow_technique == ConventionalShadowMaps) {
+                        ImGui::Checkbox("Shadow Maps", reinterpret_cast<bool*>(&parameters.ctsm_on));
                     }
 
                     ImGui::PushItemWidth(171);
-                    if (shadow_technique == ApproximateDeepShadows) {
-                        ImGui::SliderInt("PCF", &rasterizer.shadow_map.adsm_kernel_size, 1, 9);
-                    } else if (shadow_technique == ConventionalShadowMaps) {
-                        ImGui::SliderInt("PCF", &rasterizer.shadow_map.ctsm_kernel_size, 1, 9);
+                    if (parameters.shadow_technique == ApproximateDeepShadows) {
+                        ImGui::SliderInt("PCF", &parameters.adsm_kernel_size, 1, 9);
+                    } else if (parameters.shadow_technique == ConventionalShadowMaps) {
+                        ImGui::SliderInt("PCF", &parameters.ctsm_kernel_size, 1, 9);
                     }
                     ImGui::PopItemWidth();
 
                     ImGui::SameLine();
 
                     ImGui::PushItemWidth(99);
-                    if (shadow_technique == ApproximateDeepShadows) {
+                    if (parameters.shadow_technique == ApproximateDeepShadows) {
                         ImGui::Combo("##Shadow Sampler",
-                                     reinterpret_cast<int*>(&rasterizer.shadow_map.adsm_sampling_type),
+                                     reinterpret_cast<int*>(&parameters.adsm_sampling_type),
                                      get_string_from_vector,
                                      static_cast<void*>(&shadow_samplers),
                                      shadow_samplers.size());
-                    } else if (shadow_technique == ConventionalShadowMaps) {
+                    } else if (parameters.shadow_technique == ConventionalShadowMaps) {
                         ImGui::Combo("##Shadow Sampler",
-                                     reinterpret_cast<int*>(&rasterizer.shadow_map.ctsm_sampling_type),
+                                     reinterpret_cast<int*>(&parameters.ctsm_sampling_type),
                                      get_string_from_vector,
                                      static_cast<void*>(&shadow_samplers),
                                      shadow_samplers.size());
@@ -208,11 +208,11 @@ namespace vkhr {
                     ImGui::PopItemWidth();
 
                     ImGui::PushItemWidth(171);
-                    if (shadow_technique == ApproximateDeepShadows) {
-                        ImGui::SliderInt("Shadow Map Scaling", &rasterizer.shadow_map.adsm_stride_size, 1, 15, "%.1f");
-                    } else if (shadow_technique == ConventionalShadowMaps) {
-                        if (ImGui::DragFloat("Shadow Bias Values", &rasterizer.shadow_map.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
-                            rasterizer.shadow_map.ctsm_bias = std::max(rasterizer.shadow_map.ctsm_bias, 0.0f);
+                    if (parameters.shadow_technique == ApproximateDeepShadows) {
+                        ImGui::SliderInt("Shadow Map Scaling", &parameters.adsm_stride_size, 1, 15, "%.1f");
+                    } else if (parameters.shadow_technique == ConventionalShadowMaps) {
+                        if (ImGui::DragFloat("Shadow Bias Values", &parameters.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
+                            parameters.ctsm_bias = std::max(parameters.ctsm_bias, 0.0f);
                     }
                     ImGui::PopItemWidth();
 

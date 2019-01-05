@@ -68,9 +68,9 @@ namespace vkhr {
         std::uint32_t frame { 0 };
         std::uint32_t latest_drawn_frame { 0 };
 
-        std::vector<vk::UniformBuffer> camera_vp;
-        std::vector<vk::UniformBuffer> light_buf;
-        std::vector<vk::UniformBuffer> sm_params;
+        std::vector<vk::UniformBuffer> camera;
+        std::vector<vk::UniformBuffer> lights;
+        std::vector<vk::UniformBuffer> params;
 
         Pipeline hair_depth_pipeline;
         Pipeline mesh_depth_pipeline;
@@ -92,17 +92,6 @@ namespace vkhr {
         std::vector<vk::QueryPool> query_pools;
 
         std::vector<vk::CommandBuffer> command_buffers;
-
-        vulkan::DepthView::ShadowMap shadow_map {
-            3,
-            vulkan::DepthView::Poisson,
-            8,
-            true,
-            3,
-            vulkan::DepthView::Uniform,
-            0.0001f,
-            true
-        };
 
         friend class vulkan::HairStyle;
         friend class vulkan::Billboard;

@@ -15,10 +15,10 @@ strand.vert.spv: strand.vert strand.glsl bounding_box.glsl camera.glsl
 billboard.frag.spv: billboard.frag
 	glslc -O -g -c billboard.frag
 
-model.frag.spv: model.frag camera.glsl filter_shadows.glsl blinn-phong.glsl tex2Dproj.glsl linearize_depth.glsl light.glsl math.glsl shadow_map.glsl
+model.frag.spv: model.frag camera.glsl filter_shadows.glsl blinn-phong.glsl tex2Dproj.glsl linearize_depth.glsl math.glsl light.glsl shadow_map.glsl parameters.glsl
 	glslc -O -g -c model.frag
 
-strand.frag.spv: strand.frag approximate_deep_shadows.glsl camera.glsl shadow_map.glsl kajiya-kay.glsl volume.glsl light.glsl math.glsl tex2Dproj.glsl linearize_depth.glsl strand.glsl bounding_box.glsl
+strand.frag.spv: strand.frag approximate_deep_shadows.glsl camera.glsl shadow_map.glsl kajiya-kay.glsl volume.glsl light.glsl math.glsl tex2Dproj.glsl linearize_depth.glsl parameters.glsl strand.glsl bounding_box.glsl
 	glslc -O -g -c strand.frag
 
 voxelize.comp.spv: voxelize.comp volume.glsl strand.glsl bounding_box.glsl

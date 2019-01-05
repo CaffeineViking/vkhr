@@ -93,8 +93,9 @@ namespace vkhr {
         image_available = vk::Semaphore::create(device, swap_chain.size(), "Image Available Semaphore");
         render_complete = vk::Semaphore::create(device, swap_chain.size(), "Render Complete Semaphore");
         command_buffer_finished = vk::Fence::create(device, swap_chain.size(), "Buffer Finished Fence");
-        camera_vp = vk::UniformBuffer::create(device, sizeof(VP), swap_chain.size(), "Camera MVP Data");
-        sm_params = vk::UniformBuffer::create(device, sizeof(SM), swap_chain.size(), "Shadow Map Data");
+
+        camera = vk::UniformBuffer::create(device, sizeof(vkhr::ViewProjection),  swap_chain.size(), "Camera Matrix Data");
+        params = vk::UniformBuffer::create(device, sizeof(Interface::Parameters), swap_chain.size(), "Rendering Settings");
 
         load(scene_graph);
 
@@ -134,8 +135,8 @@ namespace vkhr {
                 hair_style.second, *this
             };
 
-        light_buf = vk::UniformBuffer::create(device, scene_graph.get_light_sources().size() * sizeof(LightSource::Buffer),
-                                              swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
+        lights = vk::UniformBuffer::create(device, scene_graph.get_light_sources().size() * sizeof(LightSource::Buffer),
+                                           swap_chain.size(), "Light Source Buffer Data"); // e.g.: position, intensity.
 
         for (auto& light_source : scene_graph.get_light_sources())
             shadow_maps.emplace_back(1024, *this, light_source);
@@ -144,9 +145,9 @@ namespace vkhr {
     }
 
     void Rasterizer::update(const SceneGraph& scene_graph) {
-        camera_vp[frame].update(scene_graph.get_camera().get_transform());
-        light_buf[frame].update(scene_graph.fetch_light_source_buffers());
-        sm_params[frame].update(shadow_map); // shadow map PCF kernel size
+        camera[frame].update(scene_graph.get_camera().get_transform());
+        lights[frame].update(scene_graph.fetch_light_source_buffers());
+        params[frame].update(imgui.parameters); // Rendering parameter.
     }
 
     void Rasterizer::draw(const SceneGraph& scene_graph) {
@@ -223,8 +224,8 @@ namespace vkhr {
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
 
-            if (this->shadow_map.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
-            if (this->shadow_map.ctsm_on) draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
+            if (imgui.parameters.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
+            if (imgui.parameters.ctsm_on) draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
 
             command_buffer.end_render_pass();
         }
@@ -261,7 +262,7 @@ namespace vkhr {
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
         command_buffers[frame].bind_pipeline(billboards_pipeline);
-        camera_vp[frame].update(Camera::IdentityVPMatrix);
+        camera[frame].update(Camera::IdentityVPMatrix);
         command_buffers[frame].push_constant(billboards_pipeline, 0, Identity);
         fullscreen_billboard.draw(billboards_pipeline, billboards_pipeline.descriptor_sets[frame],
                                   command_buffers[frame]);

@@ -18,8 +18,6 @@ namespace vkhr {
         float near, far;
     };
 
-    using VP = ViewProjection;
-
     class Interface;
 
     class Camera final {

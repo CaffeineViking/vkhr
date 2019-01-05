@@ -106,9 +106,9 @@ namespace vkhr {
                                                                                 "Model Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
-                pipeline.descriptor_sets[i].write(1, vulkan_renderer.light_buf[i]);
-                pipeline.descriptor_sets[i].write(4, vulkan_renderer.sm_params[i]);
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera[i]);
+                pipeline.descriptor_sets[i].write(1, vulkan_renderer.lights[i]);
+                pipeline.descriptor_sets[i].write(4, vulkan_renderer.params[i]);
                 for (std::uint32_t j { 0 }; j < light_count; ++j)
                     pipeline.descriptor_sets[i].write(5 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
                                                              vulkan_renderer.shadow_maps[j].get_sampler());

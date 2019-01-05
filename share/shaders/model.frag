@@ -4,6 +4,7 @@
 #include "blinn-phong.glsl"
 #include "filter_shadows.glsl"
 #include "shadow_map.glsl"
+#include "parameters.glsl"
 #include "light.glsl"
 
 layout(location = 0) in PipelineIn {

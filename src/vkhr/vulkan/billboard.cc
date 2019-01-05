@@ -107,8 +107,8 @@ namespace vkhr {
                                                                                 "Billboards Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
-                pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera_vp[i]);
-                // the combined image sampler descriptors can only written later.
+                pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera[i]);
+                // the combined image sampler descriptor can only written later.
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

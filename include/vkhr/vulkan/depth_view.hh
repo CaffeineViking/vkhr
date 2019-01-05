@@ -42,23 +42,6 @@ namespace vkhr {
 
             const LightSource* light { nullptr };
 
-            enum SamplingMethod : int  {
-                Uniform = 0,
-                Poisson = 1
-            };
-
-            struct ShadowMap {
-                int adsm_kernel_size;
-                SamplingMethod adsm_sampling_type;
-                int adsm_stride_size;
-                int adsm_on;
-
-                int ctsm_kernel_size;
-                SamplingMethod ctsm_sampling_type;
-                float ctsm_bias;
-                int ctsm_on;
-            };
-
         private:
             vk::Image image;
             vk::DeviceMemory memory;
@@ -76,9 +59,6 @@ namespace vkhr {
             static int id;
         };
     }
-
-
-    using SM = vulkan::DepthView::ShadowMap;
 }
 
 #endif

@@ -41,6 +41,53 @@ namespace vkhr {
         void draw(vkpp::CommandBuffer& command_list, vkpp::QueryPool& query_pool);
         void draw(vkpp::CommandBuffer& command_list);
 
+        enum SamplingMethod : int {
+            Uniform = 0,
+            Poisson = 1
+        };
+
+        enum ShadingModel : int {
+            KajiyaKay = 0,
+            Marschner = 1,
+            Occlusion = 2,
+            Voxelizer = 3
+        };
+
+        enum ShadowTechnique : int {
+            ConventionalShadowMaps = 0,
+            ApproximateDeepShadows = 1
+        };
+
+        struct Parameters {
+            int shading_model;
+
+            int adsm_kernel_size;
+            SamplingMethod adsm_sampling_type;
+            int adsm_stride_size;
+            int adsm_on;
+
+            int ctsm_kernel_size;
+            SamplingMethod ctsm_sampling_type;
+            float ctsm_bias;
+            int ctsm_on;
+
+            int shadow_technique;
+        } parameters {
+            KajiyaKay,
+
+            3,
+            Poisson,
+            8,
+            true,
+
+            3,
+            Uniform,
+            0.0001f,
+            true,
+
+            ApproximateDeepShadows
+        };
+
         void default_parameters();
 
         bool wants_focus() const;
@@ -72,18 +119,6 @@ namespace vkhr {
         int simulation_effect { 0 };
 
         Renderer::Type current_renderer { Renderer::Rasterizer };
-
-        enum ShadingModel : int {
-            KajiyaKay = 0,
-            Marschner = 1,
-            Occlusion = 2,
-            Voxelizer = 3
-        } shading_model { KajiyaKay };
-
-        enum ShadowTechnique : int {
-            ConventionalShadowMaps = 0,
-            ApproximateDeepShadows = 1
-        } shadow_technique { ApproximateDeepShadows };
 
         struct ProfilePair {
             std::vector<float> timestamps;

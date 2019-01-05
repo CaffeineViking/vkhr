@@ -6,6 +6,7 @@
 #include "shadow_map.glsl"
 #include "approximate_deep_shadows.glsl"
 #include "light.glsl"
+#include "parameters.glsl"
 #include "strand.glsl"
 
 layout(location = 0) in PipelineIn {
