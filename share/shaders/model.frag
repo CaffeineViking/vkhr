@@ -2,6 +2,7 @@
 
 #include "camera.glsl"
 #include "blinn-phong.glsl"
+#include "filter_shadows.glsl"
 #include "shadow_map.glsl"
 #include "light.glsl"
 
@@ -21,10 +22,10 @@ void main() {
 
     float visibility = 1.0f;
 
-    visibility = filtered_shadows(shadow_maps[0],
-                                  light_space_vertex,
-                                  shadow_map_kernel_size,
-                                  shadow_map_bias);
+    visibility = filter_shadows(shadow_maps[0],
+                                light_space_vertex,
+                                shadow_map_kernel_size,
+                                shadow_map_bias);
 
     float diffuse = dot(camera_space_light, fs_in.normal);
 

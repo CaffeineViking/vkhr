@@ -74,7 +74,10 @@ namespace vkhr {
         Renderer::Type current_renderer { Renderer::Rasterizer };
 
         enum ShadingModel : int {
-            KajiyaKay
+            KajiyaKay = 0,
+            Marschner = 1,
+            Occlusion = 2,
+            Voxelizer = 3
         } shading_model { KajiyaKay };
 
         enum ShadowTechnique : int {

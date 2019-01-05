@@ -97,10 +97,8 @@ namespace vkhr {
         }
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            if (descriptor_set.get_layout().get_bindings().size()) {
+            if (descriptor_set.get_layout().get_bindings().size())
                 descriptor_set.write(2, settings);
-                descriptor_set.write(3, density_view, density_sampler);
-            }
 
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 
@@ -172,7 +170,6 @@ namespace vkhr {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
                 { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
             };
 

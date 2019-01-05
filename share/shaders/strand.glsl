@@ -1,7 +1,7 @@
 #ifndef VKHR_STRAND_GLSL
 #define VKHR_STRAND_GLSL
 
-#include "aabb.glsl"
+#include "bounding_box.glsl"
 
 layout(binding = 2) uniform Strand {
     AABB volume_bounds;

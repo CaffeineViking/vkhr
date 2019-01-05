@@ -4,6 +4,7 @@
 #include "kajiya-kay.glsl"
 #include "volume.glsl"
 #include "shadow_map.glsl"
+#include "approximate_deep_shadows.glsl"
 #include "light.glsl"
 #include "strand.glsl"
 
@@ -12,8 +13,6 @@ layout(location = 0) in PipelineIn {
     vec4 origin;
     vec3 tangent;
 } fs_in;
-
-layout(binding = 3) uniform sampler3D density_volume;
 
 layout(location = 0) out vec4 color;
 
