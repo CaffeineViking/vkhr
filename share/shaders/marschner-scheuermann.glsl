@@ -1,6 +1,8 @@
 #ifndef VKHR_MARSCHNER_SCHEUERMANN_GLSL
 #define VKHR_MARSCHNER_SCHEUERMANN_GLSL
 
+#define MARSCHNER_SCHEUERMANN 1
+
 // Based on the "Hair Rendering and Shading" ATI slides by Thorsten Scheuermann,
 // from Marschner's observations with "Light Scattering from Human Hair Fibers".
 vec3 marschner_scheuermann(vec3 diffuse,

@@ -18,17 +18,23 @@ layout(location = 0) out vec4 color;
 void main() {
     vec4 light_position = vec4(lights[0].vector, 0.0f);
 
-    vec3 camera_space_light  = (camera.view     * light_position).xyz;
-    vec4 light_space_vertex  = lights[0].matrix * fs_in.position;
+    vec3 camera_space_light = (camera.view     * light_position).xyz;
+    vec4 light_space_vertex = lights[0].matrix * fs_in.position;
 
-    float visibility = 1.0f;
+    vec3 shading = vec3(1.0f);
 
-    visibility = filter_shadows(shadow_maps[0],
-                                light_space_vertex,
-                                shadow_map_kernel_size,
-                                shadow_map_bias);
+    if (shading_model != VISUALIZE_SHADOW_MAP) {
+        shading = vec3(dot(camera_space_light, fs_in.normal));
+    }
 
-    float diffuse = dot(camera_space_light, fs_in.normal);
+    float occlusion = 1.0f;
 
-    color = vec4(vec3(diffuse * visibility), 1.0f);
+    if (pcf_shadows_on == 1) {
+        occlusion = filter_shadows(shadow_maps[0],
+                                   light_space_vertex,
+                                   pcf_shadows_kernel_size,
+                                   pcf_shadows_bias);
+    }
+
+    color = vec4(shading * occlusion, 1.0f);
 }

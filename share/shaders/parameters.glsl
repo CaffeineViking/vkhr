@@ -9,10 +9,10 @@ layout(binding = 4) uniform Parameters {
     int deep_shadows_stride_size;
     int deep_shadows_on;
 
-    int shadow_map_kernel_size;
-    int shadow_map_sampling_type;
-    float shadow_map_bias;
-    int shadow_map_on;
+    int pcf_shadows_kernel_size;
+    int pcf_shadows_sampling_type;
+    float pcf_shadows_bias;
+    int pcf_shadows_on;
 
     int shadow_technique;
 };
