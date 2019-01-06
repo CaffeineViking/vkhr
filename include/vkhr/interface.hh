@@ -132,10 +132,11 @@ namespace vkhr {
         static bool get_string_from_vector(void*, int, const char**);
 
         bool light_debugger { false };
-
         bool raytrace_scene { false };
+
+        bool gui_visible { true };
+
         ImGuiContext* ctx { nullptr };
-        bool gui_visible    { true };
     };
 }
 

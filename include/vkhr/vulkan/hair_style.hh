@@ -39,12 +39,9 @@ namespace vkhr {
             void reorder(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
             void draw_strands(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
 
-            static void build_pipeline(Pipeline& pipeline_reference,
-                                       Rasterizer& vulkan_renderer);
-            static void depth_pipeline(Pipeline& pipeline_reference,
-                                       Rasterizer& vulkan_renderer);
-            static void voxel_pipeline(Pipeline& pipeline_reference,
-                                       Rasterizer& vulkan_renderer);
+            static void build_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
+            static void depth_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
+            static void voxel_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
 
             enum ComputeCurve {
                 ReduceDepthBuffer,
@@ -61,15 +58,15 @@ namespace vkhr {
             vk::VertexBuffer vertices;
             vk::VertexBuffer tangents;
 
-            struct Settings {
+            struct Parameters {
                 AABB volume_bounds;
                 glm::vec3 volume_resolution;
                 float strand_radius;
                 glm::vec3 hair_color;
                 float hair_shininess;
-            } settings_buffer;
+            } parameters;
 
-            vk::UniformBuffer settings;
+            vk::UniformBuffer parameters_buffer;
 
             vk::ImageView density_view;
             vk::DeviceImage density_volume;

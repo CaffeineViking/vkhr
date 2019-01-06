@@ -15,6 +15,8 @@ layout(location = 0) in PipelineIn {
     vec3 tangent;
 } fs_in;
 
+layout(binding = 3) uniform sampler3D density_volume;
+
 layout(location = 0) out vec4 color;
 
 void main() {

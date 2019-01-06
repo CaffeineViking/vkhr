@@ -286,6 +286,10 @@ namespace vkhr {
         return volume;
     }
 
+    HairStyle::Volume HairStyle::pregather_density(const Volume& volume) {
+        return Volume {  };
+    }
+
     bool HairStyle::Volume::save(const std::string& file_path) {
         std::ofstream file { file_path, std::ios::binary };
         if (!file) return false; // Couldn't write to file.

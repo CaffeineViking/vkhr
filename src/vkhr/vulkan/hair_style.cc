@@ -55,10 +55,16 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
+            // Pre-bake the strand densities and update only when required.
+            auto strand_density = hair_style.voxelize_vertices(64, 64, 64);
+
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                128, 128, 128, (128*128*128),
-                vulkan_renderer.command_pool
+                static_cast<std::uint32_t>(strand_density.resolution.x),
+                static_cast<std::uint32_t>(strand_density.resolution.y),
+                static_cast<std::uint32_t>(strand_density.resolution.z),
+                vulkan_renderer.command_pool,
+                strand_density.data
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
@@ -71,18 +77,18 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
-            settings_buffer.volume_bounds     = hair_style.get_bounding_box();
-            settings_buffer.strand_radius     = 0.80f;
-            settings_buffer.volume_resolution = glm::vec3 { 128,  128,  128 };
-            settings_buffer.hair_shininess    = 50.0f;
-            settings_buffer.hair_color        = glm::vec3 { .32, .228, .128 };
+            parameters.volume_bounds     = hair_style.get_bounding_box();
+            parameters.strand_radius     = 0.80f;
+            parameters.volume_resolution = strand_density.resolution;
+            parameters.hair_shininess    = 50.0f;
+            parameters.hair_color        = glm::vec3 { .32, .228, .128 };
 
-            settings = vk::UniformBuffer {
+            parameters_buffer = vk::UniformBuffer {
                 vulkan_renderer.device,
-                settings_buffer
+                parameters
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, settings, VK_OBJECT_TYPE_BUFFER, "Hair Settings Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, parameters_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
 
             ++id;
         }
@@ -90,15 +96,17 @@ namespace vkhr {
         void HairStyle::voxelize(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             descriptor_set.write(0, segments);
             descriptor_set.write(1, vertices);
-            descriptor_set.write(2, settings);
+            descriptor_set.write(2, parameters_buffer);
             descriptor_set.write(3, density_view);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
             command_buffer.dispatch(vertices.count() / 512);
         }
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            if (descriptor_set.get_layout().get_bindings().size())
-                descriptor_set.write(2, settings);
+            if (descriptor_set.get_layout().get_bindings().size()) {
+                descriptor_set.write(2, parameters_buffer);
+                descriptor_set.write(3, density_view, density_sampler);
+            }
 
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 
@@ -170,6 +178,7 @@ namespace vkhr {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
                 { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
             };
 
