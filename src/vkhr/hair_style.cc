@@ -286,8 +286,24 @@ namespace vkhr {
         return volume;
     }
 
-    HairStyle::Volume HairStyle::pregather_density(const Volume& volume) {
-        return Volume {  };
+    HairStyle::Volume HairStyle::pregather_density(std::size_t width, std::size_t height, std::size_t depth) const {
+        Volume volume;
+
+        auto density = voxelize_vertices(width, height, depth);
+
+        volume.resolution = density.resolution;
+        volume.bounds = density.bounds;
+        volume.data.resize(density.data.size());
+
+        std::vector<std::uint32_t> hair_density;
+        hair_density.resize(density.data.size());
+
+        for (std::size_t k { 0 }; k < depth; ++k)
+        for (std::size_t j { 0 }; j < height; ++j)
+        for (std::size_t i { 0 }; i < width; ++i) {
+        }
+
+        return volume;
     }
 
     bool HairStyle::Volume::save(const std::string& file_path) {

@@ -1,5 +1,5 @@
-#ifndef VKHR_LIGHT_GLSL
-#define VKHR_LIGHT_GLSL
+#ifndef VKHR_LIGHTS_GLSL
+#define VKHR_LIGHTS_GLSL
 
 struct Light {
     vec3 vector;

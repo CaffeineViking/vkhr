@@ -1,7 +1,7 @@
 #ifndef VKHR_SHADOW_MAP_GLSL
 #define VKHR_SHADOW_MAP_GLSL
 
-#include "light.glsl"
+#include "lights.glsl"
 
 #define VISUALIZE_SHADOW_MAP 2
 

@@ -467,11 +467,11 @@ namespace vkpp {
                                       VK_IMAGE_TILING_OPTIMAL } {
         staging_buffer = Buffer {
             device,
-            volume.size() * sizeof(unsigned char),
+            volume.size() * sizeof(volume[0]),
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT
         };
 
-        auto size = volume.size() * sizeof(unsigned char);
+        auto size = volume.size() * sizeof(volume[0]);
 
         auto staging_memory_requirements = staging_buffer.get_memory_requirements();
 
@@ -525,7 +525,7 @@ namespace vkpp {
     }
 
     void DeviceImage::staged_copy(std::vector<unsigned char>& volume, CommandBuffer& command_buffer) {
-        staging_memory.copy(volume.size() * sizeof(unsigned char), volume.data());
+        staging_memory.copy(volume.size() * sizeof(volume[0]), volume.data());
 
         transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);

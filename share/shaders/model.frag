@@ -5,7 +5,7 @@
 #include "filter_shadows.glsl"
 #include "shadow_map.glsl"
 #include "parameters.glsl"
-#include "light.glsl"
+#include "lights.glsl"
 
 layout(location = 0) in PipelineIn {
     vec4 position;

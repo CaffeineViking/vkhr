@@ -1,13 +1,13 @@
 #version 460 core
 
+#include "strand.glsl"
 #include "camera.glsl"
+#include "parameters.glsl"
 #include "kajiya-kay.glsl"
-#include "volume.glsl"
 #include "shadow_map.glsl"
 #include "approximate_deep_shadows.glsl"
-#include "light.glsl"
-#include "parameters.glsl"
-#include "strand.glsl"
+#include "raymarcher.glsl"
+#include "lights.glsl"
 
 layout(location = 0) in PipelineIn {
     vec4 position;
@@ -15,7 +15,7 @@ layout(location = 0) in PipelineIn {
     vec3 tangent;
 } fs_in;
 
-layout(binding = 3) uniform sampler3D density_volume;
+layout(binding = 3) uniform sampler3D density;
 
 layout(location = 0) out vec4 color;
 

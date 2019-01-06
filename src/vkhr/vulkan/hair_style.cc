@@ -71,8 +71,7 @@ namespace vkhr {
 
             density_view = vk::ImageView {
                 vulkan_renderer.device,
-                density_volume,
-                VK_IMAGE_LAYOUT_GENERAL
+                density_volume
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
