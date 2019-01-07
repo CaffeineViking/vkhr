@@ -15,7 +15,7 @@ layout(location = 0) in PipelineIn {
     vec3 tangent;
 } fs_in;
 
-layout(binding = 3) uniform sampler3D density;
+layout(binding = 3) uniform sampler3D density_volume;
 
 layout(location = 0) out vec4 color;
 
@@ -28,21 +28,27 @@ void main() {
 
     vec3 shading = vec3(1.0);
 
-    if (shading_model == KAJIYA_KAY) {
+    if (shading_model == 0) {
         shading = kajiya_kay(hair_color, light_color, hair_shininess,
                              fs_in.tangent, camera_space_light,
                              vec3(0, 0, -1));
     }
 
-    float occlusion = 1.0f;
+    float visibility = 1.00f;
 
-    if (deep_shadows_on == 1) {
-        occlusion = approximate_deep_shadows(shadow_maps[0],
-                                             shadow_space_strand,
-                                             deep_shadows_kernel_size,
-                                             deep_shadows_stride_size,
-                                             1136.0f, strand_radius);
+    if (deep_shadows_on == 1 && shading_model != 3) {
+        visibility = approximate_deep_shadows(shadow_maps[0],
+                                              shadow_space_strand,
+                                              deep_shadows_kernel_size,
+                                              deep_shadows_stride_size,
+                                              1136.0f, 0.9f);
     }
 
-    color = vec4(shading * occlusion, 1.0f);
+    float density = sample_volume(density_volume,
+                                  fs_in.position.xyz,
+                                  fs_in.origin.xyz,
+                                  volume_bounds.size).r;
+    visibility *= 1.0f - density;
+
+    color = vec4(shading * visibility, 1.0f);
 }

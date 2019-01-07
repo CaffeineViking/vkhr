@@ -218,6 +218,11 @@ namespace vkhr {
         command_buffer.end_render_pass();
         vk::DebugMarker::close(command_buffers[frame], "Draw Depth Value", query_pools[frame]);
 
+        if (!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) {
+            vk::DebugMarker::close(command_buffers[frame]);
+            return;
+        }
+
         vk::DebugMarker::begin(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
         for (auto& shadow_map : shadow_maps) {
             auto& vp = shadow_map.light->get_view_projection();

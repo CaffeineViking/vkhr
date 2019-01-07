@@ -298,9 +298,9 @@ namespace vkhr {
         std::vector<std::uint32_t> hair_density;
         hair_density.resize(density.data.size());
 
-        for (std::size_t k { 0 }; k < depth; ++k)
+        for (std::size_t k { 0 }; k < depth;  ++k)
         for (std::size_t j { 0 }; j < height; ++j)
-        for (std::size_t i { 0 }; i < width; ++i) {
+        for (std::size_t i { 0 }; i < width;  ++i) {
         }
 
         return volume;

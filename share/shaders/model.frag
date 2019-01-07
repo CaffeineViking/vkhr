@@ -23,7 +23,7 @@ void main() {
 
     vec3 shading = vec3(1.0f);
 
-    if (shading_model != VISUALIZE_SHADOW_MAP) {
+    if (shading_model == 0 || shading_model == 1) {
         shading = vec3(dot(camera_space_light, fs_in.normal));
     }
 

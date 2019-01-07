@@ -56,7 +56,7 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
             // Pre-bake the strand densities and update only when required.
-            auto strand_density = hair_style.voxelize_vertices(64, 64, 64);
+            auto strand_density = hair_style.voxelize_segments(64, 64, 64);
 
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
@@ -79,7 +79,7 @@ namespace vkhr {
             parameters.volume_bounds     = hair_style.get_bounding_box();
             parameters.strand_radius     = 0.80f;
             parameters.volume_resolution = strand_density.resolution;
-            parameters.hair_shininess    = 50.0f;
+            parameters.hair_shininess    = 40.0f;
             parameters.hair_color        = glm::vec3 { .32, .228, .128 };
 
             parameters_buffer = vk::UniformBuffer {
