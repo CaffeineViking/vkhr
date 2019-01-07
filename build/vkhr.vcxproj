@@ -496,9 +496,11 @@
   <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
+    <None Include="..\share\shaders\approximate_deep_shadows.glsl" />
     <None Include="..\share\shaders\billboard.frag" />
     <None Include="..\share\shaders\billboard.vert" />
     <None Include="..\share\shaders\blinn-phong.glsl" />
+    <None Include="..\share\shaders\bounding_box.glsl" />
     <None Include="..\share\shaders\camera.glsl" />
     <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl" />
     <None Include="..\share\shaders\compute_curve\Commons.hlsl" />
@@ -512,15 +514,23 @@
     <None Include="..\share\shaders\compute_curve\Reorder.hlsl" />
     <None Include="..\share\shaders\compute_curve\ScanBlockBuffer.hlsl" />
     <None Include="..\share\shaders\depth_pass.vert" />
+    <None Include="..\share\shaders\filter_shadows.glsl" />
     <None Include="..\share\shaders\kajiya-kay.glsl" />
-    <None Include="..\share\shaders\light.glsl" />
+    <None Include="..\share\shaders\lights.glsl" />
+    <None Include="..\share\shaders\linearize_depth.glsl" />
     <None Include="..\share\shaders\marschner-scheuermann.glsl" />
     <None Include="..\share\shaders\math.glsl" />
     <None Include="..\share\shaders\model.frag" />
+    <None Include="..\share\shaders\model.glsl" />
     <None Include="..\share\shaders\model.vert" />
+    <None Include="..\share\shaders\parameters.glsl" />
+    <None Include="..\share\shaders\random.glsl" />
+    <None Include="..\share\shaders\raymarcher.glsl" />
     <None Include="..\share\shaders\shadow_map.glsl" />
     <None Include="..\share\shaders\strand.frag" />
+    <None Include="..\share\shaders\strand.glsl" />
     <None Include="..\share\shaders\strand.vert" />
+    <None Include="..\share\shaders\tex2Dproj.glsl" />
     <None Include="..\share\shaders\volume.glsl" />
     <None Include="..\share\shaders\voxelize.comp" />
   </ItemGroup>

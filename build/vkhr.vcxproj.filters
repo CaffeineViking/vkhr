@@ -1237,6 +1237,9 @@
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
+    <None Include="..\share\shaders\approximate_deep_shadows.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\billboard.frag">
       <Filter>shaders</Filter>
     </None>
@@ -1244,6 +1247,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\blinn-phong.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\bounding_box.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\camera.glsl">
@@ -1285,10 +1291,16 @@
     <None Include="..\share\shaders\depth_pass.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\filter_shadows.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\kajiya-kay.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\light.glsl">
+    <None Include="..\share\shaders\lights.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\linearize_depth.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\marschner-scheuermann.glsl">
@@ -1300,7 +1312,19 @@
     <None Include="..\share\shaders\model.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\model.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\model.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\parameters.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\random.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\raymarcher.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\shadow_map.glsl">
@@ -1309,7 +1333,13 @@
     <None Include="..\share\shaders\strand.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\share\shaders\strand.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="..\share\shaders\strand.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\share\shaders\tex2Dproj.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="..\share\shaders\volume.glsl">
