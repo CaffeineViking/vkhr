@@ -69,15 +69,16 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
 
-            density_view = vk::ImageView {
+            density_view = vk::ImageView{
                 vulkan_renderer.device,
-                density_volume
+                density_volume,
+                VK_IMAGE_LAYOUT_GENERAL
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
             parameters.volume_bounds     = hair_style.get_bounding_box();
-            parameters.strand_radius     = 0.80f;
+            parameters.strand_radius     = hair_style.get_default_thickness();
             parameters.volume_resolution = strand_density.resolution;
             parameters.hair_shininess    = 40.0f;
             parameters.hair_color        = glm::vec3 { .32, .228, .128 };
