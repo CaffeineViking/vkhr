@@ -35,7 +35,7 @@ namespace vkhr {
         glm::vec3 HairStyle::shade(const Ray& surface_intersection,
                                    const LightSource& light_source,
                                    const Camera& projection_camera)  {
-            auto hair_diffuse = glm::vec3(0.80f, 0.57f, 0.32f) * 0.4f;
+            auto hair_diffuse = glm::vec3(.32, .228, .128); // TressFX
             auto tangent = surface_intersection.get_uniform_tangent();
             tangent = projection_camera.get_view_matrix() * tangent;
             auto light_direction = projection_camera.get_view_matrix() * light_source.get_vector();

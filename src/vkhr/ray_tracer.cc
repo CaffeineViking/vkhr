@@ -101,7 +101,7 @@ namespace vkhr {
             if (ray.intersects(scene, context)) {
                 auto surface_point = ray.get_intersection_point();
 
-                pixel_color  = light_shading(ray, camera, light, context);
+                pixel_color = light_shading(ray, camera, light, context);
 
                 if (visualization_method != DirectShadows) {
                     pixel_color *= ambient_occlusion(surface_point, context);
@@ -157,8 +157,7 @@ namespace vkhr {
                 ++occluded_rays;
         }
 
-        // We divide by two here since we are sampling in a sphere (hair don't have normals).
-        return static_cast<float>(occluded_rays) / static_cast<float>(sampling_count / 2.0f);
+        return static_cast<float>(occluded_rays) / static_cast<float>(sampling_count);
     }
 
     Image& Raytracer::get_framebuffer() {
