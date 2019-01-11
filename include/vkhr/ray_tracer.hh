@@ -43,6 +43,7 @@ namespace vkhr {
         mutable RTCScene  scene  { nullptr };
 
         std::mt19937 prng;
+        std::uniform_real_distribution<float> sample { -1.0f, +1.0f };
 
         Image framebuffer;
 

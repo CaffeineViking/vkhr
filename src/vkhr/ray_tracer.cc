@@ -33,6 +33,8 @@ namespace vkhr {
 
         rtcSetDeviceErrorFunction(device, embree_debug_callback, nullptr);
 
+        std::random_device seed;
+        prng.seed(seed());
         load(scene_graph);
     }
 
@@ -97,16 +99,29 @@ namespace vkhr {
             glm::vec4 frag_color { 0.0f, 0.0f, 0.0f, 1.0f };
 
             if (ray.intersects(scene, context)) {
-                Ray shadow_ray {
-                    ray.get_intersection_point(),
-                    light.get_direction(),
-                    Ray::Epsilon
-                };
+                std::size_t occluded_rays { 0 };
+                float ambient_occlusion { 1.0 };
 
-                if (!shadow_ray.occluded_by(scene, context) || !shadows_on) {
-                    auto& hair { hair_style_geometry[ray.get_geometry_id()] };
-                    frag_color = hair.shade(ray, light, camera); // Kajiya-Kay
+                for (std::size_t i { 0 }; i < sampling_count; ++i) {
+                    auto random_direction = glm::vec3 {
+                        sample(prng),
+                        sample(prng),
+                        sample(prng)
+                    };
+
+                    Ray random_ray {
+                        ray.get_intersection_point(),
+                        random_direction,
+                        Ray::Epsilon
+                    };
+
+                    if (!random_ray.occluded_by(scene, context) || !shadows_on)
+                        occluded_rays += 1;
                 }
+
+                ambient_occlusion = 1.0f - static_cast<float>(occluded_rays) / static_cast<float>(sampling_count);
+
+                frag_color = glm::vec4 { glm::vec3 { ambient_occlusion }, 1.0f };
 
                 framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
                     glm::clamp(frag_color.r, 0.0f, 1.0f) * 255,
