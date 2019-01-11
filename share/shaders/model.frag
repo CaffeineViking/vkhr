@@ -23,13 +23,13 @@ void main() {
 
     vec3 shading = vec3(1.0f);
 
-    if (shading_model == 0 || shading_model == 1) {
+    if (shading_model == 0) {
         shading = vec3(dot(camera_space_light, fs_in.normal));
     }
 
     float occlusion = 1.0f;
 
-    if (pcf_shadows_on == 1) {
+    if (pcf_shadows_on == 1 && shading_model != 3) {
         occlusion = filter_shadows(shadow_maps[0],
                                    light_space_vertex,
                                    pcf_shadows_kernel_size,

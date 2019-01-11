@@ -8,10 +8,10 @@
 
     "lights": [
         {
-            "direction": [1, 2, 1],
-            "intensity": [ 0.128,
-                           0.128,
-                           0.128 ]
+            "direction": [ 1, 2, 1 ],
+            "intensity": [ 0.348,
+                           0.282,
+                           0.252 ]
         }
     ],
 

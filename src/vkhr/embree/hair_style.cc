@@ -41,7 +41,7 @@ namespace vkhr {
             auto light_direction = projection_camera.get_view_matrix() * light_source.get_vector();
             auto shading = kajiya_kay(hair_diffuse,
                                       light_source.get_intensity(),
-                                      80.0f, glm::normalize(tangent),
+                                      50.0f, glm::normalize(tangent),
                                       glm::vec3 { light_direction },
                                       glm::vec3 { 0.0, 0.0, -1.0f });
             return glm::vec4 { shading, 1.0f };

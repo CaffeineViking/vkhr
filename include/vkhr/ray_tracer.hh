@@ -41,7 +41,8 @@ namespace vkhr {
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
-        std::mt19937 random_number_generator;
+
+        std::mt19937 prng;
 
         Image framebuffer;
 

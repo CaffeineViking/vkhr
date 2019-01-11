@@ -80,7 +80,7 @@ namespace vkhr {
             parameters.volume_bounds     = hair_style.get_bounding_box();
             parameters.strand_radius     = hair_style.get_default_thickness();
             parameters.volume_resolution = strand_density.resolution;
-            parameters.hair_shininess    = 40.0f;
+            parameters.hair_shininess    = 50.0f;
             parameters.hair_color        = glm::vec3 { .32, .228, .128 };
 
             parameters_buffer = vk::UniformBuffer {

@@ -41,14 +41,16 @@ void main() {
                                               shadow_space_strand,
                                               deep_shadows_kernel_size,
                                               deep_shadows_stride_size,
-                                              1136.0f, 0.9f);
+                                              1136.0f, 0.8f);
     }
 
-    float density = sample_volume(density_volume,
-                                  fs_in.position.xyz,
-                                  fs_in.origin.xyz,
-                                  volume_bounds.size).r;
-    visibility *= 1.0f - density;
+    if (shading_model != 2) {
+        float density = sample_volume(density_volume,
+                                      fs_in.position.xyz,
+                                      fs_in.origin.xyz,
+                                      volume_bounds.size).r;
+        visibility *= 1.0f - density;
+    }
 
     color = vec4(shading * visibility, 1.0f);
 }

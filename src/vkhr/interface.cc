@@ -78,7 +78,7 @@ namespace vkhr {
         simulations.push_back("No Effects");
 
         shaders.push_back("Kajiya-Kay and Blinn-Phong");
-        shaders.push_back("Marschner with Blinn-Phong");
+        shaders.push_back("Combined Shadow Map and AO");
         shaders.push_back("Local Shadow Map Occlusion");
         shaders.push_back("Voxelized Strand Densities");
 
