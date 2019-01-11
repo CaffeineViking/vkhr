@@ -11,7 +11,7 @@ namespace vkhr {
         class Shadable {
         public:
             virtual ~Shadable() noexcept = default;
-            virtual glm::vec4 shade(const Ray& surface_intersection,
+            virtual glm::vec3 shade(const Ray& surface_intersection,
                                     const LightSource& light_source,
                                     const Camera& projection_camera) = 0;
         };

@@ -7,7 +7,7 @@ namespace vkhr {
     namespace embree {
         class Model final : public Shadable {
         public:
-            glm::vec4 shade(const Ray& surface_intersection,
+            glm::vec3 shade(const Ray& surface_intersection,
                             const LightSource& light_source,
                             const Camera& projection_camera);
         };

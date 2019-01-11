@@ -32,7 +32,7 @@ namespace vkhr {
             rtcReleaseGeometry(hair_geometry);
         }
 
-        glm::vec4 HairStyle::shade(const Ray& surface_intersection,
+        glm::vec3 HairStyle::shade(const Ray& surface_intersection,
                                    const LightSource& light_source,
                                    const Camera& projection_camera)  {
             auto hair_diffuse = glm::vec3(0.80f, 0.57f, 0.32f) * 0.4f;
@@ -44,7 +44,7 @@ namespace vkhr {
                                       50.0f, glm::normalize(tangent),
                                       glm::vec3 { light_direction },
                                       glm::vec3 { 0.0, 0.0, -1.0f });
-            return glm::vec4 { shading, 1.0f };
+            return shading;
         }
 
         unsigned HairStyle::get_geometry() const {

@@ -54,9 +54,9 @@ namespace vkhr {
         for (const auto& hair_style_node : scene_graph.get_nodes_with_hair_styles()) {
             for (const auto hair_style : hair_style_node->get_hair_styles()) {
                 auto hair = embree::HairStyle { *hair_style, *this };
-                if (hair.get_geometry() >= hair_style_geometry.size())
-                    hair_style_geometry.resize(hair.get_geometry()+1);
-                hair_style_geometry[hair.get_geometry()] = std::move(hair);
+                if (hair.get_geometry() >= hair_styles.size())
+                    hair_styles.resize(hair.get_geometry()+1);
+                hair_styles[hair.get_geometry()] = std::move(hair);
             }
         }
 
@@ -96,44 +96,59 @@ namespace vkhr {
                 0.0f
             };
 
-            glm::vec4 frag_color { 0.0f, 0.0f, 0.0f, 1.0f };
+            glm::vec3 pixel_color { 0.0f, 0.0f, 0.0f };
 
             if (ray.intersects(scene, context)) {
-                std::size_t occluded_rays { 0 };
-                float ambient_occlusion { 1.0 };
+                auto surface_point = ray.get_intersection_point();
 
-                for (std::size_t i { 0 }; i < sampling_count; ++i) {
-                    auto random_direction = glm::vec3 {
-                        sample(prng),
-                        sample(prng),
-                        sample(prng)
-                    };
-
-                    Ray random_ray {
-                        ray.get_intersection_point(),
-                        random_direction,
-                        Ray::Epsilon
-                    };
-
-                    if (!random_ray.occluded_by(scene, context) || !shadows_on)
-                        occluded_rays += 1;
-                }
-
-                ambient_occlusion = static_cast<float>(occluded_rays) / static_cast<float>(sampling_count / 2.0f);
-
-                frag_color = glm::vec4 {
-                    glm::vec3 { ambient_occlusion },
-                    1.0f
-                };
+                pixel_color  = light_shading(ray, camera, light, context);
+                pixel_color *= ambient_occlusion(surface_point,  context);
 
                 framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
-                    glm::clamp(frag_color.r, 0.0f, 1.0f) * 255,
-                    glm::clamp(frag_color.g, 0.0f, 1.0f) * 255,
-                    glm::clamp(frag_color.b, 0.0f, 1.0f) * 255,
-                    glm::clamp(frag_color.a, 0.0f, 1.0f) * 255
+                    glm::clamp(pixel_color.r, 0.0f, 1.0f) * 255,
+                    glm::clamp(pixel_color.g, 0.0f, 1.0f) * 255,
+                    glm::clamp(pixel_color.b, 0.0f, 1.0f) * 255,
+                    255 // for now assume that there's no alpha.
               });
             }
         }
+    }
+
+    glm::vec3 Raytracer::light_shading(const Ray& ray, const Camera& camera, const LightSource& light, RTCIntersectContext& context) {
+        Ray shadow_ray {
+            ray.get_intersection_point(),
+            light.get_direction(),
+            Ray::Epsilon
+        };
+
+        if (!shadow_ray.occluded_by(scene, context))
+            return hair_styles[ray.get_geometry_id()].shade(ray, light, camera);
+        else
+            return glm::vec3 { 0 }; // ambient term.
+    }
+
+    float Raytracer::ambient_occlusion(const glm::vec3& position, RTCIntersectContext& context) {
+        std::size_t occluded_rays { 0 };
+
+        for (std::size_t s { 0 }; s < sampling_count; ++s) {
+            auto random_direction = glm::vec3 {
+                sample(prng),
+                sample(prng),
+                sample(prng)
+            };
+
+            Ray random_ray {
+                position,
+                random_direction,
+                Ray::Epsilon
+            };
+
+            if (!random_ray.occluded_by(scene, context))
+                ++occluded_rays;
+        }
+
+        // We divide by two here since we are sampling in a sphere (hair don't have normals).
+        return static_cast<float>(occluded_rays) / static_cast<float>(sampling_count / 2.0f);
     }
 
     Image& Raytracer::get_framebuffer() {

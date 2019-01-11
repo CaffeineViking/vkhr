@@ -23,6 +23,11 @@ namespace vkhr {
         void load(const SceneGraph& scene_graph) override;
         void draw(const SceneGraph& scene_graph) override;
 
+        glm::vec3 light_shading(const Ray& ray, const Camera& camera,
+                                const LightSource& light,
+                                RTCIntersectContext& context);
+        float ambient_occlusion(const glm::vec3& point, RTCIntersectContext& context);
+
         Raytracer(Raytracer&& raytracer) noexcept;
         Raytracer& operator=(Raytracer&& raytracer) noexcept;
         friend void swap(Raytracer& lhs, Raytracer& rhs);
@@ -47,7 +52,7 @@ namespace vkhr {
 
         Image framebuffer;
 
-        std::vector<embree::HairStyle> hair_style_geometry;
+        std::vector<embree::HairStyle> hair_styles;
 
         friend class embree::HairStyle;
 

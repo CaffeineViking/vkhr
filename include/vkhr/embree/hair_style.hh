@@ -21,7 +21,7 @@ namespace vkhr {
             HairStyle(const vkhr::HairStyle& hair_style, const vkhr::Raytracer& raytracer);
             void load(const vkhr::HairStyle& hair_style, const vkhr::Raytracer& raytracer);
 
-            glm::vec4 shade(const Ray& surface_intersection,
+            glm::vec3 shade(const Ray& surface_intersection,
                             const LightSource& light_source,
                             const Camera& projection_camera) override;
 
