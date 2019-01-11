@@ -119,9 +119,12 @@ namespace vkhr {
                         occluded_rays += 1;
                 }
 
-                ambient_occlusion = 1.0f - static_cast<float>(occluded_rays) / static_cast<float>(sampling_count);
+                ambient_occlusion = static_cast<float>(occluded_rays) / static_cast<float>(sampling_count / 2.0f);
 
-                frag_color = glm::vec4 { glm::vec3 { ambient_occlusion }, 1.0f };
+                frag_color = glm::vec4 {
+                    glm::vec3 { ambient_occlusion },
+                    1.0f
+                };
 
                 framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
                     glm::clamp(frag_color.r, 0.0f, 1.0f) * 255,
