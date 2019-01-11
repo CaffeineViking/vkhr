@@ -102,7 +102,10 @@ namespace vkhr {
                 auto surface_point = ray.get_intersection_point();
 
                 pixel_color  = light_shading(ray, camera, light, context);
-                pixel_color *= ambient_occlusion(surface_point,  context);
+
+                if (visualization_method != DirectShadows) {
+                    pixel_color *= ambient_occlusion(surface_point, context);
+                }
 
                 framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
                     glm::clamp(pixel_color.r, 0.0f, 1.0f) * 255,
@@ -121,10 +124,17 @@ namespace vkhr {
             Ray::Epsilon
         };
 
-        if (!shadow_ray.occluded_by(scene, context))
-            return hair_styles[ray.get_geometry_id()].shade(ray, light, camera);
-        else
-            return glm::vec3 { 0 }; // ambient term.
+        if (visualization_method == AmbientOcclusion) {
+            return glm::vec3 { 1.0f };
+        } else if (!shadow_ray.occluded_by(scene, context)) {
+            if (visualization_method == Shaded) {
+                return hair_styles[ray.get_geometry_id()].shade(ray, light, camera);
+            } else {
+                return glm::vec3 { 1.0f };
+            }
+        } else {
+            return glm::vec3 { 0.0f };
+        }
     }
 
     float Raytracer::ambient_occlusion(const glm::vec3& position, RTCIntersectContext& context) {

@@ -153,11 +153,13 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("Reflection Model",
-                         reinterpret_cast<int*>(&parameters.shading_model),
-                         get_string_from_vector,
-                         static_cast<void*>(&shaders),
-                         shaders.size());
+            if (ImGui::Combo("Reflection Model",
+                             reinterpret_cast<int*>(&parameters.shading_model),
+                             get_string_from_vector,
+                             static_cast<void*>(&shaders),
+                             shaders.size())) {
+                ray_tracer.visualization_method = static_cast<Raytracer::VisualizationMethod>(parameters.shading_model);
+            }
 
             ImGui::Spacing();
             ImGui::Separator();

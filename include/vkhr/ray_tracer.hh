@@ -37,12 +37,21 @@ namespace vkhr {
         Image& get_framebuffer();
         const Image& get_framebuffer() const;
 
+        enum VisualizationMethod {
+            Shaded           = 0,
+            CombinedShadows  = 1,
+            DirectShadows    = 2,
+            AmbientOcclusion = 3
+        };
+
     private:
         void set_flush_to_zero();
         void set_denormal_zero();
 
         bool shadows_on { true };
         int sampling_count { 1 };
+
+        VisualizationMethod visualization_method { Shaded };
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
