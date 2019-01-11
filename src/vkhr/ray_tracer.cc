@@ -133,7 +133,7 @@ namespace vkhr {
                 return glm::vec3 { 1.0f };
             }
         } else {
-            return glm::vec3 { 0.0f };
+            return glm::vec3 { 0.1f };
         }
     }
 
