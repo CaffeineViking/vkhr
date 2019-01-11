@@ -242,6 +242,7 @@ namespace vkhr {
             if (scene_file != previous_scene_file) {
                 scene_graph.load(scene_files[scene_file]);
                 rasterizer.load(scene_graph);
+                ray_tracer.load(scene_graph);
                 previous_scene_file = scene_file;
             }
 

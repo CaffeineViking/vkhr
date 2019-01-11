@@ -10,6 +10,8 @@
 
 #include <embree3/rtcore.h>
 
+#include <random>
+
 namespace vkhr {
     class Interface;
     class Raytracer final : public Renderer {
@@ -39,6 +41,7 @@ namespace vkhr {
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
+        std::mt19937 random_number_generator;
 
         Image framebuffer;
 

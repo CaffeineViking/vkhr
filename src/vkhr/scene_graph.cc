@@ -72,6 +72,8 @@ namespace vkhr {
         this->root = &nodes[root];
         this->root_index  = root;
 
+        traverse_nodes(); // Build the tree.
+
         return true;
     }
 

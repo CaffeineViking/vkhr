@@ -49,11 +49,13 @@ namespace vkhr {
 
         scene = rtcNewScene(device);
 
-        for (const auto& hair_style : scene_graph.get_hair_styles()) {
-            auto hair = embree::HairStyle { hair_style.second, *this };
-            if (hair.get_geometry() >= hair_style_geometry.size())
-                hair_style_geometry.resize(hair.get_geometry()+1);
-            hair_style_geometry[hair.get_geometry()] = std::move(hair);
+        for (const auto& hair_style_node : scene_graph.get_nodes_with_hair_styles()) {
+            for (const auto hair_style : hair_style_node->get_hair_styles()) {
+                auto hair = embree::HairStyle { *hair_style, *this };
+                if (hair.get_geometry() >= hair_style_geometry.size())
+                    hair_style_geometry.resize(hair.get_geometry()+1);
+                hair_style_geometry[hair.get_geometry()] = std::move(hair);
+            }
         }
 
         rtcCommitScene(scene);
