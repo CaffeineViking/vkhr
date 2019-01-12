@@ -1,7 +1,7 @@
-#ifndef VKHR_VOLUME_GLSL
-#define VKHR_VOLUME_GLSL
+#ifndef VKHR_SAMPLE_VOLUME_GLSL
+#define VKHR_SAMPLE_VOLUME_GLSL
 
-#include "math.glsl"
+#include "../math.glsl"
 
 vec4 sample_volume(sampler3D volume, vec3 position, vec3 origin, vec3 size) {
     return texture(volume, (position - origin) / size);

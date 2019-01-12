@@ -1,7 +1,8 @@
 #version 460 core
 
+#include "../scene_graph/camera.glsl"
+
 #include "strand.glsl"
-#include "camera.glsl"
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 tangent;

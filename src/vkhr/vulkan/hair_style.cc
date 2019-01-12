@@ -166,13 +166,13 @@ namespace vkhr {
                 { 0, 0, sizeof(std::uint32_t) } // light size
             };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand.frag"),
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Vertex Shader");
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.frag"),
                                                 constants, &constant_data, sizeof(constant_data));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Fragment Shader");
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Fragment Shader");
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
@@ -248,10 +248,10 @@ namespace vkhr {
             pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_depth_test();
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("depth_pass.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("self-shadowing/depth_map.vert"));
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Depth Shader");
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Depth Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device
@@ -289,10 +289,10 @@ namespace vkhr {
         void HairStyle::voxel_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("voxelize.comp"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("voxelization/voxelize.comp"));
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Strand Voxel Shader");
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Voxelization Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
@@ -331,7 +331,7 @@ namespace vkhr {
 
         void HairStyle::compute_curve_pipelines(std::unordered_map<ComputeCurve, Pipeline>& pipelines, Rasterizer& rasterizer) {
             pipelines[ReduceDepthBuffer] = {  };
-            pipelines[ReduceDepthBuffer].shader_stages.emplace_back(rasterizer.device, SHADER("compute_curve/ReduceDepthBuffer.hlsl"));
+            pipelines[ReduceDepthBuffer].shader_stages.emplace_back(rasterizer.device, SHADER("BezierDirect/ReduceDepthBuffer.hlsl"));
             vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Reduce Depth Buffer Shader");
 

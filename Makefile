@@ -35,10 +35,18 @@ program: FORCE
 	make -j8 -C build config=${config}
 
 shaders: FORCE
-	@-utils/glslc.py share/shaders
-	@-utils/glslc.py share/shaders/compute_curve
-	@-make --no-print-directory -C share/shaders
-	@-make --no-print-directory -C share/shaders/compute_curve
+	@-utils/glslc.py share/shaders/billboard
+	@-make --no-print-directory -C share/shaders/billboard
+	@-utils/glslc.py share/shaders/BezierDirect
+	@-make --no-print-directory -C share/shaders/BezierDirect
+	@-utils/glslc.py share/shaders/model
+	@-make --no-print-directory -C share/shaders/model
+	@-utils/glslc.py share/shaders/self-shadowing
+	@-make --no-print-directory -C share/shaders/self-shadowing
+	@-utils/glslc.py share/shaders/strand
+	@-make --no-print-directory -C share/shaders/strand
+	@-utils/glslc.py share/shaders/voxelization
+	@-make --no-print-directory -C share/shaders/voxelization
 
 download: download-modules
 download-modules: FORCE

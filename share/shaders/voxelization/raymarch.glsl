@@ -1,7 +1,7 @@
 #ifndef VKHR_RAYMARCH_GLSL
 #define VKHR_RAYMARCH_GLSL
 
-#include "volume.glsl"
+#include "sample_volume.glsl"
 
 vec4 raymarch(sampler3D volume, vec3 start, vec3 end, vec3 origin, vec3 size) {
     vec3 direction = end - start;

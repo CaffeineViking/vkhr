@@ -1,13 +1,15 @@
 #version 460 core
 
+#include "../scene_graph/camera.glsl"
+#include "../shading_models/kajiya-kay.glsl"
+#include "../self-shadowing/approximate_deep_shadows.glsl"
+#include "../scene_graph/shadow_maps.glsl"
+#include "../voxelization/raymarch.glsl"
+#include "../scene_graph/lights.glsl"
+
+#include "../scene_graph/params.glsl"
+
 #include "strand.glsl"
-#include "camera.glsl"
-#include "parameters.glsl"
-#include "kajiya-kay.glsl"
-#include "shadow_map.glsl"
-#include "approximate_deep_shadows.glsl"
-#include "raymarcher.glsl"
-#include "lights.glsl"
 
 layout(location = 0) in PipelineIn {
     vec4 position;

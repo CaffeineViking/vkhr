@@ -1,7 +1,7 @@
 #ifndef VKHR_RANDOM_GLSL
 #define VKHR_RANDOM_GLSL
 
-uint random_seed; // Use Wang hash.
+layout(constant_id = 42) const uint random_seed = 42;
 
 // LCG values taken from the Numerical Recipies book.
 uint random_lcg() {

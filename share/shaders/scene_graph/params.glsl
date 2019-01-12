@@ -1,7 +1,7 @@
-#ifndef VKHR_PARAMETERS_GLSL
-#define VKHR_PARAMETERS_GLSL
+#ifndef VKHR_PARAMS_GLSL
+#define VKHR_PARAMS_GLSL
 
-layout(binding = 4) uniform Parameters {
+layout(binding = 4) uniform Params {
     int shading_model;
 
     int deep_shadows_kernel_size;

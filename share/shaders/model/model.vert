@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "camera.glsl"
+#include "../scene_graph/camera.glsl"
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;

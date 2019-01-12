@@ -3,9 +3,9 @@
 
 #include "tex2Dproj.glsl"
 #include "linearize_depth.glsl"
-#include "math.glsl"
+#include "../math.glsl"
 
-// Standard shadow mapping with some filtering.
+// Standard shadow mapping with some filters.
 float filter_shadows(sampler2D shadow_map, // the non-linearized shadow map.
                      vec4 light_space_frag, // fragment in light coordiante.
                      float kernel_width, // size of the uniform PCF kernels.

@@ -3,7 +3,7 @@
 
 #include "tex2Dproj.glsl"
 #include "linearize_depth.glsl"
-#include "math.glsl"
+#include "../math.glsl"
 
 // Based on the "A Survivor Reborn: Tomb Raider on DX11" talk at GDC 2013 by Jason Lacroix and his pseudo-code.
 float approximate_deep_shadow(float shadow_depth, float light_depth, float strand_radius, float strand_alpha) {
@@ -19,7 +19,7 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
 
 // Applies Gaussian PCF to the function above to create
 // the final fragment visibility. It also features some
-// "jitter" which creates high-quality "smooth" shadow.
+// "jitter" which create high-quality "smooth" shadows.
 float approximate_deep_shadows(sampler2D shadow_map, // the non-linearized shadow map itself of the hair style.
                                vec4 light_space_strand, // fragment in the shadow maps light coordinate system.
                                float kernel_width, // size of the PCF kernel, common values are 3x3 or 5x5 too.

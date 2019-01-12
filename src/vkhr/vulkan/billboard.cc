@@ -83,10 +83,10 @@ namespace vkhr {
 
             pipeline.fixed_stages.enable_alpha_mix(0);
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboard.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboard/billboard.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboard.frag"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboard/billboard.frag"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
                                        VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Fragment Shader");
 

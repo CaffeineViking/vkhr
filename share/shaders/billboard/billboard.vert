@@ -1,24 +1,8 @@
 #version 460 core
 
-#include "camera.glsl"
+#include "../scene_graph/camera.glsl"
 
-vec2 positions[] = {
-    { -1.0f, -1.0f },
-    { +1.0f, +1.0f },
-    { +1.0f, -1.0f },
-    { +1.0f, +1.0f },
-    { -1.0f, -1.0f },
-    { -1.0f, +1.0f }
-};
-
-vec2 texcoords[] = {
-    { 0.0f, 0.0f },
-    { 1.0f, 1.0f },
-    { 1.0f, 0.0f },
-    { 1.0f, 1.0f },
-    { 0.0f, 0.0f },
-    { 0.0f, 1.0f },
-};
+#include "billboard.glsl"
 
 layout(push_constant) uniform Object {
     mat4 model;

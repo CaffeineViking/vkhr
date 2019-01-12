@@ -1,5 +1,5 @@
-#ifndef VKHR_BOUNDING_BOX_GLSL
-#define VKHR_BOUNDING_BOX_GLSL
+#ifndef VKHR_AABB_GLSL
+#define VKHR_AABB_GLSL
 
 struct AABB {
     vec3 origin;

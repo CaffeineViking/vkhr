@@ -1,11 +1,14 @@
 #version 460 core
 
-#include "camera.glsl"
-#include "blinn-phong.glsl"
-#include "filter_shadows.glsl"
-#include "shadow_map.glsl"
-#include "parameters.glsl"
-#include "lights.glsl"
+#include "../scene_graph/camera.glsl"
+#include "../shading_models/blinn-phong.glsl"
+#include "../self-shadowing/filter_shadows.glsl"
+#include "../scene_graph/shadow_maps.glsl"
+#include "../scene_graph/lights.glsl"
+
+#include "../scene_graph/params.glsl"
+
+#include "model.glsl"
 
 layout(location = 0) in PipelineIn {
     vec4 position;

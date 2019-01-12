@@ -1,5 +1,5 @@
-#ifndef VKHR_SHADOW_MAP_GLSL
-#define VKHR_SHADOW_MAP_GLSL
+#ifndef VKHR_SHADOW_MAPS_GLSL
+#define VKHR_SHADOW_MAPS_GLSL
 
 #include "lights.glsl"
 
