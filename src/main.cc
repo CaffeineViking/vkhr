@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 
     vkhr::Raytracer ray_tracer { scene_graph };
 
-    const vkhr::Image vulkan_icon { IMAGE("vulkan-icon.png") };
+    const vkhr::Image vulkan_icon { IMAGE("vulkan_icon.png") };
     vkhr::Window window { width, height, "VKHR", vulkan_icon };
 
     if (argp["fullscreen"].value.boolean)
