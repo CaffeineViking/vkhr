@@ -29,6 +29,7 @@ float approximate_deep_shadows(sampler2D shadow_map, // the non-linearized shado
     float visibility = 0.0f;
 
     vec2 shadow_map_size = textureSize(shadow_map, 0);
+
     float kernel_range = (kernel_width - 1.0f) / 2.0f;
     float sigma_stddev = (kernel_width / 2.0f) / 2.4f;
     float sigma_squared = sigma_stddev * sigma_stddev;

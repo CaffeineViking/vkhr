@@ -50,8 +50,7 @@ void main() {
         float density = filter_volume(density_volume, 3.0f,
                                       fs_in.position.xyz,
                                       fs_in.origin.xyz,
-                                      volume_bounds.size,
-                                      volume_resolution).r;
+                                      volume_bounds.size).r;
         visibility *= 1.0f - density;
     }
 

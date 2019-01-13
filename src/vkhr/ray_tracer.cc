@@ -126,14 +126,14 @@ namespace vkhr {
 
         if (visualization_method == AmbientOcclusion) {
             return glm::vec3 { 1.0f };
-        } else if (!shadow_ray.occluded_by(scene, context)) {
+        } else if (!shadow_ray.occluded_by(scene, context) || !shadows_on) {
             if (visualization_method == Shaded) {
                 return hair_styles[ray.get_geometry_id()].shade(ray, light, camera);
             } else {
                 return glm::vec3 { 1.0f };
             }
         } else {
-            return glm::vec3 { 0.1f };
+            return glm::vec3 { 0.0f };
         }
     }
 
@@ -157,7 +157,8 @@ namespace vkhr {
                 ++occluded_rays;
         }
 
-        return static_cast<float>(occluded_rays) / static_cast<float>(sampling_count);
+        // We divide here since we are sampling in a sphere, and not in a hemisphere as usual...
+        return static_cast<float>(occluded_rays) / (static_cast<float>(sampling_count) / 2.00f);
     }
 
     Image& Raytracer::get_framebuffer() {
