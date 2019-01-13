@@ -367,32 +367,32 @@
     <ClInclude Include="..\foreign\stb\stretchy_buffer.h" />
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h" />
     <ClInclude Include="..\include\vkhr\arg_parser.hh" />
-    <ClInclude Include="..\include\vkhr\billboard.hh" />
-    <ClInclude Include="..\include\vkhr\camera.hh" />
-    <ClInclude Include="..\include\vkhr\embree\billboard.hh" />
-    <ClInclude Include="..\include\vkhr\embree\hair_style.hh" />
-    <ClInclude Include="..\include\vkhr\embree\model.hh" />
-    <ClInclude Include="..\include\vkhr\embree\shadable.hh" />
-    <ClInclude Include="..\include\vkhr\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
     <ClInclude Include="..\include\vkhr\input_map.hh" />
-    <ClInclude Include="..\include\vkhr\interface.hh" />
-    <ClInclude Include="..\include\vkhr\light_source.hh" />
-    <ClInclude Include="..\include\vkhr\model.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />
-    <ClInclude Include="..\include\vkhr\pipeline.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer.hh" />
-    <ClInclude Include="..\include\vkhr\ray.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\billboard.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\depth_map.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\drawable.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\hair_style.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\interface.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\model.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\pipeline.hh" />
     <ClInclude Include="..\include\vkhr\ray_tracer.hh" />
+    <ClInclude Include="..\include\vkhr\ray_tracer\billboard.hh" />
+    <ClInclude Include="..\include\vkhr\ray_tracer\hair_style.hh" />
+    <ClInclude Include="..\include\vkhr\ray_tracer\model.hh" />
+    <ClInclude Include="..\include\vkhr\ray_tracer\ray.hh" />
+    <ClInclude Include="..\include\vkhr\ray_tracer\shadable.hh" />
     <ClInclude Include="..\include\vkhr\renderer.hh" />
     <ClInclude Include="..\include\vkhr\scene_graph.hh" />
-    <ClInclude Include="..\include\vkhr\simulation.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph\billboard.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph\camera.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph\hair_style.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph\light_source.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph\model.hh" />
+    <ClInclude Include="..\include\vkhr\scene_graph\simulation.hh" />
     <ClInclude Include="..\include\vkhr\vkhr.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\billboard.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\depth_view.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\drawable.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh" />
-    <ClInclude Include="..\include\vkhr\vulkan\model.hh" />
     <ClInclude Include="..\include\vkhr\window.hh" />
     <ClInclude Include="..\include\vkpp\append.hh" />
     <ClInclude Include="..\include\vkpp\application.hh" />
@@ -432,38 +432,38 @@
     <ClCompile Include="..\foreign\tinyobjloader\tiny_obj_loader.cc" />
     <ClCompile Include="..\src\main.cc" />
     <ClCompile Include="..\src\vkhr\arg_parser.cc" />
-    <ClCompile Include="..\src\vkhr\billboard.cc" />
-    <ClCompile Include="..\src\vkhr\camera.cc" />
-    <ClCompile Include="..\src\vkhr\embree\billboard.cc">
-      <ObjectFileName>$(IntDir)\billboard1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\embree\hair_style.cc" />
-    <ClCompile Include="..\src\vkhr\embree\model.cc" />
-    <ClCompile Include="..\src\vkhr\hair_style.cc">
-      <ObjectFileName>$(IntDir)\hair_style1.obj</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\src\vkhr\image.cc" />
     <ClCompile Include="..\src\vkhr\input_map.cc" />
-    <ClCompile Include="..\src\vkhr\interface.cc" />
-    <ClCompile Include="..\src\vkhr\light_source.cc" />
-    <ClCompile Include="..\src\vkhr\model.cc">
+    <ClCompile Include="..\src\vkhr\rasterizer.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer\billboard.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer\depth_map.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer\hair_style.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer\interface.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer\model.cc" />
+    <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
+    <ClCompile Include="..\src\vkhr\ray_tracer\billboard.cc">
+      <ObjectFileName>$(IntDir)\billboard1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer\hair_style.cc">
+      <ObjectFileName>$(IntDir)\hair_style1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer\model.cc">
       <ObjectFileName>$(IntDir)\model1.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\rasterizer.cc" />
-    <ClCompile Include="..\src\vkhr\ray.cc" />
-    <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
+    <ClCompile Include="..\src\vkhr\ray_tracer\ray.cc" />
     <ClCompile Include="..\src\vkhr\scene_graph.cc" />
-    <ClCompile Include="..\src\vkhr\simulation.cc" />
-    <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
+    <ClCompile Include="..\src\vkhr\scene_graph\billboard.cc">
       <ObjectFileName>$(IntDir)\billboard2.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\depth_view.cc" />
-    <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
+    <ClCompile Include="..\src\vkhr\scene_graph\camera.cc" />
+    <ClCompile Include="..\src\vkhr\scene_graph\hair_style.cc">
       <ObjectFileName>$(IntDir)\hair_style2.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\model.cc">
+    <ClCompile Include="..\src\vkhr\scene_graph\light_source.cc" />
+    <ClCompile Include="..\src\vkhr\scene_graph\model.cc">
       <ObjectFileName>$(IntDir)\model2.obj</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\scene_graph\simulation.cc" />
     <ClCompile Include="..\src\vkhr\window.cc" />
     <ClCompile Include="..\src\vkpp\buffer.cc" />
     <ClCompile Include="..\src\vkpp\command_buffer.cc" />
@@ -496,43 +496,44 @@
   <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
-    <None Include="..\share\shaders\approximate_deep_shadows.glsl" />
-    <None Include="..\share\shaders\billboard.frag" />
-    <None Include="..\share\shaders\billboard.vert" />
-    <None Include="..\share\shaders\blinn-phong.glsl" />
-    <None Include="..\share\shaders\bounding_box.glsl" />
-    <None Include="..\share\shaders\camera.glsl" />
-    <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl" />
-    <None Include="..\share\shaders\compute_curve\Commons.hlsl" />
-    <None Include="..\share\shaders\compute_curve\Constants.hlsl" />
-    <None Include="..\share\shaders\compute_curve\Curves.hlsl" />
-    <None Include="..\share\shaders\compute_curve\DrawStrands.hlsl" />
-    <None Include="..\share\shaders\compute_curve\PrefixSum_1.hlsl" />
-    <None Include="..\share\shaders\compute_curve\PrefixSum_2.hlsl" />
-    <None Include="..\share\shaders\compute_curve\Random.hlsl" />
-    <None Include="..\share\shaders\compute_curve\ReduceDepthBuffer.hlsl" />
-    <None Include="..\share\shaders\compute_curve\Reorder.hlsl" />
-    <None Include="..\share\shaders\compute_curve\ScanBlockBuffer.hlsl" />
-    <None Include="..\share\shaders\depth_pass.vert" />
-    <None Include="..\share\shaders\filter_shadows.glsl" />
-    <None Include="..\share\shaders\kajiya-kay.glsl" />
-    <None Include="..\share\shaders\lights.glsl" />
-    <None Include="..\share\shaders\linearize_depth.glsl" />
-    <None Include="..\share\shaders\marschner-scheuermann.glsl" />
+    <None Include="..\share\shaders\BezierDirect\ClipCurves.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\Commons.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\Constants.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\Curves.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\DrawStrands.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\Random.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\Reorder.hlsl" />
+    <None Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl" />
+    <None Include="..\share\shaders\billboard\billboard.frag" />
+    <None Include="..\share\shaders\billboard\billboard.glsl" />
+    <None Include="..\share\shaders\billboard\billboard.vert" />
     <None Include="..\share\shaders\math.glsl" />
-    <None Include="..\share\shaders\model.frag" />
-    <None Include="..\share\shaders\model.glsl" />
-    <None Include="..\share\shaders\model.vert" />
-    <None Include="..\share\shaders\parameters.glsl" />
+    <None Include="..\share\shaders\model\model.frag" />
+    <None Include="..\share\shaders\model\model.glsl" />
+    <None Include="..\share\shaders\model\model.vert" />
     <None Include="..\share\shaders\random.glsl" />
-    <None Include="..\share\shaders\raymarcher.glsl" />
-    <None Include="..\share\shaders\shadow_map.glsl" />
-    <None Include="..\share\shaders\strand.frag" />
-    <None Include="..\share\shaders\strand.glsl" />
-    <None Include="..\share\shaders\strand.vert" />
-    <None Include="..\share\shaders\tex2Dproj.glsl" />
-    <None Include="..\share\shaders\volume.glsl" />
-    <None Include="..\share\shaders\voxelize.comp" />
+    <None Include="..\share\shaders\scene_graph\camera.glsl" />
+    <None Include="..\share\shaders\scene_graph\lights.glsl" />
+    <None Include="..\share\shaders\scene_graph\params.glsl" />
+    <None Include="..\share\shaders\scene_graph\shadow_maps.glsl" />
+    <None Include="..\share\shaders\self-shadowing\approximate_deep_shadows.glsl" />
+    <None Include="..\share\shaders\self-shadowing\depth_map.vert" />
+    <None Include="..\share\shaders\self-shadowing\filter_shadows.glsl" />
+    <None Include="..\share\shaders\self-shadowing\linearize_depth.glsl" />
+    <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl" />
+    <None Include="..\share\shaders\shading_models\blinn-phong.glsl" />
+    <None Include="..\share\shaders\shading_models\kajiya-kay.glsl" />
+    <None Include="..\share\shaders\shading_models\marschner.glsl" />
+    <None Include="..\share\shaders\strand\strand.frag" />
+    <None Include="..\share\shaders\strand\strand.glsl" />
+    <None Include="..\share\shaders\strand\strand.vert" />
+    <None Include="..\share\shaders\voxelization\aabb.glsl" />
+    <None Include="..\share\shaders\voxelization\raymarch.glsl" />
+    <None Include="..\share\shaders\voxelization\sample_volume.glsl" />
+    <None Include="..\share\shaders\voxelization\voxelize.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

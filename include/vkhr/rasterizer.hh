@@ -3,11 +3,11 @@
 
 #include <vkhr/vkhr.hh>
 
-#include <vkhr/vulkan/model.hh>
-#include <vkhr/vulkan/hair_style.hh>
-#include <vkhr/vulkan/billboard.hh>
-#include <vkhr/vulkan/depth_view.hh>
-#include <vkhr/pipeline.hh>
+#include <vkhr/rasterizer/model.hh>
+#include <vkhr/rasterizer/hair_style.hh>
+#include <vkhr/rasterizer/billboard.hh>
+#include <vkhr/rasterizer/depth_map.hh>
+#include <vkhr/rasterizer/pipeline.hh>
 
 #include <vkpp/vkpp.hh>
 

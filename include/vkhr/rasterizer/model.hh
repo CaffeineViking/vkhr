@@ -1,10 +1,11 @@
 #ifndef VKHR_VULKAN_MODEL_HH
 #define VKHR_VULKAN_MODEL_HH
 
-#include <vkhr/model.hh>
-#include <vkhr/pipeline.hh>
-#include <vkhr/vulkan/drawable.hh>
-#include <vkhr/camera.hh>
+#include <vkhr/scene_graph/model.hh>
+#include <vkhr/rasterizer/pipeline.hh>
+#include <vkhr/rasterizer/drawable.hh>
+
+#include <vkhr/scene_graph/camera.hh>
 
 #include <vkpp/buffer.hh>
 #include <vkpp/command_buffer.hh>

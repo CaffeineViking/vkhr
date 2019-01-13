@@ -1,10 +1,11 @@
 #include <vkhr/arg_parser.hh>
-#include <vkhr/scene_graph.hh>
 #include <vkhr/paths.hh>
 #include <vkhr/image.hh>
 #include <vkhr/window.hh>
 #include <vkhr/input_map.hh>
+
 #include <vkhr/rasterizer.hh>
+#include <vkhr/scene_graph.hh>
 #include <vkhr/ray_tracer.hh>
 
 #include <glm/glm.hpp>

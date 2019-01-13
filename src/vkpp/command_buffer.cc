@@ -1,6 +1,6 @@
 #include <vkpp/command_buffer.hh>
 
-#include <vkhr/vulkan/depth_view.hh>
+#include <vkhr/rasterizer/depth_map.hh>
 
 #include <vkpp/device.hh>
 #include <vkpp/debug_marker.hh>

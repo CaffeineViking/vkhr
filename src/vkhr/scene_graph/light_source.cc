@@ -1,4 +1,4 @@
-#include <vkhr/light_source.hh>
+#include <vkhr/scene_graph/light_source.hh>
 
 namespace vkhr {
     LightSource::LightSource(const glm::vec3& vector, Type type,

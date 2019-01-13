@@ -1,11 +1,10 @@
 #ifndef VKHR_SCENE_GRAPH_HH
 #define VKHR_SCENE_GRAPH_HH
 
-#include <vkhr/image.hh>
-#include <vkhr/model.hh>
-#include <vkhr/light_source.hh>
-#include <vkhr/hair_style.hh>
-#include <vkhr/camera.hh>
+#include <vkhr/scene_graph/model.hh>
+#include <vkhr/scene_graph/light_source.hh>
+#include <vkhr/scene_graph/hair_style.hh>
+#include <vkhr/scene_graph/camera.hh>
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;

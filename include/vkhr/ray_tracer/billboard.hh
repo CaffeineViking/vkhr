@@ -1,11 +1,11 @@
-#ifndef VKHR_EMBREE_MODEL_HH
-#define VKHR_EMBREE_MODEL_HH
+#ifndef VKHR_EMBREE_BILLBOARD_HH
+#define VKHR_EMBREE_BILLBOARD_HH
 
-#include <vkhr/embree/shadable.hh>
+#include <vkhr/ray_tracer/shadable.hh>
 
 namespace vkhr {
     namespace embree {
-        class Model final : public Shadable {
+        class Billboard final : public Shadable {
         public:
             glm::vec3 shade(const Ray& surface_intersection,
                             const LightSource& light_source,

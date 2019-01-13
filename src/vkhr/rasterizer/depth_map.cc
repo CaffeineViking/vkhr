@@ -1,7 +1,8 @@
-#include <vkhr/vulkan/depth_view.hh>
+#include <vkhr/rasterizer/depth_map.hh>
 
 #include <vkhr/rasterizer.hh>
-#include <vkhr/light_source.hh>
+
+#include <vkhr/scene_graph/light_source.hh>
 
 #include <vkpp/debug_marker.hh>
 

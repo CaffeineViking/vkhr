@@ -1,4 +1,4 @@
-#include <vkhr/embree/model.hh>
+#include <vkhr/ray_tracer/model.hh>
 
 namespace vkhr {
     namespace embree {

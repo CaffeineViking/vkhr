@@ -1,4 +1,4 @@
-#include <vkhr/billboard.hh>
+#include <vkhr/scene_graph/billboard.hh>
 
 namespace vkhr {
     Billboard::Billboard(const std::string& file_path) {

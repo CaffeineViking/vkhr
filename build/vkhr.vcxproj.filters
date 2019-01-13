@@ -58,11 +58,14 @@
     <Filter Include="include\vkhr">
       <UniqueIdentifier>{93D6E369-7F39-730E-28BF-ABC414013F91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\vkhr\embree">
-      <UniqueIdentifier>{92A0BAD3-FE01-98E1-876F-DE93F3CFCEA0}</UniqueIdentifier>
+    <Filter Include="include\vkhr\rasterizer">
+      <UniqueIdentifier>{6D2F8B84-D966-D31B-E270-373F4E27FA14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\vkhr\vulkan">
-      <UniqueIdentifier>{D374F8FB-3FD6-D509-C843-1CBC34A40CC9}</UniqueIdentifier>
+    <Filter Include="include\vkhr\ray_tracer">
+      <UniqueIdentifier>{6ECD87E0-DA04-D077-E30E-349B4FC5F670}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\vkhr\scene_graph">
+      <UniqueIdentifier>{61208F8E-4D45-DE0E-7690-C39E6214DD2C}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\vkpp">
       <UniqueIdentifier>{99D7E369-853A-730E-2EC0-ABC41A023F91}</UniqueIdentifier>
@@ -73,8 +76,29 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{0F45D591-7B24-542D-843C-DF03F09ABA8E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\compute_curve">
-      <UniqueIdentifier>{FF9ACC5B-6B07-8856-34FB-1FB4A026AABE}</UniqueIdentifier>
+    <Filter Include="shaders\BezierDirect">
+      <UniqueIdentifier>{5ABDCB92-464C-555C-EF6A-6957DBD86502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\billboard">
+      <UniqueIdentifier>{090C9D26-7522-9BBC-BE99-26DE2AEF6B44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\model">
+      <UniqueIdentifier>{AF0D3448-1BCE-AF7E-E408-F9FB5088F45A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\scene_graph">
+      <UniqueIdentifier>{DD281E70-498A-FB7D-D2F7-41303E58323D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\self-shadowing">
+      <UniqueIdentifier>{99974AD2-8591-7324-6EFE-09355A97D990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\shading_models">
+      <UniqueIdentifier>{FFB702D6-EBB1-2B28-D41E-C238C0B79194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\strand">
+      <UniqueIdentifier>{CACE165D-B69C-0A63-9F30-7B898B9DE6C7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\voxelization">
+      <UniqueIdentifier>{EA8B3A1E-D61A-C4E7-7F39-D8E26BA7D48D}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
@@ -82,11 +106,14 @@
     <Filter Include="src\vkhr">
       <UniqueIdentifier>{B7B838CF-A385-93DA-CC9E-8182B8CAC868}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\vkhr\embree">
-      <UniqueIdentifier>{3632BFC9-A2BD-2C8E-ABCE-AF8217D9888E}</UniqueIdentifier>
+    <Filter Include="src\vkhr\rasterizer">
+      <UniqueIdentifier>{11F30728-7D54-E535-06C2-2BE872221CF5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\vkhr\vulkan">
-      <UniqueIdentifier>{7706FDF1-E391-6AB6-ECA2-EDAA58ADC6B6}</UniqueIdentifier>
+    <Filter Include="src\vkhr\ray_tracer">
+      <UniqueIdentifier>{12910484-7EF2-E191-0760-284473C01851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vkhr\scene_graph">
+      <UniqueIdentifier>{8558A4A1-71E7-2D6B-1A06-426606743E11}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\vkpp">
       <UniqueIdentifier>{BDB938CF-A986-93DA-D29F-8182BECBC868}</UniqueIdentifier>
@@ -900,56 +927,56 @@
     <ClInclude Include="..\include\vkhr\arg_parser.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\billboard.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\camera.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\embree\billboard.hh">
-      <Filter>include\vkhr\embree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\embree\hair_style.hh">
-      <Filter>include\vkhr\embree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\embree\model.hh">
-      <Filter>include\vkhr\embree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\embree\shadable.hh">
-      <Filter>include\vkhr\embree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\hair_style.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\vkhr\image.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\input_map.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\interface.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\light_source.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\model.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\vkhr\paths.hh">
-      <Filter>include\vkhr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\pipeline.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\rasterizer.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\ray.hh">
-      <Filter>include\vkhr</Filter>
+    <ClInclude Include="..\include\vkhr\rasterizer\billboard.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\depth_map.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\drawable.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\hair_style.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\interface.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\model.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\pipeline.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\ray_tracer.hh">
       <Filter>include\vkhr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\ray_tracer\billboard.hh">
+      <Filter>include\vkhr\ray_tracer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\ray_tracer\hair_style.hh">
+      <Filter>include\vkhr\ray_tracer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\ray_tracer\model.hh">
+      <Filter>include\vkhr\ray_tracer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\ray_tracer\ray.hh">
+      <Filter>include\vkhr\ray_tracer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\ray_tracer\shadable.hh">
+      <Filter>include\vkhr\ray_tracer</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\renderer.hh">
       <Filter>include\vkhr</Filter>
@@ -957,26 +984,26 @@
     <ClInclude Include="..\include\vkhr\scene_graph.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\vkhr\simulation.hh">
-      <Filter>include\vkhr</Filter>
+    <ClInclude Include="..\include\vkhr\scene_graph\billboard.hh">
+      <Filter>include\vkhr\scene_graph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph\camera.hh">
+      <Filter>include\vkhr\scene_graph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph\hair_style.hh">
+      <Filter>include\vkhr\scene_graph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph\light_source.hh">
+      <Filter>include\vkhr\scene_graph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph\model.hh">
+      <Filter>include\vkhr\scene_graph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\vkhr\scene_graph\simulation.hh">
+      <Filter>include\vkhr\scene_graph</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\vkhr.hh">
       <Filter>include\vkhr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\billboard.hh">
-      <Filter>include\vkhr\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\depth_view.hh">
-      <Filter>include\vkhr\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\drawable.hh">
-      <Filter>include\vkhr\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\hair_style.hh">
-      <Filter>include\vkhr\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\vkhr\vulkan\model.hh">
-      <Filter>include\vkhr\vulkan</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vkhr\window.hh">
       <Filter>include\vkhr</Filter>
@@ -1091,65 +1118,65 @@
     <ClCompile Include="..\src\vkhr\arg_parser.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\billboard.cc">
-      <Filter>src\vkhr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\camera.cc">
-      <Filter>src\vkhr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\embree\billboard.cc">
-      <Filter>src\vkhr\embree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\embree\hair_style.cc">
-      <Filter>src\vkhr\embree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\embree\model.cc">
-      <Filter>src\vkhr\embree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\hair_style.cc">
-      <Filter>src\vkhr</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\vkhr\image.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\input_map.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\interface.cc">
-      <Filter>src\vkhr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\light_source.cc">
-      <Filter>src\vkhr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\vkhr\model.cc">
-      <Filter>src\vkhr</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\vkhr\rasterizer.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\ray.cc">
-      <Filter>src\vkhr</Filter>
+    <ClCompile Include="..\src\vkhr\rasterizer\billboard.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\rasterizer\depth_map.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\rasterizer\hair_style.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\rasterizer\interface.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\rasterizer\model.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\ray_tracer.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer\billboard.cc">
+      <Filter>src\vkhr\ray_tracer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer\hair_style.cc">
+      <Filter>src\vkhr\ray_tracer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer\model.cc">
+      <Filter>src\vkhr\ray_tracer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\ray_tracer\ray.cc">
+      <Filter>src\vkhr\ray_tracer</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\scene_graph.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\simulation.cc">
-      <Filter>src\vkhr</Filter>
+    <ClCompile Include="..\src\vkhr\scene_graph\billboard.cc">
+      <Filter>src\vkhr\scene_graph</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\billboard.cc">
-      <Filter>src\vkhr\vulkan</Filter>
+    <ClCompile Include="..\src\vkhr\scene_graph\camera.cc">
+      <Filter>src\vkhr\scene_graph</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\depth_view.cc">
-      <Filter>src\vkhr\vulkan</Filter>
+    <ClCompile Include="..\src\vkhr\scene_graph\hair_style.cc">
+      <Filter>src\vkhr\scene_graph</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\hair_style.cc">
-      <Filter>src\vkhr\vulkan</Filter>
+    <ClCompile Include="..\src\vkhr\scene_graph\light_source.cc">
+      <Filter>src\vkhr\scene_graph</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vkhr\vulkan\model.cc">
-      <Filter>src\vkhr\vulkan</Filter>
+    <ClCompile Include="..\src\vkhr\scene_graph\model.cc">
+      <Filter>src\vkhr\scene_graph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vkhr\scene_graph\simulation.cc">
+      <Filter>src\vkhr\scene_graph</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vkhr\window.cc">
       <Filter>src\vkhr</Filter>
@@ -1237,116 +1264,119 @@
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
-    <None Include="..\share\shaders\approximate_deep_shadows.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\BezierDirect\ClipCurves.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\billboard.frag">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\BezierDirect\Commons.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\billboard.vert">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\BezierDirect\Constants.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\blinn-phong.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\BezierDirect\Curves.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\bounding_box.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\BezierDirect\DrawStrands.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\camera.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\ClipCurves.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\Commons.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\BezierDirect\Random.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\Constants.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\Curves.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\BezierDirect\Reorder.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\DrawStrands.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\PrefixSum_1.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\billboard\billboard.frag">
+      <Filter>shaders\billboard</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\PrefixSum_2.hlsl">
-      <Filter>shaders\compute_curve</Filter>
+    <None Include="..\share\shaders\billboard\billboard.glsl">
+      <Filter>shaders\billboard</Filter>
     </None>
-    <None Include="..\share\shaders\compute_curve\Random.hlsl">
-      <Filter>shaders\compute_curve</Filter>
-    </None>
-    <None Include="..\share\shaders\compute_curve\ReduceDepthBuffer.hlsl">
-      <Filter>shaders\compute_curve</Filter>
-    </None>
-    <None Include="..\share\shaders\compute_curve\Reorder.hlsl">
-      <Filter>shaders\compute_curve</Filter>
-    </None>
-    <None Include="..\share\shaders\compute_curve\ScanBlockBuffer.hlsl">
-      <Filter>shaders\compute_curve</Filter>
-    </None>
-    <None Include="..\share\shaders\depth_pass.vert">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\filter_shadows.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\kajiya-kay.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\lights.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\linearize_depth.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\marschner-scheuermann.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\billboard\billboard.vert">
+      <Filter>shaders\billboard</Filter>
     </None>
     <None Include="..\share\shaders\math.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\model.frag">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\model\model.frag">
+      <Filter>shaders\model</Filter>
     </None>
-    <None Include="..\share\shaders\model.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\model\model.glsl">
+      <Filter>shaders\model</Filter>
     </None>
-    <None Include="..\share\shaders\model.vert">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="..\share\shaders\parameters.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\model\model.vert">
+      <Filter>shaders\model</Filter>
     </None>
     <None Include="..\share\shaders\random.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\share\shaders\raymarcher.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\scene_graph\camera.glsl">
+      <Filter>shaders\scene_graph</Filter>
     </None>
-    <None Include="..\share\shaders\shadow_map.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\scene_graph\lights.glsl">
+      <Filter>shaders\scene_graph</Filter>
     </None>
-    <None Include="..\share\shaders\strand.frag">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\scene_graph\params.glsl">
+      <Filter>shaders\scene_graph</Filter>
     </None>
-    <None Include="..\share\shaders\strand.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\scene_graph\shadow_maps.glsl">
+      <Filter>shaders\scene_graph</Filter>
     </None>
-    <None Include="..\share\shaders\strand.vert">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\self-shadowing\approximate_deep_shadows.glsl">
+      <Filter>shaders\self-shadowing</Filter>
     </None>
-    <None Include="..\share\shaders\tex2Dproj.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\self-shadowing\depth_map.vert">
+      <Filter>shaders\self-shadowing</Filter>
     </None>
-    <None Include="..\share\shaders\volume.glsl">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\self-shadowing\filter_shadows.glsl">
+      <Filter>shaders\self-shadowing</Filter>
     </None>
-    <None Include="..\share\shaders\voxelize.comp">
-      <Filter>shaders</Filter>
+    <None Include="..\share\shaders\self-shadowing\linearize_depth.glsl">
+      <Filter>shaders\self-shadowing</Filter>
+    </None>
+    <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl">
+      <Filter>shaders\self-shadowing</Filter>
+    </None>
+    <None Include="..\share\shaders\shading_models\blinn-phong.glsl">
+      <Filter>shaders\shading_models</Filter>
+    </None>
+    <None Include="..\share\shaders\shading_models\kajiya-kay.glsl">
+      <Filter>shaders\shading_models</Filter>
+    </None>
+    <None Include="..\share\shaders\shading_models\marschner.glsl">
+      <Filter>shaders\shading_models</Filter>
+    </None>
+    <None Include="..\share\shaders\strand\strand.frag">
+      <Filter>shaders\strand</Filter>
+    </None>
+    <None Include="..\share\shaders\strand\strand.glsl">
+      <Filter>shaders\strand</Filter>
+    </None>
+    <None Include="..\share\shaders\strand\strand.vert">
+      <Filter>shaders\strand</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelization\aabb.glsl">
+      <Filter>shaders\voxelization</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelization\raymarch.glsl">
+      <Filter>shaders\voxelization</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelization\sample_volume.glsl">
+      <Filter>shaders\voxelization</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelization\voxelize.comp">
+      <Filter>shaders\voxelization</Filter>
     </None>
   </ItemGroup>
 </Project>

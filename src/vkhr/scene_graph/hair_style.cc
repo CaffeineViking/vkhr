@@ -1,4 +1,4 @@
-#include <vkhr/hair_style.hh>
+#include <vkhr/scene_graph/hair_style.hh>
 
 #include <cstring>
 #include <algorithm>

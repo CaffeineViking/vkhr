@@ -1,8 +1,9 @@
-#include <vkhr/vulkan/model.hh>
+#include <vkhr/rasterizer/model.hh>
 
-#include <vkhr/camera.hh>
-#include <vkhr/light_source.hh>
 #include <vkhr/rasterizer.hh>
+
+#include <vkhr/scene_graph/camera.hh>
+#include <vkhr/scene_graph/light_source.hh>
 
 #include <vkpp/debug_marker.hh>
 

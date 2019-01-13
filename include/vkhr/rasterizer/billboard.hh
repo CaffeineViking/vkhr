@@ -1,11 +1,12 @@
 #ifndef VKHR_VULKAN_BILLBOARD_HH
 #define VKHR_VULKAN_BILLBOARD_HH
 
-#include <vkhr/billboard.hh>
-#include <vkhr/pipeline.hh>
-#include <vkhr/vulkan/drawable.hh>
-#include <vkhr/camera.hh>
-#include <vkhr/paths.hh>
+#include <vkhr/scene_graph/billboard.hh>
+
+#include <vkhr/rasterizer/pipeline.hh>
+#include <vkhr/rasterizer/drawable.hh>
+
+#include <vkhr/scene_graph/camera.hh>
 
 #include <vkpp/buffer.hh>
 #include <vkpp/command_buffer.hh>

@@ -1,13 +1,14 @@
-#include <vkhr/interface.hh>
+#include <vkhr/rasterizer/interface.hh>
 
 #include <vkhr/window.hh>
 #include <vkhr/scene_graph.hh>
 #include <vkhr/rasterizer.hh>
 
+// TODO: wipe when light knobs done!
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <sstream>
 
+#include <sstream>
 #include <iostream>
 #include <utility>
 

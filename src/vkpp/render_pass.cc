@@ -5,7 +5,7 @@
 #include <vkpp/debug_marker.hh>
 #include <vkpp/exception.hh>
 
-#include <vkhr/vulkan/depth_view.hh>
+#include <vkhr/rasterizer/depth_map.hh>
 
 #include <utility>
 
@@ -200,7 +200,7 @@ namespace vkpp {
         return depth_attachment_binding != -1;
     }
 
-    void RenderPass::mk_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain) {
+    void RenderPass::create_standard_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain) {
         std::vector<RenderPass::Attachment> attachments {
             {
                 swap_chain.get_color_attachment_format(),
@@ -241,7 +241,7 @@ namespace vkpp {
         DebugMarker::object_name(device, color_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
     }
 
-    void RenderPass::mk_depth_pass(RenderPass& depth_pass, Device& device) {
+    void RenderPass::create_standard_depth_pass(RenderPass& depth_pass, Device& device) {
         std::vector<RenderPass::Attachment> attachments {
             {
                 vkhr::vulkan::DepthView::get_attachment_format(),

@@ -1,7 +1,7 @@
 #ifndef VKHR_LIGHT_SOURCE_HH
 #define VKHR_LIGHT_SOURCE_HH
 
-#include <vkhr/camera.hh>
+#include <vkhr/scene_graph/camera.hh>
 
 #include <glm/glm.hpp>
 

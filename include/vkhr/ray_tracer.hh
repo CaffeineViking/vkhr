@@ -3,10 +3,8 @@
 
 #include <vkhr/renderer.hh>
 
-#include <vkhr/embree/hair_style.hh>
-#include <vkhr/embree/hair_style.hh>
-
-#include <vkhr/ray.hh>
+#include <vkhr/ray_tracer/hair_style.hh>
+#include <vkhr/ray_tracer/ray.hh>
 
 #include <embree3/rtcore.h>
 

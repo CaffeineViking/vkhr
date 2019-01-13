@@ -1,4 +1,4 @@
-#include <vkhr/model.hh>
+#include <vkhr/scene_graph/model.hh>
 
 #include <iostream>
 

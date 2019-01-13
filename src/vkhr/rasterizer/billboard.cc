@@ -1,8 +1,9 @@
-#include <vkhr/vulkan/billboard.hh>
+#include <vkhr/rasterizer/billboard.hh>
 
-#include <vkhr/camera.hh>
-#include <vkhr/light_source.hh>
 #include <vkhr/rasterizer.hh>
+
+#include <vkhr/scene_graph/camera.hh>
+#include <vkhr/scene_graph/light_source.hh>
 
 namespace vkhr {
     namespace vulkan {

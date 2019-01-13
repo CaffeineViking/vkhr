@@ -1,9 +1,10 @@
 #ifndef VKHR_VULKAN_DEPTH_VIEW_HH
 #define VKHR_VULKAN_DEPTH_VIEW_HH
 
-#include <vkhr/pipeline.hh>
-#include <vkhr/vulkan/drawable.hh>
-#include <vkhr/light_source.hh>
+#include <vkhr/rasterizer/pipeline.hh>
+#include <vkhr/rasterizer/drawable.hh>
+
+#include <vkhr/scene_graph/light_source.hh>
 
 #include <vkpp/framebuffer.hh>
 #include <vkpp/image.hh>

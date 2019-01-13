@@ -1,10 +1,12 @@
 #ifndef VKHR_VULKAN_HAIR_STYLE_HH
 #define VKHR_VULKAN_HAIR_STYLE_HH
 
-#include <vkhr/hair_style.hh>
-#include <vkhr/pipeline.hh>
-#include <vkhr/vulkan/drawable.hh>
-#include <vkhr/camera.hh>
+#include <vkhr/scene_graph/hair_style.hh>
+
+#include <vkhr/rasterizer/pipeline.hh>
+#include <vkhr/rasterizer/drawable.hh>
+
+#include <vkhr/scene_graph/camera.hh>
 
 #include <vkpp/buffer.hh>
 #include <vkpp/command_buffer.hh>

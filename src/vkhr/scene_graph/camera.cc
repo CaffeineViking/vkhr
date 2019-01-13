@@ -1,4 +1,4 @@
-#include <vkhr/camera.hh>
+#include <vkhr/scene_graph/camera.hh>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE

@@ -1,9 +1,9 @@
 #ifndef VKHR_EMBREE_HAIR_STYLE_HH
 #define VKHR_EMBREE_HAIR_STYLE_HH
 
-#include <vkhr/hair_style.hh>
+#include <vkhr/scene_graph/hair_style.hh>
 
-#include <vkhr/embree/shadable.hh>
+#include <vkhr/ray_tracer/shadable.hh>
 
 #include <glm/glm.hpp>
 

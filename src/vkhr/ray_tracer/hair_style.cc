@@ -1,4 +1,4 @@
-#include <vkhr/embree/hair_style.hh>
+#include <vkhr/ray_tracer/hair_style.hh>
 
 #include <vkhr/ray_tracer.hh>
 

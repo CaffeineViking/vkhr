@@ -1,7 +1,7 @@
 #ifndef VKHR_VULKAN_DRAWABLE_HH
 #define VKHR_VULKAN_DRAWABLE_HH
 
-#include <vkhr/pipeline.hh>
+#include <vkhr/rasterizer/pipeline.hh>
 
 #include <vkpp/command_buffer.hh>
 #include <vkpp/buffer.hh>

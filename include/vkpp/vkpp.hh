@@ -3,8 +3,11 @@
 
 #include <vkpp/append.hh>
 #include <vkpp/application.hh>
+#include <vkpp/buffer.hh>
 #include <vkpp/command_buffer.hh>
+#include <vkpp/debug_marker.hh>
 #include <vkpp/debug_messenger.hh>
+#include <vkpp/descriptor_set.hh>
 #include <vkpp/device.hh>
 #include <vkpp/device_memory.hh>
 #include <vkpp/exception.hh>
@@ -16,6 +19,7 @@
 #include <vkpp/layer.hh>
 #include <vkpp/physical_device.hh>
 #include <vkpp/pipeline.hh>
+#include <vkpp/query.hh>
 #include <vkpp/queue.hh>
 #include <vkpp/render_pass.hh>
 #include <vkpp/sampler.hh>

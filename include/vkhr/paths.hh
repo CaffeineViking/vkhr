@@ -5,10 +5,6 @@
 #define VKHR_ASSETS_PATH "share/"
 #endif
 
-#ifndef VKHR_LOGGER_FILE
-#define VKHR_LOGGER_FILE "./vkhr.log"
-#endif
-
 // e.g. shared path could be: /usr/share/vkhr/
 // need to supply SHARED_PATH at compile time!
 

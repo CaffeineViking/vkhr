@@ -299,8 +299,8 @@ namespace vkhr {
     }
 
     void Rasterizer::build_render_passes() {
-        vk::RenderPass::mk_color_pass(color_pass, device, swap_chain);
-        vk::RenderPass::mk_depth_pass(depth_pass, device);
+        vk::RenderPass::create_standard_color_pass(color_pass, device, swap_chain);
+        vk::RenderPass::create_standard_depth_pass(depth_pass, device);
     }
 
     void Rasterizer::recreate_swapchain(Window&) {
