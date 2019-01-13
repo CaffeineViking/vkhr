@@ -165,7 +165,7 @@ namespace vkpp {
     }
 
     void CommandBuffer::begin_render_pass(RenderPass& render_pass,
-                                          vkhr::vulkan::DepthView& depth_map) {
+                                          vkhr::vulkan::DepthMap& depth_map) {
         VkRenderPassBeginInfo begin_info;
         begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         begin_info.pNext = nullptr;

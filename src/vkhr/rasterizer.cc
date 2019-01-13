@@ -99,7 +99,7 @@ namespace vkhr {
 
         load(scene_graph);
 
-        depth_buffer = vulkan::DepthView {
+        depth_buffer = vulkan::DepthMap {
             swap_chain.get_width(),
             swap_chain.get_height(),
             *this

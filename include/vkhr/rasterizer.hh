@@ -81,8 +81,8 @@ namespace vkhr {
 
         std::unordered_map<vulkan::HairStyle::ComputeCurve, Pipeline> compute_curve_pipelines;
 
-        vulkan::DepthView depth_buffer;
-        std::vector<vulkan::DepthView> shadow_maps;
+        vulkan::DepthMap depth_buffer;
+        std::vector<vulkan::DepthMap> shadow_maps;
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
         std::unordered_map<const Model*, vulkan::Model> models;
         vulkan::Billboard fullscreen_billboard;
@@ -97,7 +97,7 @@ namespace vkhr {
         friend class vulkan::Billboard;
         friend class vulkan::Model;
         friend class ::vkhr::Interface;
-        friend class vulkan::DepthView;
+        friend class vulkan::DepthMap;
     };
 }
 

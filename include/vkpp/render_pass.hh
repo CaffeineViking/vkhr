@@ -7,7 +7,7 @@
 #include <utility>
 #include <cstdint>
 
-namespace vkhr::vulkan { class DepthView; }
+namespace vkhr::vulkan { class DepthMap; }
 
 namespace vkpp {
     class Device;

@@ -12,7 +12,7 @@
 
 #include <vector>
 
-namespace vkhr::vulkan { class DepthView; }
+namespace vkhr::vulkan { class DepthMap; }
 
 namespace vkpp {
     class Device;
@@ -61,7 +61,7 @@ namespace vkpp {
         void copy_buffer_image(Buffer& source, Image& destination);
 
         void begin_render_pass(RenderPass& render_pass,
-                               vkhr::vulkan::DepthView&);
+                               vkhr::vulkan::DepthMap&);
         void begin_render_pass(RenderPass& render_pass,
                                Framebuffer& framebuffer,
                                VkClearValue clear_color);

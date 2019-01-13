@@ -244,14 +244,14 @@ namespace vkpp {
     void RenderPass::create_standard_depth_pass(RenderPass& depth_pass, Device& device) {
         std::vector<RenderPass::Attachment> attachments {
             {
-                vkhr::vulkan::DepthView::get_attachment_format(),
-                vkhr::vulkan::DepthView::get_read_depth_layout()
+                vkhr::vulkan::DepthMap::get_attachment_format(),
+                vkhr::vulkan::DepthMap::get_read_depth_layout()
             }
         };
 
         std::vector<RenderPass::Subpass> subpasses {
             {
-                { 0, vkhr::vulkan::DepthView::get_attachment_layout() }
+                { 0, vkhr::vulkan::DepthMap::get_attachment_layout() }
             }
         };
 

@@ -17,18 +17,18 @@ namespace vk = vkpp;
 namespace vkhr {
     class Rasterizer;
     namespace vulkan {
-        class DepthView final {
+        class DepthMap final {
         public:
-            DepthView(const std::uint32_t width, Rasterizer& vulkan_renderer,
+            DepthMap(const std::uint32_t width, Rasterizer& vulkan_renderer,
                       const LightSource& light_source);
-            DepthView(const std::uint32_t width,   const std::uint32_t height,
+            DepthMap(const std::uint32_t width,   const std::uint32_t height,
                       Rasterizer& vulkan_renderer, const LightSource& light_source);
-            DepthView(const std::uint32_t width,   const std::uint32_t height,
+            DepthMap(const std::uint32_t width,   const std::uint32_t height,
                       Rasterizer& vulkan_renderer, const LightSource* light_source = nullptr);
 
-            DepthView() = default;
+            DepthMap() = default;
 
-            DepthView(Rasterizer& vulkan_renderer);
+            DepthMap(Rasterizer& vulkan_renderer);
 
             void update_dynamic_viewport_scissor_depth(vk::CommandBuffer& cb);
 

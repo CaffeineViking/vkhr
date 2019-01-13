@@ -8,7 +8,7 @@
 
 namespace vkhr {
     namespace vulkan {
-        DepthView::DepthView(const std::uint32_t width, const std::uint32_t height,
+        DepthMap::DepthMap(const std::uint32_t width, const std::uint32_t height,
                              Rasterizer& vulkan_renderer, const LightSource* light_source)
                             : light { light_source } {
             image = vk::Image {
@@ -74,54 +74,54 @@ namespace vkhr {
             ++id;
         }
 
-        DepthView::DepthView(const std::uint32_t width, Rasterizer& vulkan_renderer,
+        DepthMap::DepthMap(const std::uint32_t width, Rasterizer& vulkan_renderer,
                              const LightSource& light_source)
-                            : DepthView { width, width,
+                            : DepthMap { width, width,
                                           vulkan_renderer,
                                           &light_source } { }
-        DepthView::DepthView(const std::uint32_t width,   const std::uint32_t height,
+        DepthMap::DepthMap(const std::uint32_t width,   const std::uint32_t height,
                              Rasterizer& vulkan_renderer, const LightSource& light_source)
-                            : DepthView { width, height,
+                            : DepthMap { width, height,
                                           vulkan_renderer,
                                           &light_source } { }
-        DepthView::DepthView(Rasterizer& vulkan_renderer)
-                            : DepthView { vulkan_renderer.swap_chain.get_width(),
+        DepthMap::DepthMap(Rasterizer& vulkan_renderer)
+                            : DepthMap { vulkan_renderer.swap_chain.get_width(),
                                           vulkan_renderer.swap_chain.get_height(),
                                           vulkan_renderer, nullptr } { }
 
-        void DepthView::update_dynamic_viewport_scissor_depth(vk::CommandBuffer& command_list) {
+        void DepthMap::update_dynamic_viewport_scissor_depth(vk::CommandBuffer& command_list) {
             command_list.set_viewport(viewport);
             command_list.set_scissor(scissor);
         }
 
-        vk::Framebuffer& DepthView::get_framebuffer() {
+        vk::Framebuffer& DepthMap::get_framebuffer() {
             return framebuffer;
         }
 
-        vk::Sampler& DepthView::get_sampler() {
+        vk::Sampler& DepthMap::get_sampler() {
             return sampler;
         }
 
-        vk::ImageView& DepthView::get_image_view() {
+        vk::ImageView& DepthMap::get_image_view() {
             return image_view;
         }
 
-        VkImageLayout DepthView::get_read_depth_layout() {
+        VkImageLayout DepthMap::get_read_depth_layout() {
             return VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
         }
 
-        VkFormat DepthView::get_attachment_format() {
+        VkFormat DepthMap::get_attachment_format() {
             return VK_FORMAT_D32_SFLOAT;
         }
 
-        VkImageLayout DepthView::get_attachment_layout() {
+        VkImageLayout DepthMap::get_attachment_layout() {
             return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
         }
 
-        VkImageUsageFlags DepthView::get_image_usage_flags() {
+        VkImageUsageFlags DepthMap::get_image_usage_flags() {
             return VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
         }
 
-        int DepthView::id { 0 };
+        int DepthMap::id { 0 };
     }
 }
