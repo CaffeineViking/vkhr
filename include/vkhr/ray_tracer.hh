@@ -54,8 +54,13 @@ namespace vkhr {
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
 
-        std::mt19937 prng;
+        std::mt19937 prng; // For sampling :)
         std::uniform_real_distribution<float> sample { -1.0f, +1.0f };
+
+        // "Correlated Multi-Jittered Sampling":
+        float rand_float(unsigned i, unsigned p);
+        unsigned permute(unsigned i, unsigned l, unsigned p);
+        glm::vec2 cmj(int s, int m, int n, int p);
 
         Image framebuffer;
 

@@ -195,4 +195,68 @@ namespace vkhr {
     void Raytracer::set_denormal_zero() {
         _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
     }
+
+    // From: "Correlated Multi-Jitter Sampling" by Pixar:
+
+    float Raytracer::rand_float(unsigned i, unsigned p) {
+        i ^= p;
+        i ^= i >> 17;
+        i ^= i >> 10;
+        i *= 0xb36534e5;
+        i ^= i >> 12;
+        i ^= i >> 21;
+        i *= 0x93fc4795;
+        i ^= 0xdf6e307f;
+        i ^= i >> 17;
+        i *= 1 | p >> 18;
+        return i * (1.0f / 4294967808.0f);
+    }
+
+    unsigned Raytracer::permute(unsigned i, unsigned l, unsigned p) {
+        unsigned w = l - 1;
+
+        w |= w >> 1;
+        w |= w >> 2;
+        w |= w >> 4;
+        w |= w >> 8;
+        w |= w >> 16;
+
+        do {
+            i ^= p;
+            i *= 0xe170893d;
+            i ^= p >> 16;
+            i ^= (i & w) >> 4;
+            i ^= p >> 8;
+            i *= 0x0929eb3f;
+            i ^= p >> 23;
+            i ^= (i & w) >> 1;
+            i *= 1 | p >> 27;
+            i *= 0x6935fa69;
+            i ^= (i & w) >> 11;
+            i *= 0x74dcb303;
+            i ^= (i & w) >> 2;
+            i *= 0x9e501cc3;
+            i ^= (i & w) >> 2;
+            i *= 0xc860a3df;
+            i &= w;
+            i ^= i >> 5;
+        } while (i >= l);
+
+        return (i + p) % l;
+    }
+
+    glm::vec2 Raytracer::cmj(int s, int m, int n, int p) {
+        int sx = permute(s % m, m, p * 0xa511e9b3),
+            sy = permute(s / m, n, p * 0x63d83595);
+
+        float jx = rand_float(s, p * 0xa399d265),
+              jy = rand_float(s, p * 0x711ad6a5);
+
+        glm::vec2 r = {
+            (s % m + (sy + jx) / n) / m,
+            (s / m + (sx + jy) / m) / n
+        };
+
+        return r;
+    }
 }
