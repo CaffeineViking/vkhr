@@ -51,6 +51,7 @@ namespace vkhr {
 
         scene = rtcNewScene(device);
 
+        // Load only the set of hair styles which are within the actual scene graph.
         for (const auto& hair_style_node : scene_graph.get_nodes_with_hair_styles()) {
             for (const auto hair_style : hair_style_node->get_hair_styles()) {
                 auto hair = embree::HairStyle { *hair_style, *this };
