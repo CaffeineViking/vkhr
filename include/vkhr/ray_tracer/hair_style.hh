@@ -24,6 +24,7 @@ namespace vkhr {
             glm::vec3 shade(const Ray& surface_intersection,
                             const LightSource& light_source,
                             const Camera& projection_camera) override;
+            glm::vec4 get_tangent(const Ray& position) const;
 
             unsigned get_geometry() const;
 
@@ -36,6 +37,8 @@ namespace vkhr {
                                  const glm::vec3& eye);
 
             unsigned geometry { RTC_INVALID_GEOMETRY_ID };
+
+            RTCScene scene { nullptr };
 
             std::vector<glm::vec4> position_thickness;
         };
