@@ -47,7 +47,7 @@ namespace vkhr {
         void set_denormal_zero();
 
         bool shadows_on { true };
-        int sampling_count { 1 };
+        int sampling_count { 8 };
 
         VisualizationMethod visualization_method { Shaded };
 

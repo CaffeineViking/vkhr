@@ -119,12 +119,17 @@ namespace vkhr {
         update_view_matrix();
     }
 
+    const glm::vec3& LightSource::get_spotlight_origin() const {
+        return spotlight_origin;
+    }
+
     void LightSource::update_view_matrix() {
         if (type == Type::Point) {
             view = glm::lookAt(get_position(), point, glm::vec3 { 0.0, 1.0, 0.0 });
         } else {
-            view = glm::lookAt(point + get_direction() * distance,
-                               point, glm::vec3 { 0.0, 1.0, 0.0 });
+            spotlight_origin = point + get_direction() * distance;
+            view = glm::lookAt(spotlight_origin, point,
+                               glm::vec3 { 0, 1, 0 });
         }
 
         view_projection        = projection * view;

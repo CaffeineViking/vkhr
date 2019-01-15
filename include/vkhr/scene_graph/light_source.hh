@@ -39,6 +39,7 @@ namespace vkhr {
         void set_direction(const glm::vec3& direction);
         glm::vec3 get_direction() const;
 
+        const glm::vec3& get_spotlight_origin() const;
         void set_origin(const glm::vec3& scene_origin, float lengths = 0.0f);
         void update_view_matrix();
         void set_projection(float far, float fov = 45.0f, float near = 1.0f);
@@ -57,6 +58,8 @@ namespace vkhr {
         float distance { 1.0f }; // for light
 
         mutable std::size_t index;
+
+        glm::vec3 spotlight_origin { 0.0f };
 
         glm::mat4 view { 1.0f };
         glm::mat4 view_projection { 1.0f };

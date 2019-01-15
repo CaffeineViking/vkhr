@@ -121,7 +121,7 @@ namespace vkhr {
     glm::vec3 Raytracer::light_shading(const Ray& ray, const Camera& camera, const LightSource& light, RTCIntersectContext& context) {
         Ray shadow_ray {
             ray.get_intersection_point(),
-            light.get_direction(),
+            light.get_spotlight_origin(),
             Ray::Epsilon
         };
 
