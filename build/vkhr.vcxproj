@@ -63,7 +63,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,7 +86,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -494,19 +494,55 @@
     <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\share\shaders\BezierDirect\ClipCurves.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Commons.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Constants.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Curves.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\DrawStrands.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Random.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Reorder.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
-    <None Include="..\share\shaders\BezierDirect\ClipCurves.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\Commons.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\Constants.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\Curves.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\DrawStrands.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\Random.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\Reorder.hlsl" />
-    <None Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl" />
+    <None Include="..\share\shaders\antialiasing\phone-wire.glsl" />
     <None Include="..\share\shaders\billboard\billboard.frag" />
     <None Include="..\share\shaders\billboard\billboard.glsl" />
     <None Include="..\share\shaders\billboard\billboard.vert" />
