@@ -84,37 +84,48 @@ namespace vkhr {
         for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
             float x { static_cast<float>(i) }, y { static_cast<float>(j) };
 
-            RTCIntersectContext      context;
-            rtcInitIntersectContext(&context);
+            glm::vec3 pixel_color { 0.0f };
 
-            auto eye_direction = (x * viewing_plane.x +
-                                  y * viewing_plane.y +
-                                      viewing_plane.z);
+            for (int s = 0; s < sampling_count; ++s) {
+                RTCIntersectContext      context;
+                rtcInitIntersectContext(&context);
 
-            Ray ray {
-                viewing_plane.point,
-                eye_direction,
-                0.0f
-            };
+                auto jitter = glm::vec2 { sample(prng),  sample(prng) };
 
-            glm::vec3 pixel_color { 0.0f, 0.0f, 0.0f };
+                jitter += 1.0f;
+                jitter *= 0.5f;
 
-            if (ray.intersects(scene, context)) {
-                auto surface_point = ray.get_intersection_point();
+                auto eye_direction = ((x + jitter.x) * viewing_plane.x +
+                                      (y + jitter.y) * viewing_plane.y +
+                                                       viewing_plane.z);
 
-                pixel_color = light_shading(ray, camera, light, context);
+                Ray ray {
+                    viewing_plane.point,
+                    eye_direction,
+                    0.0f
+                };
 
-                if (visualization_method != DirectShadows) {
-                    pixel_color *= ambient_occlusion(surface_point, context);
+                glm::vec3 sample_color { 1.0f, 1.0f, 1.0f };
+
+                if (ray.intersects(scene, context)) {
+                    auto position = ray.get_intersection_point();
+
+                    sample_color = light_shading(ray, camera, light, context);
+
+                    if (visualization_method != DirectShadows) {
+                        sample_color *= ambient_occlusion(position,  context);
+                    }
                 }
 
-                framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
-                    glm::clamp(pixel_color.r, 0.0f, 1.0f) * 255,
-                    glm::clamp(pixel_color.g, 0.0f, 1.0f) * 255,
-                    glm::clamp(pixel_color.b, 0.0f, 1.0f) * 255,
-                    255 // for now assume that there's no alpha.
-              });
+                pixel_color += sample_color / (float) sampling_count;
             }
+
+            framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
+                glm::clamp(pixel_color.r, 0.0f, 1.0f) * 255,
+                glm::clamp(pixel_color.g, 0.0f, 1.0f) * 255,
+                glm::clamp(pixel_color.b, 0.0f, 1.0f) * 255,
+                255 // for now assume that there's no alpha.
+            });
         }
     }
 
@@ -139,9 +150,9 @@ namespace vkhr {
     }
 
     float Raytracer::ambient_occlusion(const glm::vec3& position, RTCIntersectContext& context) {
-        std::size_t occluded_rays { 0 };
+        std::size_t missed_rays { 0 };
 
-        for (std::size_t s { 0 }; s < sampling_count; ++s) {
+        for (std::size_t s { 0 }; s < ao_sample_count; ++s) {
             auto random_direction = glm::vec3 {
                 sample(prng),
                 sample(prng),
@@ -154,12 +165,12 @@ namespace vkhr {
                 Ray::Epsilon
             };
 
-            if (!random_ray.occluded_by(scene, context))
-                ++occluded_rays;
+            if (!random_ray.occluded_by(scene, context, ao_radius))
+                ++missed_rays;
         }
 
-        // We divide here since we are sampling in a sphere, and not in a hemisphere as usual...
-        return static_cast<float>(occluded_rays) / (static_cast<float>(sampling_count) / 2.00f);
+        // We divide here since we are sampling in a sphere, and not in a hemisphere as usual.
+        return static_cast<float>(missed_rays) / (static_cast<float>(ao_sample_count) / 2.0f);
     }
 
     Image& Raytracer::get_framebuffer() {

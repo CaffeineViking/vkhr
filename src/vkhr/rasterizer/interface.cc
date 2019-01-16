@@ -220,10 +220,17 @@ namespace vkhr {
 
                 if (ImGui::TreeNodeEx("Ray Tracer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(171);
-                    ImGui::SliderInt("SPP", &ray_tracer.sampling_count, 1, 32);
+                    ImGui::SliderInt("SPP", &ray_tracer.sampling_count,  1, 7);
                     ImGui::PopItemWidth();
                     ImGui::SameLine();
                     ImGui::Checkbox("Shadow Rays", &ray_tracer.shadows_on);
+                    ImGui::PushItemWidth(171);
+                    ImGui::SliderInt("SAO", &ray_tracer.ao_sample_count, 1, 7);
+                    ImGui::PopItemWidth();
+                    ImGui::SameLine();
+                    ImGui::PushItemWidth(90);
+                    ImGui::SliderFloat("r", &ray_tracer.ao_radius, 0.00, 20.0);
+                    ImGui::PopItemWidth();
                     ImGui::TreePop();
                 }
             }

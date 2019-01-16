@@ -47,12 +47,15 @@ namespace vkhr {
         void set_denormal_zero();
 
         bool shadows_on { true };
-        int sampling_count { 8 };
+        int sampling_count { 4 };
 
         VisualizationMethod visualization_method { Shaded };
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
+
+        int ao_sample_count { 2 };
+        float ao_radius { 10.0f };
 
         std::mt19937 prng; // For sampling :)
         std::uniform_real_distribution<float> sample { -1.0f, +1.0f };
