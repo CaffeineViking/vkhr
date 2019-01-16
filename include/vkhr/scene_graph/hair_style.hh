@@ -89,6 +89,7 @@ namespace vkhr {
             glm::vec3 resolution;
             AABB bounds;
             std::vector<unsigned char> data;
+            void normalize();
             bool save(const std::string& file_path);
         };
 

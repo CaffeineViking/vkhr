@@ -286,6 +286,21 @@ namespace vkhr {
         return volume;
     }
 
+    void HairStyle::Volume::normalize() {
+        unsigned char data_min { 255 }, data_max { 0 };
+        for (std::size_t i { 0 }; i < data.size(); ++i) {
+            if (data[i] > data_max) data_max = data[i];
+            if (data[i] < data_min) data_min = data[i];
+        }
+
+        float scaling { 255.0f / (data_max - data_min) };
+
+        for (std::size_t i { 0 }; i < data.size(); ++i) {
+            data[i] -= data_min;
+            data[i] = data[i] * scaling;
+        }
+    }
+
     bool HairStyle::Volume::save(const std::string& file_path) {
         std::ofstream file { file_path, std::ios::binary };
         if (!file) return false; // Couldn't write to file.
