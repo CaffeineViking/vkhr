@@ -38,6 +38,7 @@ namespace vkhr {
 
         bool intersects(RTCScene& scene,  RTCIntersectContext& context);
         bool occluded_by(RTCScene& scene, RTCIntersectContext& context);
+        bool occluded_by(RTCScene& scene, RTCIntersectContext& context, float radius);
 
     private:
         RTCRayHit ray_hit { };

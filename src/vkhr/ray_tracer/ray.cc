@@ -95,4 +95,18 @@ namespace vkhr {
         rtcOccluded1(scene, &context, &ray_hit.ray);
         return is_occluded();
     }
+
+    bool Ray::occluded_by(RTCScene& scene, RTCIntersectContext& context, float radius) {
+        rtcIntersect1(scene, &context, &ray_hit);
+        if (hit_surface()) {
+            auto surface_distance = glm::distance(get_intersection_point(), get_origin());
+            if (surface_distance > radius) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
 }
