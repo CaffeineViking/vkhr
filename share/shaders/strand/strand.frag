@@ -3,8 +3,8 @@
 #include "../scene_graph/camera.glsl"
 #include "../shading_models/kajiya-kay.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
+#include "../voxelization/ambient_occlusion.glsl"
 #include "../scene_graph/shadow_maps.glsl"
-#include "../voxelization/raymarch.glsl"
 #include "../scene_graph/lights.glsl"
 
 #include "../scene_graph/params.glsl"
@@ -47,10 +47,11 @@ void main() {
     }
 
     if (shading_model != 2) {
-        float density = filter_volume(density_volume, 3.0f,
-                                      fs_in.position.xyz,
-                                      fs_in.origin.xyz,
-                                      volume_bounds.size).r * 3.0f;
+        float density = ambient_occlusion(density_volume,
+                                          fs_in.position.xyz,
+                                          fs_in.origin.xyz,
+                                          volume_bounds.size,
+                                          2.0f, 2.0f) / 1.7f;
         visibility *= 1.0f - density;
     }
 

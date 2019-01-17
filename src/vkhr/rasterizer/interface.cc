@@ -81,7 +81,7 @@ namespace vkhr {
         shaders.push_back("Kajiya-Kay and Blinn-Phong");
         shaders.push_back("Combined Shadow Map and AO");
         shaders.push_back("Local Shadow Map Occlusion");
-        shaders.push_back("Voxelized Strand Densities");
+        shaders.push_back("Ambient Occlusion (Volume)");
 
         shadow_maps.push_back("Conventional Shadow Maps");
         shadow_maps.push_back("Approximate Deep Shadows");
@@ -221,7 +221,7 @@ namespace vkhr {
 
                 if (ImGui::TreeNodeEx("Ray Tracer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(171);
-                    if (ImGui::SliderFloat("AOR", &ray_tracer.ao_radius, 0.00, 7.0))
+                    if (ImGui::SliderFloat("AOR", &ray_tracer.ao_radius, 0.00, 5.00))
                         ray_tracer.now_dirty = true;
                     ImGui::PopItemWidth();
                     ImGui::SameLine();
@@ -355,6 +355,7 @@ namespace vkhr {
                         ImGui::Text("vertices: %d", hair_style->get_vertex_count());
                         ImGui::Text("segments: %d", hair_style->get_segment_count());
                         ImGui::Text("%d segment/strand", hair_style->get_default_segment_count());
+                        ImGui::Text("strands!: %d", hair_style->get_strand_count());
                         ImGui::Text("feature bitfield:");
                         ImGui::Text("0 1 0 0 0 1 1 1 0");
                         ImGui::TreePop();

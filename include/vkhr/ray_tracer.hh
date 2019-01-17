@@ -57,7 +57,7 @@ namespace vkhr {
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
 
-        float ao_radius { 3.50f };
+        float ao_radius { 1.20f };
         std::size_t samples { 0 };
 
         std::vector<glm::dvec3> back_buffer;
