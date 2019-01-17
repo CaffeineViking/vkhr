@@ -33,8 +33,8 @@ namespace vkhr {
 
         rtcSetDeviceErrorFunction(device, embree_debug_callback, nullptr);
 
-        std::random_device seed;
-        prng.seed(seed());
+        std::random_device rng; seed=rng(); 
+
         load(scene_graph);
     }
 
@@ -68,11 +68,14 @@ namespace vkhr {
             scene_graph.get_camera().get_height()
         };
 
-        framebuffer.clear();
+        back_buffer.resize(framebuffer.get_pixel_count(), glm::dvec3 { 0.0, 0.0, 0.0 });
+
+        clear();
     }
 
     void Raytracer::draw(const SceneGraph& scene_graph) {
-        framebuffer.clear();
+        if (now_dirty)
+            clear();
 
         auto& viewing_plane = scene_graph.get_camera().get_viewing_plane();
 
@@ -81,52 +84,43 @@ namespace vkhr {
 
         #pragma omp parallel for schedule(dynamic)
         for (int j = 0; j < static_cast<int>(framebuffer.get_height()); ++j)
-        for (int i = 0; i < static_cast<int>(framebuffer.get_width()); ++i) {
-            float x { static_cast<float>(i) }, y { static_cast<float>(j) };
+        for (int i = 0; i < static_cast<int>(framebuffer.get_width());  ++i) {
+            float x { static_cast<float>(i) },
+                  y { static_cast<float>(j) };
 
-            glm::vec3 pixel_color { 0.0f };
+            glm::dvec3 sample_color { 1.000, 1.000, 1.000 };
 
-            for (int s = 0; s < sampling_count; ++s) {
-                RTCIntersectContext      context;
-                rtcInitIntersectContext(&context);
+            RTCIntersectContext      context;
+            rtcInitIntersectContext(&context);
 
-                auto jitter = glm::vec2 { sample(prng),  sample(prng) };
+            glm::vec2 jitter {
+                sample(0.0f, 1.0f),
+                sample(0.0f, 1.0f)
+            };
 
-                jitter += 1.0f;
-                jitter *= 0.5f;
+            auto direction = ((x + jitter.x) * viewing_plane.x +
+                              (y + jitter.y) * viewing_plane.y +
+                                               viewing_plane.z);
 
-                auto eye_direction = ((x + jitter.x) * viewing_plane.x +
-                                      (y + jitter.y) * viewing_plane.y +
-                                                       viewing_plane.z);
+            Ray ray { viewing_plane.point, direction, 0.0000f };
 
-                Ray ray {
-                    viewing_plane.point,
-                    eye_direction,
-                    0.0f
-                };
+            if (ray.intersects(scene, context)) {
+                glm::vec3 position { ray.get_intersection_point() };
 
-                glm::vec3 sample_color { 1.0f, 1.0f, 1.0f };
+                sample_color = light_shading(ray, camera, light, context);
 
-                if (ray.intersects(scene, context)) {
-                    auto position = ray.get_intersection_point();
-
-                    sample_color = light_shading(ray, camera, light, context);
-
-                    if (visualization_method != DirectShadows) {
-                        sample_color *= ambient_occlusion(position,  context);
-                    }
+                if (visualization_method != DirectShadows) {
+                    sample_color *= ambient_occlusion(position,  context);
                 }
-
-                pixel_color += sample_color / (float) sampling_count;
             }
 
-            framebuffer.set_pixel(framebuffer.get_width() - i - 1, j, {
-                glm::clamp(pixel_color.r, 0.0f, 1.0f) * 255,
-                glm::clamp(pixel_color.g, 0.0f, 1.0f) * 255,
-                glm::clamp(pixel_color.b, 0.0f, 1.0f) * 255,
-                255 // for now assume that there's no alpha.
-            });
+            back_buffer[i + j * framebuffer.get_width()] += sample_color;
         }
+
+        ++samples;
+
+        framebuffer.clear();
+        framebuffer.copy(back_buffer, samples);
     }
 
     glm::vec3 Raytracer::light_shading(const Ray& ray, const Camera& camera, const LightSource& light, RTCIntersectContext& context) {
@@ -150,27 +144,22 @@ namespace vkhr {
     }
 
     float Raytracer::ambient_occlusion(const glm::vec3& position, RTCIntersectContext& context) {
-        std::size_t missed_rays { 0 };
+        auto random_direction = glm::vec3 {
+            sample(-1.0f, +1.0f),
+            sample(-1.0f, +1.0f),
+            sample(-1.0f, +1.0f)
+        };
 
-        for (std::size_t s { 0 }; s < ao_sample_count; ++s) {
-            auto random_direction = glm::vec3 {
-                sample(prng),
-                sample(prng),
-                sample(prng)
-            };
+        Ray random_ray {
+            position,
+            random_direction,
+            Ray::Epsilon
+        };
 
-            Ray random_ray {
-                position,
-                random_direction,
-                Ray::Epsilon
-            };
-
-            if (!random_ray.occluded_by(scene, context, ao_radius))
-                ++missed_rays;
-        }
-
-        // We divide here since we are sampling in a sphere, and not in a hemisphere as usual.
-        return static_cast<float>(missed_rays) / (static_cast<float>(ao_sample_count) / 2.0f);
+        if (!random_ray.occluded_by(scene, context, ao_radius))
+            return 2.0f;
+        else
+            return 0.0f;
     }
 
     Image& Raytracer::get_framebuffer() {
@@ -179,6 +168,18 @@ namespace vkhr {
 
     const Image& Raytracer::get_framebuffer() const {
         return framebuffer;
+    }
+
+    void Raytracer::set_framebuffer(const Image& framebuffer) {
+        this->framebuffer = framebuffer;
+    }
+
+    void Raytracer::clear() {
+        samples = 0;
+        std::fill(back_buffer.begin(),
+                  back_buffer.end(),
+                  glm::vec3 { 0.0 });
+        now_dirty = false;
     }
 
     void Raytracer::toggle_shadows() {
@@ -205,6 +206,22 @@ namespace vkhr {
 
     void Raytracer::set_denormal_zero() {
         _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+    }
+
+    std::uint32_t Raytracer::xorshift() {
+        std::uint32_t x = seed;
+        x ^= x << 13;
+        x ^= x >> 7;
+        x ^= x << 17;
+        seed = x;
+        return x;
+    }
+
+    float Raytracer::sample(float min, float max) {
+        float random_number = xorshift();
+        float range = max - min;
+        float normalization = std::numeric_limits<std::uint32_t>::max();
+        return (random_number / normalization) * range + min;
     }
 
     // From: "Correlated Multi-Jitter Sampling" by Pixar:

@@ -33,7 +33,10 @@ namespace vkhr {
         void toggle_shadows();
 
         Image& get_framebuffer();
+        void set_framebuffer(const Image& framebuffer);
         const Image& get_framebuffer() const;
+
+        void clear();
 
         enum VisualizationMethod {
             Shaded           = 0,
@@ -47,18 +50,21 @@ namespace vkhr {
         void set_denormal_zero();
 
         bool shadows_on { true };
-        int sampling_count { 4 };
+        bool now_dirty { false };
 
         VisualizationMethod visualization_method { Shaded };
 
         mutable RTCDevice device { nullptr };
         mutable RTCScene  scene  { nullptr };
 
-        int ao_sample_count { 2 };
-        float ao_radius { 10.0f };
+        float ao_radius { 3.50f };
+        std::size_t samples { 0 };
 
-        std::mt19937 prng; // For sampling :)
-        std::uniform_real_distribution<float> sample { -1.0f, +1.0f };
+        std::vector<glm::dvec3> back_buffer;
+
+        std::uint32_t seed { 0 };
+        float sample(float min,  float max);
+        std::uint32_t xorshift();
 
         // "Correlated Multi-Jittered Sampling":
         float rand_float(unsigned i, unsigned p);
@@ -70,7 +76,6 @@ namespace vkhr {
         std::vector<embree::HairStyle> hair_styles;
 
         friend class embree::HairStyle;
-
         friend class Interface;
     };
 }

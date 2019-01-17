@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+#include <vector>
 #include <utility>
 #include <string>
 
@@ -62,6 +63,8 @@ namespace vkhr {
 
         void clear();
         void clear(const Color& color);
+
+        void copy(const std::vector<glm::dvec3>& floating_point_data, double samples);
 
         // TODO: support bilinear and bicubic interpolation later.
         void resize(const unsigned width, const unsigned height);

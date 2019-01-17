@@ -181,6 +181,20 @@ namespace vkhr {
             set_pixel(i, j, color);
     }
 
+    void Image::copy(const std::vector<glm::dvec3>& buffer, double samples) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < get_height(); ++j)
+        for (int i = 0; i < get_width();  ++i) {
+            std::size_t pixel { i + j * get_width() };
+            set_pixel(get_width() - i - 1, j, {
+                static_cast<unsigned char>(glm::clamp(buffer[pixel].r / samples, 0.0, 1.0) * 255.0),
+                static_cast<unsigned char>(glm::clamp(buffer[pixel].g / samples, 0.0, 1.0) * 255.0),
+                static_cast<unsigned char>(glm::clamp(buffer[pixel].b / samples, 0.0, 1.0) * 255.0),
+                255
+            });
+        }
+    }
+
     void Image::resize(const unsigned width, const unsigned height) {
         if (width == this->width && height == this->height)
             return; // We're done here folks!

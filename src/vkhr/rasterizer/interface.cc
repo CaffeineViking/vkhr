@@ -156,6 +156,7 @@ namespace vkhr {
                              static_cast<void*>(&shaders),
                              shaders.size())) {
                 ray_tracer.visualization_method = static_cast<Raytracer::VisualizationMethod>(parameters.shading_model);
+                ray_tracer.now_dirty = true;
             }
 
             ImGui::Spacing();
@@ -220,17 +221,12 @@ namespace vkhr {
 
                 if (ImGui::TreeNodeEx("Ray Tracer", ImGuiTreeNodeFlags_DefaultOpen)) {
                     ImGui::PushItemWidth(171);
-                    ImGui::SliderInt("SPP", &ray_tracer.sampling_count,  1, 7);
+                    if (ImGui::SliderFloat("AOR", &ray_tracer.ao_radius, 0.00, 7.0))
+                        ray_tracer.now_dirty = true;
                     ImGui::PopItemWidth();
                     ImGui::SameLine();
-                    ImGui::Checkbox("Shadow Rays", &ray_tracer.shadows_on);
-                    ImGui::PushItemWidth(171);
-                    ImGui::SliderInt("SAO", &ray_tracer.ao_sample_count, 1, 7);
-                    ImGui::PopItemWidth();
-                    ImGui::SameLine();
-                    ImGui::PushItemWidth(90);
-                    ImGui::SliderFloat("r", &ray_tracer.ao_radius, 0.00, 20.0);
-                    ImGui::PopItemWidth();
+                    if (ImGui::Checkbox("Shadow Rays", &ray_tracer.shadows_on))
+                        ray_tracer.now_dirty = true;
                     ImGui::TreePop();
                 }
             }
@@ -273,7 +269,8 @@ namespace vkhr {
                 if (ImGui::TreeNode("Lights")) {
                     for (auto& light : scene_graph.light_sources) {
                         if (ImGui::TreeNode(light.get_type_name().c_str())) {
-                            ImGui::ColorEdit3("Highlights", glm::value_ptr(light.buffer.intensity), ImGuiColorEditFlags_Float);
+                            if (ImGui::ColorEdit3("Highlights", glm::value_ptr(light.buffer.intensity), ImGuiColorEditFlags_Float))
+                                ray_tracer.now_dirty = true;
                             ImGui::TreePop();
                         }
                     }
@@ -320,6 +317,9 @@ namespace vkhr {
 
             ImGui::End();
         }
+
+        if (scene_graph.camera.viewing_plane_dirty)
+            ray_tracer.now_dirty = true;
 
         ImGui::Render();
     }

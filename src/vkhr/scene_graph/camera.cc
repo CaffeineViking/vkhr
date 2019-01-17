@@ -152,8 +152,10 @@ namespace vkhr {
     }
 
     void Camera::zoom(float distance) {
-        this->distance += distance;
-        set_distance(this->distance);
+        if (distance != 0.0f) {
+            this->distance += distance;
+            set_distance(this->distance);
+        }
     }
 
     void Camera::set_distance(float value) {
