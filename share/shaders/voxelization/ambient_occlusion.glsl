@@ -22,7 +22,7 @@ float ambient_occlusion(sampler3D density,
         total_density += sample_volume(density, sample_offset, origin, size).r;
     }
 
-    return total_density;
+    return total_density / pow(samples, 3);
 }
 
 #endif

@@ -51,8 +51,8 @@ void main() {
                                           fs_in.position.xyz,
                                           fs_in.origin.xyz,
                                           volume_bounds.size,
-                                          2.0f, 2.0f) / 1.7f;
-        visibility *= 1.0f - density;
+                                          2.0f, 2.50f);
+        visibility *= pow(1.0f - density, 16.0f);
     }
 
     color = vec4(shading * visibility, 1.0f);
