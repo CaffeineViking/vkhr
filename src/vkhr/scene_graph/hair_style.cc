@@ -148,10 +148,26 @@ namespace vkhr {
         std::strncpy(file_header.information, information.c_str(), copy_size);
     }
 
+    void HairStyle::generate_thickness(float radius) {
+        thickness.reserve(get_vertex_count());
+
+        for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
+            unsigned segment_count { get_default_segment_count() };
+
+            if (has_segments()) segment_count = segments[strand];
+
+            for (std::size_t segment { 0 }; segment < segment_count; ++segment)
+                thickness.push_back(radius);
+
+            thickness.push_back(0.0f);
+        }
+    }
+
     void HairStyle::generate_tangents() {
         tangents.reserve(get_vertex_count());
 
         std::size_t vertex { 0 };
+
         for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
             unsigned segment_count { get_default_segment_count() };
 

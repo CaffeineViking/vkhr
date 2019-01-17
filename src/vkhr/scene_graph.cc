@@ -232,7 +232,8 @@ namespace vkhr {
 
         if (!hair_styles[path].has_tangents())
             hair_styles[path].generate_tangents();
-        hair_styles[path].set_default_thickness(0.14f);
+        if (!hair_styles[path].has_thickness())
+            hair_styles[path].generate_thickness(0.042f);
         if (!hair_styles[path].has_indices())
             hair_styles[path].generate_indices();
         if (!hair_styles[path].has_bounding_box())
