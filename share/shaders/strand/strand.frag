@@ -3,7 +3,7 @@
 #include "../scene_graph/camera.glsl"
 #include "../shading_models/kajiya-kay.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
-#include "../voxelization/ambient_occlusion.glsl"
+#include "../voxelization/local_ambient_occlusion.glsl"
 #include "../scene_graph/shadow_maps.glsl"
 #include "../scene_graph/lights.glsl"
 
@@ -51,7 +51,7 @@ void main() {
                                               fs_in.position.xyz,
                                               fs_in.origin.xyz,
                                               volume_bounds.size,
-                                              2.0f, 1.0f, 12.0f);
+                                              2.0f, 1.0f, 16.0f);
     }
 
     color = vec4(shading * visibility, 1.0f);
