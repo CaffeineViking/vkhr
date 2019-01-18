@@ -13,9 +13,13 @@
 
 layout(location = 0) in PipelineIn {
     vec4 position;
-    vec4 origin;
     vec3 tangent;
 } fs_in;
+
+
+layout(push_constant) uniform Object {
+    mat4 model;
+} object;
 
 layout(binding = 3) uniform sampler3D density_volume;
 
@@ -24,6 +28,9 @@ layout(location = 0) out vec4 color;
 void main() {
     vec4 light_position = vec4(lights[0].vector, 0.0f);
     vec3 light_color    = lights[0].intensity;
+
+    vec4 volume_origin = object.model * vec4(volume_bounds.origin, 0);
+    vec3 volume_size   = volume_bounds.size;
 
     vec3 camera_space_light  = (camera.view     * light_position).xyz;
     vec4 shadow_space_strand = lights[0].matrix * fs_in.position;
@@ -49,8 +56,8 @@ void main() {
     if (shading_model != 2) {
         visibility *= local_ambient_occlusion(density_volume,
                                               fs_in.position.xyz,
-                                              fs_in.origin.xyz,
-                                              volume_bounds.size,
+                                              volume_origin.xyz,
+                                              volume_size,
                                               2.0f, 1.0f, 16.0f);
     }
 
