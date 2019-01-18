@@ -16,7 +16,6 @@ layout(location = 0) in PipelineIn {
     vec3 tangent;
 } fs_in;
 
-
 layout(push_constant) uniform Object {
     mat4 model;
 } object;

@@ -25,5 +25,5 @@ void main() {
     vs_out.position = world_position;
     vs_out.tangent  = camera_tangent.xyz;
 
-    gl_Position =  projection_view * world_position;
+    gl_Position = projection_view * world_position;
 }
