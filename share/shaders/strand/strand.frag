@@ -47,12 +47,11 @@ void main() {
     }
 
     if (shading_model != 2) {
-        float density = ambient_occlusion(density_volume,
-                                          fs_in.position.xyz,
-                                          fs_in.origin.xyz,
-                                          volume_bounds.size,
-                                          2.0f, 2.50f);
-        visibility *= pow(1.0f - density, 16.0f);
+        visibility *= local_ambient_occlusion(density_volume,
+                                              fs_in.position.xyz,
+                                              fs_in.origin.xyz,
+                                              volume_bounds.size,
+                                              2.0f, 1.0f, 12.0f);
     }
 
     color = vec4(shading * visibility, 1.0f);

@@ -159,7 +159,7 @@ namespace vkhr {
             for (std::size_t segment { 0 }; segment < segment_count; ++segment)
                 thickness.push_back(radius);
 
-            thickness.push_back(0.0f);
+            thickness.push_back(radius);
         }
     }
 

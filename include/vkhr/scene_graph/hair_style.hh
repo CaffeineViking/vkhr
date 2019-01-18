@@ -91,6 +91,9 @@ namespace vkhr {
             std::vector<unsigned char> data;
             void normalize();
             bool save(const std::string& file_path);
+
+            template<typename F>
+            Volume downsample(F);
         };
 
         Volume voxelize_vertices(std::size_t width, std::size_t height, std::size_t depth) const;
@@ -208,6 +211,37 @@ namespace vkhr {
                         field.size() * sizeof(field[0])))
             return false;
         return true;
+    }
+
+    template<typename F>
+    HairStyle::Volume HairStyle::Volume::downsample(F filter) {
+        Volume volume {
+            resolution / 2.00f,
+            bounds // no change
+        };
+
+        volume.data.resize(volume.resolution.x * volume.resolution.y * volume.resolution.z, 0);
+
+        glm::ivec3 grid        = resolution;
+        glm::ivec3 volume_grid = volume.resolution;
+
+        for (int k = 0; k < volume.resolution.z; ++k)
+        for (int j = 0; j < volume.resolution.y; ++j)
+        for (int i = 0; i < volume.resolution.x; ++i) {
+            std::array<unsigned char, 8> neighborhood;
+
+            for (int z = 0; z < 2; ++z)
+            for (int y = 0; y < 2; ++y)
+            for (int x = 0; x < 2; ++x) {
+                neighborhood[x + 2*y + 4*z] = data[(2*i + x) + (2*j + y)*grid.x + (2*k + z)*grid.x*grid.y];
+            }
+
+            std::size_t index = i + j*volume_grid.x + k*volume_grid.x*volume_grid.y;
+
+            volume.data[index] = filter(neighborhood);
+        }
+
+        return volume;
     }
 }
 

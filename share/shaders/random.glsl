@@ -1,20 +1,23 @@
 #ifndef VKHR_RANDOM_GLSL
 #define VKHR_RANDOM_GLSL
 
-layout(constant_id = 42) const uint random_seed = 42;
-
 // LCG values taken from the Numerical Recipies book.
-uint random_lcg() {
-    random_seed = 1664525 * random_seed + 1013904223;
-    return random_seed;
+uint random_lcg(uint state) {
+    state = 1664525 * state + 1013904223;
+    return state;
+}
+
+// Well known one liner.
+float rand(vec2 state) {
+    return fract(sin(dot(state, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
 // "Xorshift RNGs" by George Marsaglia.
-uint random_xorshift() {
-    random_seed ^= (random_seed << 13);
-    random_seed ^= (random_seed >> 17);
-    random_seed ^= (random_seed <<  5);
-    return random_seed;
+uint random_xorshift(uint state) {
+    state ^= (state << 13);
+    state ^= (state >> 17);
+    state ^= (state <<  5);
+    return state;
 }
 
 #endif

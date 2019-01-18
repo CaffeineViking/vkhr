@@ -1,6 +1,7 @@
 #ifndef VKHR_RAYMARCH_GLSL
 #define VKHR_RAYMARCH_GLSL
 
+#include "../random.glsl"
 #include "sample_volume.glsl"
 
 vec4 raymarch(sampler3D volume, vec3 start, vec3 end, vec3 origin, vec3 size, uint samples) {
@@ -10,10 +11,8 @@ vec4 raymarch(sampler3D volume, vec3 start, vec3 end, vec3 origin, vec3 size, ui
 
     for (float t = 0.0f; t < 1.0f; t += steps) {
         vec3 position = start + direction * t;
-        accumulator += sample_volume(volume,
-                                     position,
-                                     origin,
-                                     size);
+        accumulator += sample_volume(volume, position,
+                                     origin, size);
     }
 
     return accumulator;
