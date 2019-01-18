@@ -32,6 +32,8 @@ namespace vkpp {
             shader_type = Type::Fragment;
         } else if (file_extension == "comp") {
             shader_type = Type::Compute;
+        } else if (file_extension == "geom") {
+            shader_type = Type::Geometry;
         } else if (file_extension == "hlsl") {
             shader_type = Type::Compute;
         } else {
