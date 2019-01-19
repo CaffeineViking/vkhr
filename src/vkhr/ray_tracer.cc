@@ -61,6 +61,15 @@ namespace vkhr {
             }
         }
 
+        // Load only the set of models which are within the actual scene graph.
+        for (const auto& model_mesh_node : scene_graph.get_nodes_with_models()) {
+            for (const auto model_mesh : model_mesh_node->get_models()) {
+                auto model = embree::Model { *model_mesh, *this };
+                if (model.get_geometry() >= models.size())
+                    models.resize(model.get_geometry()+1);
+            }
+        }
+
         rtcCommitScene(scene);
 
         framebuffer = Image {

@@ -3,6 +3,7 @@
 
 #include <vkhr/renderer.hh>
 
+#include <vkhr/ray_tracer/model.hh>
 #include <vkhr/ray_tracer/hair_style.hh>
 #include <vkhr/ray_tracer/ray.hh>
 
@@ -74,8 +75,10 @@ namespace vkhr {
         Image framebuffer;
 
         std::vector<embree::HairStyle> hair_styles;
+        std::vector<embree::Model>     models;
 
         friend class embree::HairStyle;
+        friend class embree::Model;
         friend class Interface;
     };
 }
