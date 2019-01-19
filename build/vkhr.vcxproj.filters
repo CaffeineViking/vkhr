@@ -1261,46 +1261,44 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\share\shaders\BezierDirect\ClipCurves.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Commons.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Constants.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Curves.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\DrawStrands.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Random.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Reorder.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr">
       <Filter>scenes</Filter>
     </None>
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\ClipCurves.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\Commons.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\Constants.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\Curves.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\DrawStrands.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\Random.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\Reorder.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </None>
+    <None Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
     </None>
     <None Include="..\share\shaders\antialiasing\phone-wire.glsl">
       <Filter>shaders\antialiasing</Filter>
@@ -1368,6 +1366,9 @@
     <None Include="..\share\shaders\strand\strand.frag">
       <Filter>shaders\strand</Filter>
     </None>
+    <None Include="..\share\shaders\strand\strand.geom">
+      <Filter>shaders\strand</Filter>
+    </None>
     <None Include="..\share\shaders\strand\strand.glsl">
       <Filter>shaders\strand</Filter>
     </None>
@@ -1375,6 +1376,12 @@
       <Filter>shaders\strand</Filter>
     </None>
     <None Include="..\share\shaders\voxelization\aabb.glsl">
+      <Filter>shaders\voxelization</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelization\ambient_occlusion.glsl">
+      <Filter>shaders\voxelization</Filter>
+    </None>
+    <None Include="..\share\shaders\voxelization\local_ambient_occlusion.glsl">
       <Filter>shaders\voxelization</Filter>
     </None>
     <None Include="..\share\shaders\voxelization\raymarch.glsl">
