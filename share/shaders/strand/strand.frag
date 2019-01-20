@@ -28,8 +28,7 @@ void main() {
     vec4 light_position = vec4(lights[0].vector, 0.0f);
     vec3 light_color    = lights[0].intensity;
 
-    vec4 volume_origin = object.model * vec4(volume_bounds.origin, 0);
-    vec3 volume_size   = volume_bounds.size;
+    vec3 eye = vec3(0, 0, -1);
 
     vec3 camera_space_light  = (camera.view     * light_position).xyz;
     vec4 shadow_space_strand = lights[0].matrix * fs_in.position;
@@ -38,27 +37,26 @@ void main() {
 
     if (shading_model == 0) {
         shading = kajiya_kay(hair_color, light_color, hair_shininess,
-                             fs_in.tangent, camera_space_light,
-                             vec3(0, 0, -1));
+                             fs_in.tangent, camera_space_light, eye);
     }
 
-    float visibility = 1.00f;
+    float occlusion = 1.000f;
 
     if (deep_shadows_on == 1 && shading_model != 3) {
-        visibility = approximate_deep_shadows(shadow_maps[0],
-                                              shadow_space_strand,
-                                              deep_shadows_kernel_size,
-                                              deep_shadows_stride_size,
-                                              1136.0f, 0.8f);
+        occlusion = approximate_deep_shadows(shadow_maps[0],
+                                             shadow_space_strand,
+                                             deep_shadows_kernel_size,
+                                             deep_shadows_stride_size,
+                                             1136.0f, 0.8f);
     }
 
     if (shading_model != 2) {
-        visibility *= local_ambient_occlusion(density_volume,
-                                              fs_in.position.xyz,
-                                              volume_origin.xyz,
-                                              volume_size,
-                                              3.0f, 2.50f, 16.0f, 0.3f);
+        occlusion *= local_ambient_occlusion(density_volume,
+                                             fs_in.position.xyz,
+                                             volume_bounds.origin,
+                                             volume_bounds.size,
+                                             3, 2.50f, 16, 0.3f);
     }
 
-    color = vec4(shading * visibility, 1.0f);
+    color = vec4(shading * occlusion, 1.0f);
 }

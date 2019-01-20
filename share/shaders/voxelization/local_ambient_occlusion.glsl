@@ -3,31 +3,28 @@
 
 #include "sample_volume.glsl"
 
-// "Local Ambient Occlusion in Direct Volume Rendering" by Hernell et al (2010).
-float local_ambient_occlusion(sampler3D density,
-                              vec3 position,
-                              vec3 volume_origin,
-                              vec3 volume_size,
-                              float samples,
+// Based on "Local Ambient Occlusion in Direct Volume Rendering" by Hernell et al. (2010)
+float local_ambient_occlusion(sampler3D volume,
+                              vec3 fragment_position,
+                              vec3 volume_origin, vec3 volume_size,
+                              float kernel_size,
                               float radius,
-                              float intensity,
-                              float minimum) {
-    vec3 density_grid_size = textureSize(density, 0);
-    vec3 texture_space = volume_size / density_grid_size;
-    float sampling_range = (samples - 1.00f) / 2.00f;
-    float sampling_scale = (radius / sampling_range);
+                              float intensity, float min_intensity) {
+    float density = 0.0f;
 
-    float total_density = 0.0f;
+    float kernel_radius = (kernel_size - 1.0f) / 2.0f;
+    vec3 voxel_space = volume_size / textureSize(volume, 0);
+    float voxel_scaling = radius / kernel_radius;
+    vec3 voxel_sample_scaling = voxel_scaling * voxel_space;
 
-    for (float z = -sampling_range; z <= +sampling_range; z += 1.0f)
-    for (float y = -sampling_range; y <= +sampling_range; y += 1.0f)
-    for (float x = -sampling_range; x <= +sampling_range; x += 1.0f) {
-        vec3 sample_offset = position + vec3(x, y, z) * texture_space * sampling_scale;
-        total_density += sample_volume(density, sample_offset, volume_origin,
-                                                               volume_size).r;
+    for (float z = -kernel_radius; z <= +kernel_radius; z += 1.0f)
+    for (float y = -kernel_radius; y <= +kernel_radius; y += 1.0f)
+    for (float x = -kernel_radius; x <= +kernel_radius; x += 1.0f) {
+        vec3 sample_position = fragment_position + vec3(x, y, z) * voxel_sample_scaling;
+        density += sample_volume(volume, sample_position, volume_origin, volume_size).r;
     }
 
-    return clamp(pow(1.0f - total_density / pow(samples, 3), intensity), minimum, 1.0);
+    return max(pow(1.0f - density / pow(kernel_size, 3.0f), intensity), min_intensity);
 }
 
 #endif

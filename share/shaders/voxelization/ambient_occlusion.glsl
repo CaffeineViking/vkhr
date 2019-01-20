@@ -3,28 +3,33 @@
 
 #include "raymarch.glsl"
 
-// Raycast pseudo-randomly within the sphere.
+// Brute force AO calculation by sampling the six sides of a cube and its eight corners (limited to a certain maximum radius).
 float ambient_occlusion(sampler3D density,
                         vec3 position,
                         vec3 volume_origin,
                         vec3 volume_size,
-                        uint rays,
-                        uint samples_per_ray,
                         float radius,
-                        float intensity) {
-    float total_density = 0.0f;
+                        uint samples) {
+    float occlusion = 0.00f;
 
-    uint total_samples = rays * samples_per_ray;
+    occlusion += raymarch(density, position, position + vec3(radius, 0.0f,     0.0f), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(radius, 0.0f,     0.0f), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position + vec3(0.0f,   radius,   0.0f), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(0.0f,   radius,   0.0f), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position + vec3(radius, radius,   0.0f), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(radius, radius,   0.0f), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position + vec3(0.0f,   0.0f,   radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(0.0f,   0.0f,   radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position + vec3(radius, 0.0f,   radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(radius, 0.0f,   radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position + vec3(0.0f,   radius, radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(0.0f,   radius, radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position + vec3(radius, radius, radius), volume_origin, volume_size, samples).r;
+    occlusion += raymarch(density, position, position - vec3(radius, radius, radius), volume_origin, volume_size, samples).r;
 
-    for (uint r = 0; r < rays; ++r) {
-        vec3 direction = vec3(1.0, 1.0, 1.0); // TODO: sample pseudo-randomly sphere.
-        total_density += raymarch(density,
-                                  position, position + normalize(direction) * radius,
-                                  volume_origin, volume_size,
-                                  samples_per_ray).r;
-    }
+    occlusion /= 14.0f * samples;
 
-    return pow(1.0f - total_density / total_samples, intensity);
+    return 1.0f - occlusion;
 }
 
 #endif
