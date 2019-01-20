@@ -16,6 +16,7 @@ namespace vkhr {
         glm::mat4 view;
         glm::mat4 projection;
         float near, far;
+        glm::vec3 position;
     };
 
     class Interface;

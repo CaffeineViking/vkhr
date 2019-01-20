@@ -238,6 +238,7 @@ namespace vkhr {
         view_matrix = glm::lookAt(position, look_at_point, up_direction);
         view_projection_matrix.view = view_matrix;
         view_projection = projection_matrix * view_matrix;
+        view_projection_matrix.position = position;
         view_matrix_dirty = false;
     }
 

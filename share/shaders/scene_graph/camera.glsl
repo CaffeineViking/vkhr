@@ -6,6 +6,7 @@ layout(binding = 0) uniform Camera {
     mat4 projection;
     float near;
     float far;
+    vec3 position;
 } camera;
 
 #endif

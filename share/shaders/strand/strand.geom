@@ -1,5 +1,9 @@
 #version 460 core
 
+#include "../scene_graph/camera.glsl"
+
+#include "strand.glsl"
+
 layout(lines) in;
 layout(line_strip, max_vertices = 2) out;
 
