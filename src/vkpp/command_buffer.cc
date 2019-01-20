@@ -128,6 +128,20 @@ namespace vkpp {
                        1, &copy_region);
     }
 
+    void CommandBuffer::clear_color_image(Image& image, VkClearColorValue clear_color) {
+        VkImageSubresourceRange clear_range {  };
+
+        clear_range.aspectMask = image.get_aspect_mask();
+
+        clear_range.layerCount = 1;
+        clear_range.levelCount = 1;
+
+        vkCmdClearColorImage(handle,
+                             image.get_handle(), image.get_layout(),
+                             &clear_color,
+                             1, &clear_range);
+    }
+
     void CommandBuffer::copy_buffer(Buffer& source, Buffer& destination,
                                     std::uint32_t source_offset,
                                     std::uint32_t destination_offset) {
