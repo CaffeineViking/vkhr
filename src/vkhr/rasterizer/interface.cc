@@ -97,6 +97,10 @@ namespace vkhr {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        auto direction = scene_graph.light_sources.front().get_direction();
+        direction = glm::rotateY(direction, 0.0050f);
+        scene_graph.light_sources.front().set_direction(direction);
+
         if (gui_visible) {
             auto& window = rasterizer.window_surface.get_glfw_window();
 
@@ -183,9 +187,9 @@ namespace vkhr {
 
                     ImGui::PushItemWidth(171);
                     if (parameters.shadow_technique == ApproximateDeepShadows) {
-                        ImGui::SliderInt("PCF", &parameters.adsm_kernel_size, 1, 9);
+                        ImGui::SliderInt("PCF", &parameters.adsm_kernel_size, 1, 5);
                     } else if (parameters.shadow_technique == ConventionalShadowMaps) {
-                        ImGui::SliderInt("PCF", &parameters.ctsm_kernel_size, 1, 9);
+                        ImGui::SliderInt("PCF", &parameters.ctsm_kernel_size, 1, 5);
                     }
                     ImGui::PopItemWidth();
 
@@ -209,7 +213,7 @@ namespace vkhr {
 
                     ImGui::PushItemWidth(171);
                     if (parameters.shadow_technique == ApproximateDeepShadows) {
-                        ImGui::SliderInt("Shadow Map Scaling", &parameters.adsm_stride_size, 1, 15, "%.1f");
+                        ImGui::SliderInt("ADSM Sample Jitter", &parameters.adsm_stride_size, 1, 11, "%.1f");
                     } else if (parameters.shadow_technique == ConventionalShadowMaps) {
                         if (ImGui::DragFloat("Shadow Bias Values", &parameters.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
                             parameters.ctsm_bias = std::max(parameters.ctsm_bias, 0.0f);
