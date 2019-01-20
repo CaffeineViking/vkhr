@@ -213,7 +213,7 @@ namespace vkhr {
 
                     ImGui::PushItemWidth(171);
                     if (parameters.shadow_technique == ApproximateDeepShadows) {
-                        ImGui::SliderInt("ADSM Sample Jitter", &parameters.adsm_stride_size, 1, 11, "%.1f");
+                        ImGui::SliderInt("ADSM Sample Jitter", &parameters.adsm_stride_size, 1, 15, "%.1f");
                     } else if (parameters.shadow_technique == ConventionalShadowMaps) {
                         if (ImGui::DragFloat("Shadow Bias Values", &parameters.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
                             parameters.ctsm_bias = std::max(parameters.ctsm_bias, 0.0f);

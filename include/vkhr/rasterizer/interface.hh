@@ -77,7 +77,7 @@ namespace vkhr {
 
             3,
             Poisson,
-            6,
+            8,
             true,
 
             3,

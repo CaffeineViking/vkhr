@@ -190,7 +190,7 @@ namespace vkhr {
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
+        // draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
