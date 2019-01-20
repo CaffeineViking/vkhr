@@ -18,9 +18,9 @@ float local_ambient_occlusion(sampler3D density,
 
     float total_density = 0.0f;
 
+    for (float z = -sampling_range; z <= +sampling_range; z += 1.0f)
     for (float y = -sampling_range; y <= +sampling_range; y += 1.0f)
-    for (float x = -sampling_range; x <= +sampling_range; x += 1.0f)
-    for (float z = -sampling_range; z <= +sampling_range; z += 1.0f) {
+    for (float x = -sampling_range; x <= +sampling_range; x += 1.0f) {
         vec3 sample_offset = position + vec3(x, y, z) * texture_space * sampling_scale;
         total_density += sample_volume(density, sample_offset, volume_origin,
                                                                volume_size).r;
