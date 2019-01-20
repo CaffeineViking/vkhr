@@ -10,7 +10,8 @@ float local_ambient_occlusion(sampler3D density,
                               vec3 volume_size,
                               float samples,
                               float radius,
-                              float intensity) {
+                              float intensity,
+                              float minimum) {
     vec3 density_grid_size = textureSize(density, 0);
     vec3 texture_space = volume_size / density_grid_size;
     float sampling_range = (samples - 1.00f) / 2.00f;
@@ -26,7 +27,7 @@ float local_ambient_occlusion(sampler3D density,
                                                                volume_size).r;
     }
 
-    return pow(1.0f - total_density / pow(samples, 3), intensity);
+    return clamp(pow(1.0f - total_density / pow(samples, 3), intensity), minimum, 1.0);
 }
 
 #endif
