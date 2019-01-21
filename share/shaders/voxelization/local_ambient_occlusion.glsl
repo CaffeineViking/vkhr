@@ -21,10 +21,10 @@ float local_ambient_occlusion(sampler3D volume,
     for (float y = -kernel_radius; y <= +kernel_radius; y += 1.0f)
     for (float x = -kernel_radius; x <= +kernel_radius; x += 1.0f) {
         vec3 sample_position = fragment_position + vec3(x, y, z) * voxel_sample_scaling;
-        density += sample_volume(volume, sample_position, volume_origin, volume_size).r;
+        density += min(sample_volume(volume, sample_position, volume_origin, volume_size).r, min_intensity);
     }
 
-    return max(pow(1.0f - density / pow(kernel_size, 3.0f), intensity), min_intensity);
+    return pow(1.0f - density / pow(kernel_size, 3.0f), intensity);
 }
 
 #endif
