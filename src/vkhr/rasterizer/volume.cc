@@ -9,7 +9,101 @@
 
 namespace vkhr {
     namespace vulkan {
+        Volume::Volume(vkhr::Rasterizer& vulkan_renderer) {
+            load(vulkan_renderer);
+        }
+
+        void Volume::load(vkhr::Rasterizer& vulkan_renderer) {
+            auto cube_vertices = generate_cube_vertices();
+
+            vertices = vk::VertexBuffer {
+                vulkan_renderer.device,
+                vulkan_renderer.command_pool,
+                cube_vertices
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, vertices, VK_OBJECT_TYPE_BUFFER, "Volume Vertex Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
+                                         "Volume Vertex Device Memory", id);
+
+            auto cube_elements = generate_cube_elements();
+
+            elements = vk::IndexBuffer {
+                vulkan_renderer.device,
+                vulkan_renderer.command_pool,
+                cube_elements
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, elements, VK_OBJECT_TYPE_BUFFER, "Volume Index Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, elements.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
+                                         "Volume Index Device Memory", id);
+
+            ++id;
+        }
+
+        void Volume::set_current_volume(vk::ImageView& volume_view) {
+            this->volume_view = &volume_view;
+        }
+
+        void Volume::set_parameter_buffer(vk::UniformBuffer& param) {
+            this->parameter_buffer = &param;
+        }
+
+        void Volume::set_volume_sampler(vk::Sampler& voxel_sampler) {
+            this->volume_sampler = &voxel_sampler;
+        }
+
+        std::vector<glm::vec3> Volume::generate_cube_vertices() const {
+            std::vector<glm::vec3> cube_vertices(8);
+
+            std::size_t v { 0 };
+
+            cube_vertices[v++] = glm::vec3 { 0, 0, 0 };
+            cube_vertices[v++] = glm::vec3 { 1, 0, 0 };
+            cube_vertices[v++] = glm::vec3 { 1, 1, 0 };
+            cube_vertices[v++] = glm::vec3 { 0, 1, 0 };
+
+            cube_vertices[v++] = glm::vec3 { 0, 0, 1 };
+            cube_vertices[v++] = glm::vec3 { 1, 0, 1 };
+            cube_vertices[v++] = glm::vec3 { 1, 1, 1 };
+            cube_vertices[v++] = glm::vec3 { 0, 1, 1 };
+
+            return cube_vertices;
+        }
+
+        std::vector<unsigned>  Volume::generate_cube_elements() const {
+            std::vector<unsigned> cube_elements(36);
+
+            std::size_t e { 0 };
+
+            cube_elements[e++] = 0; cube_elements[e++] = 1; cube_elements[e++] = 2;
+            cube_elements[e++] = 2; cube_elements[e++] = 3; cube_elements[e++] = 0;
+
+            cube_elements[e++] = 1; cube_elements[e++] = 5; cube_elements[e++] = 6;
+            cube_elements[e++] = 6; cube_elements[e++] = 2; cube_elements[e++] = 1;
+
+            cube_elements[e++] = 4; cube_elements[e++] = 0; cube_elements[e++] = 3;
+            cube_elements[e++] = 3; cube_elements[e++] = 7; cube_elements[e++] = 4;
+
+            cube_elements[e++] = 4; cube_elements[e++] = 5; cube_elements[e++] = 1;
+            cube_elements[e++] = 1; cube_elements[e++] = 0; cube_elements[e++] = 4;
+
+            cube_elements[e++] = 3; cube_elements[e++] = 2; cube_elements[e++] = 6;
+            cube_elements[e++] = 6; cube_elements[e++] = 7; cube_elements[e++] = 3;
+
+            cube_elements[e++] = 7; cube_elements[e++] = 6; cube_elements[e++] = 5;
+            cube_elements[e++] = 5; cube_elements[e++] = 4; cube_elements[e++] = 7;
+
+            return cube_elements;
+        }
+
         void Volume::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            descriptor_set.write(2, *parameter_buffer);
+            descriptor_set.write(3, *volume_view, *volume_sampler);
+            command_buffer.bind_descriptor_set(descriptor_set, pipeline);
+            command_buffer.bind_vertex_buffer(0, vertices, 0);
+            command_buffer.bind_index_buffer(elements);
+            command_buffer.draw_indexed(elements.count());
         }
 
         void Volume::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
@@ -26,6 +120,7 @@ namespace vkhr {
                                                  0.0, 1.0 });
 
             pipeline.fixed_stages.enable_depth_test();
+            pipeline.fixed_stages.set_front_face(VK_FRONT_FACE_CLOCKWISE);
             pipeline.fixed_stages.enable_alpha_mix(0);
 
             std::uint32_t light_count = vulkan_renderer.shadow_maps.size();

@@ -99,6 +99,8 @@ namespace vkhr {
 
         load(scene_graph);
 
+        strand_volume = vulkan::Volume { *this };
+
         fullscreen_billboard = vulkan::Billboard {
             swap_chain.get_width(),
             swap_chain.get_height(),
@@ -183,13 +185,17 @@ namespace vkhr {
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        // vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        // draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
-        // vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
         draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
+
+        vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
+        strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
 
         imgui.draw(command_buffers[frame], query_pools[frame]);
 
@@ -214,7 +220,7 @@ namespace vkhr {
             return;
         }
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Make Shadow Maps", query_pools[frame]);
         for (auto& shadow_map : shadow_maps) {
             auto& vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
@@ -225,7 +231,7 @@ namespace vkhr {
 
             command_buffer.end_render_pass();
         }
-        vk::DebugMarker::close(command_buffers[frame], "Draw Shadow Maps", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Make Shadow Maps", query_pools[frame]);
 
         vk::DebugMarker::close(command_buffers[frame]);
     }
@@ -236,6 +242,19 @@ namespace vkhr {
             command_buffer.push_constant(hair_style_pipeline, 0, projection * hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())
                 hair_styles[hair_style].draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
+        }
+    }
+
+    void Rasterizer::strand_dvr(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer) {
+        command_buffer.bind_pipeline(pipeline);
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
+            command_buffer.push_constant(hair_style_pipeline, 0, hair_node->get_model_matrix());
+            for (auto& hair_style : hair_node->get_hair_styles()) {
+                strand_volume.set_current_volume(hair_styles[hair_style].get_volume_view());
+                strand_volume.set_volume_sampler(hair_styles[hair_style].get_volume_sampler());
+                strand_volume.set_parameter_buffer(hair_styles[hair_style].get_parameter());
+                strand_volume.draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
+            }
         }
     }
 
@@ -283,6 +302,7 @@ namespace vkhr {
         vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
         vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
+        vulkan::Volume::build_pipeline(strand_dvr_pipeline, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         vulkan::Model::build_pipeline(model_mesh_pipeline, *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
@@ -369,6 +389,8 @@ namespace vkhr {
         if (recompile_pipeline_shaders(hair_depth_pipeline)) vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
         if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         if (recompile_pipeline_shaders(hair_voxel_pipeline)) vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
+
+        if (recompile_pipeline_shaders(strand_dvr_pipeline)) vulkan::Volume::build_pipeline(strand_dvr_pipeline, *this);
 
         if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline, *this);

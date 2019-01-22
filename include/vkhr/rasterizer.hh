@@ -36,10 +36,13 @@ namespace vkhr {
         void draw(const SceneGraph& scene) override;
         void draw(Image& fullscreen_image);
 
-        void draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer);
-        void draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
         void draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer);
+        void draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
+        void draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer);
         void draw_hairs(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
+
+        // Direct Volume Render (DVR) the hair strands. This needs to be done after drawing models and styles.
+        void strand_dvr(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer);
 
         bool recompile_pipeline_shaders(Pipeline& pipeline);
         void recompile();
@@ -78,6 +81,8 @@ namespace vkhr {
         Pipeline mesh_depth_pipeline;
         Pipeline hair_voxel_pipeline;
 
+        Pipeline strand_dvr_pipeline;
+
         Pipeline hair_style_pipeline;
         Pipeline model_mesh_pipeline;
         Pipeline billboards_pipeline;
@@ -86,6 +91,8 @@ namespace vkhr {
         std::unordered_map<const HairStyle*, vulkan::HairStyle> hair_styles;
         std::unordered_map<const Model*, vulkan::Model> models;
         vulkan::Billboard fullscreen_billboard;
+
+        vulkan::Volume strand_volume;
 
         Interface imgui;
 

@@ -86,19 +86,19 @@ namespace vkhr {
             parameters.hair_shininess = 50.0f;
             parameters.hair_color = glm::vec3 { .32, .228, .128 };
 
-            parameters_buffer = vk::UniformBuffer {
+            parameter_buffer = vk::UniformBuffer {
                 vulkan_renderer.device,
                 parameters
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, parameters_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, parameter_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
 
             ++id;
         }
 
         void HairStyle::voxelize_vertices(Pipeline& voxel_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             descriptor_set.write(0, vertices);
-            descriptor_set.write(2, parameters_buffer);
+            descriptor_set.write(2, parameter_buffer);
             descriptor_set.write(3, density_view);
             command_buffer.bind_descriptor_set(descriptor_set, voxel_pipeline);
             command_buffer.dispatch(vertices.count() / 512);
@@ -106,7 +106,7 @@ namespace vkhr {
 
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             if (descriptor_set.get_layout().get_bindings().size()) {
-                descriptor_set.write(2, parameters_buffer);
+                descriptor_set.write(2, parameter_buffer);
                 descriptor_set.write(3, density_view, density_sampler);
             }
 
@@ -302,6 +302,22 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.compute_pipeline,
                                          VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Pipeline");
+        }
+
+        vk::UniformBuffer& HairStyle::get_parameter() {
+            return parameter_buffer;
+        }
+
+        vk::DeviceImage& HairStyle::get_volume() {
+            return density_volume;
+        }
+
+        vk::Sampler& HairStyle::get_volume_sampler() {
+            return density_sampler;
+        }
+
+        vk::ImageView& HairStyle::get_volume_view() {
+            return density_view;
         }
 
         int HairStyle::id { 0 };

@@ -38,6 +38,12 @@ namespace vkhr {
             static void depth_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
             static void voxel_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
 
+            vk::UniformBuffer& get_parameter();
+
+            vk::DeviceImage& get_volume();
+            vk::Sampler&     get_volume_sampler();
+            vk::ImageView&   get_volume_view();
+
         private:
             vk::IndexBuffer  segments;
             vk::VertexBuffer vertices;
@@ -51,7 +57,7 @@ namespace vkhr {
                 float hair_shininess;
             } parameters;
 
-            vk::UniformBuffer parameters_buffer;
+            vk::UniformBuffer parameter_buffer;
 
             vk::ImageView density_view;
             vk::DeviceImage density_volume;

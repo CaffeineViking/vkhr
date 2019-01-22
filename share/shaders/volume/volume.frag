@@ -11,10 +11,6 @@ layout(location = 0) in PipelineIn {
     vec4 position;
 } fs_in;
 
-layout(push_constant) uniform Object {
-    mat4 model;
-} object;
-
 layout(binding = 3) uniform sampler3D density_volume;
 
 layout(location = 0) out vec4 color;
