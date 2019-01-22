@@ -496,6 +496,19 @@
     <ClCompile Include="..\src\vkpp\version.cc" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\share\shaders\BezierDirect\ClipCurves.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\Commons.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\Constants.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\Curves.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\DrawStrands.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\Random.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\Reorder.hlsl" />
+    <FxCompile Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\antialiasing\gbaa.glsl" />
@@ -533,6 +546,9 @@
     <None Include="..\share\shaders\volume\local_ambient_occlusion.glsl" />
     <None Include="..\share\shaders\volume\raymarch.glsl" />
     <None Include="..\share\shaders\volume\sample_volume.glsl" />
+    <None Include="..\share\shaders\volume\volume.frag" />
+    <None Include="..\share\shaders\volume\volume.glsl" />
+    <None Include="..\share\shaders\volume\volume.vert" />
     <None Include="..\share\shaders\volume\voxelization\voxelize_vertices.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

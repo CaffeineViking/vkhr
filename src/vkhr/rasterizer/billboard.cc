@@ -85,11 +85,9 @@ namespace vkhr {
             pipeline.fixed_stages.enable_alpha_mix(0);
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboard/billboard.vert"));
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboard/billboard.frag"));
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                       VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Fragment Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1], VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Fragment Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
@@ -99,13 +97,11 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT,
-                                         "Billboards Descriptor Set Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Billboard Descriptor Set Layout");
 
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
-                                                                                "Billboards Descriptor Set");
+                                                                                "Billboard Descriptor Set");
 
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera[i]);
@@ -120,9 +116,7 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
-                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Billboards Pipeline Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Billboard Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -132,7 +126,7 @@ namespace vkhr {
                 vulkan_renderer.color_pass
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboards Graphics Pipeline");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Billboard Graphics Pipeline");
         }
 
         int Billboard::id { 0 };

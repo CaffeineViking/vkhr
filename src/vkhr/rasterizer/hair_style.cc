@@ -151,12 +151,9 @@ namespace vkhr {
             };
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.vert"));
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.frag"),
-                                                constants, &constant_data, sizeof(constant_data));
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Fragment Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Hair Vertex Shader");
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.frag"), constants, &constant_data, sizeof(constant_data));
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1], VK_OBJECT_TYPE_SHADER_MODULE, "Hair Fragment Shader");
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
@@ -173,8 +170,8 @@ namespace vkhr {
                 vulkan_renderer.device, descriptor_bindings
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Descriptor Set Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Descriptor Set Layout");
+
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
                                                                                 "Hair Descriptor Set");
@@ -196,9 +193,7 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
-                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Hair Pipeline Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Hair Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -234,15 +229,14 @@ namespace vkhr {
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("self-shadowing/depth_map.vert"));
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Hair Depth Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Hair Depth Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Depth Descriptor Set Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Hair Depth Descriptor Set Layout");
+
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
                                                                                 "Hair Depth Descriptor Set");
@@ -255,9 +249,7 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
-                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Hair Depth Pipeline Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Hair Depth Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,

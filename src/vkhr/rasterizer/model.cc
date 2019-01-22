@@ -79,12 +79,9 @@ namespace vkhr {
             };
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("model/model.vert"));
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Model Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("model/model.frag"),
-                                                constants, &constant_data, sizeof(constant_data));
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Model Fragment Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Model Vertex Shader");
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("model/model.frag"), constants, &constant_data, sizeof(constant_data));
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1], VK_OBJECT_TYPE_SHADER_MODULE, "Model Fragment Shader");
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
@@ -100,8 +97,8 @@ namespace vkhr {
                 descriptor_bindings
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Model Descriptor Set Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Model Descriptor Set Layout");
+
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
                                                                                 "Model Descriptor Set");
@@ -123,9 +120,7 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
-                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Model Pipeline Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Model Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,
@@ -162,15 +157,14 @@ namespace vkhr {
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("self-shadowing/depth_map.vert"));
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Model Depth Shader");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Model Depth Shader");
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Model Depth Descriptor Set Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.descriptor_set_layout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Model Depth Descriptor Set Layout");
+
             pipeline.descriptor_sets = vulkan_renderer.descriptor_pool.allocate(vulkan_renderer.swap_chain.size(),
                                                                                 pipeline.descriptor_set_layout,
                                                                                 "Model Depth Descriptor Set");
@@ -183,9 +177,7 @@ namespace vkhr {
                 }
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout,
-                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Model Depth Pipeline Layout");
+            vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline_layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Model Depth Pipeline Layout");
 
             pipeline.pipeline = vk::GraphicsPipeline {
                 vulkan_renderer.device,

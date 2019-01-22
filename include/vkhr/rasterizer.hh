@@ -95,6 +95,7 @@ namespace vkhr {
 
         friend class vulkan::HairStyle;
         friend class vulkan::Model;
+        friend class vulkan::Volume;
         friend class vulkan::Billboard;
 
         friend class vulkan::DepthMap;

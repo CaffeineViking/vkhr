@@ -1279,6 +1279,41 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\share\shaders\BezierDirect\ClipCurves.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Commons.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Constants.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Curves.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\DrawStrands.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Random.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\Reorder.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl">
+      <Filter>shaders\BezierDirect</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr">
       <Filter>scenes</Filter>
     </None>
@@ -1388,6 +1423,15 @@
       <Filter>shaders\volume</Filter>
     </None>
     <None Include="..\share\shaders\volume\sample_volume.glsl">
+      <Filter>shaders\volume</Filter>
+    </None>
+    <None Include="..\share\shaders\volume\volume.frag">
+      <Filter>shaders\volume</Filter>
+    </None>
+    <None Include="..\share\shaders\volume\volume.glsl">
+      <Filter>shaders\volume</Filter>
+    </None>
+    <None Include="..\share\shaders\volume\volume.vert">
       <Filter>shaders\volume</Filter>
     </None>
     <None Include="..\share\shaders\volume\voxelization\voxelize_vertices.comp">
