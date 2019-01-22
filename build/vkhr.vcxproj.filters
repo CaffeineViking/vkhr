@@ -85,6 +85,9 @@
     <Filter Include="shaders\billboard">
       <UniqueIdentifier>{090C9D26-7522-9BBC-BE99-26DE2AEF6B44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\level_of_detail">
+      <UniqueIdentifier>{BC394E3F-2871-96D6-317B-FAF99D31BDCF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="shaders\model">
       <UniqueIdentifier>{AF0D3448-1BCE-AF7E-E408-F9FB5088F45A}</UniqueIdentifier>
     </Filter>
@@ -972,6 +975,9 @@
     <ClInclude Include="..\include\vkhr\rasterizer\pipeline.hh">
       <Filter>include\vkhr\rasterizer</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\volume.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\ray_tracer.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
@@ -1154,6 +1160,9 @@
     <ClCompile Include="..\src\vkhr\rasterizer\model.cc">
       <Filter>src\vkhr\rasterizer</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\rasterizer\volume.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\ray_tracer.cc">
       <Filter>src\vkhr</Filter>
     </ClCompile>
@@ -1270,41 +1279,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\share\shaders\BezierDirect\ClipCurves.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Commons.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Constants.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Curves.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\DrawStrands.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_1.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\PrefixSum_2.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Random.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\ReduceDepthBuffer.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\Reorder.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\share\shaders\BezierDirect\ScanBlockBuffer.hlsl">
-      <Filter>shaders\BezierDirect</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr">
       <Filter>scenes</Filter>
     </None>
@@ -1328,6 +1302,9 @@
     </None>
     <None Include="..\share\shaders\billboard\billboard.vert">
       <Filter>shaders\billboard</Filter>
+    </None>
+    <None Include="..\share\shaders\level_of_detail\metric.glsl">
+      <Filter>shaders\level_of_detail</Filter>
     </None>
     <None Include="..\share\shaders\model\model.frag">
       <Filter>shaders\model</Filter>

@@ -6,6 +6,8 @@
 #include <vkhr/rasterizer/model.hh>
 #include <vkhr/rasterizer/hair_style.hh>
 #include <vkhr/rasterizer/billboard.hh>
+#include <vkhr/rasterizer/volume.hh>
+
 #include <vkhr/rasterizer/depth_map.hh>
 #include <vkhr/rasterizer/pipeline.hh>
 
@@ -92,10 +94,12 @@ namespace vkhr {
         std::vector<vk::CommandBuffer> command_buffers;
 
         friend class vulkan::HairStyle;
-        friend class vulkan::Billboard;
         friend class vulkan::Model;
-        friend class ::vkhr::Interface;
+        friend class vulkan::Billboard;
+
         friend class vulkan::DepthMap;
+
+        friend class ::vkhr::Interface;
     };
 }
 
