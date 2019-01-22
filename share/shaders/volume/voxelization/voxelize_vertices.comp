@@ -1,15 +1,10 @@
 #version 460 core
 
-#include "../strand/strand.glsl"
+#include "../sample_volume.glsl"
+#include "../../strand/strand.glsl"
+#include "../bounding_box.glsl"
 
-#include "aabb.glsl"
-#include "sample_volume.glsl"
-
-layout(std430, binding = 0) buffer Segments {
-    uint segments[];
-};
-
-layout(std430, binding = 1) buffer Vertices {
+layout(std430, binding = 0) buffer Vertices {
     vec3 positions[];
 };
 

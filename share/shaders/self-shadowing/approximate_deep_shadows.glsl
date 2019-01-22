@@ -1,9 +1,9 @@
 #ifndef VKHR_APPROXIMATE_DEEP_SHADOWS_GLSL
 #define VKHR_APPROXIMATE_DEEP_SHADOWS_GLSL
 
+#include "../utils/math.glsl"
 #include "tex2Dproj.glsl"
 #include "linearize_depth.glsl"
-#include "../math.glsl"
 
 // Based on the "A Survivor Reborn: Tomb Raider on DX11" talk at GDC 2013 by Jason Lacroix and his pseudo-code.
 float approximate_deep_shadow(float shadow_depth, float light_depth, float strand_radius, float strand_alpha) {
@@ -41,13 +41,13 @@ float approximate_deep_shadows(sampler2D shadow_map, // the non-linearized shado
 
     for (float y = -kernel_range; y <= +kernel_range; y += 1.0f)
     for (float x = -kernel_range; x <= +kernel_range; x += 1.0f) {
-        float weight_power = -1.0f * (x*x + y*y) / 2.0f*sigma_squared;
-        float local_weight =  1.0f / (2.0f*M_PI*sigma_squared) * pow(M_E, weight_power);
+        float exponent = -1.0f * (x*x + y*y) / 2.0f*sigma_squared; // Gaussian RBDF.
+        float local_weight =  1.0f / (2.0f*M_PI*sigma_squared) * pow(M_E, exponent);
 
         float shadow_depth = tex2Dproj(shadow_map, light_space_strand, vec2(x, y) / shadow_map_stride).r;
         float shadow = approximate_deep_shadow(shadow_depth, light_depth, strand_radius, strand_opacity);
 
-        visibility += shadow * local_weight;
+        visibility   += shadow * local_weight;
         total_weight += local_weight;
     }
 

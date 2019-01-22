@@ -45,8 +45,10 @@ shaders: FORCE
 	@-make --no-print-directory -C share/shaders/self-shadowing
 	@-utils/glslc.py share/shaders/strand
 	@-make --no-print-directory -C share/shaders/strand
-	@-utils/glslc.py share/shaders/voxelization
-	@-make --no-print-directory -C share/shaders/voxelization
+	@-utils/glslc.py share/shaders/volume
+	@-make --no-print-directory -C share/shaders/volume
+	@-utils/glslc.py share/shaders/volume/voxelization
+	@-make --no-print-directory -C share/shaders/volume/voxelization
 
 download: download-modules
 download-modules: FORCE

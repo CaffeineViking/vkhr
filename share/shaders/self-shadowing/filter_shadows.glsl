@@ -3,7 +3,6 @@
 
 #include "tex2Dproj.glsl"
 #include "linearize_depth.glsl"
-#include "../math.glsl"
 
 // Standard shadow mapping with some filters.
 float filter_shadows(sampler2D shadow_map, // the non-linearized shadow map.

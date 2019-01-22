@@ -72,7 +72,7 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
 
-            density_view = vk::ImageView{
+            density_view = vk::ImageView {
                 vulkan_renderer.device,
                 density_volume,
                 VK_IMAGE_LAYOUT_GENERAL
@@ -80,11 +80,11 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
-            parameters.volume_bounds     = hair_style.get_bounding_box();
-            parameters.strand_radius     = hair_style.get_default_thickness();
+            parameters.volume_bounds = hair_style.get_bounding_box();
+            parameters.strand_radius = hair_style.get_default_thickness();
             parameters.volume_resolution = strand_density.resolution;
-            parameters.hair_shininess    = 50.0f;
-            parameters.hair_color        = glm::vec3 { .32, .228, .128 };
+            parameters.hair_shininess = 50.0f;
+            parameters.hair_color = glm::vec3 { .32, .228, .128 };
 
             parameters_buffer = vk::UniformBuffer {
                 vulkan_renderer.device,
@@ -96,12 +96,11 @@ namespace vkhr {
             ++id;
         }
 
-        void HairStyle::voxelize(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            descriptor_set.write(0, segments);
-            descriptor_set.write(1, vertices);
+        void HairStyle::voxelize_vertices(Pipeline& voxel_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            descriptor_set.write(0, vertices);
             descriptor_set.write(2, parameters_buffer);
             descriptor_set.write(3, density_view);
-            command_buffer.bind_descriptor_set(descriptor_set, pipeline);
+            command_buffer.bind_descriptor_set(descriptor_set, voxel_pipeline);
             command_buffer.dispatch(vertices.count() / 512);
         }
 
@@ -121,29 +120,11 @@ namespace vkhr {
             command_buffer.draw_indexed(segments.count());
         }
 
-        void HairStyle::reduce_depth_buffer(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-        }
-
-        void HairStyle::clip_curves(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-        }
-
-        void HairStyle::prefix_sum_1(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-        }
-
-        void HairStyle::prefix_sum_2(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-        }
-
-        void HairStyle::reorder(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-        }
-
-        void HairStyle::draw_strands(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-        }
-
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
-            pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
-            pipeline.fixed_stages.add_vertex_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
+            pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3) });
+            pipeline.fixed_stages.add_vertex_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3) });
 
             pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 
@@ -204,7 +185,7 @@ namespace vkhr {
                 pipeline.descriptor_sets[i].write(4, vulkan_renderer.params[i]);
                 for (std::uint32_t j { 0 }; j < light_count; ++j)
                     pipeline.descriptor_sets[i].write(5 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
-                                                             vulkan_renderer.shadow_maps[j].get_sampler());
+                                                      vulkan_renderer.shadow_maps[j].get_sampler());
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {
@@ -233,7 +214,7 @@ namespace vkhr {
         void HairStyle::depth_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
-            pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3)});
+            pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3) });
 
             pipeline.fixed_stages.set_scissor({ 0, 0, vulkan_renderer.swap_chain.get_extent() });
             pipeline.fixed_stages.set_viewport({ 0.0, 0.0,
@@ -292,7 +273,7 @@ namespace vkhr {
         void HairStyle::voxel_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("voxelization/voxelize_vertices.comp"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volume/voxelization/voxelize_vertices.comp"));
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Hair Voxelization Shader");
@@ -301,7 +282,6 @@ namespace vkhr {
                 vulkan_renderer.device,
                 {
                     { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
-                    { 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
                     { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                     { 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
                 }
@@ -330,47 +310,6 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.compute_pipeline,
                                          VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Pipeline");
-        }
-
-        void HairStyle::compute_curve_pipelines(std::unordered_map<ComputeCurve, Pipeline>& pipelines, Rasterizer& rasterizer) {
-            pipelines[ReduceDepthBuffer] = {  };
-            pipelines[ReduceDepthBuffer].shader_stages.emplace_back(rasterizer.device, SHADER("BezierDirect/ReduceDepthBuffer.hlsl"));
-            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].shader_stages[0],
-                                         VK_OBJECT_TYPE_SHADER_MODULE, "Reduce Depth Buffer Shader");
-
-            pipelines[ReduceDepthBuffer].descriptor_set_layout = vk::DescriptorSet::Layout {
-                rasterizer.device,
-                {
-                    { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
-                    { 4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE }
-                }
-            };
-
-            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].descriptor_set_layout,
-                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT,
-                                         "Reduce Depth Buffer Descriptor Set Layout");
-
-            pipelines[ReduceDepthBuffer].descriptor_sets = rasterizer.descriptor_pool.allocate(rasterizer.swap_chain.size(),
-                                                                                pipelines[ReduceDepthBuffer].descriptor_set_layout,
-                                                                                "Reduce Depth Buffer Descriptor Set");
-
-            pipelines[ReduceDepthBuffer].pipeline_layout = vk::Pipeline::Layout {
-                rasterizer.device,
-                pipelines[ReduceDepthBuffer].descriptor_set_layout
-            };
-
-            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].pipeline_layout,
-                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
-                                         "Reduce Depth Buffer Pipeline Layout");
-
-            pipelines[ReduceDepthBuffer].compute_pipeline = vk::ComputePipeline {
-                rasterizer.device,
-                pipelines[ReduceDepthBuffer].shader_stages[0],
-                pipelines[ReduceDepthBuffer].pipeline_layout
-            };
-
-            vk::DebugMarker::object_name(rasterizer.device, pipelines[ReduceDepthBuffer].compute_pipeline,
-                                         VK_OBJECT_TYPE_PIPELINE, "Reduce Depth Buffer Pipeline");
         }
 
         int HairStyle::id { 0 };

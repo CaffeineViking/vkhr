@@ -99,12 +99,6 @@ namespace vkhr {
 
         load(scene_graph);
 
-        depth_buffer = vulkan::DepthMap {
-            swap_chain.get_width(),
-            swap_chain.get_height(),
-            *this
-        };
-
         fullscreen_billboard = vulkan::Billboard {
             swap_chain.get_width(),
             swap_chain.get_height(),
@@ -215,13 +209,6 @@ namespace vkhr {
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Scene Graph Depth Pass");
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Depth Value", query_pools[frame]);
-        command_buffer.begin_render_pass(depth_pass, depth_buffer);
-        depth_buffer.update_dynamic_viewport_scissor_depth(command_buffer);
-        draw_model(scene_graph, mesh_depth_pipeline, command_buffer, scene_graph.get_camera().get_view_projection());
-        command_buffer.end_render_pass();
-        vk::DebugMarker::close(command_buffers[frame], "Draw Depth Value", query_pools[frame]);
-
         if (!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) {
             vk::DebugMarker::close(command_buffers[frame]);
             return;
@@ -296,7 +283,6 @@ namespace vkhr {
         vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
         vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
-        vulkan::HairStyle::compute_curve_pipelines(compute_curve_pipelines, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         vulkan::Model::build_pipeline(model_mesh_pipeline, *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
@@ -379,17 +365,10 @@ namespace vkhr {
 
     void Rasterizer::recompile() {
         device.wait_idle(); // If any pipeline is still in use we need to wait until execution is complete to recompile it.
+
         if (recompile_pipeline_shaders(hair_depth_pipeline)) vulkan::HairStyle::depth_pipeline(hair_depth_pipeline, *this);
         if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         if (recompile_pipeline_shaders(hair_voxel_pipeline)) vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
-
-        bool recompile_compute_curve_pipelines { false };
-        for (auto& compute_curve_pipeline : compute_curve_pipelines) {
-            for (auto& shader_module : compute_curve_pipeline.second.shader_stages)
-                recompile_compute_curve_pipelines |= shader_module.recompile();
-        }
-
-        if (recompile_compute_curve_pipelines) vulkan::HairStyle::compute_curve_pipelines(compute_curve_pipelines, *this);
 
         if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline, *this);

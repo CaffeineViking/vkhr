@@ -3,7 +3,7 @@
 #include "../scene_graph/camera.glsl"
 #include "../shading_models/kajiya-kay.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
-#include "../voxelization/local_ambient_occlusion.glsl"
+#include "../volume/local_ambient_occlusion.glsl"
 #include "../scene_graph/shadow_maps.glsl"
 #include "../scene_graph/lights.glsl"
 

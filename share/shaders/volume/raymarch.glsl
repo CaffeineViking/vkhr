@@ -3,6 +3,7 @@
 
 #include "sample_volume.glsl"
 
+// Simple raymarcher that samples the volume in equal-sized steps from the 'start' to the 'end' of the ray.
 vec4 raymarch(sampler3D volume, vec3 start, vec3 end, vec3 volume_origin, vec3 volume_size, uint samples) {
     vec4 accumulator = vec4(0.0);
     float steps = 1.0f / samples;
