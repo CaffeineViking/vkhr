@@ -55,7 +55,7 @@ void main() {
                                              fs_in.position.xyz,
                                              volume_bounds.origin,
                                              volume_bounds.size,
-                                             3, 2.50f, 16, 0.1f);
+                                             2, 2.50f, 16, 0.1f);
     }
 
     color = vec4(shading * occlusion, 1.0f);
