@@ -31,7 +31,7 @@ void main() {
                              fs_in.position.xyz,
                              fs_in.position.xyz + normalize(fs_in.position.xyz - camera.position) * volume_max,
                              volume_bounds.origin, volume_bounds.size,
-                             128).r / 5.0f;
+                             256).r / 12.0f;
 
     color = vec4(vec3(density), 1.0f);
 }

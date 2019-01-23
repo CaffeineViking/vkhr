@@ -218,7 +218,7 @@ namespace vkhr {
             return;
         }
 
-        vk::DebugMarker::begin(command_buffers[frame], "Make Shadow Maps", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Bake Shadow Maps", query_pools[frame]);
         for (auto& shadow_map : shadow_maps) {
             auto& vp = shadow_map.light->get_view_projection();
             command_buffer.begin_render_pass(depth_pass, shadow_map);
@@ -229,7 +229,7 @@ namespace vkhr {
 
             command_buffer.end_render_pass();
         }
-        vk::DebugMarker::close(command_buffers[frame], "Make Shadow Maps", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Bake Shadow Maps", query_pools[frame]);
 
         vk::DebugMarker::close(command_buffers[frame]);
     }
