@@ -1,6 +1,8 @@
 #ifndef VKHR_FILTER_VOLUME
 #define VKHR_FILTER_VOLUME
 
+#include "../utils/math.glsl"
+
 // High-quality volume filter that takes the Gaussian of the local N*N*N neighborhood centered at 'fragment_position'.
 vec4 filter_volume(sampler3D volume, float kernel_width, vec3 fragment_position, vec3 volume_origin, vec3 volume_size) {
     vec3 volume_resolution = textureSize(volume, 0);
