@@ -2,6 +2,7 @@
 #define VKHR_VULKAN_VOLUME_HH
 
 #include <vkhr/rasterizer/pipeline.hh>
+#include <vkhr/scene_graph/hair_style.hh>
 #include <vkhr/rasterizer/drawable.hh>
 
 #include <vkhr/scene_graph/camera.hh>
@@ -16,20 +17,21 @@ namespace vk = vkpp;
 namespace vkhr {
     class Rasterizer;
     namespace vulkan {
+        class HairStyle;
         class Volume : public Drawable {
         public:
-            Volume(vkhr::Rasterizer& vk_renderer);
+            Volume(HairStyle& hair_style, vkhr::Rasterizer& vk_renderer);
 
             Volume() = default;
 
-            void load(vkhr::Rasterizer& renderer);
+            void load(HairStyle& hair_style, vkhr::Rasterizer& renderer);
 
             void set_current_volume(vk::ImageView& volume_view);
-            void set_parameter_buffer(vk::UniformBuffer& param);
+            void set_volume_parameters(vk::UniformBuffer& buff);
             void set_volume_sampler(vk::Sampler& voxel_sampler);
 
-            std::vector<glm::vec3> generate_cube_vertices() const;
-            std::vector<unsigned>  generate_cube_elements() const;
+            std::vector<glm::vec3> generate_aabb_vertices(const AABB& aabb) const;
+            std::vector<unsigned>  generate_aabb_elements() const;
 
             void draw(Pipeline& vulkan_volume_rasterizer_pipeline,
                       vk::DescriptorSet& descriptor_set,

@@ -99,8 +99,6 @@ namespace vkhr {
 
         load(scene_graph);
 
-        strand_volume = vulkan::Volume { *this };
-
         fullscreen_billboard = vulkan::Billboard {
             swap_chain.get_width(),
             swap_chain.get_height(),
@@ -186,7 +184,7 @@ namespace vkhr {
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
+        // draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
@@ -206,7 +204,7 @@ namespace vkhr {
     void Rasterizer::draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
         command_buffer.bind_pipeline(pipeline); // Color / Depth Pass.
         for (auto& model_node : scene_graph.get_nodes_with_models()) {
-            command_buffer.push_constant(model_mesh_pipeline, 0, projection * model_node->get_model_matrix());
+            command_buffer.push_constant(pipeline, 0, projection * model_node->get_model_matrix());
             for (auto& model_mesh : model_node->get_models())
                 models[model_mesh].draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
         }
@@ -239,7 +237,7 @@ namespace vkhr {
     void Rasterizer::draw_hairs(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 projection) {
         command_buffer.bind_pipeline(pipeline); // Color / Depth / Voxels.
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
-            command_buffer.push_constant(hair_style_pipeline, 0, projection * hair_node->get_model_matrix());
+            command_buffer.push_constant(pipeline, 0, projection * hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())
                 hair_styles[hair_style].draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
         }
@@ -248,13 +246,9 @@ namespace vkhr {
     void Rasterizer::strand_dvr(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer) {
         command_buffer.bind_pipeline(pipeline);
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
-            command_buffer.push_constant(hair_style_pipeline, 0, hair_node->get_model_matrix());
-            for (auto& hair_style : hair_node->get_hair_styles()) {
-                strand_volume.set_current_volume(hair_styles[hair_style].get_volume_view());
-                strand_volume.set_volume_sampler(hair_styles[hair_style].get_volume_sampler());
-                strand_volume.set_parameter_buffer(hair_styles[hair_style].get_parameter());
-                strand_volume.draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
-            }
+            command_buffer.push_constant(pipeline, 0, hair_node->get_model_matrix());
+            for (auto& hair_style : hair_node->get_hair_styles())
+                hair_styles[hair_style].get_volume().draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
         }
     }
 

@@ -93,6 +93,11 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, parameter_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
 
+            volume = Volume {
+                *this,
+                vulkan_renderer
+            };
+
             ++id;
         }
 
@@ -100,6 +105,7 @@ namespace vkhr {
             descriptor_set.write(0, vertices);
             descriptor_set.write(2, parameter_buffer);
             descriptor_set.write(3, density_view);
+
             command_buffer.bind_descriptor_set(descriptor_set, voxel_pipeline);
             command_buffer.dispatch(vertices.count() / 512);
         }
@@ -118,6 +124,14 @@ namespace vkhr {
             command_buffer.bind_index_buffer(segments);
 
             command_buffer.draw_indexed(segments.count());
+        }
+
+        Volume& HairStyle::get_volume() { 
+            // Synchronize with current hair style.
+            volume.set_current_volume(density_view);
+            volume.set_volume_parameters(parameter_buffer);
+            volume.set_volume_sampler(density_sampler);
+            return volume; // Should be updated now.
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
@@ -302,22 +316,6 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.compute_pipeline,
                                          VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Pipeline");
-        }
-
-        vk::UniformBuffer& HairStyle::get_parameter() {
-            return parameter_buffer;
-        }
-
-        vk::DeviceImage& HairStyle::get_volume() {
-            return density_volume;
-        }
-
-        vk::Sampler& HairStyle::get_volume_sampler() {
-            return density_sampler;
-        }
-
-        vk::ImageView& HairStyle::get_volume_view() {
-            return density_view;
         }
 
         int HairStyle::id { 0 };

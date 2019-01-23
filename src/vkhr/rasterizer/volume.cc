@@ -1,20 +1,22 @@
 #include <vkhr/rasterizer/volume.hh>
 
 #include <vkhr/rasterizer.hh>
+#include <vkhr/rasterizer/hair_style.hh>
 
-#include <vkhr/scene_graph/camera.hh>
 #include <vkhr/scene_graph/light_source.hh>
+#include <vkhr/scene_graph/camera.hh>
 
 #include <vkpp/debug_marker.hh>
 
 namespace vkhr {
     namespace vulkan {
-        Volume::Volume(vkhr::Rasterizer& vulkan_renderer) {
-            load(vulkan_renderer);
+        Volume::Volume(HairStyle& hair_style, vkhr::Rasterizer& vulkan_renderer) {
+            load(hair_style, vulkan_renderer);
         }
 
-        void Volume::load(vkhr::Rasterizer& vulkan_renderer) {
-            auto cube_vertices = generate_cube_vertices();
+        void Volume::load(HairStyle& hair_style, vkhr::Rasterizer& vulkan_renderer) {
+            AABB aabb { hair_style.parameters.volume_bounds };
+            auto cube_vertices = generate_aabb_vertices(aabb);
 
             vertices = vk::VertexBuffer {
                 vulkan_renderer.device,
@@ -26,7 +28,7 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, vertices.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Volume Vertex Device Memory", id);
 
-            auto cube_elements = generate_cube_elements();
+            auto cube_elements = generate_aabb_elements();
 
             elements = vk::IndexBuffer {
                 vulkan_renderer.device,
@@ -45,33 +47,33 @@ namespace vkhr {
             this->volume_view = &volume_view;
         }
 
-        void Volume::set_parameter_buffer(vk::UniformBuffer& param) {
-            this->parameter_buffer = &param;
+        void Volume::set_volume_parameters(vk::UniformBuffer& buff) {
+            this->parameter_buffer = &buff;
         }
 
         void Volume::set_volume_sampler(vk::Sampler& voxel_sampler) {
             this->volume_sampler = &voxel_sampler;
         }
 
-        std::vector<glm::vec3> Volume::generate_cube_vertices() const {
+        std::vector<glm::vec3> Volume::generate_aabb_vertices(const AABB& aabb) const {
             std::vector<glm::vec3> cube_vertices(8);
 
             std::size_t v { 0 };
 
-            cube_vertices[v++] = glm::vec3 { 0, 0, 0 };
-            cube_vertices[v++] = glm::vec3 { 1, 0, 0 };
-            cube_vertices[v++] = glm::vec3 { 1, 1, 0 };
-            cube_vertices[v++] = glm::vec3 { 0, 1, 0 };
+            cube_vertices[v++] = aabb.origin + glm::vec3 {           0,           0, 0 };
+            cube_vertices[v++] = aabb.origin + glm::vec3 { aabb.size.x,           0, 0 };
+            cube_vertices[v++] = aabb.origin + glm::vec3 { aabb.size.x, aabb.size.y, 0 };
+            cube_vertices[v++] = aabb.origin + glm::vec3 { 0,           aabb.size.y, 0 };
 
-            cube_vertices[v++] = glm::vec3 { 0, 0, 1 };
-            cube_vertices[v++] = glm::vec3 { 1, 0, 1 };
-            cube_vertices[v++] = glm::vec3 { 1, 1, 1 };
-            cube_vertices[v++] = glm::vec3 { 0, 1, 1 };
+            cube_vertices[v++] = aabb.origin + glm::vec3 {           0,           0, aabb.size.z };
+            cube_vertices[v++] = aabb.origin + glm::vec3 { aabb.size.x,           0, aabb.size.z };
+            cube_vertices[v++] = aabb.origin + glm::vec3 { aabb.size.x, aabb.size.y, aabb.size.z };
+            cube_vertices[v++] = aabb.origin + glm::vec3 { 0,           aabb.size.y, aabb.size.z };
 
             return cube_vertices;
         }
 
-        std::vector<unsigned>  Volume::generate_cube_elements() const {
+        std::vector<unsigned>  Volume::generate_aabb_elements() const {
             std::vector<unsigned> cube_elements(36);
 
             std::size_t e { 0 };

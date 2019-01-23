@@ -4,6 +4,7 @@
 #include <vkhr/scene_graph/hair_style.hh>
 
 #include <vkhr/rasterizer/pipeline.hh>
+#include <vkhr/rasterizer/volume.hh>
 #include <vkhr/rasterizer/drawable.hh>
 
 #include <vkhr/scene_graph/camera.hh>
@@ -34,20 +35,20 @@ namespace vkhr {
                       vk::DescriptorSet& descriptor_set,
                       vk::CommandBuffer& command_buffer) override;
 
+            Volume& get_volume();
+
             static void build_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
             static void depth_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
             static void voxel_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
-
-            vk::UniformBuffer& get_parameter();
-
-            vk::DeviceImage& get_volume();
-            vk::Sampler&     get_volume_sampler();
-            vk::ImageView&   get_volume_view();
 
         private:
             vk::IndexBuffer  segments;
             vk::VertexBuffer vertices;
             vk::VertexBuffer tangents;
+
+            vk::ImageView density_view;
+            vk::DeviceImage density_volume;
+            vk::Sampler density_sampler;
 
             struct Parameters {
                 AABB volume_bounds;
@@ -59,9 +60,9 @@ namespace vkhr {
 
             vk::UniformBuffer parameter_buffer;
 
-            vk::ImageView density_view;
-            vk::DeviceImage density_volume;
-            vk::Sampler density_sampler;
+            Volume volume;
+
+            friend class Volume;
 
             static int id;
         };

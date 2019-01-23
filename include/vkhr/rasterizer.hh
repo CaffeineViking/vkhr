@@ -92,8 +92,6 @@ namespace vkhr {
         std::unordered_map<const Model*, vulkan::Model> models;
         vulkan::Billboard fullscreen_billboard;
 
-        vulkan::Volume strand_volume;
-
         Interface imgui;
 
         std::vector<vk::QueryPool> query_pools;
