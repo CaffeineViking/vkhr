@@ -36,7 +36,7 @@ namespace vkpp {
         if (handle != VK_NULL_HANDLE)
             vkDestroyQueryPool(device, handle, nullptr);
         if (timestamp_buffer != nullptr)
-            delete timestamp_buffer;
+            delete[] timestamp_buffer;
     }
 
     QueryPool::QueryPool(QueryPool&& command_pool) noexcept {
