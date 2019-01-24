@@ -23,7 +23,7 @@ void main() {
 
     vec4 surface_position = volume_surface(density_volume,
                                            raycast_start, raycast_end,
-                                           256, 0.001f,
+                                           255, 0.01f,
                                            volume_bounds.origin, volume_bounds.size);
 
     if (surface_position.a == 0.0f)
@@ -32,8 +32,7 @@ void main() {
     vec3 surface_normal = volume_gradient(density_volume,
                                           surface_position.xyz,
                                           volume_bounds.origin,
-                                          volume_bounds.size,
-                                          8.0f); // scaling!
+                                          volume_bounds.size);
 
     vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
 

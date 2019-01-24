@@ -2,13 +2,14 @@
 #define VKHR_VOLUME_RENDERING_GLSL
 
 #include "sample_volume.glsl"
+#include "filter_volume.glsl"
 
-// Find the normal of the surface at 'position' by taking the finite difference (with scaling) of a point.
-vec3 volume_gradient(sampler3D volume, vec3 position, vec3 volume_origin, vec3 volume_size, float scale) {
-    vec3 epsilon = volume_size / textureSize(volume, 0) * scale;
-    float dx = sample_volume(volume, position + vec3(epsilon.x, 0, 0), volume_origin, volume_size).r - sample_volume(volume, position - vec3(epsilon.x, 0, 0), volume_origin, volume_size).r;
-    float dy = sample_volume(volume, position + vec3(0, epsilon.y, 0), volume_origin, volume_size).r - sample_volume(volume, position - vec3(0, epsilon.y, 0), volume_origin, volume_size).r;
-    float dz = sample_volume(volume, position + vec3(0, 0, epsilon.z), volume_origin, volume_size).r - sample_volume(volume, position - vec3(0, 0, epsilon.z), volume_origin, volume_size).r;
+// Find the normal of the surface at 'position' by taking the finite difference of the point.
+vec3 volume_gradient(sampler3D volume, vec3 position, vec3 volume_origin, vec3 volume_size) {
+    vec3 epsilon = volume_size / textureSize(volume, 0);
+    float dx = filter_volume(volume, 3.0f, position + vec3(epsilon.x, 0, 0), volume_origin, volume_size).r - filter_volume(volume, 3.0f, position - vec3(epsilon.x, 0, 0), volume_origin, volume_size).r;
+    float dy = filter_volume(volume, 3.0f, position + vec3(0, epsilon.y, 0), volume_origin, volume_size).r - filter_volume(volume, 3.0f, position - vec3(0, epsilon.y, 0), volume_origin, volume_size).r;
+    float dz = filter_volume(volume, 3.0f, position + vec3(0, 0, epsilon.z), volume_origin, volume_size).r - filter_volume(volume, 3.0f, position - vec3(0, 0, epsilon.z), volume_origin, volume_size).r;
     return normalize(vec3(dx, dy, dz)); // gradient estimation, i.e. find isosurface normals.
 }
 
