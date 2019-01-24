@@ -2,7 +2,8 @@
 
 #include "../scene_graph/camera.glsl"
 #include "../scene_graph/lights.glsl"
-#include "../volume/ambient_occlusion.glsl"
+#include "../volume/volume_rendering.glsl"
+#include "../volume/local_ambient_occlusion.glsl"
 #include "../volume/raymarch.glsl"
 
 #include "volume.glsl"
@@ -16,22 +17,33 @@ layout(binding = 3) uniform sampler3D density_volume;
 layout(location = 0) out vec4 color;
 
 void main() {
-    vec4 light_position = vec4(lights[0].vector, 0.0f);
-    vec3 light_color    = lights[0].intensity;
+    vec3  raycast_start  = fs_in.position.xyz;
+    float raycast_length = volume_bounds.radius;
+    vec3  raycast_end    = raycast_start + normalize(raycast_start - camera.position) * raycast_length;
 
-    vec3 shading = vec3(1.0f);
+    vec4 surface_position = volume_surface(density_volume,
+                                           raycast_start, raycast_end,
+                                           256, 0.001f,
+                                           volume_bounds.origin, volume_bounds.size);
 
-    // Find isosurface + shade
+    if (surface_position.a == 0.0f)
+        discard;
 
-    float occlusion = 1.0000f;
+    vec3 surface_normal = volume_gradient(density_volume,
+                                          surface_position.xyz,
+                                          volume_bounds.origin,
+                                          volume_bounds.size,
+                                          8.0f); // scaling!
 
-    float volume_max = volume_bounds.radius;
+    vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
 
-    float density = raymarch(density_volume,
-                             fs_in.position.xyz,
-                             fs_in.position.xyz + normalize(fs_in.position.xyz - camera.position) * volume_max,
-                             volume_bounds.origin, volume_bounds.size,
-                             256).r / 12.0f;
+    vec3 shading = hair_color * dot(surface_normal, light_direction);
 
-    color = vec4(vec3(density), 1.0f);
+    float occlusion = local_ambient_occlusion(density_volume,
+                                              surface_position.xyz,
+                                              volume_bounds.origin,
+                                              volume_bounds.size,
+                                              2, 2.50f, 16, 0.1f);
+
+    color = vec4(shading * occlusion, 1.0f);
 }
