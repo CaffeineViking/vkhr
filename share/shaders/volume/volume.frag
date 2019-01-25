@@ -4,6 +4,7 @@
 #include "../scene_graph/lights.glsl"
 #include "../volume/volume_rendering.glsl"
 #include "../volume/local_ambient_occlusion.glsl"
+#include "../shading_models/kajiya-kay.glsl"
 #include "../volume/raymarch.glsl"
 
 #include "volume.glsl"
@@ -23,7 +24,7 @@ void main() {
 
     vec4 surface_position = volume_surface(density_volume,
                                            raycast_start, raycast_end,
-                                           255, 0.01f,
+                                           512, 0.007f,
                                            volume_bounds.origin, volume_bounds.size);
 
     if (surface_position.a == 0.0f)
@@ -35,8 +36,9 @@ void main() {
                                           volume_bounds.size);
 
     vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
+    vec3 eye_direction   = normalize(camera.position  - surface_position.xyz);
 
-    vec3 shading = hair_color * dot(surface_normal, light_direction);
+    vec3 shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess, surface_normal, light_direction, eye_direction);
 
     float occlusion = local_ambient_occlusion(density_volume,
                                               surface_position.xyz,

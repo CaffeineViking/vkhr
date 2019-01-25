@@ -187,9 +187,9 @@ namespace vkhr {
         // draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         // vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
-        // vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
-        // draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
-        // vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
+        draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
         strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);

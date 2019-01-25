@@ -26,7 +26,7 @@ vec4 volume_surface(sampler3D volume, vec3 volume_start, vec3 volume_end, uint s
             return vec4(P, 1.0f);
     }
 
-    return vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    return vec4(0.0); // nothing.
 }
 
 #endif

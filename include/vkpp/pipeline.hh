@@ -216,7 +216,9 @@ namespace vkpp {
             };
 
             void enable_depth_test();
+            void enable_depth_test(bool write);
             void set_depth_test_compare(VkCompareOp operation);
+            void disable_depth_test(bool write);
             void disable_depth_test();
 
             VkPipelineDepthStencilStateCreateInfo  depth_stencil_state {
