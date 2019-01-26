@@ -76,9 +76,6 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{0F45D591-7B24-542D-843C-DF03F09ABA8E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\BezierDirect">
-      <UniqueIdentifier>{5ABDCB92-464C-555C-EF6A-6957DBD86502}</UniqueIdentifier>
-    </Filter>
     <Filter Include="shaders\antialiasing">
       <UniqueIdentifier>{92FE20EF-7E8D-AAB8-27AC-BEB3131ABB5E}</UniqueIdentifier>
     </Filter>
@@ -1378,6 +1375,9 @@
     <None Include="..\share\shaders\volume\bounding_box.glsl">
       <Filter>shaders\volume</Filter>
     </None>
+    <None Include="..\share\shaders\volume\filter_raymarch.glsl">
+      <Filter>shaders\volume</Filter>
+    </None>
     <None Include="..\share\shaders\volume\filter_volume.glsl">
       <Filter>shaders\volume</Filter>
     </None>
@@ -1397,6 +1397,9 @@
       <Filter>shaders\volume</Filter>
     </None>
     <None Include="..\share\shaders\volume\volume.vert">
+      <Filter>shaders\volume</Filter>
+    </None>
+    <None Include="..\share\shaders\volume\volume_rendering.glsl">
       <Filter>shaders\volume</Filter>
     </None>
     <None Include="..\share\shaders\volume\voxelization\voxelize_vertices.comp">

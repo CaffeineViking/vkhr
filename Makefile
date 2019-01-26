@@ -37,8 +37,6 @@ program: FORCE
 shaders: FORCE
 	@-utils/glslc.py share/shaders/billboard
 	@-make --no-print-directory -C share/shaders/billboard
-	@-utils/glslc.py share/shaders/BezierDirect
-	@-make --no-print-directory -C share/shaders/BezierDirect
 	@-utils/glslc.py share/shaders/model
 	@-make --no-print-directory -C share/shaders/model
 	@-utils/glslc.py share/shaders/self-shadowing
