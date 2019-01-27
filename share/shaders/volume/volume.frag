@@ -28,8 +28,9 @@ void main() {
 
     vec4 surface_position = volume_surface(density_volume,
                                            raycast_start, raycast_end,
-                                           512, 0.003, // the density.
-                                           volume_bounds.origin, volume_bounds.size);
+                                           512, 0.003,
+                                           volume_bounds.origin,
+                                           volume_bounds.size);
 
     if (surface_position.a == 0.0f)
         discard;
