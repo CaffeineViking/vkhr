@@ -77,6 +77,13 @@ namespace vkhr {
             window.get_extent()
         };
 
+        depth_sampler = vk::Sampler {
+            device, // for sampling depth buffer.
+            VK_FILTER_LINEAR,    VK_FILTER_LINEAR,
+            VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+            VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE
+        };
+
         descriptor_pool = vkpp::DescriptorPool {
             device,
             {
@@ -183,9 +190,9 @@ namespace vkhr {
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        // vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        // draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
+        // vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         // vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
         // draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
@@ -245,6 +252,10 @@ namespace vkhr {
 
     void Rasterizer::strand_dvr(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer) {
         command_buffer.bind_pipeline(pipeline);
+
+        // Bind the current depth buffer so we can compare the fragment's volume depth to real ones.
+        pipeline.descriptor_sets[frame].write(5, swap_chain.get_depth_buffer_view(), depth_sampler);
+
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
             command_buffer.push_constant(pipeline, 0, hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())

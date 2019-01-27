@@ -17,6 +17,8 @@ layout(location = 0) in PipelineIn {
 
 layout(binding = 3) uniform sampler3D density_volume;
 
+layout(binding = 5) uniform sampler2D depth_buffer;
+
 layout(location = 0) out vec4 color;
 
 void main() {
@@ -26,7 +28,7 @@ void main() {
 
     vec4 surface_position = volume_surface(density_volume,
                                            raycast_start, raycast_end,
-                                           512, 0.007f,
+                                           512, 0.003, // the density.
                                            volume_bounds.origin, volume_bounds.size);
 
     if (surface_position.a == 0.0f)
@@ -43,7 +45,9 @@ void main() {
     vec3 eye_direction   = normalize(camera.position  - surface_position.xyz);
 
     if (shading_model == 0) {
-        shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess, surface_normal, light_direction, eye_direction);
+        shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess,
+                             surface_normal, light_direction, eye_direction);
+        shading = hair_color * max(dot(surface_normal, light_direction), 0.);
     }
 
     float occlusion = 1.000f;

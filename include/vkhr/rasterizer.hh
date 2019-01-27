@@ -70,6 +70,8 @@ namespace vkhr {
         std::vector<vk::Semaphore> image_available, render_complete;
         std::vector<vk::Fence> command_buffer_finished;
 
+        vk::Sampler depth_sampler;
+
         std::uint32_t frame { 0 };
         std::uint32_t latest_drawn_frame { 0 };
 

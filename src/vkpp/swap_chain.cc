@@ -197,6 +197,10 @@ namespace vkpp {
         return framebuffers;
     }
 
+    ImageView& SwapChain::get_depth_buffer_view() {
+        return depth_buffer_view;
+    }
+
     std::vector<ImageView>& SwapChain::get_image_views() {
         return image_views;
     }
@@ -321,7 +325,7 @@ namespace vkpp {
             device,
             get_width(), get_height(),
             get_depth_attachment_format(),
-            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT
         };
 
         DebugMarker::object_name(device, depth_buffer_image, VK_OBJECT_TYPE_IMAGE, "Swapchain Depth Image");

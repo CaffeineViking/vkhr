@@ -45,6 +45,8 @@ namespace vkpp {
 
         std::vector<Framebuffer> create_framebuffers(RenderPass& render_pass);
 
+        ImageView& get_depth_buffer_view();
+
         std::vector<ImageView>& get_image_views();
         VkImageView get_attachment(std::size_t i);
 

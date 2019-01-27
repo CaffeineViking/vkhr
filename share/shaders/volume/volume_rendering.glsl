@@ -7,10 +7,13 @@
 // Find the normal of the surface at 'position' by taking the finite difference of the point.
 vec3 volume_gradient(sampler3D volume, vec3 position, vec3 volume_origin, vec3 volume_size) {
     vec3 epsilon = volume_size / textureSize(volume, 0);
-    float dx = filter_volume(volume, 3.0f, position + vec3(epsilon.x, 0, 0), volume_origin, volume_size).r - filter_volume(volume, 3.0f, position - vec3(epsilon.x, 0, 0), volume_origin, volume_size).r;
-    float dy = filter_volume(volume, 3.0f, position + vec3(0, epsilon.y, 0), volume_origin, volume_size).r - filter_volume(volume, 3.0f, position - vec3(0, epsilon.y, 0), volume_origin, volume_size).r;
-    float dz = filter_volume(volume, 3.0f, position + vec3(0, 0, epsilon.z), volume_origin, volume_size).r - filter_volume(volume, 3.0f, position - vec3(0, 0, epsilon.z), volume_origin, volume_size).r;
-    return normalize(vec3(dx, dy, dz)); // gradient estimation, i.e. find isosurface normals.
+    float dx = filter_volume(volume, 2.0f, position + vec3(epsilon.x, 0, 0), volume_origin, volume_size).r -
+               filter_volume(volume, 2.0f, position - vec3(epsilon.x, 0, 0), volume_origin, volume_size).r;
+    float dy = filter_volume(volume, 2.0f, position + vec3(0, epsilon.y, 0), volume_origin, volume_size).r -
+               filter_volume(volume, 2.0f, position - vec3(0, epsilon.y, 0), volume_origin, volume_size).r;
+    float dz = filter_volume(volume, 2.0f, position + vec3(0, 0, epsilon.z), volume_origin, volume_size).r -
+               filter_volume(volume, 2.0f, position - vec3(0, 0, epsilon.z), volume_origin, volume_size).r;
+    return normalize(vec3(dx, dy, dz));
 }
 
 // Finds the surface of a volume with at least 'surface_density' starting from 'volume_start' to 'volume_end' when it has been sampled 'step' times.

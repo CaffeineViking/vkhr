@@ -147,7 +147,8 @@ namespace vkhr {
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
-                { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
+                { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
             };
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout { vulkan_renderer.device, descriptor_bindings };
