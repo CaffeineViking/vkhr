@@ -7,6 +7,8 @@
 #include "../shading_models/kajiya-kay.glsl"
 #include "../volume/raymarch.glsl"
 
+#include "../scene_graph/params.glsl"
+
 #include "volume.glsl"
 
 layout(location = 0) in PipelineIn {
@@ -35,16 +37,28 @@ void main() {
                                           volume_bounds.origin,
                                           volume_bounds.size);
 
+    vec3 shading = vec3(1.0);
+
     vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
     vec3 eye_direction   = normalize(camera.position  - surface_position.xyz);
 
-    vec3 shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess, surface_normal, light_direction, eye_direction);
+    if (shading_model == 0) {
+        shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess, surface_normal, light_direction, eye_direction);
+    }
 
-    float occlusion = local_ambient_occlusion(density_volume,
-                                              surface_position.xyz,
-                                              volume_bounds.origin,
-                                              volume_bounds.size,
-                                              2, 2.50f, 16, 0.1f);
+    float occlusion = 1.000f;
+
+    if (deep_shadows_on == 1 && shading_model != 3) {
+        // calculate directional light contributions.
+    }
+
+    if (shading_model != 2) {
+        occlusion *= local_ambient_occlusion(density_volume,
+                                             surface_position.xyz,
+                                             volume_bounds.origin,
+                                             volume_bounds.size,
+                                             2, 2.50f, 16, 0.1f);
+    }
 
     color = vec4(shading * occlusion, 1.0f);
 }

@@ -146,7 +146,8 @@ namespace vkhr {
                 { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
+                { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
+                { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
             };
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout { vulkan_renderer.device, descriptor_bindings };
@@ -160,6 +161,7 @@ namespace vkhr {
             for (std::size_t i { 0 }; i < pipeline.descriptor_sets.size(); ++i) {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.lights[i]);
+                pipeline.descriptor_sets[i].write(4, vulkan_renderer.params[i]);
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

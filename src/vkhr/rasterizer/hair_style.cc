@@ -74,8 +74,7 @@ namespace vkhr {
 
             density_view = vk::ImageView {
                 vulkan_renderer.device,
-                density_volume,
-                VK_IMAGE_LAYOUT_GENERAL
+                density_volume
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
@@ -110,6 +109,13 @@ namespace vkhr {
             command_buffer.dispatch(vertices.count() / 512);
         }
 
+        void HairStyle::draw_volume(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            volume.set_current_volume(density_view);
+            volume.set_volume_parameters(parameter_buffer);
+            volume.set_volume_sampler(density_sampler);
+            volume.draw(pipeline, descriptor_set, command_buffer);
+        }
+
         void HairStyle::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             if (descriptor_set.get_layout().get_bindings().size()) {
                 descriptor_set.write(2, parameter_buffer);
@@ -124,14 +130,6 @@ namespace vkhr {
             command_buffer.bind_index_buffer(segments);
 
             command_buffer.draw_indexed(segments.count());
-        }
-
-        Volume& HairStyle::get_volume() { 
-            // Synchronize with current hair style.
-            volume.set_current_volume(density_view);
-            volume.set_volume_parameters(parameter_buffer);
-            volume.set_volume_sampler(density_sampler);
-            return volume; // Should be updated now.
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {

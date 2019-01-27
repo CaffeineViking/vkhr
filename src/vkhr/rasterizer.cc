@@ -248,7 +248,7 @@ namespace vkhr {
         for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
             command_buffer.push_constant(pipeline, 0, hair_node->get_model_matrix());
             for (auto& hair_style : hair_node->get_hair_styles())
-                hair_styles[hair_style].get_volume().draw(pipeline, pipeline.descriptor_sets[frame], command_buffer);
+                hair_styles[hair_style].draw_volume(pipeline, pipeline.descriptor_sets[frame], command_buffer);
         }
     }
 
