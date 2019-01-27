@@ -279,7 +279,7 @@ namespace vkhr {
         void HairStyle::voxel_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volume/voxelization/voxelize_vertices.comp"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volume/voxelize.comp"));
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Hair Voxelization Shader");

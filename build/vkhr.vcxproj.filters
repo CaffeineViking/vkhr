@@ -109,9 +109,6 @@
     <Filter Include="shaders\volume">
       <UniqueIdentifier>{D6D8B863-C2A6-AC69-AB3A-1D9097A788CE}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\volume\voxelization">
-      <UniqueIdentifier>{11CB0199-7DD8-2F7F-06BF-2B6A72CBFB35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -1300,7 +1297,7 @@
     <None Include="..\share\shaders\billboard\billboard.vert">
       <Filter>shaders\billboard</Filter>
     </None>
-    <None Include="..\share\shaders\level_of_detail\metric.glsl">
+    <None Include="..\share\shaders\level_of_detail\scheme.glsl">
       <Filter>shaders\level_of_detail</Filter>
     </None>
     <None Include="..\share\shaders\model\model.frag">
@@ -1402,8 +1399,8 @@
     <None Include="..\share\shaders\volume\volume_rendering.glsl">
       <Filter>shaders\volume</Filter>
     </None>
-    <None Include="..\share\shaders\volume\voxelization\voxelize_vertices.comp">
-      <Filter>shaders\volume\voxelization</Filter>
+    <None Include="..\share\shaders\volume\voxelize.comp">
+      <Filter>shaders\volume</Filter>
     </None>
   </ItemGroup>
 </Project>

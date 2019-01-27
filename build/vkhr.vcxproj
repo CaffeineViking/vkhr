@@ -504,7 +504,7 @@
     <None Include="..\share\shaders\billboard\billboard.frag" />
     <None Include="..\share\shaders\billboard\billboard.glsl" />
     <None Include="..\share\shaders\billboard\billboard.vert" />
-    <None Include="..\share\shaders\level_of_detail\metric.glsl" />
+    <None Include="..\share\shaders\level_of_detail\scheme.glsl" />
     <None Include="..\share\shaders\model\model.frag" />
     <None Include="..\share\shaders\model\model.glsl" />
     <None Include="..\share\shaders\model\model.vert" />
@@ -538,7 +538,7 @@
     <None Include="..\share\shaders\volume\volume.glsl" />
     <None Include="..\share\shaders\volume\volume.vert" />
     <None Include="..\share\shaders\volume\volume_rendering.glsl" />
-    <None Include="..\share\shaders\volume\voxelization\voxelize_vertices.comp" />
+    <None Include="..\share\shaders\volume\voxelize.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
