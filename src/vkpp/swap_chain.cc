@@ -253,6 +253,10 @@ namespace vkpp {
         return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     }
 
+    VkImageLayout SwapChain::get_shader_read_only_layout() const {
+        return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    }
+
     VkFormat SwapChain::get_depth_attachment_format() const {
         return VK_FORMAT_D32_SFLOAT;
     }

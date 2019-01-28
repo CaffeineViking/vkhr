@@ -17,8 +17,6 @@ layout(location = 0) in PipelineIn {
 
 layout(binding = 3) uniform sampler3D density_volume;
 
-layout(binding = 5) uniform sampler2D depth_buffer;
-
 layout(location = 0) out vec4 color;
 
 void main() {

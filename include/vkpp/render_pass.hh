@@ -70,6 +70,7 @@ namespace vkpp {
         bool has_depth_attachment() const;
 
         static void create_standard_color_pass(RenderPass& color_pass, Device& device, SwapChain& window_swap_chain);
+        static void create_modified_color_pass(RenderPass& color_pass, Device& device, SwapChain& window_swap_chain);
         static void create_standard_depth_pass(RenderPass& depth_pass, Device& device);
 
     private:

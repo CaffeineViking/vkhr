@@ -58,6 +58,7 @@ namespace vkpp {
         VkFormat get_color_attachment_format() const;
         VkImageLayout get_khr_presentation_layout() const;
         VkImageLayout get_color_attachment_layout() const;
+        VkImageLayout get_shader_read_only_layout() const;
         VkImageLayout get_depth_attachment_layout() const;
         VkFormat get_depth_attachment_format() const;
 
