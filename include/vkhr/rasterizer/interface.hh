@@ -38,7 +38,6 @@ namespace vkhr {
 
         void load(vkhr::Rasterizer& vulkan_renderer);
         void transform(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& raytracer);
-        void draw(vkpp::CommandBuffer& command_list, vkpp::QueryPool& query_pool);
         void draw(vkpp::CommandBuffer& command_list);
 
         enum SamplingMethod : int {

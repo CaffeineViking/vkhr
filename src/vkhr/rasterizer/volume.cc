@@ -121,7 +121,6 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
-            pipeline.fixed_stages.disable_depth_test();
             pipeline.fixed_stages.set_front_face(VK_FRONT_FACE_CLOCKWISE);
             pipeline.fixed_stages.enable_alpha_mix(0);
 
@@ -179,7 +178,8 @@ namespace vkhr {
                 pipeline.shader_stages,
                 pipeline.fixed_stages,
                 pipeline.pipeline_layout,
-                vulkan_renderer.color_pass
+                vulkan_renderer.color_pass,
+                1 // second color sub-pass.
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.pipeline, VK_OBJECT_TYPE_PIPELINE, "Volume Graphics Pipeline");

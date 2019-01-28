@@ -80,6 +80,7 @@ namespace vkpp {
 
         std::vector<Subpass> subpass_color_references;
         std::vector<Subpass> subpass_depth_references;
+        std::vector<Subpass> subpass_input_references;
 
         std::int32_t depth_attachment_binding { -1 };
 

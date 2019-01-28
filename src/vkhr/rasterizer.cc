@@ -89,7 +89,8 @@ namespace vkhr {
             {
                 { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,         64 },
                 { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 64 },
-                { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         64 }
+                { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         64 },
+                { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT,       64 }
             }
         };
 
@@ -198,11 +199,15 @@ namespace vkhr {
         draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
+        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        imgui.draw(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+
+        command_buffers[frame].next_subpass(); // Next sub-pass which uses depth buffer values.
+
         vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
         strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
-
-        imgui.draw(command_buffers[frame], query_pools[frame]);
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);
@@ -310,7 +315,7 @@ namespace vkhr {
     }
 
     void Rasterizer::build_render_passes() {
-        vk::RenderPass::create_standard_color_pass(color_pass, device, swap_chain);
+        vk::RenderPass::create_modified_color_pass(color_pass, device, swap_chain);
         vk::RenderPass::create_standard_depth_pass(depth_pass, device);
     }
 

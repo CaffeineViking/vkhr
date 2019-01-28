@@ -219,9 +219,11 @@ namespace vkpp {
 
         swap(static_cast<Pipeline&>(lhs), static_cast<Pipeline&>(rhs));
 
-        swap(lhs.shader_stages,   rhs.shader_stages);
-
+        swap(lhs.shader_stages, rhs.shader_stages);
         swap(lhs.fixed_functions, rhs.fixed_functions);
+        swap(lhs.specialization_constants, rhs.specialization_constants);
+        swap(lhs.subpass_index, rhs.subpass_index);
+        swap(lhs.render_pass, rhs.render_pass);
     }
 
     VkPipelineBindPoint GraphicsPipeline::get_bind_point() const {

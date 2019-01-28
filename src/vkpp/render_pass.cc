@@ -50,12 +50,15 @@ namespace vkpp {
 
         subpass_color_references.resize(subpasses.size());
         subpass_depth_references.resize(subpasses.size());
+        subpass_input_references.resize(subpasses.size());
 
         for (std::size_t i { 0 }; i < subpasses.size(); ++i) {
             this->subpasses[i].flags = 0;
             this->subpasses[i].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
             for (const auto& attachment : subpasses[i]) {
+                if (attachment.layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+                    subpass_input_references[i].push_back(attachment);
                 if (attachment.layout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL ||
                     attachment.layout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
                     subpass_color_references[i].push_back(attachment);
@@ -64,8 +67,13 @@ namespace vkpp {
                     subpass_depth_references[i].push_back(attachment);
             }
 
-            this->subpasses[i].inputAttachmentCount = 0;
-            this->subpasses[i].pInputAttachments = nullptr;
+            this->subpasses[i].inputAttachmentCount = static_cast<std::uint32_t>(subpass_input_references[i].size());
+
+            if (subpass_input_references[i].size() != 0) {
+                this->subpasses[i].pInputAttachments = subpass_input_references[i].data();
+            } else {
+                this->subpasses[i].pInputAttachments = nullptr;
+            }
 
             this->subpasses[i].colorAttachmentCount = static_cast<std::uint32_t>(subpass_color_references[i].size());
 
@@ -83,7 +91,6 @@ namespace vkpp {
                 this->subpasses[i].pDepthStencilAttachment = &depth;
             } else {
                 this->subpasses[i].pDepthStencilAttachment = nullptr;
-                depth_attachment_binding = -1;
             }
 
             this->subpasses[i].preserveAttachmentCount = 0;
@@ -96,7 +103,7 @@ namespace vkpp {
             create_info.pSubpasses = nullptr;
         }
 
-        create_info.dependencyCount = static_cast<std::uint32_t>(this->dependencies.size());
+        create_info.dependencyCount = static_cast<std::uint32_t>(dependencies.size());
 
         this->dependencies.reserve(dependencies.size());
 
@@ -174,6 +181,7 @@ namespace vkpp {
 
         swap(lhs.subpass_color_references, rhs.subpass_color_references);
         swap(lhs.subpass_depth_references, rhs.subpass_depth_references);
+        swap(lhs.subpass_input_references, rhs.subpass_input_references);
         swap(lhs.depth_attachment_binding, rhs.depth_attachment_binding);
 
         swap(lhs.device, rhs.device);
@@ -271,7 +279,17 @@ namespace vkpp {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 0,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT|
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+            },
+            {
+                0,
+                1,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
             }
         };

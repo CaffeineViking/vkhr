@@ -377,21 +377,10 @@ namespace vkhr {
         }
     }
 
-    void Interface::draw(vkpp::CommandBuffer& command_buffer, vkpp::QueryPool& query_pool) {
-        if (gui_visible) {
-            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay", query_pool);
-            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                            command_buffer.get_handle());
-            vk::DebugMarker::close(command_buffer, "Draw GUI Overlay", query_pool);
-        }
-    }
-
     void Interface::draw(vkpp::CommandBuffer& command_buffer) {
         if (gui_visible) {
-            vk::DebugMarker::begin(command_buffer, "Draw GUI Overlay");
             ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
                                             command_buffer.get_handle());
-            vk::DebugMarker::close(command_buffer);
         }
     }
 
