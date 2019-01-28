@@ -186,6 +186,19 @@ namespace vkhr {
         return (frame + 1) % swap_chain.size();
     }
 
+    void Rasterizer::voxelize(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
+        vk::DebugMarker::begin(command_buffers[frame], "Voxelize Strands", query_pools[frame]);
+
+        command_buffer.bind_pipeline(hair_voxel_pipeline);
+
+        for (auto& style : scene_graph.get_hair_styles())
+            hair_styles[&style.second].voxelize(hair_voxel_pipeline,
+                                                hair_voxel_pipeline.descriptor_sets[frame],
+                                                command_buffer);
+
+        vk::DebugMarker::close(command_buffers[frame], "Voxelize Strands", query_pools[frame]);
+    }
+
     void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Color Pass");
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
@@ -208,7 +221,6 @@ namespace vkhr {
         vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
         imgui.draw(command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);

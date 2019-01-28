@@ -121,7 +121,7 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
-            pipeline.fixed_stages.enable_depth_test();
+            pipeline.fixed_stages.disable_depth_test();
             pipeline.fixed_stages.set_front_face(VK_FRONT_FACE_CLOCKWISE);
             pipeline.fixed_stages.enable_alpha_mix(0);
 

@@ -29,9 +29,8 @@ namespace vkhr {
             void load(const vkhr::HairStyle& hair_style,
                       vkhr::Rasterizer& scene_renderer);
 
-            void voxelize_vertices(Pipeline& pipeline,  vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
-
-            void draw_volume(Pipeline& volume_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void voxelize(Pipeline& voxelization_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void draw_volume(Pipeline& volume_pipeline,    vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
 
             void draw(Pipeline& vulkan_strand_rasterizer_pipeline,
                       vk::DescriptorSet& descriptor_set,

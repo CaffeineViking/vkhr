@@ -40,6 +40,7 @@ namespace vkhr {
         void draw_model(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
         void draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer);
         void draw_hairs(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer, glm::mat4 = glm::mat4 { 1.0f });
+        void voxelize(const SceneGraph& a_scene_graph, vk::CommandBuffer& command_buffer);
 
         // Direct Volume Render (DVR) the hair strands. This needs to be done after drawing models and styles.
         void strand_dvr(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer);

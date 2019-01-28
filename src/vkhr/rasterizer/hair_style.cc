@@ -46,6 +46,10 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, segments.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
+            parameters.hair_shininess = 50.0f;
+            parameters.strand_radius = hair_style.get_default_thickness();
+            parameters.hair_color = glm::vec3 { .32, .228, .128 };
+
             density_sampler = vk::Sampler {
                 vulkan_renderer.device,
                 VK_FILTER_LINEAR,      VK_FILTER_LINEAR,
@@ -56,7 +60,14 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
-            // Pre-bake the hair strand density and update only when required.
+            parameters.volume_resolution = glm::vec3 { 256,256,256 };
+            parameters.volume_bounds = hair_style.get_bounding_box();
+
+            VkDeviceSize volume_size_limit = parameters.volume_resolution.x *
+                                             parameters.volume_resolution.y * 
+                                             parameters.volume_resolution.z *
+                                             sizeof(unsigned char); // bytes.
+
             auto strand_density = hair_style.voxelize_segments(256, 256, 256);
 
             strand_density.normalize();
@@ -79,12 +90,6 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
-            parameters.volume_bounds = hair_style.get_bounding_box();
-            parameters.strand_radius = hair_style.get_default_thickness();
-            parameters.volume_resolution = strand_density.resolution;
-            parameters.hair_shininess = 50.0f;
-            parameters.hair_color = glm::vec3 { .32, .228, .128 };
-
             parameter_buffer = vk::UniformBuffer {
                 vulkan_renderer.device,
                 parameters
@@ -100,7 +105,9 @@ namespace vkhr {
             ++id;
         }
 
-        void HairStyle::voxelize_vertices(Pipeline& voxel_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+        void HairStyle::voxelize(Pipeline& voxel_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            command_buffer.clear_color_image(density_volume, { /*  ZERO  */ });
+
             descriptor_set.write(0, vertices);
             descriptor_set.write(2, parameter_buffer);
             descriptor_set.write(3, density_view);
