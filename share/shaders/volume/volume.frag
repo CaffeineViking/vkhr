@@ -17,6 +17,8 @@ layout(location = 0) in PipelineIn {
 
 layout(binding = 3) uniform sampler3D density_volume;
 
+layout(input_attachment_index = 1, binding = 5) uniform subpassInput depth_buffer;
+
 layout(location = 0) out vec4 color;
 
 void main() {
@@ -31,6 +33,15 @@ void main() {
                                            volume_bounds.size);
 
     if (surface_position.a == 0.0f)
+        discard;
+
+    float depth_buffer = subpassLoad(depth_buffer).r;
+
+    vec4 projected_surface = camera.projection * camera.view * vec4(surface_position.xyz, 1.0f);
+
+    float surface_depth = projected_surface.z / projected_surface.w;
+
+    if (depth_buffer < surface_depth)
         discard;
 
     vec3 surface_normal = volume_gradient(density_volume,

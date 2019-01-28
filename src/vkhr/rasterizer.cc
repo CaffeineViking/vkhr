@@ -195,19 +195,20 @@ namespace vkhr {
         draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
-        draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
-
-        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-        imgui.draw(command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        // vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
+        // draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
+        // vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
 
         command_buffers[frame].next_subpass(); // Next sub-pass which uses depth buffer values.
 
         vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
         strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
+
+        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        imgui.draw(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);
@@ -236,7 +237,7 @@ namespace vkhr {
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
 
-            if (imgui.parameters.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
+            // if (imgui.parameters.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
             if (imgui.parameters.ctsm_on) draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
 
             command_buffer.end_render_pass();
