@@ -68,6 +68,8 @@ namespace vkpp {
                                Framebuffer& framebuffer,
                                VkClearValue clear_color);
 
+        void next_subpass();
+
         void set_viewport(VkViewport& viewport);
         void set_scissor(VkRect2D& new_scissor);
         void set_depth_bias(float constant_factor,

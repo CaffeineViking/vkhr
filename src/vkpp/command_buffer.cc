@@ -198,6 +198,10 @@ namespace vkpp {
         vkCmdBeginRenderPass(handle, &begin_info, VK_SUBPASS_CONTENTS_INLINE);
     }
 
+    void CommandBuffer::next_subpass() {
+        vkCmdNextSubpass(handle, VK_SUBPASS_CONTENTS_INLINE);
+    }
+
     void CommandBuffer::begin_render_pass(RenderPass& render_pass,
                                           Framebuffer& framebuffer,
                                           VkClearValue clear_color) {

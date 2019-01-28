@@ -1,5 +1,5 @@
-#ifndef VKHR_TEX2DPROJ_GLSL
-#define VKHR_TEX2DPROJ_GLSL
+#ifndef VKHR_TEX_2D_PROJ_GLSL
+#define VKHR_TEX_2D_PROJ_GLSL
 
 // Projects a 3-D position onto a 2-D plane for sampling a texture.
 vec4 tex2Dproj(sampler2D image, vec4 position, vec2 displacement) {

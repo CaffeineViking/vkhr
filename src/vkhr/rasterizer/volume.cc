@@ -121,7 +121,7 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
-            pipeline.fixed_stages.enable_depth_test();
+            pipeline.fixed_stages.disable_depth_test();
             pipeline.fixed_stages.set_front_face(VK_FRONT_FACE_CLOCKWISE);
             pipeline.fixed_stages.enable_alpha_mix(0);
 
@@ -148,7 +148,7 @@ namespace vkhr {
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
                 { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
+                { 5, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT },
             };
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout { vulkan_renderer.device, descriptor_bindings };
