@@ -302,6 +302,19 @@ namespace vkhr {
         return volume;
     }
 
+    std::vector<HairStyle::Volume> HairStyle::Volume::create_mip_levels() {
+        std::vector<HairStyle::Volume> mip_levels;
+
+        std::size_t mip_count = std::log2(resolution.x);
+
+        mip_levels.reserve(mip_count);
+
+        for (std::size_t i { 1 }; i < mip_count; ++i) {
+        }
+
+        return mip_levels;
+    }
+
     void HairStyle::Volume::normalize() {
         unsigned char data_min { 255 }, data_max { 0 };
         for (std::size_t i { 0 }; i < data.size(); ++i) {

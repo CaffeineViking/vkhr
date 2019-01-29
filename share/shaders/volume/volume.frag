@@ -4,6 +4,7 @@
 #include "../scene_graph/lights.glsl"
 #include "../volume/volume_rendering.glsl"
 #include "../volume/local_ambient_occlusion.glsl"
+#include "../self-shadowing/approximate_deep_shadows.glsl"
 #include "../shading_models/kajiya-kay.glsl"
 #include "../volume/raymarch.glsl"
 
@@ -62,8 +63,13 @@ void main() {
 
     float occlusion = 1.000f;
 
+    vec4 light_position = lights[0].matrix * vec4(0, 0, 0, 1);
+
     if (deep_shadows_on == 1 && shading_model != 3) {
-        // calculate directional light contributions.
+        occlusion = volume_approximated_deep_shadows(density_volume,
+                                                     surface_position.xyz, light_position.xyz,
+                                                     128, 0.8f,
+                                                     volume_bounds.origin, volume_bounds.size);
     }
 
     if (shading_model != 2) {
@@ -74,5 +80,5 @@ void main() {
                                              2, 2.50f, 16, 0.1f);
     }
 
-    color = vec4(shading * occlusion, 1.0f);
+    color = vec4(shading * occlusion, 0.0f);
 }

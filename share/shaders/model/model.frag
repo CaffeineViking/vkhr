@@ -1,7 +1,7 @@
 #version 460 core
 
 #include "../scene_graph/camera.glsl"
-#include "../shading_models/blinn-phong.glsl"
+#include "../shading_models/lambertian.glsl"
 #include "../self-shadowing/filter_shadows.glsl"
 #include "../scene_graph/shadow_maps.glsl"
 #include "../scene_graph/lights.glsl"
@@ -19,22 +19,21 @@ layout(location = 0) in PipelineIn {
 layout(location = 0) out vec4 color;
 
 void main() {
-    vec4 light_position = vec4(lights[0].vector, 0.0f);
+    vec3 shading = vec3(1.0);
 
-    vec3 camera_space_light = (camera.view     * light_position).xyz;
-    vec4 light_space_vertex = lights[0].matrix * fs_in.position;
-
-    vec3 shading = vec3(1.0f);
+    vec3 light_normal = normalize(lights[0].origin - fs_in.position.xyz);
 
     if (shading_model == 0) {
-        shading = vec3(dot(camera_space_light, fs_in.normal));
+        shading = vec3(1, 1, 1) * lambertian(fs_in.normal, light_normal);
     }
 
-    float occlusion = 1.0f;
+    float occlusion = 1.000f;
+
+    vec4 shadow_space_fragment = lights[0].matrix * fs_in.position;
 
     if (pcf_shadows_on == 1 && shading_model != 3) {
         occlusion = filter_shadows(shadow_maps[0],
-                                   light_space_vertex,
+                                   shadow_space_fragment,
                                    pcf_shadows_kernel_size,
                                    pcf_shadows_bias);
     }

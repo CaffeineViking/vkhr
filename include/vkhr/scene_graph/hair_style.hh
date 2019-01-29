@@ -92,6 +92,8 @@ namespace vkhr {
             void normalize();
             bool save(const std::string& file_path);
 
+            std::vector<Volume> create_mip_levels();
+
             template<typename F>
             Volume downsample(F);
         };

@@ -7,6 +7,7 @@ struct Light {
     vec3 intensity;
     float cutoff;
     mat4 matrix;
+    vec3 origin;
     float near;
     float far;
 };

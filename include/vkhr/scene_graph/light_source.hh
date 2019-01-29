@@ -18,6 +18,7 @@ namespace vkhr {
             glm::vec4 vector;
             glm::vec4 intensity;
             glm::mat4 view_projection;
+            glm::vec3 origin;
             float near, far;
         };
 

@@ -2,8 +2,9 @@
 #define VKHR_APPROXIMATE_DEEP_SHADOWS_GLSL
 
 #include "../utils/math.glsl"
-#include "tex2Dproj.glsl"
+#include "../volume/sample_volume.glsl"
 #include "linearize_depth.glsl"
+#include "tex2Dproj.glsl"
 
 // Based on the "A Survivor Reborn: Tomb Raider on DX11" talk at GDC 2013 by Jason Lacroix and his pseudo-code.
 float approximate_deep_shadow(float shadow_depth, float light_depth, float strand_radius, float strand_alpha) {
@@ -15,6 +16,21 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
 
     // We also take into account the transparency of the hair strand to determine how much light might scatter.
     return pow(1.0f - strand_alpha, strand_count); // this gives us "stronger" shadows with deeper hair strand.
+}
+
+// Instead of "guessing" the amount of strands in the way, we can find the amount from the strand voxelization.
+float volume_approximated_deep_shadows(sampler3D volume, vec3 strand_position, vec3 light_position, uint steps,
+                                       float strand_alpha, vec3 volume_origin, vec3 volume_size) { // Vol-ADSM.
+    float strands = 0;
+    float step_size = 1.0f / steps; // for raymarch.
+    for (float t = 0.0f; t < 1.0f; t += step_size) {
+        vec3 point = mix(strand_position, light_position, t);
+        strands += sample_volume(volume, point,
+                                 volume_origin,
+                                 volume_size).r;
+    }
+
+    return pow(1.0f - strand_alpha, strands);
 }
 
 // Applies Gaussian PCF to the function above to create
