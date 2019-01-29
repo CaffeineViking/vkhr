@@ -1279,12 +1279,6 @@
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
-    <None Include="..\share\shaders\antialiasing\gbaa.glsl">
-      <Filter>shaders\antialiasing</Filter>
-    </None>
-    <None Include="..\share\shaders\antialiasing\gpaa.glsl">
-      <Filter>shaders\antialiasing</Filter>
-    </None>
     <None Include="..\share\shaders\antialiasing\phone-wire.glsl">
       <Filter>shaders\antialiasing</Filter>
     </None>
@@ -1342,6 +1336,9 @@
     <None Include="..\share\shaders\shading_models\kajiya-kay.glsl">
       <Filter>shaders\shading_models</Filter>
     </None>
+    <None Include="..\share\shaders\shading_models\lambertian.glsl">
+      <Filter>shaders\shading_models</Filter>
+    </None>
     <None Include="..\share\shaders\shading_models\marschner.glsl">
       <Filter>shaders\shading_models</Filter>
     </None>
@@ -1376,6 +1373,9 @@
       <Filter>shaders\volume</Filter>
     </None>
     <None Include="..\share\shaders\volume\filter_volume.glsl">
+      <Filter>shaders\volume</Filter>
+    </None>
+    <None Include="..\share\shaders\volume\imageAtomicRGBA8Avg.glsl">
       <Filter>shaders\volume</Filter>
     </None>
     <None Include="..\share\shaders\volume\local_ambient_occlusion.glsl">

@@ -15,7 +15,7 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>vkhr</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'" Label="Configuration">
@@ -498,8 +498,6 @@
   <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
-    <None Include="..\share\shaders\antialiasing\gbaa.glsl" />
-    <None Include="..\share\shaders\antialiasing\gpaa.glsl" />
     <None Include="..\share\shaders\antialiasing\phone-wire.glsl" />
     <None Include="..\share\shaders\billboard\billboard.frag" />
     <None Include="..\share\shaders\billboard\billboard.glsl" />
@@ -519,6 +517,7 @@
     <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl" />
     <None Include="..\share\shaders\shading_models\blinn-phong.glsl" />
     <None Include="..\share\shaders\shading_models\kajiya-kay.glsl" />
+    <None Include="..\share\shaders\shading_models\lambertian.glsl" />
     <None Include="..\share\shaders\shading_models\marschner.glsl" />
     <None Include="..\share\shaders\strand\strand.frag" />
     <None Include="..\share\shaders\strand\strand.geom" />
@@ -531,6 +530,7 @@
     <None Include="..\share\shaders\volume\bounding_box.glsl" />
     <None Include="..\share\shaders\volume\filter_raymarch.glsl" />
     <None Include="..\share\shaders\volume\filter_volume.glsl" />
+    <None Include="..\share\shaders\volume\imageAtomicRGBA8Avg.glsl" />
     <None Include="..\share\shaders\volume\local_ambient_occlusion.glsl" />
     <None Include="..\share\shaders\volume\raymarch.glsl" />
     <None Include="..\share\shaders\volume\sample_volume.glsl" />
