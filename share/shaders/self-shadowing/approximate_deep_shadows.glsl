@@ -32,7 +32,7 @@ float volume_approximated_deep_shadows(sampler3D volume, vec3 strand_position, v
                                  volume_size).r;
     }
 
-    return max(pow(1.0f - strand_alpha, 3*strands), 0.1f);
+    return pow(1.0f - strand_alpha, 3*strands);
 }
 
 // Applies Gaussian PCF to the function above to create

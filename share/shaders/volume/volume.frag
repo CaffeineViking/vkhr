@@ -76,7 +76,7 @@ void main() {
 
     if (shading_model != ADSM) {
         occlusion *= local_ambient_occlusion(strand_density,
-                                             surface_position.xyz - 1.2*surface_normal, // nudge
+                                             surface_position.xyz - 0.5*surface_normal, // nudge
                                              volume_bounds.origin,
                                              volume_bounds.size,
                                              2, 2.50f, 16, 0.1f);
