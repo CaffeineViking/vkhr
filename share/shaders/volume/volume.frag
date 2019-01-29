@@ -55,7 +55,7 @@ void main() {
     vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
     vec3 eye_direction   = normalize(camera.position  - surface_position.xyz);
 
-    if (shading_model == 0) {
+    if (shading_model == KAJIYA_KAY) {
         shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess,
                              surface_normal, light_direction, eye_direction);
         shading = hair_color * max(dot(surface_normal, light_direction), 0.);
@@ -65,14 +65,14 @@ void main() {
 
     vec4 light_position = lights[0].matrix * vec4(0, 0, 0, 1);
 
-    if (deep_shadows_on == 1 && shading_model != 3) {
+    if (deep_shadows_on == YES && shading_model != LAO) {
         occlusion = volume_approximated_deep_shadows(density_volume,
                                                      surface_position.xyz, light_position.xyz,
                                                      128, 0.8f,
                                                      volume_bounds.origin, volume_bounds.size);
     }
 
-    if (shading_model != 2) {
+    if (shading_model != ADSM) {
         occlusion *= local_ambient_occlusion(density_volume,
                                              surface_position.xyz,
                                              volume_bounds.origin,
@@ -80,5 +80,5 @@ void main() {
                                              2, 2.50f, 16, 0.1f);
     }
 
-    color = vec4(shading * occlusion, 0.0f);
+    color = vec4(shading * occlusion, 1.0f);
 }

@@ -20,10 +20,10 @@ void main() {
     mat4 projection_view = camera.projection * camera.view;
 
     vec4 world_position = object.model * vec4(position, 1.0f);
-    vec4 camera_tangent = camera.view  * object.model * vec4(tangent, 0.0f);
+    vec4 world_tangent  = object.model * vec4(tangent,  0.0f);
 
     vs_out.position = world_position;
-    vs_out.tangent  = camera_tangent.xyz;
+    vs_out.tangent  = world_tangent.xyz;
 
     gl_Position = projection_view * world_position;
 }

@@ -1,6 +1,8 @@
 #ifndef VKHR_LOCAL_AMBIENT_OCCLUSION_GLSL
 #define VKHR_LOCAL_AMBIENT_OCCLUSION_GLSL
 
+#define LAO 3
+
 #include "sample_volume.glsl"
 
 // Based on "Local Ambient Occlusion in Direct Volume Rendering" by Hernell et al. (2010)

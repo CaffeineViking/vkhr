@@ -1,6 +1,9 @@
 #ifndef VKHR_PARAMS_GLSL
 #define VKHR_PARAMS_GLSL
 
+#define YES  1
+#define NO   0
+
 layout(binding = 4) uniform Params {
     int shading_model;
 

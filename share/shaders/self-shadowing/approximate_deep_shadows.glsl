@@ -1,6 +1,8 @@
 #ifndef VKHR_APPROXIMATE_DEEP_SHADOWS_GLSL
 #define VKHR_APPROXIMATE_DEEP_SHADOWS_GLSL
 
+#define ADSM 2
+
 #include "../utils/math.glsl"
 #include "../volume/sample_volume.glsl"
 #include "linearize_depth.glsl"

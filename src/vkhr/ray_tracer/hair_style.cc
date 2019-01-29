@@ -43,17 +43,19 @@ namespace vkhr {
 
         glm::vec3 HairStyle::shade(const Ray& surface_intersection,
                                    const LightSource& light_source,
-                                   const Camera& projection_camera)  {
+                                   const Camera& projection_camera) {
             auto hair_diffuse = glm::vec3(.32, .228, .128);
 
-            auto tangent = projection_camera.get_view_matrix() * get_tangent(surface_intersection);
-            auto light_direction = projection_camera.get_view_matrix() * light_source.get_vector();
+            auto surface_position = surface_intersection.get_intersection_point();
+
+            auto strand_direction = get_tangent(surface_intersection);
+            auto light_normal = glm::normalize(light_source.get_spotlight_origin() - surface_position);
+            auto eye_normal = glm::normalize(surface_position - projection_camera.get_position());
 
             auto shading = kajiya_kay(hair_diffuse,
                                       light_source.get_intensity(),
-                                      50.0f, tangent,
-                                      glm::vec3 { light_direction },
-                                      glm::vec3 { 0.0, 0.0, -1.0f });
+                                      50.0f, strand_direction,
+                                      light_normal, eye_normal);
 
             return shading;
         }

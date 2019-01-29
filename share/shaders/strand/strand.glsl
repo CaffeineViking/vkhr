@@ -8,7 +8,7 @@ layout(binding = 2) uniform Strand {
     vec3 volume_resolution;
     float strand_radius;
     vec3 hair_color;
-    float hair_shininess;
+    float hair_exponent;
 };
 
 #endif

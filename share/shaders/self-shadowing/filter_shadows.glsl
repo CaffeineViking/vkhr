@@ -1,6 +1,8 @@
 #ifndef VKHR_FILTER_SHADOWS_GLSL
 #define VKHR_FILTER_SHADOWS_GLSL
 
+#define CSM 2
+
 #include "tex2Dproj.glsl"
 #include "linearize_depth.glsl"
 

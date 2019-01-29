@@ -3,6 +3,8 @@
 
 #include "raymarch.glsl"
 
+#define AO 3
+
 // Brute force AO calculation by sampling the six sides of a cube and its eight corners (limited to a certain maximum radius).
 float ambient_occlusion(sampler3D density,
                         vec3 position,

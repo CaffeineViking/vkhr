@@ -23,15 +23,17 @@ void main() {
 
     vec3 light_normal = normalize(lights[0].origin - fs_in.position.xyz);
 
-    if (shading_model == 0) {
-        shading = vec3(1, 1, 1) * lambertian(fs_in.normal, light_normal);
+    vec3 white = vec3(1,1,1);
+
+    if (shading_model == LAMBERTIAN) {
+        shading = white * lambertian(fs_in.normal, light_normal);
     }
 
     float occlusion = 1.000f;
 
     vec4 shadow_space_fragment = lights[0].matrix * fs_in.position;
 
-    if (pcf_shadows_on == 1 && shading_model != 3) {
+    if (pcf_shadows_on == YES && shading_model != 3) {
         occlusion = filter_shadows(shadow_maps[0],
                                    shadow_space_fragment,
                                    pcf_shadows_kernel_size,
