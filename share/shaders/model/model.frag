@@ -34,10 +34,10 @@ void main() {
     vec4 shadow_space_fragment = lights[0].matrix * fs_in.position;
 
     if (pcf_shadows_on == YES && shading_model != 3) {
-        occlusion = filter_shadows(shadow_maps[0],
-                                   shadow_space_fragment,
-                                   pcf_shadows_kernel_size,
-                                   pcf_shadows_bias);
+        occlusion *= filter_shadows(shadow_maps[0],
+                                    shadow_space_fragment,
+                                    pcf_shadows_kernel_size,
+                                    pcf_shadows_bias);
     }
 
     color = vec4(shading * occlusion, 1.0f);

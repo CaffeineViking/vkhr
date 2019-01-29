@@ -45,33 +45,33 @@ void main() {
     if (depth_buffer < surface_depth)
         discard;
 
-    vec3 surface_normal = volume_gradient(strand_density,
-                                          surface_position.xyz,
-                                          volume_bounds.origin,
-                                          volume_bounds.size);
+    vec3 surface_normal = volume_normal(strand_density,
+                                        surface_position.xyz,
+                                        volume_bounds.origin,
+                                        volume_bounds.size);
 
     vec3 shading = vec3(1.0);
 
-    vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
-    vec3 eye_direction   = normalize(camera.position  - surface_position.xyz);
+    vec3 light_direction = normalize(lights[0].origin - surface_position.xyz);
+    vec3 eye_direction   = normalize(surface_position.xyz  - camera.position);
 
     vec3 light_bulb_intensity = lights[0].intensity;
 
+    vec3 hacked_tangent = normalize(cross(surface_normal, -light_direction));
+
     if (shading_model == KAJIYA_KAY) {
         shading = kajiya_kay(hair_color, light_bulb_intensity, hair_exponent,
-                             surface_normal, light_direction, eye_direction);
-        shading = hair_color * max(dot(surface_normal, light_direction), 0.);
+                             hacked_tangent, light_direction, eye_direction);
     }
 
     float occlusion = 1.000f;
 
-    vec4 light_position = lights[0].matrix * vec4(0, 0, 0, 1);
-
     if (deep_shadows_on == YES && shading_model != LAO) {
-        occlusion = volume_approximated_deep_shadows(strand_density,
-                                                     surface_position.xyz, light_position.xyz,
-                                                     128, 0.8f,
-                                                     volume_bounds.origin, volume_bounds.size);
+        occlusion *= volume_approximated_deep_shadows(strand_density,
+                                                      surface_position.xyz,
+                                                      lights[0].origin,
+                                                      512, 0.8f,
+                                                      volume_bounds.origin, volume_bounds.size);
     }
 
     if (shading_model != ADSM) {

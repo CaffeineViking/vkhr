@@ -214,9 +214,9 @@ namespace vkhr {
 
         command_buffers[frame].next_subpass(); // Next sub-pass which uses depth buffer values.
 
-        // vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
-        // strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
-        // vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
+        strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
         imgui.draw(command_buffers[frame]);
