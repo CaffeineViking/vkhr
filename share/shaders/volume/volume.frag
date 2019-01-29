@@ -55,8 +55,10 @@ void main() {
     vec3 light_direction = normalize(lights[0].vector - surface_position.xyz);
     vec3 eye_direction   = normalize(camera.position  - surface_position.xyz);
 
+    vec3 light_bulb_intensity = lights[0].intensity;
+
     if (shading_model == KAJIYA_KAY) {
-        shading = kajiya_kay(hair_color, lights[0].intensity, hair_shininess,
+        shading = kajiya_kay(hair_color, light_bulb_intensity, hair_exponent,
                              surface_normal, light_direction, eye_direction);
         shading = hair_color * max(dot(surface_normal, light_direction), 0.);
     }
