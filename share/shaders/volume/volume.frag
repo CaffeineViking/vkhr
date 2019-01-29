@@ -16,7 +16,7 @@ layout(location = 0) in PipelineIn {
     vec4 position;
 } fs_in;
 
-layout(binding = 3) uniform sampler3D density_volume;
+layout(binding = 3) uniform sampler3D strand_density;
 
 layout(input_attachment_index = 1, binding = 5) uniform subpassInput depth_buffer;
 
@@ -27,7 +27,7 @@ void main() {
     float raycast_length = volume_bounds.radius;
     vec3  raycast_end    = raycast_start + normalize(raycast_start - camera.position) * raycast_length;
 
-    vec4 surface_position = volume_surface(density_volume,
+    vec4 surface_position = volume_surface(strand_density,
                                            raycast_start, raycast_end,
                                            512, 0.003,
                                            volume_bounds.origin,
@@ -45,7 +45,7 @@ void main() {
     if (depth_buffer < surface_depth)
         discard;
 
-    vec3 surface_normal = volume_gradient(density_volume,
+    vec3 surface_normal = volume_gradient(strand_density,
                                           surface_position.xyz,
                                           volume_bounds.origin,
                                           volume_bounds.size);
@@ -68,14 +68,14 @@ void main() {
     vec4 light_position = lights[0].matrix * vec4(0, 0, 0, 1);
 
     if (deep_shadows_on == YES && shading_model != LAO) {
-        occlusion = volume_approximated_deep_shadows(density_volume,
+        occlusion = volume_approximated_deep_shadows(strand_density,
                                                      surface_position.xyz, light_position.xyz,
                                                      128, 0.8f,
                                                      volume_bounds.origin, volume_bounds.size);
     }
 
     if (shading_model != ADSM) {
-        occlusion *= local_ambient_occlusion(density_volume,
+        occlusion *= local_ambient_occlusion(strand_density,
                                              surface_position.xyz,
                                              volume_bounds.origin,
                                              volume_bounds.size,
