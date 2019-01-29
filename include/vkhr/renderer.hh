@@ -12,7 +12,8 @@ namespace vkhr {
 
         enum Type : int {
             Rasterizer,
-            Ray_Tracer
+            Ray_Tracer,
+            Raymarcher
         };
     };
 }

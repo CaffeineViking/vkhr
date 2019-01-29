@@ -72,6 +72,7 @@ namespace vkhr {
 
         renderers.push_back("Rasterizer");
         renderers.push_back("Ray Tracer");
+        renderers.push_back("Raymarcher");
 
         scene_files.push_back(SCENE("ponytail.vkhr"));
         scene_files.push_back(SCENE("bear.vkhr"));
@@ -129,26 +130,21 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Combo("##Renderer",
-                         reinterpret_cast<int*>(&current_renderer),
-                         get_string_from_vector,
-                         static_cast<void*>(&renderers),
-                         renderers.size());
+            auto previous_renderer = current_renderer;
 
-            switch (current_renderer) {
-            case Renderer::Rasterizer:
-                raytrace_scene = false;
-                break;
-            case Renderer::Ray_Tracer:
-                raytrace_scene = true;
-                break;
-            default: break;
+            if (ImGui::Combo("##Renderer",
+                             reinterpret_cast<int*>(&current_renderer),
+                             get_string_from_vector,
+                             static_cast<void*>(&renderers),
+                             renderers.size())) {
+                if (previous_renderer != current_renderer) // OK
+                    this->previous_renderer = previous_renderer;
             }
 
             ImGui::SameLine(0.0, 4.0);
 
             if (ImGui::Button("Toggle Renderer"))
-                toggle_raytracing();
+                toggle_renderer();
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -406,12 +402,10 @@ namespace vkhr {
         gui_visible = !gui_visible;
     }
 
-    void Interface::toggle_raytracing() {
-        raytrace_scene = !raytrace_scene;
-        if (raytrace_scene)
-            current_renderer = Renderer::Ray_Tracer;
-        else
-            current_renderer = Renderer::Rasterizer;
+    void Interface::toggle_renderer() {
+        auto tmp = current_renderer;
+        current_renderer = previous_renderer;
+        previous_renderer = tmp;
     }
 
     bool Interface::show() {
@@ -420,8 +414,16 @@ namespace vkhr {
         return previous_visibility;
     }
 
+    bool Interface::rasterizer_enabled() {
+        return current_renderer == Renderer::Rasterizer;
+    }
+
+    bool Interface::raymarcher_enabled() {
+        return current_renderer == Renderer::Raymarcher;
+    }
+
     bool Interface::raytracing_enabled() {
-        return raytrace_scene;
+        return current_renderer == Renderer::Ray_Tracer;
     }
 
     Interface::Interface(Interface&& interface) noexcept {
@@ -438,13 +440,14 @@ namespace vkhr {
 
         swap(lhs.ctx, rhs.ctx);
         swap(lhs.gui_visible, rhs.gui_visible);
-        swap(lhs.raytrace_scene, rhs.raytrace_scene);
 
         swap(lhs.scene_file, rhs.scene_file);
         swap(lhs.scene_files, rhs.scene_files);
         swap(lhs.renderers, rhs.renderers);
         swap(lhs.simulations, rhs.simulations);
-        swap(lhs.simulation_effect, rhs.simulation_effect);
+        swap(lhs.current_renderer, rhs.current_renderer);
+        swap(lhs.previous_renderer, rhs.previous_renderer);
+        swap(lhs.current_renderer, rhs.current_renderer);
         swap(lhs.shaders, rhs.shaders);
         swap(lhs.shadow_maps, rhs.shadow_maps);
         swap(lhs.shadow_samplers, rhs.shadow_samplers);

@@ -95,8 +95,10 @@ namespace vkhr {
         bool hide();
         void toggle_visibility();
         void set_visibility(bool visible);
+        bool rasterizer_enabled();
         bool raytracing_enabled();
-        void toggle_raytracing();
+        bool raymarcher_enabled();
+        void toggle_renderer();
         bool show();
 
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
@@ -117,7 +119,8 @@ namespace vkhr {
 
         int simulation_effect { 0 };
 
-        Renderer::Type current_renderer { Renderer::Rasterizer };
+        Renderer::Type current_renderer  { Renderer::Rasterizer };
+        Renderer::Type previous_renderer { Renderer::Ray_Tracer };
 
         struct ProfilePair {
             std::vector<float> timestamps;
@@ -131,7 +134,6 @@ namespace vkhr {
         static bool get_string_from_vector(void*, int, const char**);
 
         bool light_debugger { false };
-        bool raytrace_scene { false };
 
         bool gui_visible { true };
 

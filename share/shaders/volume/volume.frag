@@ -68,7 +68,7 @@ void main() {
 
     if (deep_shadows_on == YES && shading_model != LAO) {
         occlusion *= volume_approximated_deep_shadows(strand_density,
-                                                      surface_position.xyz,
+                                                      surface_position.xyz - 0.3*surface_normal,
                                                       lights[0].origin,
                                                       512, 0.8f,
                                                       volume_bounds.origin, volume_bounds.size);
@@ -76,7 +76,7 @@ void main() {
 
     if (shading_model != ADSM) {
         occlusion *= local_ambient_occlusion(strand_density,
-                                             surface_position.xyz,
+                                             surface_position.xyz - 1.2*surface_normal, // nudge
                                              volume_bounds.origin,
                                              volume_bounds.size,
                                              2, 2.50f, 16, 0.1f);
