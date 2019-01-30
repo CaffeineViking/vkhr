@@ -68,13 +68,17 @@ namespace vkhr {
                                              parameters.volume_resolution.z *
                                              sizeof(unsigned char); // bytes.
 
+            auto strand_density = hair_style.voxelize_segments(256, 256, 256);
+
+            strand_density.normalize();
+
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
                 static_cast<std::uint32_t>(parameters.volume_resolution.x),
                 static_cast<std::uint32_t>(parameters.volume_resolution.y),
                 static_cast<std::uint32_t>(parameters.volume_resolution.z),
-                volume_size_limit,
-                vulkan_renderer.command_pool
+                vulkan_renderer.command_pool,
+                strand_density.data
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
