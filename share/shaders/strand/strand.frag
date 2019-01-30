@@ -45,7 +45,7 @@ void main() {
                                               shadow_space_fragment,
                                               deep_shadows_kernel_size,
                                               deep_shadows_stride_size,
-                                              1136.0f, hair_alpha);
+                                              1136.0f, hair_opacity);
     }
 
     if (shading_model != ADSM) {

@@ -348,15 +348,26 @@ namespace vkhr {
 
             for (auto hair_style : node->get_hair_styles()) {
                 if (ImGui::TreeNode("Hair Style")) {
-                    if (ImGui::TreeNode("Volumes")) {
-                        auto& rasterized_hair = rasterizer.hair_styles[hair_style];
+                    auto& hair = rasterizer.hair_styles[hair_style];
+
+                    if (ImGui::TreeNode("Shading")) {
                         ImGui::PushItemWidth(165);
-                        if (ImGui::SliderFloat("Isosurface", &rasterized_hair.parameters.volume_isosurface, 0.0f, 0.25f))
-                            rasterized_hair.update_parameters();
-                        if (ImGui::SliderFloat3("Resolution", glm::value_ptr(rasterized_hair.parameters.volume_resolution), 1, 256, "%.0f"))
-                            rasterized_hair.update_parameters();
-                        if (ImGui::SliderFloat("Raymarcher", &rasterized_hair.parameters.raymarch_size, 0.0, 512, "%.0f"))
-                            rasterized_hair.update_parameters();
+                        if (ImGui::ColorEdit3("Colour", glm::value_ptr(hair.parameters.hair_color), ImGuiColorEditFlags_Float))
+                            hair.update_parameters();
+                        if (ImGui::SliderFloat("Shine", &hair.parameters.hair_shininess, 0.0f, 80.0f, "%.0f"))
+                            hair.update_parameters();
+                        ImGui::PopItemWidth();
+                        ImGui::TreePop();
+                    }
+
+                    if (ImGui::TreeNode("Volumes")) {
+                        ImGui::PushItemWidth(165);
+                        if (ImGui::SliderFloat("Isosurface", &hair.parameters.volume_isosurface, 0.0f, 0.25f))
+                            hair.update_parameters();
+                        if (ImGui::SliderFloat3("Resolution", glm::value_ptr(hair.parameters.volume_resolution), 1, 256, "%.0f"))
+                            hair.update_parameters();
+                        if (ImGui::SliderFloat("Raymarcher", &hair.parameters.raymarch_size, 0.0, 512, "%.0f"))
+                            hair.update_parameters();
                         ImGui::PopItemWidth();
                         ImGui::TreePop();
                     }
