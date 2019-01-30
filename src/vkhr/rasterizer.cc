@@ -166,7 +166,10 @@ namespace vkhr {
 
         vk::DebugMarker::begin(command_buffers[frame], "Frame", query_pools[frame]);
 
-        draw_depth(scene_graph, command_buffers[frame]);
+        if (!imgui.raymarcher_enabled()) {
+            draw_depth(scene_graph, command_buffers[frame]);
+        }
+
         draw_color(scene_graph, command_buffers[frame]);
 
         vk::DebugMarker::close(command_buffers[frame], "Frame", query_pools[frame]);
@@ -253,10 +256,7 @@ namespace vkhr {
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
 
-            if (!imgui.raymarcher_enabled()) {
-                if (imgui.parameters.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
-            }
-
+            if (imgui.parameters.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
             if (imgui.parameters.ctsm_on) draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
 
             command_buffer.end_render_pass();
