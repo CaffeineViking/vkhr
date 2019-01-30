@@ -15,6 +15,10 @@ vec3 volume_normal(sampler3D volume, vec3 position, vec3 volume_origin, vec3 vol
     return -normalize(vec3(dx, dy, dz)); // the normals!
 }
 
+vec3 volume_tangent(sampler3D volume, vec3 surface, vec3 volume_origin, vec3 volume_size) {
+    return vec3(0.0f);
+}
+
 // Finds the surface of a volume with at least 'surface_density' starting from 'volume_start' to 'volume_end' when it has been sampled 'step' times.
 vec4 volume_surface(sampler3D volume, vec3 volume_start, vec3 volume_end, uint steps, float surface_density, vec3 volume_origin, vec3 volume_size) {
     float density = 0.0f; // current density values.

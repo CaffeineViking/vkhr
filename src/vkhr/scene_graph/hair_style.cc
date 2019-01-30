@@ -264,7 +264,9 @@ namespace vkhr {
             glm::vec3 voxel { (vertex - volume.bounds.origin) / voxel_size };
             voxel = glm::min(glm::floor(voxel), volume.resolution - 1.0000f);
             std::size_t pos = voxel.x + voxel.y*width + voxel.z*width*height;
-            if (volume.data[pos] != 255) ++volume.data[pos]; // 8-bit voxels.
+            if (volume.data[pos] != 255) {
+                volume.data[pos] += 1;
+            }
         }
 
         return volume;
@@ -294,8 +296,11 @@ namespace vkhr {
             while (steps-- > 0.0f) {
                 auto voxel = glm::min(glm::floor(root), volume.resolution-1.0f);
                 int voxel_index = voxel.x + voxel.y*width + voxel.z*width*height;
-                if (volume.data[voxel_index] != 255) ++volume.data[voxel_index];
-                root += direction; // Move to the voxel we're going to rasterize
+                if (volume.data[voxel_index] != 255) {
+                    volume.data[voxel_index] += 1;
+                }
+
+                root += direction; // Move to the voxel we're going to rasterize.
             }
         }
 
@@ -346,16 +351,30 @@ namespace vkhr {
         std::vector<glm::vec4> position_thicknesses(get_vertex_count());
         #pragma omp parallel for schedule(dynamic)
         for (int i = 0; i < static_cast<int>(get_vertex_count()); ++i) {
-            float thickness { 0.042f };
-            if (has_thickness()) {
+            float thickness { 0.042f }; // TODO: get_default_thickness
+            if (has_thickness())
                 thickness = this->thickness[i];
-            }
 
             position_thicknesses[i] = glm::vec4 {
                 vertices[i],
                 thickness
             };
         } return position_thicknesses;
+    }
+
+    std::vector<glm::vec4> HairStyle::create_tangent_transparency_data() const {
+        std::vector<glm::vec4> tangent_transparency(get_vertex_count());
+        #pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i < static_cast<int>(get_vertex_count()); ++i) {
+            float transparency { get_default_transparency() };
+            if (has_transparency())
+                transparency = this->transparency[i];
+
+            tangent_transparency[i] = glm::vec4 {
+                tangents[i],
+                transparency
+            };
+        } return tangent_transparency;
     }
 
     std::vector<glm::vec4> HairStyle::create_color_transparency_data() const {

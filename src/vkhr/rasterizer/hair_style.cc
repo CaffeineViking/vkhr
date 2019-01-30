@@ -68,17 +68,13 @@ namespace vkhr {
                                              parameters.volume_resolution.z *
                                              sizeof(unsigned char); // bytes.
 
-            auto strand_density = hair_style.voxelize_segments(256, 256, 256);
-
-            strand_density.normalize();
-
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                static_cast<std::uint32_t>(strand_density.resolution.x),
-                static_cast<std::uint32_t>(strand_density.resolution.y),
-                static_cast<std::uint32_t>(strand_density.resolution.z),
-                vulkan_renderer.command_pool,
-                strand_density.data
+                static_cast<std::uint32_t>(parameters.volume_resolution.x),
+                static_cast<std::uint32_t>(parameters.volume_resolution.y),
+                static_cast<std::uint32_t>(parameters.volume_resolution.z),
+                volume_size_limit,
+                vulkan_renderer.command_pool
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
@@ -109,6 +105,7 @@ namespace vkhr {
             command_buffer.clear_color_image(density_volume, { /*  ZERO  */ });
 
             descriptor_set.write(0, vertices);
+            descriptor_set.write(1, tangents);
             descriptor_set.write(2, parameter_buffer);
             descriptor_set.write(3, density_view);
 
@@ -293,8 +290,9 @@ namespace vkhr {
                 vulkan_renderer.device,
                 {
                     { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+                    { 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
                     { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                    { 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
+                    { 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  }
                 }
             };
 
