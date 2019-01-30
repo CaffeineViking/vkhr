@@ -278,7 +278,7 @@ namespace vkhr {
                     ImGui::TreePop();
                 }
 
-                traverse(scene_graph);
+                traverse(scene_graph, rasterizer, ray_tracer);
             }
 
             ImGui::Spacing();
@@ -324,11 +324,11 @@ namespace vkhr {
         ImGui::Render();
     }
 
-    void Interface::traverse(SceneGraph& scene_graph) {
-        traverse(&scene_graph.get_root_node());
+    void Interface::traverse(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
+        traverse(&scene_graph.get_root_node(), rasterizer, ray_tracer);
     }
 
-    void Interface::traverse(SceneGraph::Node* node) {
+    void Interface::traverse(SceneGraph::Node* node, Rasterizer& rasterizer, Raytracer& ray_tracer) {
         if (node == nullptr) {
             return;
         }
@@ -348,6 +348,19 @@ namespace vkhr {
 
             for (auto hair_style : node->get_hair_styles()) {
                 if (ImGui::TreeNode("Hair Style")) {
+                    if (ImGui::TreeNode("Volumes")) {
+                        auto& rasterized_hair = rasterizer.hair_styles[hair_style];
+                        ImGui::PushItemWidth(165);
+                        if (ImGui::SliderFloat("Isosurface", &rasterized_hair.parameters.volume_isosurface, 0.0f, 0.25f))
+                            rasterized_hair.update_parameters();
+                        if (ImGui::SliderFloat3("Resolution", glm::value_ptr(rasterized_hair.parameters.volume_resolution), 1, 256, "%.0f"))
+                            rasterized_hair.update_parameters();
+                        if (ImGui::SliderFloat("Raymarcher", &rasterized_hair.parameters.raymarch_size, 0.0, 512, "%.0f"))
+                            rasterized_hair.update_parameters();
+                        ImGui::PopItemWidth();
+                        ImGui::TreePop();
+                    }
+
                     if (ImGui::TreeNode("Headers")) {
                         ImGui::Indent();
                         ImGui::Text("magic id: H A I R");
@@ -367,7 +380,7 @@ namespace vkhr {
             }
 
             for (auto child : node->get_children())
-                traverse(child);
+                traverse(child, rasterizer, ray_tracer);
 
             ImGui::TreePop();
         }

@@ -29,7 +29,7 @@ void main() {
 
     vec4 surface_position = volume_surface(strand_density,
                                            raycast_start, raycast_end,
-                                           512, 0.003,
+                                           raymarch_size, volume_isosurface,
                                            volume_bounds.origin,
                                            volume_bounds.size);
 
@@ -68,15 +68,16 @@ void main() {
 
     if (deep_shadows_on == YES && shading_model != LAO) {
         occlusion *= volume_approximated_deep_shadows(strand_density,
-                                                      surface_position.xyz - 0.3*surface_normal,
+                                                      surface_position.xyz,
                                                       lights[0].origin,
-                                                      512, 0.8f,
-                                                      volume_bounds.origin, volume_bounds.size);
+                                                      raymarch_size, hair_opacity,
+                                                      volume_bounds.origin,
+                                                      volume_bounds.size);
     }
 
     if (shading_model != ADSM) {
         occlusion *= local_ambient_occlusion(strand_density,
-                                             surface_position.xyz - 0.5*surface_normal, // nudge
+                                             surface_position.xyz,
                                              volume_bounds.origin,
                                              volume_bounds.size,
                                              2, 2.50f, 16, 0.1f);

@@ -49,6 +49,13 @@ namespace vkhr {
             parameters.hair_shininess = 50.0f;
             parameters.strand_radius = hair_style.get_default_thickness();
             parameters.hair_color = glm::vec3 { .32, .228, .128 };
+            parameters.hair_opacity = 0.80f;
+
+
+            parameters.volume_resolution = glm::vec3 { 256,256,256 };
+            parameters.volume_isosurface = 0.025f;
+            parameters.raymarch_size = 512;
+            parameters.volume_bounds = hair_style.get_bounding_box();
 
             density_sampler = vk::Sampler {
                 vulkan_renderer.device,
@@ -59,9 +66,6 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
-
-            parameters.volume_resolution = glm::vec3 { 256,256,256 };
-            parameters.volume_bounds = hair_style.get_bounding_box();
 
             VkDeviceSize volume_size_limit = parameters.volume_resolution.x *
                                              parameters.volume_resolution.y * 
@@ -138,6 +142,10 @@ namespace vkhr {
             command_buffer.bind_index_buffer(segments);
 
             command_buffer.draw_indexed(segments.count());
+        }
+
+        void HairStyle::update_parameters() {
+            parameter_buffer.update(parameters);
         }
 
         void HairStyle::build_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {

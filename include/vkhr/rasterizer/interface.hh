@@ -104,8 +104,8 @@ namespace vkhr {
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
 
     private:
-        void traverse(SceneGraph& scene_graph);
-        void traverse(SceneGraph::Node* node);
+        void traverse(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer);
+        void traverse(SceneGraph::Node* node,  Rasterizer& rasterizer, Raytracer& ray_tracer);
 
         int scene_file { 0 };
         int previous_scene_file { 0 };

@@ -14,10 +14,10 @@ layout(std430, binding = 1) buffer Tangents {
 
 layout(local_size_x = 512) in;
 
-layout(binding = 3, r8) uniform image3D strand_density;
+layout(binding = 3, r32ui) uniform uimage3D strand_density;
 
 void main() {
     vec3 voxel_size = volume_bounds.size / volume_resolution;
     vec3 voxel = (position[gl_GlobalInvocationID.x] - volume_bounds.origin) / voxel_size;
-    imageStore(strand_density, ivec3(voxel), vec4(1.0));
+    imageAtomicAdd(strand_density, ivec3(voxel), 1);
 }

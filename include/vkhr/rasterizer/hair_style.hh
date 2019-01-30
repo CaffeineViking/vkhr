@@ -40,6 +40,19 @@ namespace vkhr {
             static void depth_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
             static void voxel_pipeline(Pipeline& pipeline_reference, Rasterizer& vulkan_renderer);
 
+            void update_parameters();
+
+            struct Parameters {
+                AABB volume_bounds;
+                glm::vec3 volume_resolution;
+                float strand_radius;
+                glm::vec3 hair_color;
+                float hair_opacity;
+                float hair_shininess;
+                float volume_isosurface;
+                float raymarch_size;
+            } parameters;
+
         private:
             vk::IndexBuffer  segments;
             vk::VertexBuffer vertices;
@@ -48,14 +61,6 @@ namespace vkhr {
             vk::ImageView density_view;
             vk::DeviceImage density_volume;
             vk::Sampler density_sampler;
-
-            struct Parameters {
-                AABB volume_bounds;
-                glm::vec3 volume_resolution;
-                float strand_radius;
-                glm::vec3 hair_color;
-                float hair_shininess;
-            } parameters;
 
             vk::UniformBuffer parameter_buffer;
 
