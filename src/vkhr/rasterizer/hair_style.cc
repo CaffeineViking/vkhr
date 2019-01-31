@@ -57,6 +57,22 @@ namespace vkhr {
             parameters.raymarch_size = 512;
             parameters.volume_bounds = hair_style.get_bounding_box();
 
+            parameter_buffer = vk::UniformBuffer {
+                vulkan_renderer.device,
+                parameters
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, parameter_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
+
+            VkDeviceSize volume_size_limit = parameters.volume_resolution.x *
+                                             parameters.volume_resolution.y * 
+                                             parameters.volume_resolution.z *
+                                             sizeof(unsigned char); // bytes.
+
+            auto strand_volume = hair_style.voxelize_segments(256, 256, 256);
+
+            strand_volume.normalize();
+
             density_sampler = vk::Sampler {
                 vulkan_renderer.device,
                 VK_FILTER_LINEAR,      VK_FILTER_LINEAR,
@@ -67,22 +83,13 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
-            VkDeviceSize volume_size_limit = parameters.volume_resolution.x *
-                                             parameters.volume_resolution.y * 
-                                             parameters.volume_resolution.z *
-                                             sizeof(unsigned char); // bytes.
-
-            auto strand_density = hair_style.voxelize_segments(256, 256, 256);
-
-            strand_density.normalize();
-
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                static_cast<std::uint32_t>(parameters.volume_resolution.x),
-                static_cast<std::uint32_t>(parameters.volume_resolution.y),
-                static_cast<std::uint32_t>(parameters.volume_resolution.z),
+                static_cast<std::uint32_t>(strand_volume.resolution.x),
+                static_cast<std::uint32_t>(strand_volume.resolution.y),
+                static_cast<std::uint32_t>(strand_volume.resolution.z),
                 vulkan_renderer.command_pool,
-                strand_density.data
+                strand_volume.densities
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_volume, VK_OBJECT_TYPE_IMAGE, "Hair Density Volume", id);
@@ -94,12 +101,33 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
 
-            parameter_buffer = vk::UniformBuffer {
+            tangent_sampler = vk::Sampler {
                 vulkan_renderer.device,
-                parameters
+                VK_FILTER_LINEAR,      VK_FILTER_LINEAR,
+                VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
+                VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
+                VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER
             };
 
-            vk::DebugMarker::object_name(vulkan_renderer.device, parameter_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, tangent_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Tangent Sampler", id);
+
+            tangent_volume = vk::DeviceImage {
+                vulkan_renderer.device,
+                static_cast<std::uint32_t>(strand_volume.resolution.x),
+                static_cast<std::uint32_t>(strand_volume.resolution.y),
+                static_cast<std::uint32_t>(strand_volume.resolution.z),
+                vulkan_renderer.command_pool,
+                strand_volume.tangents
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, tangent_volume, VK_OBJECT_TYPE_IMAGE, "Hair Tangent Volume", id);
+
+            tangent_view = vk::ImageView {
+                vulkan_renderer.device,
+                tangent_volume
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, tangent_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Tangent View", id);
 
             volume = Volume {
                 *this,
@@ -122,9 +150,9 @@ namespace vkhr {
         }
 
         void HairStyle::draw_volume(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            volume.set_current_volume(density_view);
+            volume.set_current_volume(density_view, tangent_view);
             volume.set_volume_parameters(parameter_buffer);
-            volume.set_volume_sampler(density_sampler);
+            volume.set_volume_sampler(density_sampler, tangent_sampler);
             volume.draw(pipeline, descriptor_set, command_buffer);
         }
 

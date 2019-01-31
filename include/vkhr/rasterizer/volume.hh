@@ -26,9 +26,9 @@ namespace vkhr {
 
             void load(HairStyle& hair_style, vkhr::Rasterizer& renderer);
 
-            void set_current_volume(vk::ImageView& volume_view);
-            void set_volume_parameters(vk::UniformBuffer& buff);
-            void set_volume_sampler(vk::Sampler& voxel_sampler);
+            void set_current_volume(vk::ImageView& density_view, vk::ImageView& tangent_view);
+            void set_volume_parameters(vk::UniformBuffer& buffer);
+            void set_volume_sampler(vk::Sampler& density_sample, vk::Sampler& tangent_sampler);
 
             std::vector<glm::vec3> generate_aabb_vertices(const AABB& aabb) const;
             std::vector<unsigned>  generate_aabb_elements() const;
@@ -43,9 +43,11 @@ namespace vkhr {
             vk::IndexBuffer  elements;
             vk::VertexBuffer vertices;
 
-            vk::ImageView* volume_view  { nullptr };
+            vk::ImageView* tangent_view  { nullptr };
+            vk::ImageView* density_view  { nullptr };
             vk::UniformBuffer* parameter_buffer { nullptr };
-            vk::Sampler* volume_sampler { nullptr };
+            vk::Sampler* density_sampler { nullptr };
+            vk::Sampler* tangent_sampler { nullptr };
 
             static int id;
         };

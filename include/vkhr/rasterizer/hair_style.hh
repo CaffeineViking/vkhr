@@ -62,6 +62,10 @@ namespace vkhr {
             vk::DeviceImage density_volume;
             vk::Sampler density_sampler;
 
+            vk::ImageView tangent_view;
+            vk::DeviceImage tangent_volume;
+            vk::Sampler tangent_sampler;
+
             vk::UniformBuffer parameter_buffer;
 
             Volume volume;

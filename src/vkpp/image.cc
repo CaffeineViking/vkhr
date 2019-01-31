@@ -461,7 +461,71 @@ namespace vkpp {
                                       depth,
                                       VK_FORMAT_R8_UNORM,
                                       VK_IMAGE_USAGE_SAMPLED_BIT |
-                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+                                      VK_IMAGE_USAGE_STORAGE_BIT,
+                                      mip_levels,
+                                      VK_SAMPLE_COUNT_1_BIT,
+                                      VK_IMAGE_TILING_OPTIMAL } {
+        staging_buffer = Buffer {
+            device,
+            volume.size() * sizeof(volume[0]),
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+        };
+
+        auto size = volume.size() * sizeof(volume[0]);
+
+        auto staging_memory_requirements = staging_buffer.get_memory_requirements();
+
+        auto buffer = volume.data();
+
+        staging_memory = DeviceMemory {
+            device,
+            staging_memory_requirements,
+            DeviceMemory::Type::HostVisible
+        };
+
+        staging_buffer.bind(staging_memory);
+        staging_memory.copy(size, buffer);
+
+        auto image_memory_requirements = get_memory_requirements();
+
+        device_memory = DeviceMemory {
+            device,
+            image_memory_requirements,
+            DeviceMemory::Type::DeviceLocal
+        };
+
+        bind(device_memory);
+
+        auto command_buffer = command_pool.allocate_and_begin();
+
+        transition(command_buffer, VK_IMAGE_LAYOUT_UNDEFINED,
+                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        command_buffer.copy_buffer_image(staging_buffer, *this);
+
+        transition(command_buffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        command_buffer.end();
+
+        command_pool.get_queue().submit(command_buffer)
+                                .wait_idle();
+    }
+
+    DeviceImage::DeviceImage(Device& device,
+                             std::uint32_t width, std::uint32_t height, std::uint32_t depth,
+                             CommandPool& command_pool,
+                             std::vector<glm::i8vec4>& volume,
+                             std::uint32_t mip_levels)
+                            : Image { device,
+                                      width,
+                                      height,
+                                      depth,
+                                      VK_FORMAT_R8G8B8A8_SNORM,
+                                      VK_IMAGE_USAGE_SAMPLED_BIT |
+                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+                                      VK_IMAGE_USAGE_STORAGE_BIT,
                                       mip_levels,
                                       VK_SAMPLE_COUNT_1_BIT,
                                       VK_IMAGE_TILING_OPTIMAL } {

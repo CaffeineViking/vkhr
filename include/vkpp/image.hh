@@ -120,6 +120,12 @@ namespace vkpp {
 
         DeviceImage(Device& device,
                     std::uint32_t width, std::uint32_t height, std::uint32_t depth,
+                    CommandPool& command_pool,
+                    std::vector<glm::i8vec4>& volume,
+                    std::uint32_t mip_levels = 1);
+
+        DeviceImage(Device& device,
+                    std::uint32_t width, std::uint32_t height, std::uint32_t depth,
                     VkDeviceSize size_in_bytes, CommandPool& command_pool, VkFormat format = VK_FORMAT_R8_UNORM,
                     VkImageUsageFlags usage = VK_IMAGE_USAGE_STORAGE_BIT |
                                               VK_IMAGE_USAGE_SAMPLED_BIT |

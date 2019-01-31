@@ -257,16 +257,30 @@ namespace vkhr {
             get_bounding_box()
         };
 
-        volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
+        volume.densities.resize(width * height * depth, 0); // ~ 16MiBs.
         glm::vec3 voxel_size { volume.bounds.size / volume.resolution };
 
-        for (const auto& vertex : vertices) {
+        std::vector<glm::vec3> precise_tangents(width * height * depth);
+
+        for (unsigned int i { 0 }; i < get_vertex_count(); ++i) {
+            auto& vertex = vertices[i];
             glm::vec3 voxel { (vertex - volume.bounds.origin) / voxel_size };
             voxel = glm::min(glm::floor(voxel), volume.resolution - 1.0000f);
             std::size_t pos = voxel.x + voxel.y*width + voxel.z*width*height;
-            if (volume.data[pos] != 255) {
-                volume.data[pos] += 1;
+            if (volume.densities[pos] != 255) {
+                precise_tangents[pos] += tangents[i];
+                volume.densities[pos] += 1;
             }
+        }
+
+        volume.tangents.resize(width * height * depth, glm::i8vec4 { 0, 0, 0, 0 });
+
+        #pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i < volume.densities.size(); ++i) {
+            glm::i8vec3 quantized  = precise_tangents[i] / static_cast<float>(volume.densities[i]) * 127.0f;
+            volume.tangents[i].x   = quantized.x;
+            volume.tangents[i].y   = quantized.y;
+            volume.tangents[i].z   = quantized.z;
         }
 
         return volume;
@@ -282,8 +296,10 @@ namespace vkhr {
             get_bounding_box()
         };
 
-        volume.data.resize(width * height * depth, 0); // 256x256 ~16MiB
+        volume.densities.resize(width * height * depth, 0); // ~ 16MiBs.
         glm::vec3 voxel_size { volume.bounds.size / volume.resolution };
+
+        std::vector<glm::vec3> precise_tangents(width * height * depth);
 
         for (std::size_t i { 0 }; i < indices.size() - 1; i += 2) {
             auto root { (vertices[indices[i]]     - volume.bounds.origin) / voxel_size };
@@ -296,42 +312,40 @@ namespace vkhr {
             while (steps-- > 0.0f) {
                 auto voxel = glm::min(glm::floor(root), volume.resolution-1.0f);
                 int voxel_index = voxel.x + voxel.y*width + voxel.z*width*height;
-                if (volume.data[voxel_index] != 255) {
-                    volume.data[voxel_index] += 1;
+                if (volume.densities[voxel_index] != 255) {
+                    precise_tangents[voxel_index] += tangents[indices[i]];
+                    volume.densities[voxel_index] += 1;
                 }
 
                 root += direction; // Move to the voxel we're going to rasterize.
             }
         }
 
-        return volume;
-    }
+        volume.tangents.resize(width * height * depth, glm::i8vec4 { 0, 0, 0, 0 });
 
-    std::vector<HairStyle::Volume> HairStyle::Volume::create_mip_levels() {
-        std::vector<HairStyle::Volume> mip_levels;
-
-        std::size_t mip_count = std::log2(resolution.x);
-
-        mip_levels.reserve(mip_count);
-
-        for (std::size_t i { 1 }; i < mip_count; ++i) {
+        #pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i < volume.densities.size(); ++i) {
+            glm::i8vec3 quantized  = precise_tangents[i] / static_cast<float>(volume.densities[i]) * 127.0f;
+            volume.tangents[i].x   = quantized.x;
+            volume.tangents[i].y   = quantized.y;
+            volume.tangents[i].z   = quantized.z;
         }
 
-        return mip_levels;
+        return volume;
     }
 
     void HairStyle::Volume::normalize() {
         unsigned char data_min { 255 }, data_max { 0 };
-        for (std::size_t i { 0 }; i < data.size(); ++i) {
-            if (data[i] > data_max) data_max = data[i];
-            if (data[i] < data_min) data_min = data[i];
+        for (std::size_t i { 0 }; i < densities.size(); ++i) {
+            if (densities[i] > data_max) data_max = densities[i];
+            if (densities[i] < data_min) data_min = densities[i];
         }
 
         float scaling { 255.0f / (data_max - data_min) };
 
-        for (std::size_t i { 0 }; i < data.size(); ++i) {
-            data[i] -= data_min;
-            data[i] = data[i] * scaling;
+        for (std::size_t i { 0 }; i < densities.size(); ++i) {
+            densities[i] -= data_min;
+            densities[i] = densities[i] * scaling;
         }
     }
 
@@ -340,8 +354,8 @@ namespace vkhr {
         if (!file) return false; // Couldn't write to file.
 
         // Write voxels in one go (assume they are laid out right).
-        if (!file.write(reinterpret_cast<const char*>(data.data()),
-                        data.size() * sizeof(data[0])))
+        if (!file.write(reinterpret_cast<const char*>(densities.data()),
+                        densities.size() * sizeof(densities[0])))
             return false;
 
         return true;

@@ -43,16 +43,18 @@ namespace vkhr {
             ++id;
         }
 
-        void Volume::set_current_volume(vk::ImageView& volume_view) {
-            this->volume_view = &volume_view;
+        void Volume::set_current_volume(vk::ImageView& density_view, vk::ImageView& tangent_view) {
+            this->density_view = &density_view;
+            this->tangent_view = &tangent_view;
         }
 
-        void Volume::set_volume_parameters(vk::UniformBuffer& buff) {
-            this->parameter_buffer = &buff;
+        void Volume::set_volume_parameters(vk::UniformBuffer& buffer) {
+            this->parameter_buffer = &buffer;
         }
 
-        void Volume::set_volume_sampler(vk::Sampler& voxel_sampler) {
-            this->volume_sampler = &voxel_sampler;
+        void Volume::set_volume_sampler(vk::Sampler& density_sampler, vk::Sampler& tangent_sampler) {
+            this->density_sampler = &density_sampler;
+            this->tangent_sampler = &tangent_sampler;
         }
 
         std::vector<glm::vec3> Volume::generate_aabb_vertices(const AABB& aabb) const {
@@ -101,7 +103,8 @@ namespace vkhr {
 
         void Volume::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             descriptor_set.write(2, *parameter_buffer);
-            descriptor_set.write(3, *volume_view, *volume_sampler);
+            descriptor_set.write(3, *density_view, *density_sampler);
+            descriptor_set.write(6, *tangent_view, *tangent_sampler);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
             command_buffer.bind_vertex_buffer(0, vertices, 0);
             command_buffer.bind_index_buffer(elements);
@@ -148,7 +151,8 @@ namespace vkhr {
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
                 { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 5, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT }
+                { 5, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT },
+                { 6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
             };
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout { vulkan_renderer.device, descriptor_bindings };

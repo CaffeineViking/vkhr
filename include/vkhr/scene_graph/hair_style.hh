@@ -87,12 +87,13 @@ namespace vkhr {
 
         struct Volume {
             glm::vec3 resolution;
-            AABB bounds;
-            std::vector<unsigned char> data;
-            void normalize();
-            bool save(const std::string& file_path);
+            AABB bounds; // world
 
-            std::vector<Volume> create_mip_levels();
+            std::vector<unsigned char> densities;
+            std::vector<glm::i8vec4>    tangents;
+
+            void normalize();
+            bool save(const std::string& f_path);
 
             template<typename F>
             Volume downsample(F);
