@@ -109,9 +109,9 @@ namespace vkhr {
 
                 sample_color = light_shading(ray, camera, light, context);
 
-                if (visualization_method != DirectShadows) {
-                    sample_color *= ambient_occlusion(position,  context);
-                }
+                // if (visualization_method != DirectShadows) {
+                //     sample_color *= ambient_occlusion(position,  context);
+                // }
             }
 
             back_buffer[i + j * framebuffer.get_width()] += sample_color;
@@ -139,7 +139,7 @@ namespace vkhr {
                 return glm::vec3 { 1.0f };
             }
         } else {
-            return glm::vec3 { 0.0f };
+            return hair_styles[ray.get_geometry_id()].shade(ray, light, camera);
         }
     }
 
