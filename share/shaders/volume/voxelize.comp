@@ -5,11 +5,7 @@
 #include "bounding_box.glsl"
 
 layout(std430, binding = 0) buffer Vertices {
-    vec3 position[];
-};
-
-layout(std430, binding = 1) buffer Tangents {
-    vec3 tangents[];
+    vec4 position[];
 };
 
 layout(local_size_x = 512) in;
@@ -18,6 +14,6 @@ layout(binding = 3, r8) uniform image3D strand_density;
 
 void main() {
     vec3 voxel_size = volume_bounds.size / volume_resolution;
-    vec3 voxel = (position[gl_GlobalInvocationID.x] - volume_bounds.origin) / voxel_size;
+    vec3 voxel = (position[gl_GlobalInvocationID.x].xyz - volume_bounds.origin) / voxel_size;
     imageStore(strand_density, ivec3(voxel), vec4(1.0));
 }

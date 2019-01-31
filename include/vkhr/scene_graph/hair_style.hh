@@ -109,6 +109,7 @@ namespace vkhr {
 
         void generate_tangents();
 
+        // In case we need to pack the data (raytracer and alignment).
         std::vector<glm::vec4> create_position_thickness_data() const;
         std::vector<glm::vec4> create_tangent_transparency_data() const;
         std::vector<glm::vec4> create_color_transparency_data() const;

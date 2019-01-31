@@ -48,9 +48,8 @@ namespace vkhr {
 
             parameters.hair_shininess = 50.0f;
             parameters.strand_radius = hair_style.get_default_thickness();
-            parameters.hair_color = glm::vec3 { .32, .228, .128 };
+            parameters.hair_color = glm::vec3 { 0.32, 0.228, 0.128 };
             parameters.hair_opacity = 0.80f;
-
 
             parameters.volume_resolution = glm::vec3 { 256,256,256 };
             parameters.volume_isosurface = 0.027f;
@@ -63,11 +62,6 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, parameter_buffer, VK_OBJECT_TYPE_BUFFER, "Hair Parameters Buffer", id);
-
-            VkDeviceSize volume_size_limit = parameters.volume_resolution.x *
-                                             parameters.volume_resolution.y * 
-                                             parameters.volume_resolution.z *
-                                             sizeof(unsigned char); // bytes.
 
             auto strand_volume = hair_style.voxelize_segments(256, 256, 256);
 
@@ -83,11 +77,16 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_sampler, VK_OBJECT_TYPE_SAMPLER, "Hair Density Sampler", id);
 
+            VkDeviceSize density_length = parameters.volume_resolution.x *
+                                          parameters.volume_resolution.y * 
+                                          parameters.volume_resolution.z *
+                                          sizeof(unsigned char); // bytes.
+
             density_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                static_cast<std::uint32_t>(strand_volume.resolution.x),
-                static_cast<std::uint32_t>(strand_volume.resolution.y),
-                static_cast<std::uint32_t>(strand_volume.resolution.z),
+                static_cast<std::uint32_t>(parameters.volume_resolution.x),
+                static_cast<std::uint32_t>(parameters.volume_resolution.y),
+                static_cast<std::uint32_t>(parameters.volume_resolution.z),
                 vulkan_renderer.command_pool,
                 strand_volume.densities
             };
@@ -113,9 +112,9 @@ namespace vkhr {
 
             tangent_volume = vk::DeviceImage {
                 vulkan_renderer.device,
-                static_cast<std::uint32_t>(strand_volume.resolution.x),
-                static_cast<std::uint32_t>(strand_volume.resolution.y),
-                static_cast<std::uint32_t>(strand_volume.resolution.z),
+                static_cast<std::uint32_t>(parameters.volume_resolution.x),
+                static_cast<std::uint32_t>(parameters.volume_resolution.y),
+                static_cast<std::uint32_t>(parameters.volume_resolution.z),
                 vulkan_renderer.command_pool,
                 strand_volume.tangents
             };
@@ -141,7 +140,6 @@ namespace vkhr {
             command_buffer.clear_color_image(density_volume, { /*  ZERO  */ });
 
             descriptor_set.write(0, vertices);
-            descriptor_set.write(1, tangents);
             descriptor_set.write(2, parameter_buffer);
             descriptor_set.write(3, density_view);
 
@@ -330,7 +328,6 @@ namespace vkhr {
                 vulkan_renderer.device,
                 {
                     { 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
-                    { 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
                     { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                     { 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  }
                 }
