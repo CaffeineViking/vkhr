@@ -53,7 +53,7 @@ namespace vkhr {
 
 
             parameters.volume_resolution = glm::vec3 { 256,256,256 };
-            parameters.volume_isosurface = 0.025f;
+            parameters.volume_isosurface = 0.027f;
             parameters.raymarch_size = 512;
             parameters.volume_bounds = hair_style.get_bounding_box();
 

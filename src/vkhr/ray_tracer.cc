@@ -109,9 +109,9 @@ namespace vkhr {
 
                 sample_color = light_shading(ray, camera, light, context);
 
-                // if (visualization_method != DirectShadows) {
-                //     sample_color *= ambient_occlusion(position,  context);
-                // }
+                if (visualization_method != DirectShadows) {
+                    sample_color *= ambient_occlusion(position,  context);
+                }
             }
 
             back_buffer[i + j * framebuffer.get_width()] += sample_color;
@@ -124,9 +124,15 @@ namespace vkhr {
     }
 
     glm::vec3 Raytracer::light_shading(const Ray& ray, const Camera& camera, const LightSource& light, RTCIntersectContext& context) {
+        glm::vec3 light_jitter {
+            sample(-16.0f, 16.0f),
+            sample(-16.0f, 16.0f),
+            sample(-16.0f, 16.0f)
+        };
+
         Ray shadow_ray {
             ray.get_intersection_point(),
-            light.get_spotlight_origin(),
+            light.get_spotlight_origin() + light_jitter,
             Ray::Epsilon
         };
 
@@ -139,7 +145,7 @@ namespace vkhr {
                 return glm::vec3 { 1.0f };
             }
         } else {
-            return hair_styles[ray.get_geometry_id()].shade(ray, light, camera);
+            return glm::vec3 { 0.0f };
         }
     }
 

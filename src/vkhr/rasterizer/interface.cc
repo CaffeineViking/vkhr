@@ -362,7 +362,7 @@ namespace vkhr {
 
                     if (ImGui::TreeNode("Volumes")) {
                         ImGui::PushItemWidth(165);
-                        if (ImGui::SliderFloat("Isosurface", &hair.parameters.volume_isosurface, 0.0f, 0.25f))
+                        if (ImGui::SliderFloat("Isosurface", &hair.parameters.volume_isosurface, 0.0f, 0.1f))
                             hair.update_parameters();
                         if (ImGui::SliderFloat3("Resolution", glm::value_ptr(hair.parameters.volume_resolution), 1, 256, "%.0f"))
                             hair.update_parameters();

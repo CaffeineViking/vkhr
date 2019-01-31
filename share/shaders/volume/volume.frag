@@ -80,8 +80,8 @@ void main() {
                                              surface_position.xyz,
                                              volume_bounds.origin,
                                              volume_bounds.size,
-                                             2, 2.50f, 16, 0.1f);
+                                             2, 2.50f, 24, 0.05f);
     }
 
-    color = vec4(shading, 1.0f);
+    color = vec4(shading * occlusion, 1.0f);
 }
