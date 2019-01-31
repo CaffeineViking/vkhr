@@ -56,6 +56,10 @@ namespace vkhr {
             parameters.raymarch_size = 512;
             parameters.volume_bounds = hair_style.get_bounding_box();
 
+            parameters.ao_power = 24.0f;
+            parameters.occlusion_radius = 2.5f;
+            parameters.ao_clamp = 0.05f;
+
             parameter_buffer = vk::UniformBuffer {
                 vulkan_renderer.device,
                 parameters

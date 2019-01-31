@@ -12,6 +12,9 @@ layout(binding = 2) uniform Strand {
     float hair_exponent;
     float volume_isosurface;
     float raymarch_size;
+    float occlusion_radius;
+    float ao_power;
+    float ao_clamp;
 };
 
 #endif

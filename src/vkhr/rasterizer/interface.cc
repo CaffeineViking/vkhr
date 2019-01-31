@@ -352,9 +352,21 @@ namespace vkhr {
 
                     if (ImGui::TreeNode("Shading")) {
                         ImGui::PushItemWidth(165);
-                        if (ImGui::ColorEdit3("Colour", glm::value_ptr(hair.parameters.hair_color), ImGuiColorEditFlags_Float))
+                        if (ImGui::ColorEdit3("Color", glm::value_ptr(hair.parameters.hair_color), ImGuiColorEditFlags_Float))
                             hair.update_parameters();
                         if (ImGui::SliderFloat("Shine", &hair.parameters.hair_shininess, 0.0f, 80.0f, "%.0f"))
+                            hair.update_parameters();
+                        ImGui::PopItemWidth();
+                        ImGui::TreePop();
+                    }
+
+                    if (ImGui::TreeNode("Shadows")) {
+                        ImGui::PushItemWidth(165);
+                        if (ImGui::SliderFloat("AO Radius", &hair.parameters.occlusion_radius, 0.0f, 5.0f))
+                            hair.update_parameters();
+                        if (ImGui::SliderFloat("AO Power", &hair.parameters.ao_power, 0.0f, 48.0f))
+                            hair.update_parameters();
+                        if (ImGui::SliderFloat("AO Clamp", &hair.parameters.ao_clamp, 0.0f, 0.15f))
                             hair.update_parameters();
                         ImGui::PopItemWidth();
                         ImGui::TreePop();

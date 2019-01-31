@@ -53,7 +53,8 @@ void main() {
                                              fs_in.position.xyz,
                                              volume_bounds.origin,
                                              volume_bounds.size,
-                                             2, 2.5f, 24, 0.05f);
+                                             2, occlusion_radius,
+                                             ao_power, ao_clamp);
     }
 
     color = vec4(shading * occlusion, 1.0f);
