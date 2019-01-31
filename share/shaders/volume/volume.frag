@@ -69,7 +69,7 @@ void main() {
                                                       lights[0].origin,
                                                       raymarch_size, hair_opacity,
                                                       volume_bounds.origin,
-                                                      volume_bounds.size);
+                                                      volume_bounds.size, 4.0f);
     }
 
     if (shading_model != ADSM) {

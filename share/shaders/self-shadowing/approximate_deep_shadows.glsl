@@ -22,7 +22,7 @@ float approximate_deep_shadow(float shadow_depth, float light_depth, float stran
 
 // Instead of "guessing" the amount of strands in the way, we can find the amount from the strand voxelization.
 float volume_approximated_deep_shadows(sampler3D volume, vec3 strand_position, vec3 light_position, float steps,
-                                       float strand_alpha, vec3 volume_origin, vec3 volume_size) { // Vol-ADSM.
+                                       float strand_alpha, vec3 volume_origin, vec3 volume_size, float darkness) {
     float strands = 0;
     float step_size = 1.0f / steps; // for raymarch.
     for (float t = 0.0f; t < 1.0f; t += step_size) {
@@ -32,7 +32,7 @@ float volume_approximated_deep_shadows(sampler3D volume, vec3 strand_position, v
                                  volume_size).r;
     }
 
-    return pow(1.0f - strand_alpha, 4*strands);
+    return pow(1.0f - strand_alpha, darkness*strands);
 }
 
 // Applies Gaussian PCF to the function above to create
