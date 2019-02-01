@@ -41,6 +41,7 @@ int main(int argc, char** argv) {
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
     input_map.bind("toggle_fullscreen", vkhr::Input::Key::F11);
     input_map.bind("take_screenshot", vkhr::Input::Key::PrintScreen);
+    input_map.bind("toggle_renderer", vkhr::Input::Key::Tab);
     input_map.bind("pan", vkhr::Input::MouseButton::Middle);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
@@ -62,6 +63,8 @@ int main(int argc, char** argv) {
             window.toggle_fullscreen();
         } else if (input_map.just_pressed("take_screenshot")) {
             rasterizer.get_screenshot(scene_graph, ray_tracer).save_time();
+        } else if (input_map.just_pressed("toggle_renderer")) {
+            imgui.toggle_renderer();
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile();
         }
