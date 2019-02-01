@@ -49,11 +49,6 @@ namespace vkhr {
                 glm::vec3 hair_color;
                 float hair_opacity;
                 float hair_shininess;
-                float volume_isosurface;
-                float raymarch_size;
-                float occlusion_radius;
-                float ao_power;
-                float ao_clamp;
             } parameters;
 
         private:

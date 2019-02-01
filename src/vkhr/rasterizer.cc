@@ -164,7 +164,7 @@ namespace vkhr {
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
                                                 query_pools[frame].get_query_count());
 
-        vk::DebugMarker::begin(command_buffers[frame], "Frame", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Total Frame Time", query_pools[frame]);
 
         if (!imgui.raymarcher_enabled()) {
             draw_depth(scene_graph, command_buffers[frame]);
@@ -172,7 +172,7 @@ namespace vkhr {
 
         draw_color(scene_graph, command_buffers[frame]);
 
-        vk::DebugMarker::close(command_buffers[frame], "Frame", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
 
         command_buffers[frame].end();
 
@@ -207,9 +207,9 @@ namespace vkhr {
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
-        // vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
-        // draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
-        // vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
+        draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
         if (!imgui.raymarcher_enabled()) {
             vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);

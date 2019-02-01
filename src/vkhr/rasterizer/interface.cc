@@ -99,7 +99,7 @@ namespace vkhr {
         ImGui::NewFrame();
 
         auto direction = scene_graph.light_sources.front().get_direction();
-        // direction = glm::rotateY(direction, 0.0025f);
+        direction = glm::rotateY(direction, 0.0025f);
         scene_graph.light_sources.front().set_direction(direction);
 
         if (gui_visible) {
@@ -164,7 +164,7 @@ namespace vkhr {
             ImGui::Spacing();
 
             if (ImGui::CollapsingHeader("Render Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-                if (ImGui::TreeNodeEx("Rasterizer", ImGuiTreeNodeFlags_DefaultOpen)) {
+                if (ImGui::TreeNodeEx("Rasterizer")) {
                     ImGui::PushItemWidth(195);
                     ImGui::Combo("##Shadow Technique",
                                  reinterpret_cast<int*>(&parameters.shadow_technique),
@@ -214,19 +214,32 @@ namespace vkhr {
                         if (ImGui::DragFloat("Shadow Bias Values", &parameters.ctsm_bias, 0.0000001f, 0.0f, 0.0f, "%.7f"))
                             parameters.ctsm_bias = std::max(parameters.ctsm_bias, 0.0f);
                     }
+
+                    ImGui::SliderFloat("AO Estimate Radius", &parameters.occlusion_radius, 0.0f,  8.0f, "%.1f");
+                    ImGui::SliderFloat("AO Intensity Power", &parameters.ao_exponent,      0.0f, 32.0f, "%.0f");
+                    ImGui::SliderFloat("AO Intensity Clamp", &parameters.ao_clamp,         0.0f, 0.3f);
+
                     ImGui::PopItemWidth();
 
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNodeEx("Ray Tracer", ImGuiTreeNodeFlags_DefaultOpen)) {
+                if (ImGui::TreeNodeEx("Ray Tracer")) {
                     ImGui::PushItemWidth(171);
-                    if (ImGui::SliderFloat("AOR", &ray_tracer.ao_radius, 0.00, 5.00))
+                    if (ImGui::SliderFloat("LAO", &ray_tracer.ao_radius, 0.00, 5.00, "%.1f"))
                         ray_tracer.now_dirty = true;
                     ImGui::PopItemWidth();
                     ImGui::SameLine();
                     if (ImGui::Checkbox("Shadow Rays", &ray_tracer.shadows_on))
                         ray_tracer.now_dirty = true;
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNodeEx("Raymarcher")) {
+                    ImGui::PushItemWidth(171);
+                    ImGui::SliderFloat("Isosurface Density", &parameters.isosurface,    0.0f, 0.1f);
+                    ImGui::SliderFloat("Raycasting Samples", &parameters.raycast_steps, 0.0, 1024, "%.0f");
+                    ImGui::PopItemWidth();
                     ImGui::TreePop();
                 }
             }
@@ -354,31 +367,7 @@ namespace vkhr {
                         ImGui::PushItemWidth(165);
                         if (ImGui::ColorEdit3("Color", glm::value_ptr(hair.parameters.hair_color), ImGuiColorEditFlags_Float))
                             hair.update_parameters();
-                        if (ImGui::SliderFloat("Shine", &hair.parameters.hair_shininess, 0.0f, 80.0f, "%.0f"))
-                            hair.update_parameters();
-                        ImGui::PopItemWidth();
-                        ImGui::TreePop();
-                    }
-
-                    if (ImGui::TreeNode("Shadows")) {
-                        ImGui::PushItemWidth(165);
-                        if (ImGui::SliderFloat("AO Radius", &hair.parameters.occlusion_radius, 0.0f, 5.0f))
-                            hair.update_parameters();
-                        if (ImGui::SliderFloat("AO Power", &hair.parameters.ao_power, 0.0f, 48.0f))
-                            hair.update_parameters();
-                        if (ImGui::SliderFloat("AO Clamp", &hair.parameters.ao_clamp, 0.0f, 0.15f))
-                            hair.update_parameters();
-                        ImGui::PopItemWidth();
-                        ImGui::TreePop();
-                    }
-
-                    if (ImGui::TreeNode("Volumes")) {
-                        ImGui::PushItemWidth(165);
-                        if (ImGui::SliderFloat("Isosurface", &hair.parameters.volume_isosurface, 0.0f, 0.1f))
-                            hair.update_parameters();
-                        if (ImGui::SliderFloat3("Resolution", glm::value_ptr(hair.parameters.volume_resolution), 1, 256, "%.0f"))
-                            hair.update_parameters();
-                        if (ImGui::SliderFloat("Raymarcher", &hair.parameters.raymarch_size, 0.0, 512, "%.0f"))
+                        if (ImGui::SliderFloat("Power", &hair.parameters.hair_shininess, 0.0f, 80.0f, "%.0f"))
                             hair.update_parameters();
                         ImGui::PopItemWidth();
                         ImGui::TreePop();
@@ -390,8 +379,8 @@ namespace vkhr {
                         ImGui::Text("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
                         ImGui::Text("vertices: %d", hair_style->get_vertex_count());
                         ImGui::Text("segments: %d", hair_style->get_segment_count());
+                        ImGui::Text("strands:  %d", hair_style->get_strand_count());
                         ImGui::Text("%d segment/strand", hair_style->get_default_segment_count());
-                        ImGui::Text("strands!: %d", hair_style->get_strand_count());
                         ImGui::Text("feature bitfield:");
                         ImGui::Text("0 1 0 0 0 1 1 1 0");
                         ImGui::TreePop();

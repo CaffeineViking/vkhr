@@ -54,7 +54,7 @@ void main() {
                                              volume_bounds.origin,
                                              volume_bounds.size,
                                              2, occlusion_radius,
-                                             ao_power, ao_clamp);
+                                             ao_exponent, ao_max);
     }
 
     color = vec4(shading * occlusion, 1.0f);

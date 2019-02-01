@@ -31,7 +31,7 @@ void main() {
 
     vec4 surface_position = volume_surface(strand_density,
                                            raycast_start, raycast_end,
-                                           raymarch_size, volume_isosurface,
+                                           raycast_steps, isosurface,
                                            volume_bounds.origin,
                                            volume_bounds.size);
 
@@ -67,7 +67,7 @@ void main() {
         occlusion *= volume_approximated_deep_shadows(strand_density,
                                                       surface_position.xyz,
                                                       lights[0].origin,
-                                                      raymarch_size, hair_opacity,
+                                                      raycast_steps, hair_opacity,
                                                       volume_bounds.origin,
                                                       volume_bounds.size, 4.0f);
     }
@@ -78,7 +78,7 @@ void main() {
                                              volume_bounds.origin,
                                              volume_bounds.size,
                                              2, occlusion_radius,
-                                             ao_power, ao_clamp);
+                                             ao_exponent, ao_max);
     }
 
     color = vec4(shading * occlusion, 1.0f);

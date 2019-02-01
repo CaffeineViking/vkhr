@@ -71,6 +71,12 @@ namespace vkhr {
             int ctsm_on;
 
             int shadow_technique;
+
+            float isosurface;
+            float raycast_steps;
+            float occlusion_radius;
+            float ao_exponent;
+            float ao_clamp;
         } parameters {
             KajiyaKay,
 
@@ -84,7 +90,13 @@ namespace vkhr {
             0.0001f,
             true,
 
-            ApproximateDeepShadows
+            ApproximateDeepShadows,
+
+            0.027,
+            512,
+            2.50f,
+            16.0f,
+            0.15f
         };
 
         void default_parameters();

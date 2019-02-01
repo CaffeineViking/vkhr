@@ -18,6 +18,12 @@ layout(binding = 4) uniform Params {
     int pcf_shadows_on;
 
     int shadow_technique;
+
+    float isosurface;
+    float raycast_steps;
+    float occlusion_radius;
+    float ao_exponent;
+    float ao_max;
 };
 
 #endif
