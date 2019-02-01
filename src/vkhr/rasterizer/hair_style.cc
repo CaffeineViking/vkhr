@@ -135,7 +135,7 @@ namespace vkhr {
         }
 
         void HairStyle::voxelize(Pipeline& voxel_pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            command_buffer.clear_color_image(density_volume, { /*  ZERO  */ });
+            // command_buffer.clear_color_image(density_volume, { /*  0  */ });
 
             descriptor_set.write(0, vertices);
             descriptor_set.write(2, parameter_buffer);

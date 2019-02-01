@@ -92,7 +92,7 @@ namespace vkhr {
 
             ApproximateDeepShadows,
 
-            0.027,
+            0.015,
             512,
             2.50f,
             16.0f,

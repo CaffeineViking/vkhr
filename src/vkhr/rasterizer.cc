@@ -170,6 +170,8 @@ namespace vkhr {
             draw_depth(scene_graph, command_buffers[frame]);
         }
 
+        voxelize(scene_graph,   command_buffers[frame]);
+
         draw_color(scene_graph, command_buffers[frame]);
 
         vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
