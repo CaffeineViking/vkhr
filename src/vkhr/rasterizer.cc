@@ -196,10 +196,13 @@ namespace vkhr {
 
         command_buffer.bind_pipeline(hair_voxel_pipeline);
 
-        for (auto& style : scene_graph.get_hair_styles())
-            hair_styles[&style.second].voxelize(hair_voxel_pipeline,
-                                                hair_voxel_pipeline.descriptor_sets[frame],
-                                                command_buffer);
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
+            for (auto& hair : hair_node->get_hair_styles()) {
+                hair_styles[hair].voxelize(hair_voxel_pipeline,
+                                           hair_voxel_pipeline.descriptor_sets[frame],
+                                           command_buffer);
+            }
+        }
 
         vk::DebugMarker::close(command_buffers[frame], "Voxelize Strands", query_pools[frame]);
     }
