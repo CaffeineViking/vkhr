@@ -1,0 +1,32 @@
+#version 460 core
+
+#include "sample_volume.glsl"
+#include "../strand/strand.glsl"
+#include "bounding_box.glsl"
+
+layout(std430, binding = 0) buffer Vertices {
+    vec4 position[];
+};
+
+layout(std430, binding = 1) buffer Tangents {
+    vec4 tangents[];
+};
+
+layout(local_size_x = 512) in;
+
+layout(binding = 3, r32ui) uniform uimage3D strand_density;
+
+layout(binding = 4, r32i)  uniform iimage3D tangent_sums_x;
+layout(binding = 5, r32i)  uniform iimage3D tangent_sums_y;
+layout(binding = 6, r32i)  uniform iimage3D tangent_sums_z;
+
+void main() {
+    vec3 voxel_size = volume_bounds.size / volume_resolution;
+    vec3 voxel = (position[gl_GlobalInvocationID.x].xyz - volume_bounds.origin) / voxel_size;
+
+    imageAtomicAdd(tangent_sums_x, ivec3(voxel), int(tangents[gl_GlobalInvocationID.x].x * 128));
+    imageAtomicAdd(tangent_sums_y, ivec3(voxel), int(tangents[gl_GlobalInvocationID.x].y * 128));
+    imageAtomicAdd(tangent_sums_z, ivec3(voxel), int(tangents[gl_GlobalInvocationID.x].z * 128));
+
+    imageAtomicAdd(strand_density, ivec3(voxel), 1);
+}
