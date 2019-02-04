@@ -40,5 +40,5 @@ void main() {
                                     pcf_shadows_bias);
     }
 
-    color = vec4(vec3(0), 1.0f);
+    color = vec4(shading * occlusion, 1.0f);
 }
