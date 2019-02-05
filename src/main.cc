@@ -36,13 +36,14 @@ int main(int argc, char** argv) {
 
     vkhr::InputMap input_map { window };
 
-    input_map.bind("quit", vkhr::Input::Key::Escape);
-    input_map.bind("toggle_ui", vkhr::Input::Key::GraveAccent);
+    input_map.bind("toggle_ui", vkhr::Input::Key::U);
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
-    input_map.bind("toggle_fullscreen", vkhr::Input::Key::F11);
-    input_map.bind("take_screenshot", vkhr::Input::Key::PrintScreen);
-    input_map.bind("toggle_renderer", vkhr::Input::Key::Tab);
+    input_map.bind("toggle_fullscreen", vkhr::Input::Key::F);
+    input_map.bind("take_screenshot", vkhr::Input::Key::S);
+    input_map.bind("quit", std::vector<vkhr::Input::Key> { vkhr::Input::Key::Escape, vkhr::Input::Key::Q });
+    input_map.bind("toggle_renderer", vkhr::Input::Key::T);
     input_map.bind("pan", vkhr::Input::MouseButton::Middle);
+    input_map.bind("rotate_light", vkhr::Input::Key::L);
     input_map.bind("recompile", vkhr::Input::Key::R);
 
     vkhr::Rasterizer rasterizer { window, scene_graph };
@@ -65,6 +66,8 @@ int main(int argc, char** argv) {
             rasterizer.get_screenshot(scene_graph, ray_tracer).save_time();
         } else if (input_map.just_pressed("toggle_renderer")) {
             imgui.toggle_renderer();
+        } else if (input_map.just_pressed("rotate_light")) {
+            imgui.toggle_light_rotation();
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile();
         }

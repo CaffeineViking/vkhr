@@ -95,8 +95,8 @@ namespace vkhr {
             0.015,
             512,
             2.50f,
-            8.00f,
-            0.15f
+            16.00f,
+            0.075f
         };
 
         void default_parameters();
@@ -107,11 +107,13 @@ namespace vkhr {
         bool hide();
         void toggle_visibility();
         void set_visibility(bool visible);
+        bool show();
+
         bool rasterizer_enabled();
         bool raytracing_enabled();
+        void toggle_light_rotation();
         bool raymarcher_enabled();
         void toggle_renderer();
-        bool show();
 
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
 
@@ -146,6 +148,7 @@ namespace vkhr {
         static bool get_string_from_vector(void*, int, const char**);
 
         bool light_debugger { false };
+        bool light_rotation { false };
 
         bool gui_visible { true };
 
