@@ -261,6 +261,12 @@ namespace vkhr {
                 rasterizer.load(scene_graph);
                 ray_tracer.load(scene_graph);
                 previous_scene_file = scene_file;
+
+                if (scene_file == 1) {
+                    parameters.ctsm_bias = 0.0000f;
+                } else {
+                    parameters.ctsm_bias = 0.0001f;
+                }
             }
 
             ImGui::Spacing();
