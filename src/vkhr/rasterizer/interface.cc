@@ -263,9 +263,9 @@ namespace vkhr {
                 previous_scene_file = scene_file;
 
                 if (scene_file == 1) {
-                    parameters.ctsm_bias = 0.0000f;
+                    parameters.ctsm_bias = 0.00000f;
                 } else {
-                    parameters.ctsm_bias = 0.0001f;
+                    parameters.ctsm_bias = 0.00005f;
                 }
             }
 

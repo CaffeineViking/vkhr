@@ -87,7 +87,7 @@ namespace vkhr {
 
             3,
             Uniform,
-            0.0001f,
+            0.00005f,
             true,
 
             ApproximateDeepShadows,
