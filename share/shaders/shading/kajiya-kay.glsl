@@ -18,7 +18,7 @@ vec3 kajiya_kay(vec3 diffuse, vec3 specular, float p, vec3 tangent, vec3 light, 
     float sinTE = sqrt(one_minus_cosTE_squared);
 
     vec3 diffuse_colors  = diffuse  * sinTL;
-    vec3 specular_colors = specular * clamp(pow(cosTL*cosTE + sinTL*sinTE, p), 0.0f, 1.0f);
+    vec3 specular_colors = specular * pow(max(cosTL*cosTE + sinTL*sinTE, 0), p);
 
     return diffuse_colors + specular_colors;
 }
