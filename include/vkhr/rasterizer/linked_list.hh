@@ -1,7 +1,11 @@
 #ifndef VKHR_VULKAN_LINKED_LIST_HH
 #define VKHR_VULKAN_LINKED_LIST_HH
 
+#include <vkhr/rasterizer/pipeline.hh>
+
 #include <vkpp/buffer.hh>
+#include <vkpp/command_buffer.hh>
+#include <vkpp/descriptor_set.hh>
 #include <vkpp/image.hh>
 
 namespace vk = vkpp;
@@ -19,6 +23,8 @@ namespace vkhr {
 
             void clear(vk::CommandBuffer& command_buffer);
 
+            void resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+
             static constexpr std::size_t AverageFragmentsPerPixel = 4; // Only the *default* average fragment per pixel.
             static constexpr std::size_t NodeSize = 24; // { [R, G, B, A], Depth, Pointer To Next Node } @ 4-bytes each.
             static constexpr std::uint32_t Null = 0xffffffff; // Encodes end of some list (or an invalid entry somehow).
@@ -34,6 +40,8 @@ namespace vkhr {
             vk::DeviceImage& get_heads();
             vk::ImageView& get_heads_view();
             vk::StorageBuffer& get_nodes();
+
+            static void build_pipeline(Pipeline& pipeline, Rasterizer& rasterizer); // Builds the PPLL resolve pipeline.
 
         private:
             std::size_t width;

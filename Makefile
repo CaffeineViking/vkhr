@@ -41,6 +41,8 @@ shaders: FORCE
 	@-make --no-print-directory -C share/shaders/models
 	@-utils/glslc.py share/shaders/self-shadowing
 	@-make --no-print-directory -C share/shaders/self-shadowing
+	@-utils/glslc.py share/shaders/transparency
+	@-make --no-print-directory -C share/shaders/transparency
 	@-utils/glslc.py share/shaders/strands
 	@-make --no-print-directory -C share/shaders/strands
 	@-utils/glslc.py share/shaders/volumes

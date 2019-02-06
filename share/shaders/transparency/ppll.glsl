@@ -12,10 +12,9 @@ struct Node {
 layout(binding = 6, r32ui)  uniform uimage2D ppll_heads;
 layout(binding = 7, std430) buffer LinkedList {
     uint ppll_counter;
+    uint ppll_size;
     Node ppll_nodes[];
 };
-
-layout(constant_id = 1) const uint ppll_size = 0;
 
 uint ppll_next() {
     uint next_node = atomicAdd(ppll_counter, 1u);

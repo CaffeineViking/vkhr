@@ -30,7 +30,7 @@ namespace vkhr {
 
             nodes = vk::StorageBuffer {
                 rasterizer.device,
-                node_count * node_size
+                node_count * node_size + 2 * sizeof(std::uint32_t) // { PPLL Atomic Counter, PPLL Size Limit, Nodes }
             };
 
             vk::DebugMarker::object_name(rasterizer.device, nodes, VK_OBJECT_TYPE_BUFFER, "PPLL Nodes", id);
@@ -46,6 +46,15 @@ namespace vkhr {
             command_buffer.fill_buffer(nodes,
                                        0, sizeof(std::uint32_t),
                                        0);
+        }
+
+        void LinkedList::resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
+            descriptor_set.write(6, heads_view);
+            descriptor_set.write(7, nodes);
+
+            command_buffer.bind_descriptor_set(descriptor_set, pipeline);
+
+            command_buffer.dispatch(width / 8, height / 8);
         }
 
         std::size_t LinkedList::get_width() const {
@@ -82,6 +91,46 @@ namespace vkhr {
 
         vk::StorageBuffer& LinkedList::get_nodes() {
             return nodes;
+        }
+
+        void LinkedList::build_pipeline(Pipeline& pipeline, Rasterizer& rasterizer) {
+            pipeline = Pipeline { /* In the case we are re-creating the pipeline */ };
+
+            pipeline.shader_stages.emplace_back(rasterizer.device, SHADER("transparency/resolve.comp"));
+            vk::DebugMarker::object_name(rasterizer.device, pipeline.shader_stages[0],
+                                         VK_OBJECT_TYPE_SHADER_MODULE, "PPLL Resolve");
+
+            pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
+                rasterizer.device,
+                {
+                    { 6, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
+                    { 7, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER }
+                }
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, pipeline.descriptor_set_layout,
+                                         VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "PPLL Descriptor Set Layout");
+            pipeline.descriptor_sets = rasterizer.descriptor_pool.allocate(rasterizer.swap_chain.size(),
+                                                                           pipeline.descriptor_set_layout,
+                                                                           "PPLL Descriptor Set");
+
+            pipeline.pipeline_layout = vk::Pipeline::Layout {
+                rasterizer.device,
+                pipeline.descriptor_set_layout
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, pipeline.pipeline_layout,
+                                         VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+                                         "PPLL Pipeline Layout");
+
+            pipeline.compute_pipeline = vk::ComputePipeline {
+                rasterizer.device,
+                pipeline.shader_stages[0],
+                pipeline.pipeline_layout
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, pipeline.compute_pipeline,
+                                         VK_OBJECT_TYPE_PIPELINE, "PPLL Pipeline");
         }
 
         int LinkedList::id { 0 };
