@@ -76,17 +76,17 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{0F45D591-7B24-542D-843C-DF03F09ABA8E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\antialiasing">
-      <UniqueIdentifier>{92FE20EF-7E8D-AAB8-27AC-BEB3131ABB5E}</UniqueIdentifier>
+    <Filter Include="shaders\anti-aliasing">
+      <UniqueIdentifier>{FF607DFB-6BCD-38F6-34C1-D053A0EC5A5E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\billboard">
-      <UniqueIdentifier>{090C9D26-7522-9BBC-BE99-26DE2AEF6B44}</UniqueIdentifier>
+    <Filter Include="shaders\billboards">
+      <UniqueIdentifier>{9C8D3EFA-8871-FF4F-F1D1-F9A2DDD4E9D1}</UniqueIdentifier>
     </Filter>
     <Filter Include="shaders\level_of_detail">
       <UniqueIdentifier>{BC394E3F-2871-96D6-317B-FAF99D31BDCF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\model">
-      <UniqueIdentifier>{AF0D3448-1BCE-AF7E-E408-F9FB5088F45A}</UniqueIdentifier>
+    <Filter Include="shaders\models">
+      <UniqueIdentifier>{02C4B54E-EE91-A954-D725-1A7BC39285B9}</UniqueIdentifier>
     </Filter>
     <Filter Include="shaders\scene_graph">
       <UniqueIdentifier>{DD281E70-498A-FB7D-D2F7-41303E58323D}</UniqueIdentifier>
@@ -94,11 +94,11 @@
     <Filter Include="shaders\self-shadowing">
       <UniqueIdentifier>{99974AD2-8591-7324-6EFE-09355A97D990}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\shading_models">
-      <UniqueIdentifier>{FFB702D6-EBB1-2B28-D41E-C238C0B79194}</UniqueIdentifier>
+    <Filter Include="shaders\shading">
+      <UniqueIdentifier>{7CB1C0E2-E83C-2EA7-F14D-B19B5D588AA7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\strand">
-      <UniqueIdentifier>{CACE165D-B69C-0A63-9F30-7B898B9DE6C7}</UniqueIdentifier>
+    <Filter Include="shaders\strands">
+      <UniqueIdentifier>{7DA8F0FF-E933-5EC4-F244-E1B85E4FBAC4}</UniqueIdentifier>
     </Filter>
     <Filter Include="shaders\transparency">
       <UniqueIdentifier>{58DE555F-446D-DF28-ED8B-F323D9F9EFCE}</UniqueIdentifier>
@@ -106,8 +106,8 @@
     <Filter Include="shaders\utils">
       <UniqueIdentifier>{CFA5C748-3B66-437F-04A1-8CFC7020885B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\volume">
-      <UniqueIdentifier>{D6D8B863-C2A6-AC69-AB3A-1D9097A788CE}</UniqueIdentifier>
+    <Filter Include="shaders\volumes">
+      <UniqueIdentifier>{09F4D3DA-757F-419F-7E90-C493EA9A9D9F}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
@@ -963,6 +963,9 @@
     <ClInclude Include="..\include\vkhr\rasterizer\interface.hh">
       <Filter>include\vkhr\rasterizer</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\rasterizer\linked_list.hh">
+      <Filter>include\vkhr\rasterizer</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\rasterizer\model.hh">
       <Filter>include\vkhr\rasterizer</Filter>
     </ClInclude>
@@ -1151,6 +1154,9 @@
     <ClCompile Include="..\src\vkhr\rasterizer\interface.cc">
       <Filter>src\vkhr\rasterizer</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\vkhr\rasterizer\linked_list.cc">
+      <Filter>src\vkhr\rasterizer</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\vkhr\rasterizer\model.cc">
       <Filter>src\vkhr\rasterizer</Filter>
     </ClCompile>
@@ -1279,29 +1285,32 @@
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
-    <None Include="..\share\shaders\antialiasing\phone-wire.glsl">
-      <Filter>shaders\antialiasing</Filter>
+    <None Include="..\share\shaders\anti-aliasing\phone-wire.glsl">
+      <Filter>shaders\anti-aliasing</Filter>
     </None>
-    <None Include="..\share\shaders\billboard\billboard.frag">
-      <Filter>shaders\billboard</Filter>
+    <None Include="..\share\shaders\billboards\billboard.frag">
+      <Filter>shaders\billboards</Filter>
     </None>
-    <None Include="..\share\shaders\billboard\billboard.glsl">
-      <Filter>shaders\billboard</Filter>
+    <None Include="..\share\shaders\billboards\billboard.glsl">
+      <Filter>shaders\billboards</Filter>
     </None>
-    <None Include="..\share\shaders\billboard\billboard.vert">
-      <Filter>shaders\billboard</Filter>
+    <None Include="..\share\shaders\billboards\billboard.vert">
+      <Filter>shaders\billboards</Filter>
     </None>
-    <None Include="..\share\shaders\level_of_detail\scheme.glsl">
+    <None Include="..\share\shaders\level_of_detail\dither.glsl">
       <Filter>shaders\level_of_detail</Filter>
     </None>
-    <None Include="..\share\shaders\model\model.frag">
-      <Filter>shaders\model</Filter>
+    <None Include="..\share\shaders\level_of_detail\metric.glsl">
+      <Filter>shaders\level_of_detail</Filter>
     </None>
-    <None Include="..\share\shaders\model\model.glsl">
-      <Filter>shaders\model</Filter>
+    <None Include="..\share\shaders\models\model.frag">
+      <Filter>shaders\models</Filter>
     </None>
-    <None Include="..\share\shaders\model\model.vert">
-      <Filter>shaders\model</Filter>
+    <None Include="..\share\shaders\models\model.glsl">
+      <Filter>shaders\models</Filter>
+    </None>
+    <None Include="..\share\shaders\models\model.vert">
+      <Filter>shaders\models</Filter>
     </None>
     <None Include="..\share\shaders\scene_graph\camera.glsl">
       <Filter>shaders\scene_graph</Filter>
@@ -1330,32 +1339,38 @@
     <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl">
       <Filter>shaders\self-shadowing</Filter>
     </None>
-    <None Include="..\share\shaders\shading_models\blinn-phong.glsl">
-      <Filter>shaders\shading_models</Filter>
+    <None Include="..\share\shaders\shading\blinn-phong.glsl">
+      <Filter>shaders\shading</Filter>
     </None>
-    <None Include="..\share\shaders\shading_models\kajiya-kay.glsl">
-      <Filter>shaders\shading_models</Filter>
+    <None Include="..\share\shaders\shading\kajiya-kay.glsl">
+      <Filter>shaders\shading</Filter>
     </None>
-    <None Include="..\share\shaders\shading_models\lambertian.glsl">
-      <Filter>shaders\shading_models</Filter>
+    <None Include="..\share\shaders\shading\lambertian.glsl">
+      <Filter>shaders\shading</Filter>
     </None>
-    <None Include="..\share\shaders\shading_models\marschner.glsl">
-      <Filter>shaders\shading_models</Filter>
+    <None Include="..\share\shaders\shading\marschner.glsl">
+      <Filter>shaders\shading</Filter>
     </None>
-    <None Include="..\share\shaders\strand\strand.frag">
-      <Filter>shaders\strand</Filter>
+    <None Include="..\share\shaders\shading\scheuermann.glsl">
+      <Filter>shaders\shading</Filter>
     </None>
-    <None Include="..\share\shaders\strand\strand.geom">
-      <Filter>shaders\strand</Filter>
+    <None Include="..\share\shaders\strands\strand.frag">
+      <Filter>shaders\strands</Filter>
     </None>
-    <None Include="..\share\shaders\strand\strand.glsl">
-      <Filter>shaders\strand</Filter>
+    <None Include="..\share\shaders\strands\strand.geom">
+      <Filter>shaders\strands</Filter>
     </None>
-    <None Include="..\share\shaders\strand\strand.vert">
-      <Filter>shaders\strand</Filter>
+    <None Include="..\share\shaders\strands\strand.glsl">
+      <Filter>shaders\strands</Filter>
+    </None>
+    <None Include="..\share\shaders\strands\strand.vert">
+      <Filter>shaders\strands</Filter>
     </None>
     <None Include="..\share\shaders\transparency\ppll.glsl">
       <Filter>shaders\transparency</Filter>
+    </None>
+    <None Include="..\share\shaders\utils\imageAtomicAverageRGBA8.glsl">
+      <Filter>shaders\utils</Filter>
     </None>
     <None Include="..\share\shaders\utils\math.glsl">
       <Filter>shaders\utils</Filter>
@@ -1363,44 +1378,47 @@
     <None Include="..\share\shaders\utils\rand.glsl">
       <Filter>shaders\utils</Filter>
     </None>
-    <None Include="..\share\shaders\volume\ambient_occlusion.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\bounding_box.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\bounding_box.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\filtered_raymarch.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\filter_raymarch.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\local_ambient_occlusion.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\filter_volume.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\naive_ambient_occlusion.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\imageAtomicRGBA8Avg.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\quantize.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\local_ambient_occlusion.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\raymarch.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\raymarch.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\sample_volume.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\sample_volume.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\volume.frag">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\volume.frag">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\volume.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\volume.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\volume.vert">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\volume.vert">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\volume_rendering.glsl">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\volume_rendering.glsl">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\voxelize.comp">
+      <Filter>shaders\volumes</Filter>
     </None>
-    <None Include="..\share\shaders\volume\voxelize.comp">
-      <Filter>shaders\volume</Filter>
+    <None Include="..\share\shaders\volumes\voxelize_segments.comp">
+      <Filter>shaders\volumes</Filter>
+    </None>
+    <None Include="..\share\shaders\volumes\voxelize_vertices.comp">
+      <Filter>shaders\volumes</Filter>
     </None>
   </ItemGroup>
 </Project>

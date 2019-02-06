@@ -93,7 +93,8 @@ namespace vkhr {
 
             density_view = vk::ImageView {
                 vulkan_renderer.device,
-                density_volume
+                density_volume,
+                VK_IMAGE_LAYOUT_GENERAL
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
@@ -202,9 +203,9 @@ namespace vkhr {
                 { 0, 0, sizeof(std::uint32_t) } // light size
             };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strands/strand.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Hair Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strand/strand.frag"), constants, &constant_data, sizeof(constant_data));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("strands/strand.frag"), constants, &constant_data, sizeof(constant_data));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1], VK_OBJECT_TYPE_SHADER_MODULE, "Hair Fragment Shader");
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {
@@ -317,7 +318,7 @@ namespace vkhr {
         void HairStyle::voxel_pipeline(Pipeline& pipeline, Rasterizer& vulkan_renderer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline. */ };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volume/voxelize.comp"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volumes/voxelize.comp"));
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0],
                                          VK_OBJECT_TYPE_SHADER_MODULE, "Hair Voxelization Shader");

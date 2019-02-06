@@ -1,7 +1,7 @@
 #version 460 core
 
 #include "sample_volume.glsl"
-#include "../strand/strand.glsl"
+#include "../strands/strand.glsl"
 #include "bounding_box.glsl"
 
 layout(std430, binding = 0) buffer Vertices {

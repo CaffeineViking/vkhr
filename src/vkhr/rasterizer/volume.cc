@@ -140,9 +140,9 @@ namespace vkhr {
                 { 0, 0, sizeof(std::uint32_t) } // light size
             };
 
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volume/volume.vert"));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volumes/volume.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Volume Vertex Shader");
-            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volume/volume.frag"), constants, &constant_data, sizeof(constant_data));
+            pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("volumes/volume.frag"), constants, &constant_data, sizeof(constant_data));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[1], VK_OBJECT_TYPE_SHADER_MODULE, "Volume Fragment Shader");
 
             std::vector<vk::DescriptorSet::Binding> descriptor_bindings {

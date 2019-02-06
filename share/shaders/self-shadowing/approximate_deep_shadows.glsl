@@ -4,7 +4,7 @@
 #define ADSM 2
 
 #include "../utils/math.glsl"
-#include "../volume/sample_volume.glsl"
+#include "../volumes/sample_volume.glsl"
 #include "linearize_depth.glsl"
 #include "tex2Dproj.glsl"
 

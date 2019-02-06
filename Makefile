@@ -35,16 +35,16 @@ program: FORCE
 	make -j8 -C build config=${config}
 
 shaders: FORCE
-	@-utils/glslc.py share/shaders/billboard
-	@-make --no-print-directory -C share/shaders/billboard
-	@-utils/glslc.py share/shaders/model
-	@-make --no-print-directory -C share/shaders/model
+	@-utils/glslc.py share/shaders/billboards
+	@-make --no-print-directory -C share/shaders/billboards
+	@-utils/glslc.py share/shaders/models
+	@-make --no-print-directory -C share/shaders/models
 	@-utils/glslc.py share/shaders/self-shadowing
 	@-make --no-print-directory -C share/shaders/self-shadowing
-	@-utils/glslc.py share/shaders/strand
-	@-make --no-print-directory -C share/shaders/strand
-	@-utils/glslc.py share/shaders/volume
-	@-make --no-print-directory -C share/shaders/volume
+	@-utils/glslc.py share/shaders/strands
+	@-make --no-print-directory -C share/shaders/strands
+	@-utils/glslc.py share/shaders/volumes
+	@-make --no-print-directory -C share/shaders/volumes
 
 download: download-modules
 download-modules: FORCE

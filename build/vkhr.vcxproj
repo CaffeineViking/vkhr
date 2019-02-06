@@ -63,7 +63,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,7 +86,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -376,6 +376,7 @@
     <ClInclude Include="..\include\vkhr\rasterizer\drawable.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer\hair_style.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer\interface.hh" />
+    <ClInclude Include="..\include\vkhr\rasterizer\linked_list.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer\model.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer\pipeline.hh" />
     <ClInclude Include="..\include\vkhr\rasterizer\volume.hh" />
@@ -440,6 +441,7 @@
     <ClCompile Include="..\src\vkhr\rasterizer\depth_map.cc" />
     <ClCompile Include="..\src\vkhr\rasterizer\hair_style.cc" />
     <ClCompile Include="..\src\vkhr\rasterizer\interface.cc" />
+    <ClCompile Include="..\src\vkhr\rasterizer\linked_list.cc" />
     <ClCompile Include="..\src\vkhr\rasterizer\model.cc" />
     <ClCompile Include="..\src\vkhr\rasterizer\volume.cc" />
     <ClCompile Include="..\src\vkhr\ray_tracer.cc" />
@@ -498,14 +500,15 @@
   <ItemGroup>
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
-    <None Include="..\share\shaders\antialiasing\phone-wire.glsl" />
-    <None Include="..\share\shaders\billboard\billboard.frag" />
-    <None Include="..\share\shaders\billboard\billboard.glsl" />
-    <None Include="..\share\shaders\billboard\billboard.vert" />
-    <None Include="..\share\shaders\level_of_detail\scheme.glsl" />
-    <None Include="..\share\shaders\model\model.frag" />
-    <None Include="..\share\shaders\model\model.glsl" />
-    <None Include="..\share\shaders\model\model.vert" />
+    <None Include="..\share\shaders\anti-aliasing\phone-wire.glsl" />
+    <None Include="..\share\shaders\billboards\billboard.frag" />
+    <None Include="..\share\shaders\billboards\billboard.glsl" />
+    <None Include="..\share\shaders\billboards\billboard.vert" />
+    <None Include="..\share\shaders\level_of_detail\dither.glsl" />
+    <None Include="..\share\shaders\level_of_detail\metric.glsl" />
+    <None Include="..\share\shaders\models\model.frag" />
+    <None Include="..\share\shaders\models\model.glsl" />
+    <None Include="..\share\shaders\models\model.vert" />
     <None Include="..\share\shaders\scene_graph\camera.glsl" />
     <None Include="..\share\shaders\scene_graph\lights.glsl" />
     <None Include="..\share\shaders\scene_graph\params.glsl" />
@@ -515,30 +518,33 @@
     <None Include="..\share\shaders\self-shadowing\filter_shadows.glsl" />
     <None Include="..\share\shaders\self-shadowing\linearize_depth.glsl" />
     <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl" />
-    <None Include="..\share\shaders\shading_models\blinn-phong.glsl" />
-    <None Include="..\share\shaders\shading_models\kajiya-kay.glsl" />
-    <None Include="..\share\shaders\shading_models\lambertian.glsl" />
-    <None Include="..\share\shaders\shading_models\marschner.glsl" />
-    <None Include="..\share\shaders\strand\strand.frag" />
-    <None Include="..\share\shaders\strand\strand.geom" />
-    <None Include="..\share\shaders\strand\strand.glsl" />
-    <None Include="..\share\shaders\strand\strand.vert" />
+    <None Include="..\share\shaders\shading\blinn-phong.glsl" />
+    <None Include="..\share\shaders\shading\kajiya-kay.glsl" />
+    <None Include="..\share\shaders\shading\lambertian.glsl" />
+    <None Include="..\share\shaders\shading\marschner.glsl" />
+    <None Include="..\share\shaders\shading\scheuermann.glsl" />
+    <None Include="..\share\shaders\strands\strand.frag" />
+    <None Include="..\share\shaders\strands\strand.geom" />
+    <None Include="..\share\shaders\strands\strand.glsl" />
+    <None Include="..\share\shaders\strands\strand.vert" />
     <None Include="..\share\shaders\transparency\ppll.glsl" />
+    <None Include="..\share\shaders\utils\imageAtomicAverageRGBA8.glsl" />
     <None Include="..\share\shaders\utils\math.glsl" />
     <None Include="..\share\shaders\utils\rand.glsl" />
-    <None Include="..\share\shaders\volume\ambient_occlusion.glsl" />
-    <None Include="..\share\shaders\volume\bounding_box.glsl" />
-    <None Include="..\share\shaders\volume\filter_raymarch.glsl" />
-    <None Include="..\share\shaders\volume\filter_volume.glsl" />
-    <None Include="..\share\shaders\volume\imageAtomicRGBA8Avg.glsl" />
-    <None Include="..\share\shaders\volume\local_ambient_occlusion.glsl" />
-    <None Include="..\share\shaders\volume\raymarch.glsl" />
-    <None Include="..\share\shaders\volume\sample_volume.glsl" />
-    <None Include="..\share\shaders\volume\volume.frag" />
-    <None Include="..\share\shaders\volume\volume.glsl" />
-    <None Include="..\share\shaders\volume\volume.vert" />
-    <None Include="..\share\shaders\volume\volume_rendering.glsl" />
-    <None Include="..\share\shaders\volume\voxelize.comp" />
+    <None Include="..\share\shaders\volumes\bounding_box.glsl" />
+    <None Include="..\share\shaders\volumes\filtered_raymarch.glsl" />
+    <None Include="..\share\shaders\volumes\local_ambient_occlusion.glsl" />
+    <None Include="..\share\shaders\volumes\naive_ambient_occlusion.glsl" />
+    <None Include="..\share\shaders\volumes\quantize.glsl" />
+    <None Include="..\share\shaders\volumes\raymarch.glsl" />
+    <None Include="..\share\shaders\volumes\sample_volume.glsl" />
+    <None Include="..\share\shaders\volumes\volume.frag" />
+    <None Include="..\share\shaders\volumes\volume.glsl" />
+    <None Include="..\share\shaders\volumes\volume.vert" />
+    <None Include="..\share\shaders\volumes\volume_rendering.glsl" />
+    <None Include="..\share\shaders\volumes\voxelize.comp" />
+    <None Include="..\share\shaders\volumes\voxelize_segments.comp" />
+    <None Include="..\share\shaders\volumes\voxelize_vertices.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,12 +2,13 @@
 
 #include "../scene_graph/camera.glsl"
 #include "../scene_graph/lights.glsl"
-#include "../volume/volume_rendering.glsl"
-#include "../volume/local_ambient_occlusion.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
-#include "../shading_models/kajiya-kay.glsl"
-#include "../volume/raymarch.glsl"
-#include "../volume/filter_volume.glsl"
+#include "../shading/kajiya-kay.glsl"
+
+#include "raymarch.glsl"
+#include "sample_volume.glsl"
+#include "local_ambient_occlusion.glsl"
+#include "volume_rendering.glsl"
 
 #include "../scene_graph/params.glsl"
 

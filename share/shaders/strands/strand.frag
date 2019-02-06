@@ -1,9 +1,9 @@
 #version 460 core
 
 #include "../scene_graph/camera.glsl"
-#include "../shading_models/kajiya-kay.glsl"
+#include "../shading/kajiya-kay.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
-#include "../volume/local_ambient_occlusion.glsl"
+#include "../volumes/local_ambient_occlusion.glsl"
 #include "../scene_graph/shadow_maps.glsl"
 #include "../scene_graph/lights.glsl"
 
