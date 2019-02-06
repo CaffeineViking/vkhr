@@ -55,6 +55,7 @@ namespace vkpp {
         void blit_image(Image& source, Image& destination, VkFilter filter);
         void copy_image(Image& source, Image& destination);
 
+        void fill_buffer(Buffer& buffer, VkDeviceSize offset, VkDeviceSize size, std::uint32_t data);
         void clear_color_image(Image& image, VkClearColorValue clear_color);
 
         void copy_buffer(Buffer& source, Buffer& destination,

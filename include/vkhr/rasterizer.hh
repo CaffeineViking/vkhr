@@ -6,6 +6,7 @@
 #include <vkhr/rasterizer/model.hh>
 #include <vkhr/rasterizer/hair_style.hh>
 #include <vkhr/rasterizer/billboard.hh>
+#include <vkhr/rasterizer/linked_list.hh>
 #include <vkhr/rasterizer/volume.hh>
 
 #include <vkhr/rasterizer/depth_map.hh>
@@ -95,6 +96,8 @@ namespace vkhr {
         std::unordered_map<const Model*, vulkan::Model> models;
         vulkan::Billboard fullscreen_billboard;
 
+        vulkan::LinkedList ppll;
+
         Interface imgui;
 
         std::vector<vk::QueryPool> query_pools;
@@ -105,6 +108,7 @@ namespace vkhr {
         friend class vulkan::Model;
         friend class vulkan::Volume;
         friend class vulkan::Billboard;
+        friend class vulkan::LinkedList;
 
         friend class vulkan::DepthMap;
 

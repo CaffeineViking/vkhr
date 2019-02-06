@@ -113,6 +113,14 @@ namespace vkhr {
             *this
         };
 
+        ppll = vulkan::LinkedList {
+            *this,
+            swap_chain.get_width(), swap_chain.get_height(),
+            vulkan::LinkedList::NodeSize,
+            vulkan::LinkedList::AverageFragmentsPerPixel * swap_chain.get_width() *
+                                                           swap_chain.get_height()
+        };
+
         imgui = Interface { window_surface.get_glfw_window(), this };
 
         query_pools = vk::QueryPool::create(framebuffers.size(), device, VK_QUERY_TYPE_TIMESTAMP, 128);

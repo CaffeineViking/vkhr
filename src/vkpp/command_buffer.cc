@@ -142,6 +142,12 @@ namespace vkpp {
                              1, &clear_range);
     }
 
+    void CommandBuffer::fill_buffer(Buffer& buffer, VkDeviceSize offset, VkDeviceSize size, std::uint32_t data) {
+        vkCmdFillBuffer(handle,
+                        buffer.get_handle(),
+                        offset, size, data);
+    }
+
     void CommandBuffer::copy_buffer(Buffer& source, Buffer& destination,
                                     std::uint32_t source_offset,
                                     std::uint32_t destination_offset) {
