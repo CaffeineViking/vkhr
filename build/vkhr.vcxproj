@@ -63,7 +63,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,7 +86,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -528,6 +528,9 @@
     <None Include="..\share\shaders\strands\strand.glsl" />
     <None Include="..\share\shaders\strands\strand.vert" />
     <None Include="..\share\shaders\transparency\ppll.glsl" />
+    <None Include="..\share\shaders\transparency\resolve.comp" />
+    <None Include="..\share\shaders\transparency\sorting.glsl" />
+    <None Include="..\share\shaders\transparency\sshd.glsl" />
     <None Include="..\share\shaders\utils\imageAtomicAverageRGBA8.glsl" />
     <None Include="..\share\shaders\utils\math.glsl" />
     <None Include="..\share\shaders\utils\rand.glsl" />

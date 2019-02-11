@@ -1369,6 +1369,15 @@
     <None Include="..\share\shaders\transparency\ppll.glsl">
       <Filter>shaders\transparency</Filter>
     </None>
+    <None Include="..\share\shaders\transparency\resolve.comp">
+      <Filter>shaders\transparency</Filter>
+    </None>
+    <None Include="..\share\shaders\transparency\sorting.glsl">
+      <Filter>shaders\transparency</Filter>
+    </None>
+    <None Include="..\share\shaders\transparency\sshd.glsl">
+      <Filter>shaders\transparency</Filter>
+    </None>
     <None Include="..\share\shaders\utils\imageAtomicAverageRGBA8.glsl">
       <Filter>shaders\utils</Filter>
     </None>
