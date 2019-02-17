@@ -319,6 +319,8 @@ namespace vkhr {
 
         imgui.draw(command_buffers[frame]);
 
+        command_buffers[frame].next_subpass(); // Won't really do anything in this drawing case...
+
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame], "Blit Framebuffer", query_pools[frame]);
 
