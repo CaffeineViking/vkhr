@@ -176,8 +176,6 @@ namespace vkhr {
 
         draw_depth(scene_graph, command_buffers[frame]);
 
-        voxelize(scene_graph,   command_buffers[frame]);
-
         draw_color(scene_graph, command_buffers[frame]);
 
         vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
@@ -256,7 +254,7 @@ namespace vkhr {
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Depth Pass");
 
-        if (!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) {
+        if ((!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) || imgui.raymarcher_enabled()) {
             vk::DebugMarker::close(command_buffers[frame]);
             return;
         }
@@ -267,10 +265,8 @@ namespace vkhr {
             command_buffer.begin_render_pass(depth_pass, shadow_map);
             shadow_map.update_dynamic_viewport_scissor_depth(command_buffer);
 
-            if (imgui.parameters.adsm_on && imgui.raymarcher_enabled() == false)
-                draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
-            if (imgui.parameters.ctsm_on)
-                draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
+            if (imgui.parameters.adsm_on) draw_hairs(scene_graph, hair_depth_pipeline, command_buffer, vp);
+            if (imgui.parameters.ctsm_on) draw_model(scene_graph, mesh_depth_pipeline, command_buffer, vp);
 
             command_buffer.end_render_pass();
         }

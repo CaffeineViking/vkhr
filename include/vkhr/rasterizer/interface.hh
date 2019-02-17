@@ -87,16 +87,16 @@ namespace vkhr {
 
             3,
             Uniform,
-            0.00005f,
+            0.00005,
             true,
 
             ApproximateDeepShadows,
 
-            0.025,
+            0.01f,
             512,
             2.50f,
-            16.0f,
-            0.075f
+            10.0f,
+            0.15f
         };
 
         void default_parameters();
