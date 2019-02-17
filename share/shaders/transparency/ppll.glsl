@@ -9,8 +9,8 @@ struct Node {
     uint prev;
 };
 
-layout(binding = 6, r32ui) uniform uimage2D ppll_heads;
-layout(binding = 7, std430) buffer LinkedList {
+layout(binding = 5, r32ui) uniform uimage2D ppll_heads;
+layout(binding = 6, std430) buffer LinkedList {
     uint ppll_counter;
     uint ppll_size;
     Node ppll_nodes[];
