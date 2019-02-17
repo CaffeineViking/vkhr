@@ -3,10 +3,10 @@
 #include "../scene_graph/camera.glsl"
 #include "../shading/lambertian.glsl"
 #include "../self-shadowing/filter_shadows.glsl"
-#include "../scene_graph/shadow_maps.glsl"
-#include "../scene_graph/lights.glsl"
 
 #include "../scene_graph/params.glsl"
+#include "../scene_graph/shadow_maps.glsl"
+#include "../scene_graph/lights.glsl"
 
 #include "model.glsl"
 

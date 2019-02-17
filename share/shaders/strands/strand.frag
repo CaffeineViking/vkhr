@@ -4,9 +4,10 @@
 #include "../shading/kajiya-kay.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
 #include "../volumes/local_ambient_occlusion.glsl"
-#include "../scene_graph/shadow_maps.glsl"
-#include "../scene_graph/lights.glsl"
+#include "../transparency/ppll.glsl"
 
+#include "../scene_graph/lights.glsl"
+#include "../scene_graph/shadow_maps.glsl"
 #include "../scene_graph/params.glsl"
 
 #include "strand.glsl"
