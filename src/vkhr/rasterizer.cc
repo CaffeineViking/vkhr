@@ -105,14 +105,6 @@ namespace vkhr {
         camera = vk::UniformBuffer::create(device, sizeof(vkhr::ViewProjection),  swap_chain.size(), "Camera Matrix Data");
         params = vk::UniformBuffer::create(device, sizeof(Interface::Parameters), swap_chain.size(), "Rendering Settings");
 
-        load(scene_graph);
-
-        fullscreen_billboard = vulkan::Billboard {
-            swap_chain.get_width(),
-            swap_chain.get_height(),
-            *this
-        };
-
         ppll = vulkan::LinkedList {
             *this,
             swap_chain.get_width(), swap_chain.get_height(),
@@ -121,7 +113,15 @@ namespace vkhr {
                                                            swap_chain.get_height()
         };
 
+        fullscreen_billboard = vulkan::Billboard {
+            swap_chain.get_width(),
+            swap_chain.get_height(),
+            *this
+        };
+
         imgui = Interface { window_surface.get_glfw_window(), this };
+
+        load(scene_graph);
 
         query_pools = vk::QueryPool::create(framebuffers.size(), device, VK_QUERY_TYPE_TIMESTAMP, 128);
 
@@ -226,6 +226,10 @@ namespace vkhr {
             vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
         }
 
+        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        imgui.draw(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+
         command_buffers[frame].next_subpass(); // Next sub-pass which uses depth buffer values.
 
         if (imgui.raymarcher_enabled()) {
@@ -233,10 +237,6 @@ namespace vkhr {
             strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
         }
-
-        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-        imgui.draw(command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);

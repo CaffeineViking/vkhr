@@ -93,8 +93,7 @@ namespace vkhr {
 
             density_view = vk::ImageView {
                 vulkan_renderer.device,
-                density_volume,
-                VK_IMAGE_LAYOUT_GENERAL
+                density_volume
             };
 
             vk::DebugMarker::object_name(vulkan_renderer.device, density_view, VK_OBJECT_TYPE_IMAGE_VIEW, "Hair Density View", id);
@@ -213,11 +212,13 @@ namespace vkhr {
                 { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
-                { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER }
+                { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE },
+                { 6, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER }
             };
 
             for (std::uint32_t i { 0 }; i < light_count; ++i)
-                descriptor_bindings.push_back({ 5 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
+                descriptor_bindings.push_back({ 7 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device, descriptor_bindings
@@ -233,8 +234,12 @@ namespace vkhr {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.lights[i]);
                 pipeline.descriptor_sets[i].write(4, vulkan_renderer.params[i]);
+
+                pipeline.descriptor_sets[i].write(5, vulkan_renderer.ppll.get_heads_view());
+                pipeline.descriptor_sets[i].write(6, vulkan_renderer.ppll.get_nodes());
+
                 for (std::uint32_t j { 0 }; j < light_count; ++j)
-                    pipeline.descriptor_sets[i].write(5 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
+                    pipeline.descriptor_sets[i].write(7 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
                                                       vulkan_renderer.shadow_maps[j].get_sampler());
             }
 

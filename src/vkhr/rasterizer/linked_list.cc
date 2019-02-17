@@ -16,6 +16,16 @@ namespace vkhr {
                 VK_IMAGE_USAGE_STORAGE_BIT
             };
 
+            auto command_buffer = rasterizer.command_pool.allocate_and_begin();
+            heads.transition(command_buffer, 0, 0,
+                             VK_IMAGE_LAYOUT_UNDEFINED,
+                             VK_IMAGE_LAYOUT_GENERAL,
+                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                             VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+            command_buffer.end();
+            command_buffer.get_queue().submit(command_buffer)
+                                      .wait_idle();
+
             vk::DebugMarker::object_name(rasterizer.device, heads, VK_OBJECT_TYPE_IMAGE, "PPLL Heads", id);
             vk::DebugMarker::object_name(rasterizer.device, heads.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "PPLL Heads Device Memory", id);
@@ -103,8 +113,8 @@ namespace vkhr {
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 rasterizer.device,
                 {
-                    { 6, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
-                    { 7, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER }
+                    { 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
+                    { 6, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER }
                 }
             };
 
