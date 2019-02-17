@@ -3,6 +3,6 @@
 
 #include "lights.glsl"
 
-layout(binding = 5) uniform sampler2D shadow_maps[lights_size];
+layout(binding = 7) uniform sampler2D shadow_maps[lights_size];
 
 #endif
