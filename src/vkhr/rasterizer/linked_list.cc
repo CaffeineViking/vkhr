@@ -17,7 +17,9 @@ namespace vkhr {
             };
 
             auto command_buffer = rasterizer.command_pool.allocate_and_begin();
-            heads.transition(command_buffer, 0, 0,
+            heads.transition(command_buffer,
+                             0,
+                             VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT,
                              VK_IMAGE_LAYOUT_UNDEFINED,
                              VK_IMAGE_LAYOUT_GENERAL,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
@@ -52,10 +54,14 @@ namespace vkhr {
 
         void LinkedList::clear(vk::CommandBuffer& command_buffer) {
             command_buffer.clear_color_image(heads, null_value);
-            // Reset the atomic counter to 0:
             command_buffer.fill_buffer(nodes,
-                                       0, sizeof(std::uint32_t),
+                                       0,
+                                       sizeof(std::uint32_t),
                                        0);
+            command_buffer.fill_buffer(nodes,
+                                       sizeof(std::uint32_t),
+                                       sizeof(std::uint32_t),
+                                       node_count);
         }
 
         void LinkedList::resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {

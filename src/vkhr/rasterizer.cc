@@ -176,6 +176,10 @@ namespace vkhr {
 
         draw_depth(scene_graph, command_buffers[frame]);
 
+        vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+        ppll.clear(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+
         draw_color(scene_graph, command_buffers[frame]);
 
         vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
@@ -226,17 +230,17 @@ namespace vkhr {
             vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
         }
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-        imgui.draw(command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-
-        command_buffers[frame].next_subpass(); // Next sub-pass which uses depth buffer values.
+        command_buffers[frame].next_subpass(); // Next subpass which will read depth buffer values.
 
         if (imgui.raymarcher_enabled()) {
             vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
             strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
         }
+
+        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        imgui.draw(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame]);

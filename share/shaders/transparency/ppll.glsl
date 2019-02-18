@@ -24,19 +24,15 @@ uint ppll_next_node() {
     return next_node;
 }
 
-void ppll_node_data(uint node, vec4 color, float depth, uint phead) {
+void ppll_node_data(uint node, vec4 color, float depth) {
     ppll_nodes[node].color = color;
     ppll_nodes[node].depth = depth;
-    ppll_nodes[node].prev  = phead;
 }
 
-uint ppll_find_head(ivec2 pixel) {
-    return imageLoad(ppll_heads, pixel).r;
-}
-
-uint ppll_link_node(ivec2 pixel, uint new_node) {
-    return imageAtomicExchange(ppll_heads, pixel,
-                               new_node);
+void ppll_link_node(ivec2 pixel, uint next_node) {
+    uint prev_node = imageAtomicExchange(ppll_heads, pixel,
+                                         next_node);
+    ppll_nodes[next_node].prev = prev_node;
 }
 
 #endif

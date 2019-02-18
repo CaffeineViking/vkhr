@@ -12,6 +12,8 @@
 
 #include "strand.glsl"
 
+layout(early_fragment_tests) in;
+
 layout(location = 0) in PipelineIn {
     vec4 position;
     vec3 tangent;
@@ -58,5 +60,10 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
-    color = vec4(shading * occlusion, 1.0f);
+    color = vec4(shading * occlusion, 1);
+    ivec2 pixel = ivec2(gl_FragCoord.xy);
+
+    uint node = ppll_next_node();
+    ppll_node_data(node, color, gl_FragCoord.z);
+    ppll_link_node(pixel, node);
 }
