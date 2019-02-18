@@ -1285,6 +1285,9 @@
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
+    <None Include="..\share\shaders\anti-aliasing\gbaa.glsl">
+      <Filter>shaders\anti-aliasing</Filter>
+    </None>
     <None Include="..\share\shaders\anti-aliasing\phone-wire.glsl">
       <Filter>shaders\anti-aliasing</Filter>
     </None>
