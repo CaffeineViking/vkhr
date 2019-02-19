@@ -1,5 +1,5 @@
 name   = "vkhr"
-config = "debug"
+config = "release"
 
 all: shaders program
 run: all

@@ -10,6 +10,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <array>
 
 namespace vkhr {
     struct AABB {
@@ -225,7 +226,7 @@ namespace vkhr {
             bounds // no change
         };
 
-        volume.data.resize(volume.resolution.x * volume.resolution.y * volume.resolution.z, 0);
+        volume.densities.resize(volume.resolution.x * volume.resolution.y * volume.resolution.z, 0);
 
         glm::ivec3 grid        = resolution;
         glm::ivec3 volume_grid = volume.resolution;
@@ -238,12 +239,12 @@ namespace vkhr {
             for (int z = 0; z < 2; ++z)
             for (int y = 0; y < 2; ++y)
             for (int x = 0; x < 2; ++x) {
-                neighborhood[x + 2*y + 4*z] = data[(2*i + x) + (2*j + y)*grid.x + (2*k + z)*grid.x*grid.y];
+                neighborhood[x + 2*y + 4*z] = densities[(2*i + x) + (2*j + y)*grid.x + (2*k + z)*grid.x*grid.y];
             }
 
             std::size_t index = i + j*volume_grid.x + k*volume_grid.x*volume_grid.y;
 
-            volume.data[index] = filter(neighborhood);
+            volume.densities[index] = filter(neighborhood);
         }
 
         return volume;

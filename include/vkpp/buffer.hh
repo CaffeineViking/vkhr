@@ -314,7 +314,7 @@ namespace vkpp {
     template<typename T>
     UniformBuffer::UniformBuffer(Device& device,
                                  const std::vector<T>& vector)
-                                : HostBuffer { device, vector.data(), ,
+                                : HostBuffer { device, vector.data(),
                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT } { }
 
     template<typename T>
