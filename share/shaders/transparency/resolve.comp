@@ -4,7 +4,5 @@
 
 layout(local_size_x = 8, local_size_y = 8) in;
 
-layout(binding = 7, rgba8) uniform uimage2D color;
-
 void main() {
 }
