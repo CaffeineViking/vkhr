@@ -16,6 +16,9 @@ namespace vkhr {
                 VK_IMAGE_USAGE_STORAGE_BIT
             };
 
+            this->width  = width;
+            this->height = height;
+
             auto command_buffer = rasterizer.command_pool.allocate_and_begin();
             heads.transition(command_buffer,
                              0,
@@ -64,9 +67,11 @@ namespace vkhr {
                                        node_count);
         }
 
-        void LinkedList::resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
-            descriptor_set.write(6, heads_view);
-            descriptor_set.write(7, nodes);
+        void LinkedList::resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer, vk::ImageView& color_view) {
+            command_buffer.bind_pipeline(pipeline);
+
+            descriptor_set.write(5, heads_view);
+            descriptor_set.write(6, nodes);
 
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 

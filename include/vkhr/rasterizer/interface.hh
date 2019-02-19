@@ -134,7 +134,7 @@ namespace vkhr {
         int simulation_effect { 0 };
 
         Renderer::Type current_renderer  { Renderer::Rasterizer };
-        Renderer::Type previous_renderer { Renderer::Ray_Tracer };
+        Renderer::Type previous_renderer { Renderer::Raymarcher };
 
         struct ProfilePair {
             std::vector<float> timestamps;

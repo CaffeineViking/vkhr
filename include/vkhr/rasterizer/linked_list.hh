@@ -23,7 +23,7 @@ namespace vkhr {
 
             void clear(vk::CommandBuffer& command_buffer);
 
-            void resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer);
+            void resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer, vk::ImageView& color_buffer);
 
             static constexpr std::size_t AverageFragmentsPerPixel = 4; // Only the *default* average fragment per pixel.
             static constexpr std::size_t NodeSize = 32; // { R, G, B, A, Depth, Index To Previous Node, 8 Byte Padding }

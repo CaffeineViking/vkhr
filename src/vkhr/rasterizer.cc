@@ -214,9 +214,11 @@ namespace vkhr {
     void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Color Pass");
 
-        vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
-        ppll.clear(command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+        if (!imgui.raymarcher_enabled()) {
+            vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+            ppll.clear(command_buffers[frame]);
+            vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+        }
 
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
@@ -244,6 +246,16 @@ namespace vkhr {
         vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
 
         command_buffers[frame].end_render_pass();
+
+        if (!imgui.raymarcher_enabled()) {
+            vk::DebugMarker::begin(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
+            ppll.resolve(ppll_blend_pipeline,
+                         ppll_blend_pipeline.descriptor_sets[frame],
+                         command_buffers[frame],
+                         swap_chain.get_image_views()[frame]);
+            vk::DebugMarker::close(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
+        }
+
         vk::DebugMarker::close(command_buffers[frame]);
     }
 
@@ -345,6 +357,7 @@ namespace vkhr {
         vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
         vulkan::Volume::build_pipeline(strand_dvr_pipeline, *this);
+        vulkan::LinkedList::build_pipeline(ppll_blend_pipeline, *this);
         vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         vulkan::Model::build_pipeline(model_mesh_pipeline, *this);
         vulkan::Billboard::build_pipeline(billboards_pipeline, *this);
@@ -432,7 +445,8 @@ namespace vkhr {
         if (recompile_pipeline_shaders(mesh_depth_pipeline)) vulkan::Model::depth_pipeline(mesh_depth_pipeline, *this);
         if (recompile_pipeline_shaders(hair_voxel_pipeline)) vulkan::HairStyle::voxel_pipeline(hair_voxel_pipeline, *this);
 
-        if (recompile_pipeline_shaders(strand_dvr_pipeline)) vulkan::Volume::build_pipeline(strand_dvr_pipeline, *this);
+        if (recompile_pipeline_shaders(strand_dvr_pipeline)) vulkan::Volume::build_pipeline(strand_dvr_pipeline,     *this);
+        if (recompile_pipeline_shaders(ppll_blend_pipeline)) vulkan::LinkedList::build_pipeline(ppll_blend_pipeline, *this);
 
         if (recompile_pipeline_shaders(hair_style_pipeline)) vulkan::HairStyle::build_pipeline(hair_style_pipeline, *this);
         if (recompile_pipeline_shaders(model_mesh_pipeline)) vulkan::Model::build_pipeline(model_mesh_pipeline, *this);

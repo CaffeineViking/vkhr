@@ -86,6 +86,7 @@ namespace vkhr {
         Pipeline hair_voxel_pipeline;
 
         Pipeline strand_dvr_pipeline;
+        Pipeline ppll_blend_pipeline;
 
         Pipeline hair_style_pipeline;
         Pipeline model_mesh_pipeline;
