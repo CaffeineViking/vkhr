@@ -7,12 +7,14 @@ struct Node {
     vec4 color;
     float depth;
     uint prev;
+    uint _p[2];
 };
 
 layout(binding = 5, r32ui) uniform uimage2D ppll_heads;
 layout(binding = 6, std430) buffer LinkedList {
     uint ppll_counter;
     uint ppll_size;
+    float _padding[2];
     Node ppll_nodes[];
 };
 
@@ -27,6 +29,10 @@ uint ppll_next_node() {
 void ppll_node_data(uint node, vec4 color, float depth) {
     ppll_nodes[node].color = color;
     ppll_nodes[node].depth = depth;
+}
+
+uint ppll_head_node(ivec2 pixel) {
+    return imageLoad(ppll_heads, pixel).r;
 }
 
 void ppll_link_node(ivec2 pixel, uint next_node) {

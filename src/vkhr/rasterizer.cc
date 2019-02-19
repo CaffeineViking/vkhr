@@ -176,10 +176,6 @@ namespace vkhr {
 
         draw_depth(scene_graph, command_buffers[frame]);
 
-        vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
-        ppll.clear(command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
-
         draw_color(scene_graph, command_buffers[frame]);
 
         vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
@@ -217,6 +213,11 @@ namespace vkhr {
 
     void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Color Pass");
+
+        vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+        ppll.clear(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 

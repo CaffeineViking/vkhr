@@ -42,7 +42,7 @@ namespace vkhr {
 
             nodes = vk::StorageBuffer {
                 rasterizer.device,
-                node_count * node_size + 2 * sizeof(std::uint32_t) // { PPLL Atomic Counter, PPLL Size Limit, Nodes }
+                node_count * node_size + 8 * sizeof(std::uint32_t) // { Atomic Counter, Size Limit, Padding, Nodes }.
             };
 
             vk::DebugMarker::object_name(rasterizer.device, nodes, VK_OBJECT_TYPE_BUFFER, "PPLL Nodes", id);
