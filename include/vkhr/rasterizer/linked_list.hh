@@ -15,7 +15,7 @@ namespace vkhr {
     namespace vulkan {
         class LinkedList {
         public:
-            LinkedList(vkhr::Rasterizer& rasterizer, std::uint32_t width, std::uint32_t height, std::size_t node_size, std::size_t node_count);
+            LinkedList(vkhr::Rasterizer& rasterizer,  std::uint32_t width, std::uint32_t height, std::size_t node_size, std::size_t node_count);
 
             LinkedList() = default;
 
@@ -23,7 +23,7 @@ namespace vkhr {
 
             void clear(vk::CommandBuffer& command_buffer);
 
-            void resolve(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer, vk::ImageView& color_buffer);
+            void resolve(vk::SwapChain& swap_chain, std::uint32_t frame, Pipeline& ppll_resolving_pipeline, vk::CommandBuffer& command_buffers);
 
             static constexpr std::size_t AverageFragmentsPerPixel = 4; // Only the *default* average fragment per pixel.
             static constexpr std::size_t NodeSize = 32; // { R, G, B, A, Depth, Index To Previous Node, 8 Byte Padding }

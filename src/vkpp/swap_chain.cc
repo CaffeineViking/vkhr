@@ -56,7 +56,7 @@ namespace vkpp {
         create_info.imageExtent = current_extent;
 
         create_info.imageArrayLayers = 1;
-        create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+        create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
 
         std::int32_t queue_family_indices[] = {
             logical_device.get_physical_device().get_graphics_queue_family_index(),

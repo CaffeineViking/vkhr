@@ -1,8 +1,9 @@
 #version 460 core
 
-#include "ppll.glsl"
+#include "sorting.glsl"
 
-layout(local_size_x = 8, local_size_y = 8) in;
+layout(local_size_x = 8,    local_size_y = 8) in;
+layout(binding = 7, rgba8) uniform image2D color;
 
 void main() {
 }

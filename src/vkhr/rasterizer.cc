@@ -10,15 +10,15 @@ namespace vkhr {
         };
 
         std::vector<vk::Layer> required_layers {
-        #ifdef DEBUG
+        // #ifdef DEBUG
             "VK_LAYER_LUNARG_standard_validation"
-        #endif
+        // #endif
         };
 
         std::vector<vk::Extension> required_extensions {
-        #ifdef DEBUG
+        // #ifdef DEBUG
             "VK_EXT_debug_utils"
-        #endif
+        // #endif
         };
 
         vk::append(window.get_vulkan_surface_extensions(),
@@ -249,10 +249,10 @@ namespace vkhr {
 
         if (!imgui.raymarcher_enabled()) {
             vk::DebugMarker::begin(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
-            ppll.resolve(ppll_blend_pipeline,
-                         ppll_blend_pipeline.descriptor_sets[frame],
-                         command_buffers[frame],
-                         swap_chain.get_image_views()[frame]);
+            ppll.resolve(swap_chain,
+                         frame,
+                         ppll_blend_pipeline,
+                         command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
         }
 
