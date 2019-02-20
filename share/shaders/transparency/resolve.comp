@@ -7,8 +7,41 @@ layout(binding = 7, rgba8) uniform image2D color;
 
 void main() {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
-    uint head = ppll_head_node(pixel);
-    vec4 head_color = ppll_nodes[head].color;
 
-    imageStore(color, pixel, imageLoad(color, pixel));
+    Node fragments[256];
+
+    uint head_index = ppll_head_node(pixel);
+
+    uint node_count = 0;
+
+    // Copy over limited amounts of fragment to local storage.
+    while (head_index != PPLL_NULL_NODE && node_count < 256) {
+        fragments[node_count] = ppll_node(head_index);
+        head_index = fragments[node_count].prev;
+        node_count += 1; // Stop adding when it's full
+    }
+
+    // Does insertion sort based on depths.
+    for (uint i = 1; i < node_count; ++i) {
+        Node fragment = fragments[i];
+        uint  j = i;
+
+        while (j > 0 && fragment.depth > fragments[j-1].depth) {
+            fragments[j] = fragments[j-1];
+            j -= 1;
+        }
+
+        fragments[j] = fragment;
+    }
+
+    vec4 pixel_color = imageLoad(color, pixel);
+
+    // Blends fragments in "correct" order.
+    for (uint i = 0; i < node_count; ++i) {
+        pixel_color = mix(pixel_color,
+                          fragments[i].color,
+                          fragments[i].color.a);
+    }
+
+    imageStore(color, pixel, pixel_color);
 }
