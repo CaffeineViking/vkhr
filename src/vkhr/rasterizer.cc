@@ -241,10 +241,6 @@ namespace vkhr {
             vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
         }
 
-        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-        imgui.draw(command_buffers[frame]);
-        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
-
         command_buffers[frame].end_render_pass();
 
         if (!imgui.raymarcher_enabled()) {
@@ -255,6 +251,18 @@ namespace vkhr {
                          command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
         }
+
+        vk::DebugMarker::close(command_buffers[frame]);
+
+        vk::DebugMarker::begin(command_buffers[frame], "ImGui Pass");
+
+        command_buffers[frame].begin_render_pass(imgui_pass, framebuffers[frame],
+                                                 { 1.00f, 1.00f, 1.00f, 1.00f });
+        vk::DebugMarker::begin(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        imgui.draw(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Draw GUI Overlay", query_pools[frame]);
+        command_buffers[frame].next_subpass(); // Empty subpass just to make them compatible...
+        command_buffers[frame].end_render_pass();
 
         vk::DebugMarker::close(command_buffers[frame]);
     }
@@ -325,7 +333,7 @@ namespace vkhr {
                                       fullscreen_image, command_buffers[frame]);
 
         vk::DebugMarker::begin(command_buffers[frame], "Blit Framebuffer", query_pools[frame]);
-        command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
+        command_buffers[frame].begin_render_pass(imgui_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
 
         command_buffers[frame].bind_pipeline(billboards_pipeline);
@@ -336,7 +344,7 @@ namespace vkhr {
 
         imgui.draw(command_buffers[frame]);
 
-        command_buffers[frame].next_subpass(); // Won't really do anything in this drawing case...
+        command_buffers[frame].next_subpass(); // Just an empty subpass to make them compatible...
 
         command_buffers[frame].end_render_pass();
         vk::DebugMarker::close(command_buffers[frame], "Blit Framebuffer", query_pools[frame]);
@@ -366,6 +374,7 @@ namespace vkhr {
     void Rasterizer::build_render_passes() {
         vk::RenderPass::create_modified_color_pass(color_pass, device, swap_chain);
         vk::RenderPass::create_standard_depth_pass(depth_pass, device);
+        vk::RenderPass::create_standard_imgui_pass(imgui_pass, device, swap_chain);
     }
 
     void Rasterizer::recreate_swapchain(Window&) {

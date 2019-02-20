@@ -612,8 +612,8 @@ namespace vkpp {
         return staging_memory;
     }
 
-    ImageView::ImageView(VkDevice& device, VkImageView& image_view)
-                        : device { device }, handle { image_view } { }
+    ImageView::ImageView(VkDevice& device, VkImageView& image_view, VkImageLayout final_layout)
+                        : layout { final_layout }, device { device }, handle { image_view } { }
 
     ImageView::ImageView(Device& logical_device, Image& real_image,
                          VkImageLayout final_layout)
@@ -676,7 +676,7 @@ namespace vkpp {
         swap(lhs.device, rhs.device);
         swap(lhs.handle, rhs.handle);
         swap(lhs.image,  rhs.image);
-        swap(lhs.layout,  rhs.layout);
+        swap(lhs.layout, rhs.layout);
     }
 
     VkImage& ImageView::get_image() {

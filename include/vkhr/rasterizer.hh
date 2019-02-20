@@ -65,6 +65,7 @@ namespace vkhr {
 
         vk::RenderPass depth_pass;
         vk::RenderPass color_pass;
+        vk::RenderPass imgui_pass;
 
         vk::DescriptorPool descriptor_pool;
 

@@ -150,9 +150,9 @@ namespace vkpp {
     class ImageView final {
     public:
         ImageView() = default;
-        ImageView(VkDevice& device, VkImageView& image_view);
 
-        ImageView(Device& device, Image& image, VkImageLayout layout =  VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        ImageView(VkDevice& device, VkImageView& image, VkImageLayout layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        ImageView(Device& device,     Image& image,     VkImageLayout layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
         ~ImageView() noexcept;
 

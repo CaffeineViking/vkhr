@@ -48,6 +48,7 @@ namespace vkpp {
         ImageView& get_depth_buffer_view();
 
         std::vector<ImageView>& get_image_views();
+        std::vector<ImageView>& get_general_image_views();
         VkImageView get_attachment(std::size_t i);
 
         std::uint32_t get_width()  const;
@@ -87,6 +88,7 @@ namespace vkpp {
         std::vector<VkImage>    image_handles;
         std::vector<Image>      images;
         std::vector<ImageView>  image_views;
+        std::vector<ImageView>  general_image_views;
 
         Image depth_buffer_image;
         DeviceMemory depth_buffer_memory;

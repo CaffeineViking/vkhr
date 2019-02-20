@@ -124,6 +124,7 @@ namespace vkpp {
 
         swap(lhs.images, rhs.images);
         swap(lhs.image_handles, rhs.image_handles);
+        swap(lhs.general_image_views, rhs.general_image_views);
         swap(lhs.image_views, rhs.image_views);
 
         swap(lhs.format, rhs.format);
@@ -205,6 +206,10 @@ namespace vkpp {
         return image_views;
     }
 
+    std::vector<ImageView>& SwapChain::get_general_image_views() {
+        return general_image_views;
+    }
+
     std::vector<Image>& SwapChain::get_images() {
         return images;
     }
@@ -279,6 +284,7 @@ namespace vkpp {
         vkGetSwapchainImagesKHR(device, handle, &image_count, image_handles.data());
 
         images.reserve(image_count);
+        general_image_views.reserve(image_count);
         image_views.reserve(image_count);
 
         std::size_t image_index { 0 };
@@ -314,13 +320,25 @@ namespace vkpp {
             create_info.subresourceRange.baseArrayLayer = 0;
             create_info.subresourceRange.layerCount = 1;
 
-            VkImageView view;
+            VkImageView image_view;
 
-            if (VkResult error = vkCreateImageView(device, &create_info, nullptr, &view)) {
+            if (VkResult error = vkCreateImageView(device, &create_info, nullptr, &image_view)) {
                 throw Exception { error, "couldn't create the swap chain image views!" };
             }
 
-            image_views.emplace_back(ImageView { device, view });
+            image_views.emplace_back(ImageView { device, image_view });
+
+            VkImageView general_image_view;
+
+            if (VkResult error = vkCreateImageView(device, &create_info, nullptr, &general_image_view)) {
+                throw Exception { error, "couldn't create the swap chain image views!" };
+            }
+
+            general_image_views.emplace_back(ImageView {
+                device,
+                general_image_view,
+                VK_IMAGE_LAYOUT_GENERAL
+             });
         }
     }
 

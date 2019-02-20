@@ -97,7 +97,7 @@ namespace vkhr {
 
             pipeline.descriptor_sets[frame].write(5, heads_view);
             pipeline.descriptor_sets[frame].write(6, nodes);
-            pipeline.descriptor_sets[frame].write(7, swap_chain.get_image_views()[frame]);
+            pipeline.descriptor_sets[frame].write(7, swap_chain.get_general_image_views()[frame]);
 
             command_buffer.bind_descriptor_set(pipeline.descriptor_sets[frame], pipeline);
 

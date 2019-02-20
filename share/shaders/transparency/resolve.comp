@@ -6,4 +6,9 @@ layout(local_size_x = 8,    local_size_y = 8) in;
 layout(binding = 7, rgba8) uniform image2D color;
 
 void main() {
+    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    uint head = ppll_head_node(pixel);
+    vec4 head_color = ppll_nodes[head].color;
+
+    imageStore(color, pixel, imageLoad(color, pixel));
 }

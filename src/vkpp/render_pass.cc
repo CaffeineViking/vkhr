@@ -208,15 +208,19 @@ namespace vkpp {
         return depth_attachment_binding != -1;
     }
 
-    void RenderPass::create_standard_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain) {
+    void RenderPass::create_standard_imgui_pass(RenderPass& imgui_pass, Device& device, SwapChain& swap_chain) {
         std::vector<RenderPass::Attachment> attachments {
             {
                 swap_chain.get_color_attachment_format(),
-                swap_chain.get_khr_presentation_layout()
+                swap_chain.get_khr_presentation_layout(),
+                VK_ATTACHMENT_STORE_OP_STORE,
+                VK_ATTACHMENT_LOAD_OP_DONT_CARE // don't!
             },
             {
                 swap_chain.get_depth_attachment_format(),
-                swap_chain.get_depth_attachment_layout()
+                swap_chain.get_depth_attachment_layout(),
+                VK_ATTACHMENT_STORE_OP_STORE,
+                VK_ATTACHMENT_LOAD_OP_DONT_CARE // don't!
             }
         };
 
@@ -224,6 +228,10 @@ namespace vkpp {
             {
                 { 0, swap_chain.get_color_attachment_layout() },
                 { 1, swap_chain.get_depth_attachment_layout() }
+            },
+            {
+                { 0, swap_chain.get_color_attachment_layout() },
+                { 1, swap_chain.get_shader_read_only_layout() }
             }
         };
 
@@ -234,19 +242,29 @@ namespace vkpp {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 0,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT|
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+            },
+            {
+                0,
+                1,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
             }
         };
 
-        color_pass = RenderPass {
+        imgui_pass = RenderPass {
              device,
              attachments,
              subpasses,
              dependencies
         };
 
-        DebugMarker::object_name(device, color_pass, VK_OBJECT_TYPE_RENDER_PASS, "Color Pass");
+        DebugMarker::object_name(device, imgui_pass, VK_OBJECT_TYPE_RENDER_PASS, "ImGui Pass");
     }
 
     void RenderPass::create_modified_color_pass(RenderPass& color_pass, Device& device, SwapChain& swap_chain) {
