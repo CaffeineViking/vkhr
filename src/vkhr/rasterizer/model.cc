@@ -90,7 +90,7 @@ namespace vkhr {
             };
 
             for (std::uint32_t i { 0 }; i < light_count; ++i)
-                descriptor_bindings.push_back({ 7 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
+                descriptor_bindings.push_back({ 8 + i, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER });
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout {
                 vulkan_renderer.device,
@@ -108,7 +108,7 @@ namespace vkhr {
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.lights[i]);
                 pipeline.descriptor_sets[i].write(4, vulkan_renderer.params[i]);
                 for (std::uint32_t j { 0 }; j < light_count; ++j)
-                    pipeline.descriptor_sets[i].write(7 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
+                    pipeline.descriptor_sets[i].write(8 + j, vulkan_renderer.shadow_maps[j].get_image_view(),
                                                              vulkan_renderer.shadow_maps[j].get_sampler());
             }
 

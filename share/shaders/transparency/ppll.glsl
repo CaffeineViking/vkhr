@@ -13,14 +13,15 @@ struct Node {
 layout(binding = 5, r32ui) uniform uimage2D ppll_heads;
 layout(binding = 6, std430) buffer LinkedList {
     uint ppll_counter;
-    uint ppll_size;
-    float _padding[2];
+    float _padding[3];
     Node ppll_nodes[];
 };
 
+layout(binding = 7) uniform Config { uint ppll_size; };
+
 uint ppll_next_node() {
     uint next_node = atomicAdd(ppll_counter, 1u);
-    if (next_node >= 3686400) // TODO: ppll_size!
+    if (next_node >= ppll_size)
         return PPLL_NULL_NODE;
     ppll_nodes[next_node].prev = PPLL_NULL_NODE;
     return next_node;

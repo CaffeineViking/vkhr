@@ -1,4 +1,4 @@
-all: volume.vert.spv volume.frag.spv voxelize.comp.spv voxelize_segments.comp.spv voxelize_vertices.comp.spv
+all: volume.vert.spv volume.frag.spv voxelize.comp.spv
 
 volume.vert.spv: volume.vert ../scene_graph/camera.glsl ../strands/../volumes/bounding_box.glsl volume.glsl ../strands/strand.glsl
 	glslc -O -g -c volume.vert
@@ -8,9 +8,3 @@ volume.frag.spv: volume.frag ../self-shadowing/linearize_depth.glsl ../scene_gra
 
 voxelize.comp.spv: voxelize.comp ../utils/math.glsl sample_volume.glsl ../strands/strand.glsl ../strands/../volumes/bounding_box.glsl bounding_box.glsl
 	glslc -O -g -c voxelize.comp
-
-voxelize_segments.comp.spv: voxelize_segments.comp ../utils/math.glsl sample_volume.glsl ../strands/strand.glsl ../strands/../volumes/bounding_box.glsl bounding_box.glsl
-	glslc -O -g -c voxelize_segments.comp
-
-voxelize_vertices.comp.spv: voxelize_vertices.comp ../utils/math.glsl sample_volume.glsl ../strands/strand.glsl ../strands/../volumes/bounding_box.glsl bounding_box.glsl
-	glslc -O -g -c voxelize_vertices.comp

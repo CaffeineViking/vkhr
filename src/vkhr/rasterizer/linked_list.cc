@@ -45,12 +45,21 @@ namespace vkhr {
 
             nodes = vk::StorageBuffer {
                 rasterizer.device,
-                node_count * node_size + 4 * sizeof(std::uint32_t) // { Atomic Counter, Size Limit, Padding, Nodes }.
+                node_count * node_size + 4 * sizeof(std::uint32_t) // { Atomic Counter, The Padding, Nodes }
             };
+
+            parameters_buffer.size = node_count; // We need to know when to stop the allocation for compute.
 
             vk::DebugMarker::object_name(rasterizer.device, nodes, VK_OBJECT_TYPE_BUFFER, "PPLL Nodes", id);
             vk::DebugMarker::object_name(rasterizer.device, nodes.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "PPLL Nodes Device Memory", id);
+
+            parameters = vk::UniformBuffer {
+                rasterizer.device,
+                parameters_buffer
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, parameters, VK_OBJECT_TYPE_BUFFER, "PPLL Parameters", id);
 
             null_value.uint32[0] = Null;
         }
@@ -78,10 +87,6 @@ namespace vkhr {
                                        0,
                                        sizeof(std::uint32_t),
                                        0);
-            command_buffer.fill_buffer(nodes,
-                                       sizeof(std::uint32_t),
-                                       sizeof(std::uint32_t),
-                                       node_count);
         }
 
         void LinkedList::resolve(vk::SwapChain& swap_chain, std::uint32_t frame, Pipeline& pipeline, vk::CommandBuffer& command_buffer) {
@@ -97,7 +102,8 @@ namespace vkhr {
 
             pipeline.descriptor_sets[frame].write(5, heads_view);
             pipeline.descriptor_sets[frame].write(6, nodes);
-            pipeline.descriptor_sets[frame].write(7, swap_chain.get_general_image_views()[frame]);
+            pipeline.descriptor_sets[frame].write(7, parameters);
+            pipeline.descriptor_sets[frame].write(8, swap_chain.get_general_image_views()[frame]);
 
             command_buffer.bind_descriptor_set(pipeline.descriptor_sets[frame], pipeline);
 
@@ -126,6 +132,10 @@ namespace vkhr {
 
         std::size_t LinkedList::get_heads_size_in_bytes() const {
             return width * height * sizeof(std::uint32_t);
+        }
+
+        vk::UniformBuffer& LinkedList::get_parameters() {
+            return parameters;
         }
 
         std::size_t LinkedList::get_nodes_size_in_bytes() const {
@@ -160,7 +170,8 @@ namespace vkhr {
                 {
                     { 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
                     { 6, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
-                    { 7, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  }
+                    { 7, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                    { 8, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
                 }
             };
 

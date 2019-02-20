@@ -39,6 +39,7 @@ namespace vkhr {
 
             vk::DeviceImage& get_heads();
             vk::ImageView& get_heads_view();
+            vk::UniformBuffer& get_parameters();
             vk::StorageBuffer& get_nodes();
 
             static void build_pipeline(Pipeline& pipeline, Rasterizer& rasterizer); // Builds the PPLL resolve pipeline.
@@ -49,10 +50,15 @@ namespace vkhr {
             std::size_t node_size;
             std::size_t height;
 
+            struct Parameters {
+                std::uint32_t size;
+            } parameters_buffer;
+
             VkClearColorValue null_value;
 
             vk::DeviceImage   heads;
             vk::ImageView     heads_view;
+            vk::UniformBuffer parameters;
             vk::StorageBuffer nodes;
 
             static int id;
