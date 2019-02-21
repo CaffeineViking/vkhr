@@ -5,17 +5,19 @@
 layout(local_size_x = 8,    local_size_y = 8) in;
 layout(binding = 9, rgba8) uniform image2D color;
 
+#define K (8)
+
 void main() {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
 
-    Node fragments[256];
+    Node fragments[K];
 
     uint head_index = ppll_head_node(pixel);
 
     uint node_count = 0;
 
-    // Copy over limited amounts of fragment to local storage.
-    while (head_index != PPLL_NULL_NODE && node_count < 256) {
+    // Copy over limited count of fragment to local storage.
+    while (head_index != PPLL_NULL_NODE && node_count < K) {
         fragments[node_count] = ppll_node(head_index);
         head_index = fragments[node_count].prev;
         node_count += 1; // Stop adding when it's full
@@ -34,7 +36,7 @@ void main() {
         fragments[j] = fragment;
     }
 
-    vec4 blended_colors = vec4(0, 0, 0, 1.0);
+    vec4 blended_colors = imageLoad(color, pixel);
 
     // Blends fragments in "correct" order.
     for (uint i = 0; i < node_count; ++i) {
