@@ -34,14 +34,14 @@ void main() {
         fragments[j] = fragment;
     }
 
-    vec4 pixel_color = imageLoad(color, pixel);
+    vec4 blended_colors = vec4(0, 0, 0, 1.0);
 
     // Blends fragments in "correct" order.
     for (uint i = 0; i < node_count; ++i) {
-        pixel_color = mix(pixel_color,
-                          fragments[i].color,
-                          fragments[i].color.a);
+        blended_colors = mix(blended_colors,
+                             fragments[i].color,
+                             fragments[i].color.a);
     }
 
-    imageStore(color, pixel, pixel_color);
+    imageStore(color, pixel, blended_colors);
 }
