@@ -39,6 +39,7 @@ namespace vkhr {
 
             vk::DeviceImage& get_heads();
             vk::ImageView& get_heads_view();
+            vk::StorageBuffer& get_node_counter();
             vk::UniformBuffer& get_parameters();
             vk::StorageBuffer& get_nodes();
 
@@ -46,18 +47,18 @@ namespace vkhr {
 
         private:
             std::size_t width;
-            std::size_t node_count;
             std::size_t node_size;
             std::size_t height;
 
             struct Parameters {
-                std::uint32_t size;
+                std::uint32_t node_count;
             } parameters_buffer;
 
             VkClearColorValue null_value;
 
             vk::DeviceImage   heads;
             vk::ImageView     heads_view;
+            vk::StorageBuffer node_counter;
             vk::UniformBuffer parameters;
             vk::StorageBuffer nodes;
 

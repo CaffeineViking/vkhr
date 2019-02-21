@@ -17,6 +17,7 @@ namespace vkhr {
             };
 
             this->width  = width;
+            parameters_buffer.node_count = node_count;
             this->height = height;
 
             auto command_buffer = rasterizer.command_pool.allocate_and_begin();
@@ -45,10 +46,8 @@ namespace vkhr {
 
             nodes = vk::StorageBuffer {
                 rasterizer.device,
-                node_count * node_size + 4 * sizeof(std::uint32_t) // { Atomic Counter, The Padding, Nodes }
+                node_count * node_size
             };
-
-            parameters_buffer.size = node_count; // We need to know when to stop the allocation for compute.
 
             vk::DebugMarker::object_name(rasterizer.device, nodes, VK_OBJECT_TYPE_BUFFER, "PPLL Nodes", id);
             vk::DebugMarker::object_name(rasterizer.device, nodes.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
@@ -60,6 +59,13 @@ namespace vkhr {
             };
 
             vk::DebugMarker::object_name(rasterizer.device, parameters, VK_OBJECT_TYPE_BUFFER, "PPLL Parameters", id);
+
+            node_counter = vk::StorageBuffer {
+                rasterizer.device,
+                sizeof(std::uint32_t)
+            };
+
+            vk::DebugMarker::object_name(rasterizer.device, node_counter, VK_OBJECT_TYPE_BUFFER, "PPLL Counter", id);
 
             null_value.uint32[0] = Null;
         }
@@ -83,7 +89,7 @@ namespace vkhr {
                              VK_PIPELINE_STAGE_TRANSFER_BIT,
                              VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 
-            command_buffer.fill_buffer(nodes,
+            command_buffer.fill_buffer(node_counter,
                                        0,
                                        sizeof(std::uint32_t),
                                        0);
@@ -103,7 +109,8 @@ namespace vkhr {
             pipeline.descriptor_sets[frame].write(5, heads_view);
             pipeline.descriptor_sets[frame].write(6, nodes);
             pipeline.descriptor_sets[frame].write(7, parameters);
-            pipeline.descriptor_sets[frame].write(8, swap_chain.get_general_image_views()[frame]);
+            pipeline.descriptor_sets[frame].write(8, node_counter);
+            pipeline.descriptor_sets[frame].write(9, swap_chain.get_general_image_views()[frame]);
 
             command_buffer.bind_descriptor_set(pipeline.descriptor_sets[frame], pipeline);
 
@@ -123,7 +130,7 @@ namespace vkhr {
         }
 
         std::size_t LinkedList::get_node_count() const {
-            return node_count;
+            return parameters_buffer.node_count;
         }
 
         std::size_t LinkedList::get_node_size() const {
@@ -139,7 +146,7 @@ namespace vkhr {
         }
 
         std::size_t LinkedList::get_nodes_size_in_bytes() const {
-            return node_count * node_size;
+            return parameters_buffer.node_count * node_size;
         }
 
         std::size_t LinkedList::get_height() const {
@@ -158,6 +165,10 @@ namespace vkhr {
             return nodes;
         }
 
+        vk::StorageBuffer& LinkedList::get_node_counter() {
+            return node_counter;
+        }
+
         void LinkedList::build_pipeline(Pipeline& pipeline, Rasterizer& rasterizer) {
             pipeline = Pipeline { /* In the case we are re-creating the pipeline */ };
 
@@ -171,7 +182,8 @@ namespace vkhr {
                     { 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
                     { 6, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
                     { 7, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                    { 8, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  },
+                    { 8, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+                    { 9, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE  }
                 }
             };
 
