@@ -6,6 +6,8 @@
 #include "../volumes/local_ambient_occlusion.glsl"
 #include "../transparency/ppll.glsl"
 
+#include "../anti-aliasing/gbaa.glsl"
+
 #include "../scene_graph/lights.glsl"
 #include "../scene_graph/shadow_maps.glsl"
 #include "../scene_graph/params.glsl"

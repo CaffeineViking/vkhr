@@ -3,7 +3,7 @@
 
 // This coverage calculation is based on Emil Persson's:
 // "Geometry Buffer Anti-Aliasing (GBAA)" AA techniques.
-// But implementation is similar to the ones in TressFX.
+// But implementation is similar to the code in TressFX.
 
 float gbaa(vec2 p, vec2 q, vec2 fragment, vec2 screen) {
     // p, q, and fragment should be in view coordinates.
