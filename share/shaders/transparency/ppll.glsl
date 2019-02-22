@@ -22,7 +22,7 @@ layout(binding = 8, std430) buffer LinkedListCounter {
 
 uint ppll_next_node() {
     uint next_node = atomicAdd(ppll_counter, 1u);
-    if (next_node >= ppll_size)
+    if (next_node > ppll_size)
         return PPLL_NULL_NODE;
     ppll_nodes[next_node].prev = PPLL_NULL_NODE;
     return next_node;

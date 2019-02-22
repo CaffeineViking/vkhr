@@ -25,7 +25,7 @@ layout(push_constant) uniform Object {
 
 layout(binding = 3) uniform sampler3D strand_density;
 
-layout(location = 0) out vec4 color;
+layout(location = 0) out vec4 target;
 
 void main() {
     vec3 shading = vec3(1.0);
@@ -60,10 +60,12 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
-    color = vec4(shading * occlusion, 1);
+    vec4  color = vec4(shading*occlusion, 0.20);
     ivec2 pixel = ivec2(gl_FragCoord.xy);
 
     uint node = ppll_next_node();
     ppll_node_data(node, color, gl_FragCoord.z);
     ppll_link_node(pixel, node);
+
+    discard; // We're not going to write output.
 }
