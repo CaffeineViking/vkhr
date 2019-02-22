@@ -4,10 +4,9 @@
 #define PPLL_NULL_NODE 0xffffffff
 
 struct Node {
-    vec4 color;
+    uint color;
     float depth;
     uint prev;
-    uint _p[2];
 };
 
 layout(binding = 5, r32ui) uniform uimage2D ppll_heads;
@@ -29,8 +28,8 @@ uint ppll_next_node() {
 }
 
 void ppll_node_data(uint node, vec4 color, float depth) {
-    ppll_nodes[node].color = color;
-    ppll_nodes[node].depth = depth;
+    ppll_nodes[node].color = packUnorm4x8(color);
+    ppll_nodes[node].depth = depth; // don't pack
 }
 
 Node ppll_node(uint node) {

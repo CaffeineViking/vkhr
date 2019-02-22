@@ -60,7 +60,7 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
-    vec4  color = vec4(shading*occlusion, 0.20);
+    vec4  color = vec4(shading*occlusion, 0.30);
     ivec2 pixel = ivec2(gl_FragCoord.xy);
 
     uint node = ppll_next_node();

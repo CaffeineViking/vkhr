@@ -26,7 +26,7 @@ namespace vkhr {
             void resolve(vk::SwapChain& swap_chain, std::uint32_t frame, Pipeline& ppll_resolving_pipeline, vk::CommandBuffer& command_buffers);
 
             static constexpr std::size_t AverageFragmentsPerPixel = 16; // Only a estimated average fragments per pixel.
-            static constexpr std::size_t NodeSize = 32; // { R, G, B, A, Depth, Index To Previous Node, 8 Byte Padding }
+            static constexpr std::size_t NodeSize = 16; // { [R, G, B, A], Fragment Depth, Index To Previous Fragment }.
             static constexpr std::uint32_t Null = 0xffffffff; // Encodes end of some list (or an invalid entry somehow).
 
             std::size_t get_width() const;

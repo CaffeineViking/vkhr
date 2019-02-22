@@ -40,9 +40,10 @@ void main() {
 
     // Blends fragments in "correct" order.
     for (uint i = 0; i < node_count; ++i) {
+        vec4 fragment_color = unpackUnorm4x8(fragments[i].color);
         blended_colors = mix(blended_colors,
-                             fragments[i].color,
-                             fragments[i].color.a);
+                             fragment_color,
+                             fragment_color.a);
     }
 
     imageStore(color, pixel, blended_colors);
