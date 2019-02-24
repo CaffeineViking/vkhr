@@ -20,18 +20,16 @@ layout(location = 0) out PipelineOut {
 void main() {
     vec3 normal = normalize(camera.position - gs_in[0].position.xyz);
     vec3 tangent = gs_in[0].tangent;
-    vec3 extrude = normalize(cross(eye_dir, tangent));
+    vec3 direction = normalize(cross(normal, tangent));
 
-    gs_out.position = gs_in[0].position;
     gs_out.tangent  = gs_in[0].tangent;
-
+    gs_out.position = gs_in[0].position;
     gl_Position = gl_in[0].gl_Position;
 
     EmitVertex();
 
-    gs_out.position = gs_in[1].position;
     gs_out.tangent  = gs_in[1].tangent;
-
+    gs_out.position = gs_in[1].position;
     gl_Position = gl_in[1].gl_Position;
 
     EmitVertex();

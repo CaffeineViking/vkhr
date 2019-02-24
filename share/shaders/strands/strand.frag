@@ -64,11 +64,11 @@ void main() {
 
     color = vec4(shading*occlusion, 1.0);
 
-    // ivec2 pixel = ivec2(gl_FragCoord.xy);
+    ivec2 pixel = ivec2(gl_FragCoord.xy);
 
-    // uint node = ppll_next_node();
-    // ppll_node_data(node, color, gl_FragCoord.z);
-    // ppll_link_node(pixel, node);
+    uint node = ppll_next_node();
+    ppll_node_data(node, color, gl_FragCoord.z);
+    ppll_link_node(pixel, node);
 
-    // discard; // Resolved in another pass.
+    discard; // Resolved in another pass.
 }
