@@ -5,7 +5,7 @@
 layout(local_size_x = 8,    local_size_y = 8) in;
 layout(binding = 9, rgba8) uniform image2D color;
 
-#define K 64
+#define K 8
 
 void main() {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);

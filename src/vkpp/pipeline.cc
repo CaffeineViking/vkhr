@@ -435,7 +435,7 @@ namespace vkpp {
         multisample_state.minSampleShading = 1.0;
     }
 
-    void GraphicsPipeline::FixedFunction::disable_alpha_mix(std::uint32_t a) {
+    void GraphicsPipeline::FixedFunction::disable_blending_for(std::uint32_t a) {
         if (attachments.size() <= a) {
             attachments.resize(a + 1);
         }
@@ -446,7 +446,7 @@ namespace vkpp {
         color_blending_state.pAttachments    = attachments.data();
     }
 
-    void GraphicsPipeline::FixedFunction::enable_alpha_mix(std::uint32_t a) {
+    void GraphicsPipeline::FixedFunction::enable_alpha_blending_for(std::uint32_t a) {
         if (attachments.size() <= a) {
             attachments.resize(a + 1);
         }
@@ -457,6 +457,27 @@ namespace vkpp {
                                          VK_COLOR_COMPONENT_A_BIT;
         attachments[a].blendEnable = VK_TRUE;
         attachments[a].srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+        attachments[a].dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        attachments[a].colorBlendOp = VK_BLEND_OP_ADD;
+        attachments[a].srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+        attachments[a].dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+        attachments[a].alphaBlendOp = VK_BLEND_OP_ADD;
+
+        color_blending_state.attachmentCount = attachments.size();
+        color_blending_state.pAttachments    = attachments.data();
+    }
+
+    void GraphicsPipeline::FixedFunction::enable_additive_blending_for(std::uint32_t a) {
+        if (attachments.size() <= a) {
+            attachments.resize(a + 1);
+        }
+
+        attachments[a].colorWriteMask =  VK_COLOR_COMPONENT_R_BIT |
+                                         VK_COLOR_COMPONENT_G_BIT |
+                                         VK_COLOR_COMPONENT_B_BIT |
+                                         VK_COLOR_COMPONENT_A_BIT;
+        attachments[a].blendEnable = VK_TRUE;
+        attachments[a].srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
         attachments[a].dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         attachments[a].colorBlendOp = VK_BLEND_OP_ADD;
         attachments[a].srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;

@@ -82,7 +82,7 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
-            pipeline.fixed_stages.enable_alpha_mix(0);
+            pipeline.fixed_stages.enable_alpha_blending_for(0);
 
             pipeline.shader_stages.emplace_back(vulkan_renderer.device, SHADER("billboards/billboard.vert"));
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.shader_stages[0], VK_OBJECT_TYPE_SHADER_MODULE, "Billboard Vertex Shader");

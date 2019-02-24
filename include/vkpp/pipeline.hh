@@ -238,8 +238,9 @@ namespace vkpp {
 
             std::vector<VkPipelineColorBlendAttachmentState> attachments;
 
-            void disable_alpha_mix(std::uint32_t attachment);
-            void enable_alpha_mix(std::uint32_t  attachment);
+            void disable_blending_for(std::uint32_t attachment);
+            void enable_additive_blending_for(std::uint32_t attachment);
+            void enable_alpha_blending_for(std::uint32_t attachment);
 
             VkPipelineColorBlendStateCreateInfo    color_blending_state {
                 VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,

@@ -126,7 +126,7 @@ namespace vkhr {
 
             pipeline.fixed_stages.disable_depth_test();
             pipeline.fixed_stages.set_front_face(VK_FRONT_FACE_CLOCKWISE);
-            pipeline.fixed_stages.enable_alpha_mix(0);
+            pipeline.fixed_stages.enable_alpha_blending_for(0);
 
             std::uint32_t light_count = vulkan_renderer.shadow_maps.size();
 
