@@ -377,6 +377,8 @@ namespace vkhr {
                             hair.update_parameters();
                         if (ImGui::SliderFloat("Power", &hair.parameters.hair_shininess, 0.0f, 80.0f, "%.0f"))
                             hair.update_parameters();
+                        if (ImGui::SliderFloat("Alpha", &hair.parameters.hair_opacity, 0.0f, 1.0f))
+                            hair.update_parameters();
                         ImGui::PopItemWidth();
                         ImGui::TreePop();
                     }
