@@ -62,7 +62,7 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
-    color = vec4(shading*occlusion, 1.0);
+    color = vec4(shading*occlusion, 0.3);
 
     ivec2 pixel = ivec2(gl_FragCoord.xy);
 
