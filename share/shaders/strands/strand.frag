@@ -6,7 +6,7 @@
 #include "../volumes/local_ambient_occlusion.glsl"
 #include "../transparency/ppll.glsl"
 
-#include "../anti-aliasing/gbaa.glsl"
+#include "../anti-aliasing/gpaa.glsl"
 
 #include "../scene_graph/lights.glsl"
 #include "../scene_graph/shadow_maps.glsl"
@@ -50,7 +50,7 @@ void main() {
                                               shadow_space_fragment,
                                               deep_shadows_kernel_size,
                                               deep_shadows_stride_size,
-                                              50000.0f, 0.3);
+                                              30000.0f, 0.3);
     }
 
     if (shading_model != ADSM) {
@@ -62,7 +62,9 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
-    color = vec4(shading*occlusion, 0.3);
+    float coverage = gpaa(vec2(0.0), vec2(0.0), vec2(0.0));
+
+    color = vec4(shading * occlusion, coverage);
 
     ivec2 pixel = ivec2(gl_FragCoord.xy);
 
@@ -70,5 +72,5 @@ void main() {
     ppll_node_data(node, color, gl_FragCoord.z);
     ppll_link_node(pixel, node);
 
-    discard; // Resolved in another pass.
+    discard; // Fragments resolved in next pass.
 }

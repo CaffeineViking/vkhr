@@ -5,6 +5,10 @@
 layout(local_size_x = 8,    local_size_y = 8) in;
 layout(binding = 9, rgba8) uniform image2D color;
 
+// Resolve step based on the PPLL code in TressFX:
+// TressFX/amd_tressfx/src/Shader/TressFXPPLL.hlsl
+// with some minor modifications for OpenGL usage.
+
 #define K_BUFFER_SIZE 8
 #define MAX_FRAGMENTS 512
 
@@ -27,13 +31,16 @@ void main() {
     for (uint k = 0; k < K_BUFFER_SIZE; ++k) {
         if (pixel_head_node != PPLL_NULL_NODE) {
             nodes[k] = ppll_node(pixel_head_node);
-            pixel_head_node = nodes[k].prev; // ++
+            pixel_head_node = nodes[k].prev;
         }
     }
 
-    // Background color we will be alpha blending.
+    // Background results will be blended as well.
     vec4 resolved_color = imageLoad(color, pixel);
 
+    // Replaces fragments in k-buffer if there
+    // are any "close"r fragments in the PPLL.
+    // Other ones are blended without sorting.
     for (uint f = 0; f < MAX_FRAGMENTS; ++f) {
         if (pixel_head_node == PPLL_NULL_NODE)
             break;
@@ -61,12 +68,15 @@ void main() {
 
         vec4 fragment_color = unpackUnorm4x8(fragment.color);
 
+        // Blend fragments in an OIT-way, not really sorted.
         resolved_color = mix(resolved_color, fragment_color,
                              fragment_color.a);
 
         pixel_head_node = next_pixel_head_index;
     }
 
+    // Just make sure the *top-most* fragments
+    // are correctly blended by sorting these!
     for (uint k = 0; k < K_BUFFER_SIZE; ++k) {
         float furthest_depth = 0;
         uint  furthest_index = 0;
@@ -79,10 +89,11 @@ void main() {
             }
         }
 
-        nodes[furthest_index].depth = 0; // Skip
+        nodes[furthest_index].depth = 0; // Ignore
 
         vec4 node_color = unpackUnorm4x8(nodes[furthest_index].color);
 
+        // Blend the fragments correctly: back-to-front.
         resolved_color = mix(resolved_color, node_color,
                              node_color.a);
     }
