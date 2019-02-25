@@ -82,7 +82,7 @@ namespace vkhr {
 
             3,
             Poisson,
-            8,
+            3,
             true,
 
             3,
@@ -92,11 +92,11 @@ namespace vkhr {
 
             ApproximateDeepShadows,
 
-            0.01f,
+            0.018,
             512,
             2.50f,
             10.0f,
-            0.15f
+            0.125
         };
 
         void default_parameters();

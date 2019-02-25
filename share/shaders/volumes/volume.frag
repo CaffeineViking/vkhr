@@ -55,7 +55,7 @@ void main() {
 
     vec3 light_bulb_intensity = lights[0].intensity;
 
-    vec3 surface_tangent = normalize(filter_volume(strand_tangent, 3, surface_position.xyz, volume_bounds.origin, volume_bounds.size).xyz);
+    vec3 surface_tangent = normalize(sample_volume(strand_tangent, surface_position.xyz, volume_bounds.origin, volume_bounds.size).xyz);
 
     if (shading_model == KAJIYA_KAY) {
         shading = kajiya_kay(hair_color, light_bulb_intensity, hair_exponent,
@@ -68,9 +68,9 @@ void main() {
         occlusion *= volume_approximated_deep_shadows(strand_density,
                                                       surface_position.xyz,
                                                       lights[0].origin,
-                                                      raycast_steps, hair_opacity,
+                                                      raycast_steps, 0.3,
                                                       volume_bounds.origin,
-                                                      volume_bounds.size, 4.0f);
+                                                      volume_bounds.size, 32.0f);
     }
 
     if (shading_model != ADSM) {

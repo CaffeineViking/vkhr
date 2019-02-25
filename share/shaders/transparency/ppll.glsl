@@ -2,6 +2,7 @@
 #define VKHR_PPLL_GLSL
 
 #define PPLL_NULL_NODE 0xffffffff
+#define PPLL_MAXIMUM_DEPTH 3.e+38
 
 struct Node {
     uint color;

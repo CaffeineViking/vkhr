@@ -5,46 +5,87 @@
 layout(local_size_x = 8,    local_size_y = 8) in;
 layout(binding = 9, rgba8) uniform image2D color;
 
-#define K 8
+#define K_BUFFER_SIZE 8
+#define MAX_FRAGMENTS 512
 
 void main() {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    uint  pixel_head_node = ppll_head_node(pixel);
 
-    Node fragments[K];
+    if (pixel_head_node == PPLL_NULL_NODE)
+        return;
 
-    uint head_index = ppll_head_node(pixel);
+    Node nodes[K_BUFFER_SIZE];
 
-    uint node_count = 0;
-
-    // Copy over limited count of fragment to local storage.
-    while (head_index != PPLL_NULL_NODE && node_count < K) {
-        fragments[node_count] = ppll_node(head_index);
-        head_index = fragments[node_count].prev;
-        node_count += 1; // Stop adding when it's full
+    // Makes sure k-buffer gets maximum depth.
+    for (uint k = 0; k < K_BUFFER_SIZE; ++k) {
+        nodes[k].depth = PPLL_MAXIMUM_DEPTH;
+        nodes[k].color = 0;
     }
 
-    // Does insertion sort based on depths.
-    for (uint i = 1; i < node_count; ++i) {
-        Node fragment = fragments[i];
-        uint  j = i;
+    // Inserts the first elements of the PPLL.
+    for (uint k = 0; k < K_BUFFER_SIZE; ++k) {
+        if (pixel_head_node != PPLL_NULL_NODE) {
+            nodes[k] = ppll_node(pixel_head_node);
+            pixel_head_node = nodes[k].prev; // ++
+        }
+    }
 
-        while (j > 0 && fragment.depth > fragments[j-1].depth) {
-            fragments[j] = fragments[j-1];
-            j -= 1;
+    // Background color we will be alpha blending.
+    vec4 resolved_color = imageLoad(color, pixel);
+
+    for (uint f = 0; f < MAX_FRAGMENTS; ++f) {
+        if (pixel_head_node == PPLL_NULL_NODE)
+            break;
+
+        float furthest_depth = 0;
+        uint  furthest_index = 0;
+
+        // Find furthest fragment in our k-buffer.
+        for (uint k = 0; k < K_BUFFER_SIZE; ++k) {
+            if (nodes[k].depth > furthest_depth) {
+                furthest_depth = nodes[k].depth;
+                furthest_index = k;
+            }
         }
 
-        fragments[j] = fragment;
-    }
+        Node fragment = ppll_node(pixel_head_node);
+        uint next_pixel_head_index = fragment.prev;
 
-    vec4 blended_colors = imageLoad(color, pixel);
+        // If PPLL node is closer, we swap it!
+        if (fragment.depth < furthest_depth) {
+            Node tmp = nodes[furthest_index];
+            nodes[furthest_index] = fragment;
+            fragment = tmp; // Will be merged
+        }
 
-    // Blends fragments in "correct" order.
-    for (uint i = 0; i < node_count; ++i) {
-        vec4 fragment_color = unpackUnorm4x8(fragments[i].color);
-        blended_colors = mix(blended_colors,
-                             fragment_color,
+        vec4 fragment_color = unpackUnorm4x8(fragment.color);
+
+        resolved_color = mix(resolved_color, fragment_color,
                              fragment_color.a);
+
+        pixel_head_node = next_pixel_head_index;
     }
 
-    imageStore(color, pixel, blended_colors);
+    for (uint k = 0; k < K_BUFFER_SIZE; ++k) {
+        float furthest_depth = 0;
+        uint  furthest_index = 0;
+
+        // Find furthest fragment in our k-buffer.
+        for (uint i = 0; i < K_BUFFER_SIZE; ++i) {
+            if (nodes[i].depth > furthest_depth) {
+                furthest_depth = nodes[i].depth;
+                furthest_index = i;
+            }
+        }
+
+        nodes[furthest_index].depth = 0; // Skip
+
+        vec4 node_color = unpackUnorm4x8(nodes[furthest_index].color);
+
+        resolved_color = mix(resolved_color, node_color,
+                             node_color.a);
+    }
+
+    imageStore(color, pixel, resolved_color);
 }
