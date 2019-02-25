@@ -14,6 +14,7 @@ layout(push_constant) uniform Object {
 layout(location = 0) out PipelineOut {
     vec4 position;
     vec3 tangent;
+    flat vec4 p_0;
 } vs_out;
 
 void main() {
@@ -24,6 +25,7 @@ void main() {
 
     vs_out.position = world_position;
     vs_out.tangent  = world_tangent.xyz;
+    vs_out.p_0      = world_position;
 
     gl_Position = projection_view * world_position;
 }
