@@ -70,7 +70,7 @@ void main() {
                                                       lights[0].origin,
                                                       raycast_steps, 0.3,
                                                       volume_bounds.origin,
-                                                      volume_bounds.size, 32.0f);
+                                                      volume_bounds.size, 27.0f);
     }
 
     if (shading_model != ADSM) {
