@@ -19,7 +19,6 @@ layout(early_fragment_tests) in;
 layout(location = 0) in PipelineIn {
     vec4 position;
     vec3 tangent;
-    flat vec4 p_0;
 } fs_in;
 
 layout(push_constant) uniform Object {
@@ -31,12 +30,12 @@ layout(binding = 3) uniform sampler3D strand_density;
 layout(location = 0) out vec4 color;
 
 void main() {
-    mat4 view_projection = camera.projection * camera.view;
-    float coverage = gpaa(fs_in.p_0, fs_in.tangent,
-                          fs_in.position, view_projection,
-                          vec2(1280, 720), 3); // in pixels
+    float coverage = gpaa(gl_FragCoord.xy, fs_in.position,
+                          camera.projection * camera.view,
+                          vec2(1280.00f, 720.00f), 2.00f);
 
-    if (coverage < 0.001) discard; // Shading not worth it!
+    coverage *= 0.3f; // Alpha that will be used to blend.
+    if (coverage < 0.01) discard; // Shading not worth it!
 
     vec3 eye_normal = normalize(fs_in.position.xyz - camera.position);
     vec3 light_direction = normalize(lights[0].origin - fs_in.position.xyz);
