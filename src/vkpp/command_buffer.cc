@@ -250,6 +250,10 @@ namespace vkpp {
                                   slope_factor);
     }
 
+    void CommandBuffer::set_line_width(float width) {
+        vkCmdSetLineWidth(handle, width);
+    }
+
     void CommandBuffer::bind_pipeline(Pipeline& pipeline) {
         vkCmdBindPipeline(handle, pipeline.get_bind_point(), pipeline.get_handle());
     }

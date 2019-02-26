@@ -6,9 +6,9 @@
 layout(binding = 2) uniform Strand {
     AABB volume_bounds;
     vec3 volume_resolution;
-    float strand_radius;
+    float strand_width;
     vec3 hair_color;
-    float hair_opacity;
+    float hair_alpha;
     float hair_exponent;
 };
 

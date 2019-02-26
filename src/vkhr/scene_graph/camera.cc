@@ -36,12 +36,14 @@ namespace vkhr {
 
     void Camera::set_width(unsigned width) {
         this->width = width;
+        view_projection_matrix.resolution.x = width;
         projection_matrix_dirty = true;
         viewing_plane_dirty     = true;
     }
 
     void Camera::set_height(unsigned height) {
         this->height = height;
+        view_projection_matrix.resolution.y = height;
         projection_matrix_dirty = true;
         viewing_plane_dirty     = true;
     }

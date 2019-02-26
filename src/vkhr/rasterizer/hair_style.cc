@@ -46,10 +46,10 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, segments.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
+            parameters.strand_radius = 2.0f;
             parameters.hair_shininess = 50.0f;
-            parameters.strand_radius = hair_style.get_default_thickness();
             parameters.hair_color = glm::vec3 { 0.32, 0.228, 0.128 };
-            parameters.hair_opacity = 0.80f;
+            parameters.hair_opacity = 0.30f;
 
             parameters.volume_resolution = glm::vec3 { 256,256,256 };
             parameters.volume_bounds = hair_style.get_bounding_box();
@@ -174,6 +174,8 @@ namespace vkhr {
                 descriptor_set.write(3, density_view, density_sampler);
             }
 
+            command_buffer.set_line_width(parameters.strand_radius);
+
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 
             command_buffer.bind_vertex_buffer(0, vertices, 0);
@@ -202,7 +204,7 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
-            pipeline.fixed_stages.set_line_width(2.0);
+            pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_alpha_blending_for(0);
             pipeline.fixed_stages.enable_depth_test(false);
 

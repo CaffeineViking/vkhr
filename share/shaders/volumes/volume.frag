@@ -68,9 +68,10 @@ void main() {
         occlusion *= volume_approximated_deep_shadows(strand_density,
                                                       surface_position.xyz,
                                                       lights[0].origin,
-                                                      raycast_steps, 0.3,
+                                                      raycast_steps, 0.3f,
                                                       volume_bounds.origin,
-                                                      volume_bounds.size, 27.0f);
+                                                      volume_bounds.size,
+                                                      27.0f);
     }
 
     if (shading_model != ADSM) {

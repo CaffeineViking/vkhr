@@ -32,10 +32,10 @@ layout(location = 0) out vec4 color;
 void main() {
     float coverage = gpaa(gl_FragCoord.xy, fs_in.position,
                           camera.projection * camera.view,
-                          vec2(1280.00f, 720.00f), 2.00f);
+                          camera.resolution, strand_width);
 
-    coverage *= 0.3f; // Alpha that will be used to blend.
-    if (coverage < 0.01) discard; // Shading not worth it!
+    coverage *= hair_alpha; // Alpha used for transparency.
+    if (coverage < 0.001) discard; // Shading not worth it!
 
     vec3 eye_normal = normalize(fs_in.position.xyz - camera.position);
     vec3 light_direction = normalize(lights[0].origin - fs_in.position.xyz);

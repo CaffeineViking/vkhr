@@ -76,6 +76,7 @@ namespace vkpp {
         void set_depth_bias(float constant_factor,
                             float clamp,
                             float slope_factor);
+        void set_line_width(float width);
 
         template<typename T>
         void push_constant(Pipeline& pipeline,

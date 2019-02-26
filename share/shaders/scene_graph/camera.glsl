@@ -5,8 +5,9 @@ layout(binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     vec3 position;
-    float near;
-    float far;
+    float padding_0;
+    float near, far;
+    vec2 resolution;
 } camera;
 
 #endif
