@@ -282,11 +282,6 @@ namespace vkhr {
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Depth Pass");
 
-        if ((!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) || !imgui.rasterizer_enabled(level_of_detail)) {
-            vk::DebugMarker::close(command_buffers[frame]);
-            return;
-        }
-
         vk::DebugMarker::begin(command_buffers[frame], "Bake Shadow Maps", query_pools[frame]);
         for (auto& shadow_map : shadow_maps) {
             auto& vp = shadow_map.light->get_view_projection();
