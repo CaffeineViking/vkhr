@@ -38,6 +38,8 @@ void main() {
     coverage *= hair_alpha; // Alpha used for transparency.
     if (coverage < 0.001) discard; // Shading not worth it!
 
+    coverage *= 1 - lod(magnified_distance, minified_distance, camera.look_at_distance);
+
     vec3 eye_normal = normalize(fs_in.position.xyz - camera.position);
     vec3 light_direction = normalize(lights[0].origin - fs_in.position.xyz);
     vec3 light_bulb_color = lights[0].intensity; // add attenutations?
@@ -69,8 +71,6 @@ void main() {
                                              2, occlusion_radius,
                                              ao_exponent, ao_max);
     }
-
-    coverage *= 1.0 - lod(magnified_distance, minified_distance, camera.look_at_distance);
 
     color = vec4(shading * occlusion, coverage);
 

@@ -97,11 +97,11 @@ namespace vkhr {
 
         void LinkedList::resolve(vk::SwapChain& swap_chain, std::uint32_t frame, Pipeline& pipeline, vk::CommandBuffer& command_buffer) {
             swap_chain.get_images()[frame].transition(command_buffer,
-                                                      VK_ACCESS_MEMORY_READ_BIT,
+                                                      VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                                                       VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT,
-                                                      VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                                                      VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                                       VK_IMAGE_LAYOUT_GENERAL,
-                                                      VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                                      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                                       VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 
             command_buffer.bind_pipeline(pipeline);
@@ -118,11 +118,11 @@ namespace vkhr {
 
             swap_chain.get_images()[frame].transition(command_buffer,
                                                       VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT,
-                                                      VK_ACCESS_MEMORY_READ_BIT,
+                                                      VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                                                       VK_IMAGE_LAYOUT_GENERAL,
-                                                      VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                                                      VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                                       VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                                      VK_PIPELINE_STAGE_TRANSFER_BIT);
+                                                      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
         }
 
         std::size_t LinkedList::get_width() const {

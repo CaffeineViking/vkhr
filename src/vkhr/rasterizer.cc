@@ -217,11 +217,9 @@ namespace vkhr {
     void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Color Pass");
 
-        if (imgui.rasterizer_enabled(level_of_detail)) {
-            vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
-            ppll.clear(command_buffers[frame]);
-            vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
-        }
+        vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
+        ppll.clear(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
 
         command_buffers[frame].begin_render_pass(color_pass, framebuffers[frame],
                                                  { 1.00f, 1.00f, 1.00f, 1.00f });
@@ -246,14 +244,12 @@ namespace vkhr {
 
         command_buffers[frame].end_render_pass();
 
-        if (imgui.rasterizer_enabled(level_of_detail)) {
-            vk::DebugMarker::begin(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
-            ppll.resolve(swap_chain,
-                         frame,
-                         ppll_blend_pipeline,
-                         command_buffers[frame]);
-            vk::DebugMarker::close(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
-        }
+        vk::DebugMarker::begin(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
+        ppll.resolve(swap_chain,
+                     frame,
+                     ppll_blend_pipeline,
+                     command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
 
         vk::DebugMarker::close(command_buffers[frame]);
 

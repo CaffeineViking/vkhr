@@ -104,7 +104,7 @@ namespace vkhr {
         void Volume::draw(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
             descriptor_set.write(2, *parameter_buffer);
             descriptor_set.write(3, *density_view, *density_sampler);
-            descriptor_set.write(6, *tangent_view, *tangent_sampler);
+            descriptor_set.write(10, *tangent_view, *tangent_sampler);
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
             command_buffer.bind_vertex_buffer(0, vertices, 0);
             command_buffer.bind_index_buffer(elements);
@@ -151,8 +151,12 @@ namespace vkhr {
                 { 2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
                 { 3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
                 { 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
-                { 5, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT },
-                { 6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
+                { 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE },
+                { 6, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+                { 7, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+                { 8, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+                { 9, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT },
+                { 10, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }
             };
 
             pipeline.descriptor_set_layout = vk::DescriptorSet::Layout { vulkan_renderer.device, descriptor_bindings };
@@ -167,7 +171,13 @@ namespace vkhr {
                 pipeline.descriptor_sets[i].write(0, vulkan_renderer.camera[i]);
                 pipeline.descriptor_sets[i].write(1, vulkan_renderer.lights[i]);
                 pipeline.descriptor_sets[i].write(4, vulkan_renderer.params[i]);
-                pipeline.descriptor_sets[i].write(5, vulkan_renderer.swap_chain.get_depth_buffer_view());
+
+                pipeline.descriptor_sets[i].write(5, vulkan_renderer.ppll.get_heads_view());
+                pipeline.descriptor_sets[i].write(6, vulkan_renderer.ppll.get_nodes());
+                pipeline.descriptor_sets[i].write(7, vulkan_renderer.ppll.get_parameters());
+                pipeline.descriptor_sets[i].write(8, vulkan_renderer.ppll.get_node_counter());
+
+                pipeline.descriptor_sets[i].write(9, vulkan_renderer.swap_chain.get_depth_buffer_view());
             }
 
             pipeline.pipeline_layout = vk::Pipeline::Layout {

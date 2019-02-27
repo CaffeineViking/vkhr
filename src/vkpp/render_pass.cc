@@ -271,7 +271,7 @@ namespace vkpp {
         std::vector<RenderPass::Attachment> attachments {
             {
                 swap_chain.get_color_attachment_format(),
-                swap_chain.get_khr_presentation_layout()
+                swap_chain.get_color_attachment_layout()
             },
             {
                 swap_chain.get_depth_attachment_format(),
