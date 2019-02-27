@@ -13,7 +13,8 @@ namespace vkhr {
         enum Type : int {
             Rasterizer,
             Ray_Tracer,
-            Raymarcher
+            Raymarcher,
+            Transition,
         };
     };
 }

@@ -48,6 +48,10 @@ void main() {
     if (depth_buffer < surface_depth)
         discard;
 
+    float alpha = 1.0;
+
+    if (alpha < 0.001) discard;
+
     vec3 shading = vec3(1.0);
 
     vec3 light_direction = normalize(lights[0].origin - surface_position.xyz);
@@ -83,5 +87,5 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
-    color = vec4(shading * occlusion, 1.0f);
+    color = vec4(shading * occlusion, alpha);
 }

@@ -24,6 +24,9 @@ layout(binding = 4) uniform Params {
     float occlusion_radius;
     float ao_exponent;
     float ao_max;
+
+    float magnified_distance,
+           minified_distance;
 };
 
 #endif

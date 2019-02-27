@@ -161,7 +161,7 @@ namespace vkhr {
     }
 
     void Camera::set_distance(float value) {
-        distance = glm::clamp(value, near_distance, far_distance);
+        distance = glm::clamp(value, near_distance, 8000.0f);
         set_position(look_at_point + -get_forward_direction() * distance);
     }
 

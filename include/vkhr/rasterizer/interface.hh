@@ -77,6 +77,9 @@ namespace vkhr {
             float occlusion_radius;
             float ao_exponent;
             float ao_clamp;
+
+            float lod_mag_distance,
+                  lod_min_distance;
         } parameters {
             KajiyaKay,
 
@@ -96,7 +99,10 @@ namespace vkhr {
             512,
             2.50f,
             10.0f,
-            0.125
+            0.125,
+
+            100.0,
+            500.0
         };
 
         void default_parameters();
@@ -132,6 +138,7 @@ namespace vkhr {
         std::vector<std::string> shadow_samplers;
 
         int simulation_effect { 0 };
+        float level_of_detail { 0 };
 
         Renderer::Type current_renderer  { Renderer::Rasterizer };
         Renderer::Type previous_renderer { Renderer::Raymarcher };

@@ -214,7 +214,7 @@ namespace vkhr {
     void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Color Pass");
 
-        if (!imgui.raymarcher_enabled()) {
+        if (imgui.rasterizer_enabled()) {
             vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
             ppll.clear(command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
@@ -227,7 +227,7 @@ namespace vkhr {
         draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
-        if (!imgui.raymarcher_enabled()) {
+        if (imgui.rasterizer_enabled()) {
             vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
             draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
@@ -243,7 +243,7 @@ namespace vkhr {
 
         command_buffers[frame].end_render_pass();
 
-        if (!imgui.raymarcher_enabled()) {
+        if (imgui.rasterizer_enabled()) {
             vk::DebugMarker::begin(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
             ppll.resolve(swap_chain,
                          frame,
@@ -279,7 +279,7 @@ namespace vkhr {
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Depth Pass");
 
-        if ((!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) || imgui.raymarcher_enabled()) {
+        if ((!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) || !imgui.rasterizer_enabled()) {
             vk::DebugMarker::close(command_buffers[frame]);
             return;
         }

@@ -4,8 +4,9 @@
 #include "../shading/kajiya-kay.glsl"
 #include "../self-shadowing/approximate_deep_shadows.glsl"
 #include "../volumes/local_ambient_occlusion.glsl"
-#include "../transparency/ppll.glsl"
 
+#include "../transparency/ppll.glsl"
+#include "../level_of_detail/scheme.glsl"
 #include "../anti-aliasing/gpaa.glsl"
 
 #include "../scene_graph/lights.glsl"
