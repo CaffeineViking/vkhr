@@ -102,7 +102,7 @@ namespace vkhr {
             10.0f,
             0.125,
 
-            500.0,
+            400.0,
             Renderer::Type::Rasterizer,
             800.0,
         };
