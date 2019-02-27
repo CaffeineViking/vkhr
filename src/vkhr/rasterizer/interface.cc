@@ -452,6 +452,7 @@ namespace vkhr {
     void Interface::toggle_renderer() {
         auto tmp = current_renderer;
         current_renderer = previous_renderer;
+        parameters.renderer = current_renderer;
         previous_renderer = tmp;
     }
 
