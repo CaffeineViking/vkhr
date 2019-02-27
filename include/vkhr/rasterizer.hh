@@ -77,6 +77,7 @@ namespace vkhr {
 
         std::uint32_t frame { 0 };
         std::uint32_t latest_drawn_frame { 0 };
+        float level_of_detail = 0;
 
         std::vector<vk::UniformBuffer> camera;
         std::vector<vk::UniformBuffer> lights;

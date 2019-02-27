@@ -36,14 +36,12 @@ namespace vkhr {
 
     void Camera::set_width(unsigned width) {
         this->width = width;
-        view_projection_matrix.resolution.x = width;
         projection_matrix_dirty = true;
         viewing_plane_dirty     = true;
     }
 
     void Camera::set_height(unsigned height) {
         this->height = height;
-        view_projection_matrix.resolution.y = height;
         projection_matrix_dirty = true;
         viewing_plane_dirty     = true;
     }
@@ -232,6 +230,9 @@ namespace vkhr {
         view_projection_matrix.projection = projection_matrix;
         view_projection_matrix.near = near_distance;
         view_projection_matrix.far  = far_distance;
+        view_projection_matrix.look_at_distance = distance;
+        view_projection_matrix.resolution.x = width;
+        view_projection_matrix.resolution.y = height;
         view_projection = projection_matrix * view_matrix;
         projection_matrix_dirty = false;
     }
@@ -240,6 +241,9 @@ namespace vkhr {
         view_matrix = glm::lookAt(position, look_at_point, up_direction);
         view_projection_matrix.view = view_matrix;
         view_projection = projection_matrix * view_matrix;
+        view_projection_matrix.look_at_distance = distance;
+        view_projection_matrix.resolution.y = height;
+        view_projection_matrix.resolution.x = width;
         view_projection_matrix.position = position;
         view_matrix_dirty = false;
     }

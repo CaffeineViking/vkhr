@@ -140,8 +140,9 @@ namespace vkhr {
                              get_string_from_vector,
                              static_cast<void*>(&renderers),
                              renderers.size())) {
-                if (previous_renderer != current_renderer) // OK
+                if (previous_renderer != current_renderer)
                     this->previous_renderer = previous_renderer;
+                parameters.renderer = current_renderer;
             }
 
             ImGui::SameLine(0.0, 4.0);
@@ -151,14 +152,11 @@ namespace vkhr {
 
             if (current_renderer == Renderer::Type::Transition) {
                 ImGui::PushItemWidth(94);
-                ImGui::DragFloat("Magnified", &parameters.lod_mag_distance);
+                ImGui::DragFloat("Magnified", &parameters.lod_magnified_distance);
                 ImGui::SameLine(0.0, 8.0);
-                ImGui::DragFloat("Minified", &parameters.lod_min_distance);
+                ImGui::DragFloat("Minified", &parameters.lod_minified_distance);
                 ImGui::PopItemWidth();
             }
-
-            level_of_detail = glm::smoothstep(parameters.lod_mag_distance, parameters.lod_min_distance,
-                                              scene_graph.camera.distance); // From the scene's origin.
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -463,11 +461,11 @@ namespace vkhr {
         return previous_visibility;
     }
 
-    bool Interface::rasterizer_enabled() {
+    bool Interface::rasterizer_enabled(float level_of_detail) {
         return current_renderer == Renderer::Rasterizer || (current_renderer == Renderer::Transition && level_of_detail != 1.0);
     }
 
-    bool Interface::raymarcher_enabled() {
+    bool Interface::raymarcher_enabled(float level_of_detail) {
         return current_renderer == Renderer::Raymarcher || (current_renderer == Renderer::Transition && level_of_detail != 0.0);
     }
 

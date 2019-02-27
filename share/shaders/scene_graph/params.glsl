@@ -4,6 +4,10 @@
 #define YES  1
 #define NO   0
 
+#define RASTERIZER 0
+#define RAYMARCHER 2
+#define TRANSITION 3
+
 layout(binding = 4) uniform Params {
     int shading_model;
 
@@ -25,8 +29,9 @@ layout(binding = 4) uniform Params {
     float ao_exponent;
     float ao_max;
 
-    float magnified_distance,
-           minified_distance;
+    float magnified_distance;
+    int renderer;
+    float minified_distance;
 };
 
 #endif

@@ -39,7 +39,7 @@ void main() {
     vec4 resolved_color = imageLoad(color, pixel);
 
     // Replaces fragments in k-buffer if there
-    // are any "close"r fragments in the PPLL.
+    // are any "closer" fragments in the PPLL.
     // Other ones are blended without sorting.
     for (uint f = 0; f < MAX_FRAGMENTS; ++f) {
         if (pixel_head_node == PPLL_NULL_NODE)

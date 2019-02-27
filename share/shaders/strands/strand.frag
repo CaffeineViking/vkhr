@@ -70,6 +70,8 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
+    coverage *= 1.0 - lod(magnified_distance, minified_distance, camera.look_at_distance);
+
     color = vec4(shading * occlusion, coverage);
 
     ivec2 pixel = ivec2(gl_FragCoord.xy);

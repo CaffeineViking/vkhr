@@ -10,15 +10,11 @@ namespace vkhr {
         };
 
         std::vector<vk::Layer> required_layers {
-        #ifdef DEBUG
             "VK_LAYER_LUNARG_standard_validation"
-        #endif
         };
 
         std::vector<vk::Extension> required_extensions {
-        #ifdef DEBUG
             "VK_EXT_debug_utils"
-        #endif
         };
 
         vk::append(window.get_vulkan_surface_extensions(),
@@ -157,6 +153,9 @@ namespace vkhr {
     void Rasterizer::update(const SceneGraph& scene_graph) {
         camera[frame].update(scene_graph.get_camera().get_transform());
         lights[frame].update(scene_graph.fetch_light_source_buffers());
+        level_of_detail = glm::smoothstep(imgui.parameters.lod_magnified_distance,
+                                          imgui.parameters.lod_minified_distance,
+                                          scene_graph.get_camera().get_distance());
         params[frame].update(imgui.parameters); // Rendering parameter.
     }
 
@@ -214,7 +213,7 @@ namespace vkhr {
     void Rasterizer::draw_color(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Color Pass");
 
-        if (imgui.rasterizer_enabled()) {
+        if (imgui.rasterizer_enabled(level_of_detail)) {
             vk::DebugMarker::begin(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
             ppll.clear(command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Clear PPLL Nodes", query_pools[frame]);
@@ -227,7 +226,7 @@ namespace vkhr {
         draw_model(scene_graph, model_mesh_pipeline, command_buffers[frame]);
         vk::DebugMarker::close(command_buffers[frame], "Draw Mesh Models", query_pools[frame]);
 
-        if (imgui.rasterizer_enabled()) {
+        if (imgui.rasterizer_enabled(level_of_detail)) {
             vk::DebugMarker::begin(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
             draw_hairs(scene_graph, hair_style_pipeline, command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Draw Hair Styles", query_pools[frame]);
@@ -235,7 +234,7 @@ namespace vkhr {
 
         command_buffers[frame].next_subpass(); // Next subpass which will read depth buffer values.
 
-        if (imgui.raymarcher_enabled()) {
+        if (imgui.raymarcher_enabled(level_of_detail)) {
             vk::DebugMarker::begin(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
             strand_dvr(scene_graph, strand_dvr_pipeline, command_buffers[frame]);
             vk::DebugMarker::close(command_buffers[frame], "Raymarch Strands", query_pools[frame]);
@@ -243,7 +242,7 @@ namespace vkhr {
 
         command_buffers[frame].end_render_pass();
 
-        if (imgui.rasterizer_enabled()) {
+        if (imgui.rasterizer_enabled(level_of_detail)) {
             vk::DebugMarker::begin(command_buffers[frame], "Resolve the PPLL", query_pools[frame]);
             ppll.resolve(swap_chain,
                          frame,
@@ -279,7 +278,7 @@ namespace vkhr {
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
         vk::DebugMarker::begin(command_buffers[frame], "Depth Pass");
 
-        if ((!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) || !imgui.rasterizer_enabled()) {
+        if ((!imgui.parameters.adsm_on && !imgui.parameters.ctsm_on) || !imgui.rasterizer_enabled(level_of_detail)) {
             vk::DebugMarker::close(command_buffers[frame]);
             return;
         }

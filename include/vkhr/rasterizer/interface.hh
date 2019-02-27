@@ -78,8 +78,9 @@ namespace vkhr {
             float ao_exponent;
             float ao_clamp;
 
-            float lod_mag_distance,
-                  lod_min_distance;
+            float lod_magnified_distance;
+            Renderer::Type renderer;
+            float lod_minified_distance;
         } parameters {
             KajiyaKay,
 
@@ -101,8 +102,9 @@ namespace vkhr {
             10.0f,
             0.125,
 
-            100.0,
-            500.0
+            500.0,
+            Renderer::Type::Rasterizer,
+            800.0,
         };
 
         void default_parameters();
@@ -115,10 +117,10 @@ namespace vkhr {
         void set_visibility(bool visible);
         bool show();
 
-        bool rasterizer_enabled();
+        bool rasterizer_enabled(float level_of_detail);
         bool raytracing_enabled();
         void toggle_light_rotation();
-        bool raymarcher_enabled();
+        bool raymarcher_enabled(float level_of_detail);
         void toggle_renderer();
 
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
@@ -138,7 +140,6 @@ namespace vkhr {
         std::vector<std::string> shadow_samplers;
 
         int simulation_effect { 0 };
-        float level_of_detail { 0 };
 
         Renderer::Type current_renderer  { Renderer::Rasterizer };
         Renderer::Type previous_renderer { Renderer::Raymarcher };

@@ -5,6 +5,8 @@
 #include "../self-shadowing/approximate_deep_shadows.glsl"
 #include "../shading/kajiya-kay.glsl"
 
+#include "../level_of_detail/scheme.glsl"
+
 #include "raymarch.glsl"
 #include "sample_volume.glsl"
 #include "local_ambient_occlusion.glsl"
@@ -48,9 +50,7 @@ void main() {
     if (depth_buffer < surface_depth)
         discard;
 
-    float alpha = 1.0;
-
-    if (alpha < 0.001) discard;
+    float alpha = lod(magnified_distance, minified_distance, camera.look_at_distance);
 
     vec3 shading = vec3(1.0);
 
