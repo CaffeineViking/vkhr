@@ -58,7 +58,7 @@ void main() {
                                               shadow_space_fragment,
                                               deep_shadows_kernel_size,
                                               deep_shadows_stride_size,
-                                              30000.0f, 0.3);
+                                              30000.0f, hair_alpha);
     }
 
     if (shading_model != ADSM) {
@@ -77,6 +77,7 @@ void main() {
     ivec2 pixel = ivec2(gl_FragCoord.xy);
 
     uint node = ppll_next_node();
+    if (node == PPLL_NULL_NODE) discard;
     ppll_node_data(node, color, gl_FragCoord.z);
     ppll_link_node(pixel, node);
 

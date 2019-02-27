@@ -10,7 +10,7 @@ layout(binding = 9, rgba8) uniform image2D color;
 // with some minor modifications for OpenGL usage.
 
 #define K_BUFFER_SIZE 8
-#define MAX_FRAGMENTS 512
+#define MAX_FRAGMENTS 1024
 
 void main() {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);

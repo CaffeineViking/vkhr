@@ -49,7 +49,7 @@ namespace vkhr {
             parameters.strand_radius = 2.0f;
             parameters.hair_shininess = 50.0f;
             parameters.hair_color = glm::vec3 { 0.32, 0.228, 0.128 };
-            parameters.hair_opacity = 0.50f;
+            parameters.hair_opacity = 0.30f;
 
             parameters.volume_resolution = glm::vec3 { 256,256,256 };
             parameters.volume_bounds = hair_style.get_bounding_box();

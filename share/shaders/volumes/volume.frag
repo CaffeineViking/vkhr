@@ -72,7 +72,7 @@ void main() {
         occlusion *= volume_approximated_deep_shadows(strand_density,
                                                       surface_position.xyz,
                                                       lights[0].origin,
-                                                      raycast_steps, 0.3f,
+                                                      raycast_steps, hair_alpha,
                                                       volume_bounds.origin,
                                                       volume_bounds.size,
                                                       27.0f);
