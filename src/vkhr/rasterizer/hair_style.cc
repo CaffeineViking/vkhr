@@ -204,6 +204,8 @@ namespace vkhr {
                                                  static_cast<float>(vulkan_renderer.swap_chain.get_height()),
                                                  0.0, 1.0 });
 
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_LINE_WIDTH);
+
             pipeline.fixed_stages.set_line_width(1.0);
             pipeline.fixed_stages.enable_alpha_blending_for(0);
             pipeline.fixed_stages.enable_depth_test(false);
@@ -300,6 +302,7 @@ namespace vkhr {
             pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 
             pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_VIEWPORT);
+            pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_LINE_WIDTH);
             pipeline.fixed_stages.add_dynamic_state(VK_DYNAMIC_STATE_SCISSOR);
 
             pipeline.fixed_stages.set_culling_mode(VK_CULL_MODE_BACK_BIT);
