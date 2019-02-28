@@ -55,6 +55,7 @@ namespace vkhr {
             vk::IndexBuffer  segments;
             vk::VertexBuffer vertices;
             vk::VertexBuffer tangents;
+            vk::VertexBuffer thickness;
 
             vk::ImageView density_view;
             vk::DeviceImage density_volume;

@@ -20,6 +20,7 @@ layout(early_fragment_tests) in;
 layout(location = 0) in PipelineIn {
     vec4 position;
     vec3 tangent;
+    float thickness;
 } fs_in;
 
 layout(push_constant) uniform Object {
@@ -39,6 +40,7 @@ void main() {
     if (coverage < 0.001) discard; // Shading not worth it!
 
     coverage *= 1 - lod(magnified_distance, minified_distance, camera.look_at_distance);
+    coverage *= fs_in.thickness * STRAND_SCALING; // Slowly fades the strand at the tip.
 
     vec3 eye_normal = normalize(fs_in.position.xyz - camera.position);
     vec3 light_direction = normalize(lights[0].origin - fs_in.position.xyz);

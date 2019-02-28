@@ -275,7 +275,7 @@ namespace vkhr {
                 if (scene_file == 1) {
                     parameters.ctsm_bias = 0.00000f;
                 } else {
-                    parameters.ctsm_bias = 0.00010f;
+                    parameters.ctsm_bias = 0.00005f;
                 }
             }
 

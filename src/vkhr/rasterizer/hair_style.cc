@@ -36,6 +36,16 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, tangents.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Tangent Device Memory", id);
 
+            thickness = vk::VertexBuffer {
+                vulkan_renderer.device,
+                vulkan_renderer.command_pool,
+                hair_style.get_thickness()
+            };
+
+            vk::DebugMarker::object_name(vulkan_renderer.device, thickness, VK_OBJECT_TYPE_BUFFER, "Hair Thickness Vertex Buffer", id);
+            vk::DebugMarker::object_name(vulkan_renderer.device, thickness.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
+                                         "Hair Thickness Device Memory", id);
+
             segments = vk::IndexBuffer {
                 vulkan_renderer.device,
                 vulkan_renderer.command_pool,
@@ -46,10 +56,10 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, segments.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            parameters.strand_radius = 2.0f;
-            parameters.hair_shininess = 50.0f;
-            parameters.hair_color = glm::vec3 { 0.32, 0.228, 0.128 };
-            parameters.hair_opacity = 0.30f;
+            parameters.hair_shininess = 50.0f; // Using Kajiya-Kay.
+            parameters.strand_radius = hair_style.get_default_thickness();
+            parameters.hair_opacity = hair_style.get_default_transparency();
+            parameters.hair_color = hair_style.get_default_color();
 
             parameters.volume_resolution = glm::vec3 { 256,256,256 };
             parameters.volume_bounds = hair_style.get_bounding_box();
@@ -178,8 +188,9 @@ namespace vkhr {
 
             command_buffer.bind_descriptor_set(descriptor_set, pipeline);
 
-            command_buffer.bind_vertex_buffer(0, vertices, 0);
-            command_buffer.bind_vertex_buffer(1, tangents, 0);
+            command_buffer.bind_vertex_buffer(0, vertices,  0);
+            command_buffer.bind_vertex_buffer(1, tangents,  0);
+            command_buffer.bind_vertex_buffer(2, thickness, 0);
 
             command_buffer.bind_index_buffer(segments);
 
@@ -195,6 +206,7 @@ namespace vkhr {
 
             pipeline.fixed_stages.add_vertex_binding({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3) });
             pipeline.fixed_stages.add_vertex_binding({ 1, 1, VK_FORMAT_R32G32B32_SFLOAT, sizeof(glm::vec3) });
+            pipeline.fixed_stages.add_vertex_binding({ 2, 2, VK_FORMAT_R32_SFLOAT,       sizeof(float)     });
 
             pipeline.fixed_stages.set_topology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 

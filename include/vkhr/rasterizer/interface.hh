@@ -91,7 +91,7 @@ namespace vkhr {
 
             5,
             Poisson,
-            0.00010,
+            0.00005,
             true,
 
             ApproximateDeepShadows,

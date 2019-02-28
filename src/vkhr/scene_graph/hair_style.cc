@@ -365,7 +365,7 @@ namespace vkhr {
         std::vector<glm::vec4> position_thicknesses(get_vertex_count());
         #pragma omp parallel for schedule(dynamic)
         for (int i = 0; i < static_cast<int>(get_vertex_count()); ++i) {
-            float thickness { 0.042f }; // TODO: get_default_thickness
+            float thickness { 0.042f };
             if (has_thickness())
                 thickness = this->thickness[i];
 

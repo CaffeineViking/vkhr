@@ -3,6 +3,8 @@
 
 #include "../volumes/bounding_box.glsl"
 
+#define STRAND_SCALING (1.0 / 0.042)
+
 layout(binding = 2) uniform Strand {
     AABB volume_bounds;
     vec3 volume_resolution;

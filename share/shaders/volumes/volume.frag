@@ -60,10 +60,12 @@ void main() {
 
     vec3 light_bulb_intensity = lights[0].intensity;
 
-    vec3 surface_tangent = normalize(filter_volume(strand_tangent, 3.0f,
-                                                   surface_position.xyz,
-                                                   volume_bounds.origin,
-                                                   volume_bounds.size).xyz);
+    vec3 surface_tangent = sample_volume(strand_tangent,
+                                         surface_position.xyz,
+                                         volume_bounds.origin,
+                                         volume_bounds.size).xyz;
+
+    surface_tangent = normalize(surface_tangent);
 
     if (shading_model == KAJIYA_KAY) {
         shading = kajiya_kay(hair_color, light_bulb_intensity, hair_exponent,
