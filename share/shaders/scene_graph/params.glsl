@@ -4,10 +4,6 @@
 #define YES  1
 #define NO   0
 
-#define RASTERIZER 0
-#define RAYMARCHER 2
-#define TRANSITION 3
-
 layout(binding = 4) uniform Params {
     int shading_model;
 

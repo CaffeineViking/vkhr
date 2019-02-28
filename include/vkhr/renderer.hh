@@ -11,10 +11,10 @@ namespace vkhr {
         virtual void draw(const SceneGraph&) = 0;
 
         enum Type : int {
-            Rasterizer,
-            Ray_Tracer,
-            Raymarcher,
-            Transition,
+            Rasterizer = 0,
+            Ray_Tracer = 1,
+            Raymarcher = 2,
+            Transition = 3,
         };
     };
 }

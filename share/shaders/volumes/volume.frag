@@ -60,7 +60,10 @@ void main() {
 
     vec3 light_bulb_intensity = lights[0].intensity;
 
-    vec3 surface_tangent = normalize(filter_volume(strand_tangent, 3, surface_position.xyz, volume_bounds.origin, volume_bounds.size).xyz);
+    vec3 surface_tangent = normalize(filter_volume(strand_tangent, 3.0f,
+                                                   surface_position.xyz,
+                                                   volume_bounds.origin,
+                                                   volume_bounds.size).xyz);
 
     if (shading_model == KAJIYA_KAY) {
         shading = kajiya_kay(hair_color, light_bulb_intensity, hair_exponent,
@@ -76,7 +79,7 @@ void main() {
                                                       raycast_steps, hair_alpha,
                                                       volume_bounds.origin,
                                                       volume_bounds.size,
-                                                      27.0f);
+                                                      10.0f);
     }
 
     if (shading_model != ADSM) {

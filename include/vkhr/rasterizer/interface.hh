@@ -70,7 +70,7 @@ namespace vkhr {
             float ctsm_bias;
             int ctsm_on;
 
-            int shadow_technique;
+            ShadowTechnique shadow_technique;
 
             float isosurface;
             float raycast_steps;
@@ -85,18 +85,18 @@ namespace vkhr {
             KajiyaKay,
 
             3,
-            Poisson,
+            Uniform,
             3,
             true,
 
             5,
-            Uniform,
-            0.00005,
+            Poisson,
+            0.00010,
             true,
 
             ApproximateDeepShadows,
 
-            0.035,
+            0.050,
             1024,
             2.50f,
             10.0f,
