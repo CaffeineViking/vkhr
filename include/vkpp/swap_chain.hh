@@ -28,7 +28,8 @@ namespace vkpp {
                   CommandPool& command_pool,
                   const VkSurfaceFormatKHR& preferred_format,
                   const PresentationMode& preferred_present_mode,
-                  const VkExtent2D& preferred_window_extent);
+                  const VkExtent2D& preferred_window_extent,
+                  VkSwapchainKHR old_swapchain = nullptr);
         ~SwapChain() noexcept;
 
         SwapChain(SwapChain&& device) noexcept;

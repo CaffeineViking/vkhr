@@ -14,7 +14,8 @@ namespace vkpp {
                          CommandPool& command_pool, // @ transition
                          const VkSurfaceFormatKHR& preferred_format,
                          const PresentationMode& preferred_present_mode,
-                         const VkExtent2D& preferred_window_extent)
+                         const VkExtent2D& preferred_window_extent,
+                         VkSwapchainKHR old_swapchain)
                         : surface { &surface },
                           device { logical_device.get_handle() } {
         if (surface.get_presentation_modes().size() == 0 ||
@@ -79,7 +80,7 @@ namespace vkpp {
 
         create_info.presentMode = static_cast<VkPresentModeKHR>(presentation_mode);
         create_info.clipped = VK_TRUE;
-        create_info.oldSwapchain = VK_NULL_HANDLE;
+        create_info.oldSwapchain = old_swapchain;
 
         if (VkResult error = vkCreateSwapchainKHR(device, &create_info, nullptr, &handle)) {
             throw Exception { error, "couldn't create swap chain!" };
@@ -164,7 +165,8 @@ namespace vkpp {
     }
 
     bool SwapChain::out_of_date() const {
-        return swapchain_status == VK_ERROR_OUT_OF_DATE_KHR;
+        return swapchain_status == VK_ERROR_OUT_OF_DATE_KHR ||
+               swapchain_status == VK_SUBOPTIMAL_KHR; // Oh no
     }
 
     std::vector<Framebuffer> SwapChain::create_framebuffers(RenderPass& render_pass) {

@@ -371,8 +371,33 @@ namespace vkhr {
         vk::RenderPass::create_standard_imgui_pass(imgui_pass, device, swap_chain);
     }
 
-    void Rasterizer::recreate_swapchain(Window&) {
-        // TODO: still need to do this, one day.
+    void Rasterizer::recreate_swapchain(Window& window) {
+        device.wait_idle();
+
+        framebuffers.clear();
+        command_buffers.clear();
+
+        destroy_pipelines();
+        destroy_render_passes();
+
+        swap_chain = vk::SwapChain {
+            device,
+            window_surface,
+            command_pool,
+            {
+                VK_FORMAT_B8G8R8A8_UNORM,
+                VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+            },
+            swap_chain.get_presentation_mode(),
+            window.get_extent(),
+            swap_chain.get_handle() // old one.
+        };
+
+        build_render_passes();
+        build_pipelines();
+
+        framebuffers    = swap_chain.create_framebuffers(color_pass);
+        command_buffers = command_pool.allocate(framebuffers.size());
     }
 
     Interface& Rasterizer::get_imgui() {
@@ -460,5 +485,22 @@ namespace vkhr {
         for (auto& shader_module : pipeline.shader_stages)
             pipeline_dirty |= shader_module.recompile();
         return pipeline_dirty;
+    }
+
+    void Rasterizer::destroy_pipelines() { 
+        hair_depth_pipeline = {};
+        mesh_depth_pipeline = {};
+        hair_voxel_pipeline = {};
+        strand_dvr_pipeline = {};
+        ppll_blend_pipeline = {};
+        hair_style_pipeline = {};
+        model_mesh_pipeline = {};
+        billboards_pipeline = {};
+    }
+
+    void Rasterizer::destroy_render_passes() { 
+        depth_pass = {};
+        color_pass = {};
+        imgui_pass = {};
     }
 }

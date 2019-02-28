@@ -46,6 +46,8 @@ namespace vkhr {
         // Direct Volume Render (DVR) the hair strands. This needs to be done after drawing models and styles.
         void strand_dvr(const SceneGraph& scene_graph, Pipeline& pipeline, vk::CommandBuffer& command_buffer);
 
+        void destroy_pipelines();
+        void destroy_render_passes();
         bool recompile_pipeline_shaders(Pipeline& pipeline);
         void recompile();
 
