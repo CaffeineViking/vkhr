@@ -15,9 +15,9 @@ namespace vkhr {
             throw std::runtime_error { "Couldn't find Vulkan loader!" };
         }
 
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_VISIBLE,  GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE,   GLFW_FALSE);
 
         GLFWmonitor* primary_monitor { glfwGetPrimaryMonitor() };
         const GLFWvidmode* primary_vid_mode { glfwGetVideoMode(primary_monitor) };
@@ -274,8 +274,15 @@ namespace vkhr {
 
     void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
         Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
-        window->width  = width;
+
+        if (window->is_fullscreen()) {
+            window->monitor_width  = width;
+            window->monitor_height = height;
+        } else {
+            window->width  = width;
+            window->height = height;
+        }
+
         window->surface_dirty = true;
-        window->height = height;
     }
 }

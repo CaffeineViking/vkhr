@@ -427,4 +427,9 @@ namespace vkpp {
 
         return true; // TODO: warn about other present mode.
     }
+
+    SwapChain::PresentationMode SwapChain::mode(bool vsync) { 
+        return vsync ? SwapChain::PresentationMode::Fifo
+                     : SwapChain::PresentationMode::Immediate;
+    }
 }

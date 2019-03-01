@@ -77,6 +77,8 @@ namespace vkpp {
 
         std::uint32_t size() const;
 
+        static PresentationMode mode(bool vsync);
+
     private:
         void create_swapchain_images(std::uint32_t image_count);
         void create_swapchain_depths(Device& device, CommandBuffer& cmd_list);

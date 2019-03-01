@@ -60,10 +60,7 @@ namespace vkhr {
 
         command_pool = vk::CommandPool { device, device.get_graphics_queue() };
 
-        auto vsync = window.vsync_requested();
-
-        auto presentation_mode = vsync ? vk::SwapChain::PresentationMode::Fifo
-                                 : vk::SwapChain::PresentationMode::Immediate;
+        auto presentation_mode = vk::SwapChain::mode(window.vsync_requested());
 
         swap_chain = vk::SwapChain {
             device,
@@ -170,6 +167,11 @@ namespace vkhr {
 
         auto frame_image = swap_chain.acquire_next_image(image_available[frame]);
 
+        if (swap_chain.out_of_date()) {
+            swapchain_dirty = true;
+            return;
+        }
+
         command_buffers[frame].begin();
 
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
@@ -189,6 +191,9 @@ namespace vkhr {
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
+
+        if (swap_chain.out_of_date())
+            swapchain_dirty = true;
 
         latest_drawn_frame = frame;
         frame = fetch_next_frame();
@@ -318,6 +323,11 @@ namespace vkhr {
 
         auto frame_image = swap_chain.acquire_next_image(image_available[frame]);
 
+        if (swap_chain.out_of_date()) {
+            swapchain_dirty = true;
+            return;
+        }
+
         command_buffers[frame].begin();
 
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
@@ -349,6 +359,9 @@ namespace vkhr {
                                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                            render_complete[frame], command_buffer_finished[frame]);
         device.get_present_queue().present(swap_chain, frame_image, render_complete[frame]);
+
+        if (swap_chain.out_of_date())
+            swapchain_dirty = true;
 
         latest_drawn_frame = frame;
         frame = fetch_next_frame();
@@ -383,6 +396,8 @@ namespace vkhr {
         // Updates any new surface capabilities (e.g. format/mode).
         physical_device.query_surface_capabilities(window_surface);
 
+        auto presentation_mode = vk::SwapChain::mode(window.vsync_requested());
+
         swap_chain = vk::SwapChain {
             device,
             window_surface,
@@ -391,9 +406,8 @@ namespace vkhr {
                 VK_FORMAT_B8G8R8A8_UNORM,
                 VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
             },
-            swap_chain.get_presentation_mode(),
-            window.get_extent(),
-            swap_chain.get_handle() // old one.
+            presentation_mode, window.get_extent(),
+            swap_chain.get_handle()
         };
 
         build_render_passes();
@@ -405,6 +419,15 @@ namespace vkhr {
 
     Interface& Rasterizer::get_imgui() {
         return imgui;
+    }
+
+    bool Rasterizer::swapchain_is_dirty() const {
+        if (swapchain_dirty) {
+            swapchain_dirty = false;
+            return true;
+        }
+
+        return false;
     }
 
     Image Rasterizer::get_screenshot(SceneGraph& scene_graph, Raytracer& ray_tracer) {

@@ -150,7 +150,7 @@ namespace vkhr {
             std::string output { "" };
         };
 
-        static constexpr int profile_limit { 60 };
+        int profile_limit { 60 }; // Might change at run-time.
         std::unordered_map<std::string, ProfilePair> profiles;
 
         static bool get_string_from_vector(void*, int, const char**);

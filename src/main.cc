@@ -79,6 +79,8 @@ int main(int argc, char** argv) {
 
         imgui.transform(scene_graph, rasterizer, ray_tracer);
 
+        if (window.surface_is_dirty() || rasterizer.swapchain_is_dirty()) rasterizer.recreate_swapchain(window);
+
         if (imgui.raytracing_enabled()) {
             ray_tracer.draw(scene_graph);
             auto& framebuffer = ray_tracer.get_framebuffer();

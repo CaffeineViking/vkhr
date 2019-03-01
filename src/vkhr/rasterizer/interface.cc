@@ -117,7 +117,8 @@ namespace vkhr {
 
             ImGui::SameLine(0.0f, 10.0f);
 
-            ImGui::Checkbox("VSync", &window.vsync);
+            if (ImGui::Checkbox("VSync", &window.vsync))
+                window.enable_vsync(window.vsync);
 
             ImGui::SameLine(0.0f, 10.0f);
 

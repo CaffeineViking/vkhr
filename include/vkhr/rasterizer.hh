@@ -51,6 +51,8 @@ namespace vkhr {
         bool recompile_pipeline_shaders(Pipeline& pipeline);
         void recompile();
 
+        bool swapchain_is_dirty() const;
+
         Interface& get_imgui();
         Image get_screenshot(SceneGraph& scene_graph,
                              Raytracer& ray_tracer);
@@ -64,6 +66,8 @@ namespace vkhr {
 
         vk::Surface window_surface;
         vk::SwapChain swap_chain;
+
+        mutable bool swapchain_dirty { false };
 
         vk::RenderPass depth_pass;
         vk::RenderPass color_pass;
