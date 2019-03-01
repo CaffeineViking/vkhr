@@ -380,6 +380,9 @@ namespace vkhr {
         destroy_pipelines();
         destroy_render_passes();
 
+        // Updates any new surface capabilities (e.g. format/mode).
+        physical_device.query_surface_capabilities(window_surface);
+
         swap_chain = vk::SwapChain {
             device,
             window_surface,

@@ -374,7 +374,7 @@ namespace vkpp {
     }
 
     void SwapChain::choose_extent(const VkExtent2D& window_extent) {
-        const auto& capabilities= surface->get_capabilities();
+        const auto& capabilities = surface->get_capabilities();
         if (capabilities.currentExtent.width != std::numeric_limits<std::uint32_t>::max()) {
             current_extent = surface->get_capabilities().currentExtent;
         } else {

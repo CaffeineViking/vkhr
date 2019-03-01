@@ -56,9 +56,9 @@ namespace vkhr {
 
         void poll_events(); // Called once per frame.
 
-        bool framebuffer_resized() const;
         float get_vertical_dpi()   const;
         float get_horizontal_dpi() const;
+        bool  recreate_surface()   const;
 
         void set_time(const float time);
         float get_current_time() const;
@@ -91,7 +91,7 @@ namespace vkhr {
               last_frame_time { 0 },
               fps_update { 0 };
 
-        mutable bool framebuffer_dirty { false };
+        mutable bool surface_dirty { false };
 
         friend class Interface;
     };

@@ -15,9 +15,9 @@ namespace vkhr {
             throw std::runtime_error { "Couldn't find Vulkan loader!" };
         }
 
-        glfwWindowHint(GLFW_RESIZABLE,  GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_VISIBLE,    GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE,  GLFW_FALSE);
 
         GLFWmonitor* primary_monitor { glfwGetPrimaryMonitor() };
         const GLFWvidmode* primary_vid_mode { glfwGetVideoMode(primary_monitor) };
@@ -82,6 +82,7 @@ namespace vkhr {
     }
 
     void Window::toggle_fullscreen() {
+        surface_dirty = true;
         if (!fullscreen) {
             glfwSetWindowMonitor(handle, monitor, 0, 0,
                                  monitor_width, monitor_height,
@@ -95,6 +96,7 @@ namespace vkhr {
     }
 
     void Window::toggle_fullscreen(bool fullscreen) {
+        surface_dirty = true;
         if (fullscreen) {
             glfwSetWindowMonitor(handle, monitor, 0, 0,
                                  monitor_width, monitor_height,
@@ -106,6 +108,7 @@ namespace vkhr {
     }
 
     void Window::enable_vsync(bool sync) {
+        surface_dirty = true;
         vsync = sync;
     }
 
@@ -181,6 +184,7 @@ namespace vkhr {
         this->height = height;
         glfwSetWindowMonitor(handle, nullptr, window_x, window_y,
                              width, height, monitor_refresh_rate);
+        surface_dirty = true;
         fullscreen = false;
     }
 
@@ -207,10 +211,10 @@ namespace vkhr {
         append = text;
     }
 
-    bool Window::framebuffer_resized() const {
-        if (framebuffer_dirty) {
-            framebuffer_dirty = false;
-            return true; // only once.
+    bool Window::surface_is_dirty() const {
+        if (surface_dirty) {
+            surface_dirty = false;
+            return true;
         }
 
         return false;
@@ -271,7 +275,7 @@ namespace vkhr {
     void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
         Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
         window->width  = width;
-        window->framebuffer_dirty = true;
+        window->surface_dirty = true;
         window->height = height;
     }
 }

@@ -72,9 +72,9 @@ namespace vkpp {
         bool has_transfer_queue() const;
         bool has_present_queue() const;
 
-        void assign_present_queue_indices(Surface& surface);
-
         bool has_present_queue(Surface& surface) const;
+        void assign_present_queue_indices(Surface& surface);
+        void query_surface_capabilities(Surface& surface);
 
         std::int32_t get_compute_queue_family_index() const;
         std::int32_t get_graphics_queue_family_index() const;
@@ -87,8 +87,6 @@ namespace vkpp {
         std::string get_type_string() const;
 
     private:
-        void query_surface_capabilities(Surface& surface);
-
         std::string name;
 
         Type type;
