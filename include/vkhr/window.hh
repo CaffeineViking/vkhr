@@ -56,6 +56,7 @@ namespace vkhr {
 
         void poll_events(); // Called once per frame.
 
+        bool framebuffer_resized() const;
         float get_vertical_dpi()   const;
         float get_horizontal_dpi() const;
 
@@ -80,6 +81,8 @@ namespace vkhr {
         float horizontal_dpi,
               vertical_dpi;
 
+        static void framebuffer_callback(GLFWwindow* handle, int width, int height);
+
         mutable std::string append;
 
         std::size_t frames { 0 };
@@ -87,6 +90,8 @@ namespace vkhr {
         float frame_time { -1 },
               last_frame_time { 0 },
               fps_update { 0 };
+
+        mutable bool framebuffer_dirty { false };
 
         friend class Interface;
     };

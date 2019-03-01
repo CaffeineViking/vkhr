@@ -58,6 +58,8 @@ namespace vkhr {
         horizontal_dpi = monitor_width  / monitor_width_in_mm  / inch_to_mm;
         vertical_dpi   = monitor_height / monitor_height_in_mm / inch_to_mm;
 
+        glfwSetWindowUserPointer(handle, this);
+        glfwSetFramebufferSizeCallback(handle, framebuffer_callback);
         glfwSetWindowPos(handle, monitor_center_x, monitor_center_y);
         if (fullscreen) toggle_fullscreen();
     }
@@ -205,6 +207,15 @@ namespace vkhr {
         append = text;
     }
 
+    bool Window::framebuffer_resized() const {
+        if (framebuffer_dirty) {
+            framebuffer_dirty = false;
+            return true; // only once.
+        }
+
+        return false;
+    }
+
     void Window::poll_events() {
         if (frame_time == -1) { // First frame of program
             fps_update = frame_time = get_current_time();
@@ -255,5 +266,12 @@ namespace vkhr {
 
     float Window::update_delta_time() const {
         return delta_time();
+    }
+
+    void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
+        Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
+        window->width  = width;
+        window->framebuffer_dirty = true;
+        window->height = height;
     }
 }
