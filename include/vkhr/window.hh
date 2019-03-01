@@ -58,7 +58,7 @@ namespace vkhr {
 
         float get_vertical_dpi()   const;
         float get_horizontal_dpi() const;
-        bool  recreate_surface()   const;
+        bool  surface_is_dirty()   const;
 
         void set_time(const float time);
         float get_current_time() const;
