@@ -26,7 +26,7 @@ namespace vkhr {
         Rasterizer(Window& window, const SceneGraph& scene_graph);
 
         void build_render_passes();
-        void recreate_swapchain(Window& window);
+        void recreate_swapchain(Window& window, SceneGraph& scene_graph);
         void build_pipelines();
 
         void load(const SceneGraph& scene) override;

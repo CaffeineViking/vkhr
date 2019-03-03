@@ -188,6 +188,17 @@ namespace vkhr {
         now_dirty = false;
     }
 
+    void Raytracer::recreate(unsigned width, unsigned height) {
+        framebuffer = Image {
+            width,
+            height
+        };
+
+        back_buffer.resize(framebuffer.get_pixel_count(), glm::dvec3 { 0.0, 0.0, 0.0 });
+
+        clear();
+    }
+
     void Raytracer::toggle_shadows() {
         shadows_on = !shadows_on;
     }

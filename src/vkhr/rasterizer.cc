@@ -384,7 +384,7 @@ namespace vkhr {
         vk::RenderPass::create_standard_imgui_pass(imgui_pass, device, swap_chain);
     }
 
-    void Rasterizer::recreate_swapchain(Window& window) {
+    void Rasterizer::recreate_swapchain(Window& window, SceneGraph& scene_graph) {
         device.wait_idle();
 
         framebuffers.clear();
@@ -398,6 +398,8 @@ namespace vkhr {
 
         auto presentation_mode = vk::SwapChain::mode(window.vsync_requested());
 
+        auto& camera = scene_graph.get_camera(); // for FoV update.
+
         swap_chain = vk::SwapChain {
             device,
             window_surface,
@@ -410,8 +412,40 @@ namespace vkhr {
             swap_chain.get_handle()
         };
 
+        camera.set_resolution(window.get_width(), window.get_height());
+
         build_render_passes();
         build_pipelines();
+
+        ppll = vulkan::LinkedList {
+            *this,
+            swap_chain.get_width(), swap_chain.get_height(),
+            vulkan::LinkedList::NodeSize,
+            vulkan::LinkedList::AverageFragmentsPerPixel * swap_chain.get_width() *
+                                                           swap_chain.get_height()
+        };
+
+        // Update PPLL descriptor sets for the strand-based hair renderer.
+        for (auto& descriptor_set : hair_style_pipeline.descriptor_sets) {
+            descriptor_set.write(5, ppll.get_heads_view());
+            descriptor_set.write(6, ppll.get_nodes());
+            descriptor_set.write(7, ppll.get_parameters());
+            descriptor_set.write(8, ppll.get_node_counter());
+        }
+
+        // Also update these descriptor sets for the volume-based drawing.
+        for (auto& descriptor_set : strand_dvr_pipeline.descriptor_sets) {
+            descriptor_set.write(5, ppll.get_heads_view());
+            descriptor_set.write(6, ppll.get_nodes());
+            descriptor_set.write(7, ppll.get_parameters());
+            descriptor_set.write(8, ppll.get_node_counter());
+        }
+
+        fullscreen_billboard = vulkan::Billboard {
+            swap_chain.get_width(),
+            swap_chain.get_height(),
+            *this
+        };
 
         framebuffers    = swap_chain.create_framebuffers(color_pass);
         command_buffers = command_pool.allocate(framebuffers.size());

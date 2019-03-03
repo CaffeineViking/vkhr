@@ -15,7 +15,7 @@ namespace vkhr {
             throw std::runtime_error { "Couldn't find Vulkan loader!" };
         }
 
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE,  GLFW_TRUE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_VISIBLE,   GLFW_FALSE);
 

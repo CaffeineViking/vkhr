@@ -63,7 +63,8 @@ int main(int argc, char** argv) {
         } else if (input_map.just_pressed("toggle_fullscreen")) {
             window.toggle_fullscreen();
         } else if (input_map.just_pressed("take_screenshot")) {
-            rasterizer.get_screenshot(scene_graph, ray_tracer).save_time();
+            rasterizer.get_screenshot(scene_graph, ray_tracer)
+                      .save_time(); // label using date/time.
         } else if (input_map.just_pressed("toggle_renderer")) {
             imgui.toggle_renderer();
         } else if (input_map.just_pressed("rotate_light")) {
@@ -79,7 +80,10 @@ int main(int argc, char** argv) {
 
         imgui.transform(scene_graph, rasterizer, ray_tracer);
 
-        if (window.surface_is_dirty() || rasterizer.swapchain_is_dirty()) rasterizer.recreate_swapchain(window);
+        if (window.surface_is_dirty() || rasterizer.swapchain_is_dirty()) {
+            ray_tracer.recreate(window.get_width(), window.get_height());
+            rasterizer.recreate_swapchain(window, scene_graph);
+        }
 
         if (imgui.raytracing_enabled()) {
             ray_tracer.draw(scene_graph);

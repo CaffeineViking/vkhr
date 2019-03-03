@@ -39,6 +39,8 @@ namespace vkhr {
 
         void clear();
 
+        void recreate(unsigned width, unsigned height);
+
         enum VisualizationMethod {
             Shaded           = 0,
             CombinedShadows  = 1,
