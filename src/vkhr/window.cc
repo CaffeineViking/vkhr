@@ -275,6 +275,9 @@ namespace vkhr {
     void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
         Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
 
+        if (window->frame_time == -1)
+            return;
+
         if (window->is_fullscreen()) {
             window->monitor_width  = width;
             window->monitor_height = height;
