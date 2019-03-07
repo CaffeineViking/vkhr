@@ -521,6 +521,27 @@ namespace vkhr {
         return true;
     }
 
+    void Interface::export_performance(const std::string& file_path, const std::string& headers, const std::string& content) {
+        std::ofstream csv { file_path };
+        if (!csv) {
+            throw std::runtime_error { "Couldn't write a CSV!" };
+        }
+
+        csv << "Frame";
+        for (const auto& profile : profiles)
+            csv << ", " << profile.first;
+        if (headers != "") csv << ", " << headers;
+        csv << "\r\n";
+
+        for (int i = 0; i < profile_limit; ++i) {
+            csv << i;
+            for (const auto& timing : profiles)
+                csv << ", " << timing.second.timestamps[i];
+            if (content != "") csv << ", " << content;
+            csv << "\r\n";
+        }
+    }
+
     void Interface::record_performance(const std::unordered_map<std::string, float>& timestamps) {
         for (auto profile = profiles.begin(); profile != profiles.end();) {
             if (timestamps.find(profile->first) == timestamps.end())
