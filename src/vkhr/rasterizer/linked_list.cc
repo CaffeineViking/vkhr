@@ -114,7 +114,7 @@ namespace vkhr {
 
             command_buffer.bind_descriptor_set(pipeline.descriptor_sets[frame], pipeline);
 
-            command_buffer.dispatch(width / 8, height / 8);
+            command_buffer.dispatch(std::ceil(width / 8.0), std::ceil(height / 8.0));
 
             swap_chain.get_images()[frame].transition(command_buffer,
                                                       VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT,
@@ -151,6 +151,11 @@ namespace vkhr {
 
         std::size_t LinkedList::get_height() const {
             return height;
+        }
+
+        void LinkedList::update_resolution(std::size_t width, std::size_t height) {
+            this->width  = width;
+            this->height = height;
         }
 
         vk::DeviceImage& LinkedList::get_heads() {

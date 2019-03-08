@@ -133,9 +133,8 @@ namespace vkpp {
         present_info.pImageIndices = &indices;
         present_info.pResults = nullptr;
 
-        if (VkResult error = vkQueuePresentKHR(handle, &present_info)) {
-            throw Exception { error, "couldn't present swapchain!" };
-        }
+        auto state = vkQueuePresentKHR(handle,  &present_info);
+        swap_chain.set_state(state); // might be out-of-date...
 
         return *this;
     }
@@ -152,9 +151,8 @@ namespace vkpp {
         present_info.pImageIndices = &indices;
         present_info.pResults = nullptr;
 
-        if (VkResult error = vkQueuePresentKHR(handle, &present_info)) {
-            throw Exception { error, "couldn't present swapchain!" };
-        }
+        auto state = vkQueuePresentKHR(handle,  &present_info);
+        swap_chain.set_state(state); // might be out-of-date...
 
         return *this;
     }

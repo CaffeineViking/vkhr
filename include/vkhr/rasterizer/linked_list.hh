@@ -34,6 +34,8 @@ namespace vkhr {
             std::size_t get_node_size() const;
             std::size_t get_height() const;
 
+            void update_resolution(std::size_t width, std::size_t height);
+
             std::size_t get_heads_size_in_bytes() const;
             std::size_t get_nodes_size_in_bytes() const;
 

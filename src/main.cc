@@ -10,6 +10,8 @@
 
 #include <glm/glm.hpp>
 
+#include <iostream>
+
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -82,7 +84,7 @@ int main(int argc, char** argv) {
 
         if (window.surface_is_dirty() || rasterizer.swapchain_is_dirty()) {
             ray_tracer.recreate(window.get_width(), window.get_height());
-            rasterizer.recreate_swapchain(window, scene_graph);
+            rasterizer.recreate_swapchain(window, scene_graph); // slow!?
         }
 
         if (imgui.raytracing_enabled()) {

@@ -385,6 +385,7 @@ namespace vkhr {
     }
 
     void Rasterizer::recreate_swapchain(Window& window, SceneGraph& scene_graph) {
+        window.maximized();
         device.wait_idle();
 
         framebuffers.clear();

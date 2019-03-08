@@ -82,7 +82,7 @@ namespace vkhr {
     }
 
     void Window::toggle_fullscreen() {
-        surface_dirty = true;
+        if (frame_time != -1) surface_dirty = true;
         if (!fullscreen) {
             glfwSetWindowMonitor(handle, monitor, 0, 0,
                                  monitor_width, monitor_height,
@@ -96,7 +96,7 @@ namespace vkhr {
     }
 
     void Window::toggle_fullscreen(bool fullscreen) {
-        surface_dirty = true;
+        if (frame_time != -1) surface_dirty = true;
         if (fullscreen) {
             glfwSetWindowMonitor(handle, monitor, 0, 0,
                                  monitor_width, monitor_height,
@@ -107,9 +107,9 @@ namespace vkhr {
         }
     }
 
-    void Window::enable_vsync(bool sync) {
-        surface_dirty = true;
-        vsync = sync;
+    void Window::enable_vsync(bool vsync) {
+        this->vsync = vsync;
+        if (frame_time != -1) surface_dirty = true;
     }
 
     bool Window::vsync_requested() const {
@@ -142,6 +142,16 @@ namespace vkhr {
             return monitor_height;
         } else {
             return height;
+        }
+    }
+
+    void Window::set_resolution(int width, int height) {
+        if (fullscreen) {
+            monitor_width  = width;
+            monitor_height = height;
+        } else {
+            this->width    = width;
+            this->height   = height;
         }
     }
 
@@ -180,12 +190,14 @@ namespace vkhr {
     }
 
     void Window::resize(const int width, const int height) {
-        this->width  = width;
-        this->height = height;
-        glfwSetWindowMonitor(handle, nullptr, window_x, window_y,
-                             width, height, monitor_refresh_rate);
-        surface_dirty = true;
-        fullscreen = false;
+        if (this->width != width || this->height != height) {
+            this->width  = width;
+            this->height = height;
+            glfwSetWindowMonitor(handle, nullptr, window_x, window_y,
+                                 width, height, monitor_refresh_rate);
+            surface_dirty = true;
+            fullscreen = false;
+        }
     }
 
     GLFWwindow* Window::get_handle() {
@@ -272,20 +284,21 @@ namespace vkhr {
         return delta_time();
     }
 
-    void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
-        Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
-
-        if (window->frame_time == -1)
-            return;
-
-        if (window->is_fullscreen()) {
-            window->monitor_width  = width;
-            window->monitor_height = height;
-        } else {
-            window->width  = width;
-            window->height = height;
+    void Window::maximized() {
+        int    width = 0,    height = 0;
+        while (width == 0 || height == 0) {
+            glfwGetFramebufferSize(handle, &width, &height);
+            glfwWaitEvents();
         }
 
-        window->surface_dirty = true;
+        set_resolution(width, height);
+    }
+
+    void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
+        Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
+        if (window->get_width() != width || window->get_height() != height) {
+            window->set_resolution(width, height);
+            window->surface_dirty = true;
+        }
     }
 }

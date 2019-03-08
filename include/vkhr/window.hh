@@ -18,8 +18,8 @@ namespace vkhr {
     class Window final {
     public:
         Window(const int width, const int height, const std::string& title,
-               const Image& icon, const bool fullscreen = false,
-               const bool vsync = false); // Will be Vulkan set.
+               const Image& icon, const bool startup_in_fullscreen = false,
+               const bool enable_vsync = false); // set in Vulkan swapchain
         ~Window() noexcept;
 
         bool is_open() const;
@@ -28,7 +28,7 @@ namespace vkhr {
         bool is_fullscreen() const;
 
         void toggle_fullscreen();
-        void toggle_fullscreen(bool f);
+        void toggle_fullscreen(bool fullscreen);
         void hide(); void show();
 
         int get_width()  const;
@@ -36,7 +36,7 @@ namespace vkhr {
         int get_height() const;
 
         VkExtent2D get_extent() const;
-
+        void set_resolution(int width, int height);
         int get_refresh_rate() const;
 
         bool vsync_requested() const;
@@ -46,6 +46,8 @@ namespace vkhr {
         vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance);
 
         void resize(const int width, const int height);
+
+        void maximized();
 
         GLFWwindow* get_handle();
 
@@ -70,7 +72,7 @@ namespace vkhr {
         int width, height;
         std::string title;
         bool fullscreen { false },
-             vsync;
+             vsync; // for Vulkan.
 
         GLFWwindow* handle { nullptr };
 
