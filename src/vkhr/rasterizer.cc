@@ -521,7 +521,7 @@ namespace vkhr {
         return screenshot;
     }
 
-    Image Rasterizer::get_screenshot(SceneGraph& scene_graph) {
+    Image Rasterizer::get_screenshot(const SceneGraph& scene_graph) {
         bool previous_visibility { imgui.hide() };
 
         draw(scene_graph);
@@ -530,7 +530,7 @@ namespace vkhr {
         return get_screenshot();
     }
 
-    Image Rasterizer::get_screenshot(SceneGraph& scene_graph, Raytracer& ray_tracer) {
+    Image Rasterizer::get_screenshot(const SceneGraph& scene_graph, Raytracer& ray_tracer) {
         bool previous_visibility { imgui.hide() };
 
         if (imgui.raytracing_enabled())
@@ -591,7 +591,7 @@ namespace vkhr {
                      "%F %H-%M", &time_structure);
 
             std::string benchmark_start_time = current_time_buffer;
-            benchmark_folder = "benchmarks/" + benchmark_start_time;
+            benchmark_folder = "benchmarks/" + benchmark_start_time + "/";
             std::filesystem::create_directories(benchmark_folder);
             benchmarking = true;
         }
@@ -602,6 +602,12 @@ namespace vkhr {
             return false;
 
         imgui.set_visibility(false);
+
+        benchmarked_frames++;
+
+        if (benchmarked_frames > 2*imgui.get_profile_limit()) {
+            benchmarked_frames = 0;
+        }
 
         return true;
     }

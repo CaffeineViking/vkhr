@@ -128,6 +128,9 @@ namespace vkhr {
         void export_performance(const std::string& csv_file_path,
                                 const std::string& headers = "",
                                 const std::string& content = "");
+
+        int get_profile_limit() const;
+
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
 
     private:

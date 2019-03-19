@@ -78,12 +78,6 @@ int main(int argc, char** argv) {
             rasterizer.recompile();
         }
 
-        // Benchmark the renderer and dump timings.
-        if (argp["benchmark"].value.boolean == 1) {
-            if (!rasterizer.benchmark(scene_graph))
-                return 0; // benchmark is complete!
-        }
-
         camera.control(input_map, window.update_delta_time(),
                        rasterizer.get_imgui().wants_focus());
 
@@ -102,6 +96,12 @@ int main(int argc, char** argv) {
             rasterizer.draw(framebuffer);
         } else {
             rasterizer.draw(scene_graph);
+        }
+
+        // Benchmark the renderer and dump timings.
+        if (argp["benchmark"].value.boolean == 1) {
+            if (!rasterizer.benchmark(scene_graph))
+                return 0; // benchmark is complete!
         }
 
         window.poll_events();

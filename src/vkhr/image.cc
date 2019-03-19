@@ -101,6 +101,10 @@ namespace vkhr {
     }
 
     bool Image::save_time() const {
+        save_time(""); // i.e. here
+    }
+
+    bool Image::save_time(const std::string& path) const {
         time_t current_time { time(0) };
         struct tm time_structure;
         char current_time_buffer[80];
@@ -110,7 +114,14 @@ namespace vkhr {
                  "%F %H-%M-%S", &time_structure);
 
         std::string date { current_time_buffer };
-        std::string file { date + ".png" };
+
+        std::string file;
+
+        if (path == "") {
+            file = date + ".png";
+        } else {
+            file = path + "/" + date + ".png";
+        }
 
         return save(file);
     }

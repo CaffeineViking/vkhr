@@ -604,4 +604,8 @@ namespace vkhr {
             profile->second.offset = (profile->second.offset + 1) % profile_limit;
         }
     }
+
+    int Interface::get_profile_limit() const {
+        return profile_limit;
+    }
 }

@@ -57,12 +57,14 @@ namespace vkhr {
 
         void begin_benchmark();
         bool benchmark(const SceneGraph& scene_graph);
-        Image get_screenshot(SceneGraph& scene_graph,
-                             Raytracer&  ray_tracer);
-        Image get_screenshot(SceneGraph& scene_graph);
-        Image get_screenshot();
+
+        Image get_screenshot(const SceneGraph& scene_graph);
+        Image get_screenshot(const SceneGraph& scene_graph,
+                             Raytracer& raytracer_instance);
 
     private:
+        Image get_screenshot();
+
         vk::Instance instance;
         vk::PhysicalDevice physical_device;
         vk::Device device;
@@ -115,8 +117,8 @@ namespace vkhr {
         Interface imgui;
 
         bool benchmarking { false };
-
         std::string benchmark_folder { "" };
+        int benchmarked_frames = 0;
 
         std::vector<vk::QueryPool> query_pools;
 
