@@ -1,11 +1,15 @@
 # Project Specific
+
 bin/
-build/
 docs/build/
+benchmark/
+build/
+
+/*.png
+/*.csv
+
 vkhr.zip
-
 imgui.ini
-
 vkhr.ico
 desktop.ini
 vkhr.lnk
