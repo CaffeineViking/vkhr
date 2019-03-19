@@ -123,10 +123,10 @@ namespace vkhr {
         bool raymarcher_enabled(float level_of_detail);
         void toggle_renderer();
 
+        void export_performance(const std::string& headers = "",
+                                const std::string& content = "");
         void export_performance(const std::string& csv_file_path,
                                 const std::string& headers = "",
-                                const std::string& content = "");
-        void export_performance(const std::string& headers = "",
                                 const std::string& content = "");
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
 

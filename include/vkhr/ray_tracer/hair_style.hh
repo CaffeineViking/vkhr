@@ -11,6 +11,8 @@
 
 #include <vector>
 
+#include <vkhr/rasterizer/hair_style.hh>
+
 namespace vkhr {
     class Raytracer;
     namespace embree {
@@ -28,6 +30,10 @@ namespace vkhr {
 
             unsigned get_geometry() const;
 
+            void update_parameters(const vkhr::vulkan::HairStyle& hair_style);
+
+            const vkhr::HairStyle* get_pointer() const;
+
         private:
             glm::vec3 kajiya_kay(const glm::vec3& diffuse,
                                  const glm::vec3& specular,
@@ -38,7 +44,12 @@ namespace vkhr {
 
             unsigned geometry { RTC_INVALID_GEOMETRY_ID };
 
+            const vkhr::HairStyle* pointer { nullptr };
+
             RTCScene scene { nullptr };
+
+            glm::vec3 hair_diffuse;
+            float     hair_exponent;
 
             std::vector<glm::vec4> position_thickness;
         };

@@ -388,16 +388,27 @@ namespace vkhr {
                     auto& hair = rasterizer.hair_styles[hair_style];
 
                     if (ImGui::TreeNode("Shading")) {
+                        bool parameters_dirty { false };
+
                         ImGui::PushItemWidth(165);
                         if (ImGui::ColorEdit3("Color", glm::value_ptr(hair.parameters.hair_color), ImGuiColorEditFlags_Float))
-                            hair.update_parameters();
+                            parameters_dirty = true;
                         if (ImGui::SliderFloat("Power", &hair.parameters.hair_shininess, 0.0f, 80.0f, "%.0f"))
-                            hair.update_parameters();
+                            parameters_dirty = true;
                         if (ImGui::SliderFloat("Alpha", &hair.parameters.hair_opacity,   0.0f, 1.0f))
-                            hair.update_parameters();
+                            parameters_dirty = true;
                         if (ImGui::SliderFloat("Width", &hair.parameters.strand_radius,  0.0f, 8.0f))
-                            hair.update_parameters();
+                            parameters_dirty = true;
                         ImGui::PopItemWidth();
+
+                        if (parameters_dirty) {
+                            hair.update_parameters(); // update rasterizer hairs.
+                            for (auto& raytracer_hair : ray_tracer.hair_styles) {
+                                if (raytracer_hair.get_pointer() == hair_style)
+                                    raytracer_hair.update_parameters(hair);
+                            }
+                        }
+
                         ImGui::TreePop();
                     }
 

@@ -57,6 +57,9 @@ int main(int argc, char** argv) {
 
     window.show();
 
+    if (argp["benchmark"].value.boolean == 1)
+        rasterizer.benchmark(scene_graph);
+
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
             window.close();

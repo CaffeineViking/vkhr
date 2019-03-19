@@ -35,6 +35,10 @@ namespace vkhr {
                                        indices.size() / 2);
 
             scene = raytracer.scene;
+            pointer = &hair_style;
+
+            hair_diffuse  = hair_style.get_default_color();
+            hair_exponent = 50.0f;
 
             rtcCommitGeometry(hair_geometry);
             geometry = rtcAttachGeometry(raytracer.scene, hair_geometry);
@@ -44,8 +48,6 @@ namespace vkhr {
         glm::vec3 HairStyle::shade(const Ray& surface_intersection,
                                    const LightSource& light_source,
                                    const Camera& projection_camera) {
-            auto hair_diffuse = glm::vec3(.32, .228, .128);
-
             auto surface_position = surface_intersection.get_intersection_point();
 
             auto strand_direction = get_tangent(surface_intersection);
@@ -54,7 +56,7 @@ namespace vkhr {
 
             auto shading = kajiya_kay(hair_diffuse,
                                       light_source.get_intensity(),
-                                      50.0f, strand_direction,
+                                      hair_exponent, strand_direction,
                                       light_normal, eye_normal);
 
             return shading;
@@ -75,6 +77,10 @@ namespace vkhr {
 
         unsigned HairStyle::get_geometry() const {
             return geometry;
+        }
+
+        const vkhr::HairStyle* HairStyle::get_pointer() const {
+            return pointer;
         }
 
         glm::vec3 HairStyle::kajiya_kay(const glm::vec3& diffuse,
@@ -99,6 +105,11 @@ namespace vkhr {
             glm::vec3 specular_colors = specular * glm::clamp(std::pow((cosTL * cosTE + sinTL * sinTE), p), 0.0f, 1.0f);
 
             return diffuse_colors + specular_colors;
+        }
+
+        void HairStyle::update_parameters(const vkhr::vulkan::HairStyle& hair_style) {
+            hair_diffuse  = hair_style.parameters.hair_color;
+            hair_exponent = hair_style.parameters.hair_shininess;
         }
     }
 }
