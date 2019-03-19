@@ -580,17 +580,29 @@ namespace vkhr {
         imgui_pass = {};
     }
 
-    void Rasterizer::benchmark(const SceneGraph& scene_graph) {
-        time_t current_time = time(0);
-        struct tm time_structure;
-        char current_time_buffer[80];
+    void Rasterizer::begin_benchmark() {
+        if (!benchmarking) {
+            time_t current_time = time(0);
+            struct tm time_structure;
+            char current_time_buffer[80];
 
-        time_structure = *localtime(&current_time);
-        strftime(current_time_buffer, sizeof(current_time_buffer),
-                 "%F %H-%M", &time_structure);
+            time_structure = *localtime(&current_time);
+            strftime(current_time_buffer, sizeof(current_time_buffer),
+                     "%F %H-%M", &time_structure);
 
-        std::string time { current_time_buffer };
+            std::string benchmark_start_time = current_time_buffer;
+            benchmark_folder = "benchmarks/" + benchmark_start_time;
+            std::filesystem::create_directories(benchmark_folder);
+            benchmarking = true;
+        }
+    }
 
-        std::filesystem::create_directories("benchmarks/" + time);
+    bool Rasterizer::benchmark(const SceneGraph& scene_graph) {
+        if (!benchmarking)
+            return false;
+
+        imgui.set_visibility(false);
+
+        return true;
     }
 }

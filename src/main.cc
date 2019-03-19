@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     window.show();
 
     if (argp["benchmark"].value.boolean == 1)
-        rasterizer.benchmark(scene_graph);
+        rasterizer.begin_benchmark();
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
@@ -76,6 +76,12 @@ int main(int argc, char** argv) {
             imgui.toggle_light_rotation();
         } else if (input_map.just_pressed("recompile")) {
             rasterizer.recompile();
+        }
+
+        // Benchmark the renderer and dump timings.
+        if (argp["benchmark"].value.boolean == 1) {
+            if (!rasterizer.benchmark(scene_graph))
+                return 0; // benchmark is complete!
         }
 
         camera.control(input_map, window.update_delta_time(),

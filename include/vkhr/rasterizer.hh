@@ -55,7 +55,8 @@ namespace vkhr {
 
         Interface& get_imgui();
 
-        void benchmark(const SceneGraph& scene_graph);
+        void begin_benchmark();
+        bool benchmark(const SceneGraph& scene_graph);
         Image get_screenshot(SceneGraph& scene_graph,
                              Raytracer&  ray_tracer);
         Image get_screenshot(SceneGraph& scene_graph);
@@ -112,6 +113,10 @@ namespace vkhr {
         vulkan::LinkedList ppll;
 
         Interface imgui;
+
+        bool benchmarking { false };
+
+        std::string benchmark_folder { "" };
 
         std::vector<vk::QueryPool> query_pools;
 
