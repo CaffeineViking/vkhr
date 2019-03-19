@@ -100,7 +100,7 @@ namespace vkhr {
             1024,
             2.50f,
             10.0f,
-            0.125,
+            0.150,
 
             400.0,
             Renderer::Type::Rasterizer,
@@ -125,6 +125,8 @@ namespace vkhr {
 
         void export_performance(const std::string& csv_file_path,
                                 const std::string& headers = "",
+                                const std::string& content = "");
+        void export_performance(const std::string& headers = "",
                                 const std::string& content = "");
         void record_performance(const std::unordered_map<std::string, float>& timestamps);
 

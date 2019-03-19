@@ -54,8 +54,10 @@ namespace vkhr {
         bool swapchain_is_dirty() const;
 
         Interface& get_imgui();
+
+        void benchmark(const SceneGraph& scene_graph);
         Image get_screenshot(SceneGraph& scene_graph,
-                             Raytracer& ray_tracer);
+                             Raytracer&  ray_tracer);
 
     private:
         vk::Instance instance;

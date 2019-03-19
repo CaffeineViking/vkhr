@@ -179,5 +179,6 @@ namespace vkhr {
         { "profile",    Argument::Type::Boolean, Argument::make_boolean(false), "" },
         { "ui",         Argument::Type::Boolean, Argument::make_boolean(true),  "" },
         { "anti-alias", Argument::Type::Boolean, Argument::make_boolean(false), "" },
+        { "benchmark",  Argument::Type::Boolean, Argument::make_boolean(false), "" },
     };
 }

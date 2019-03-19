@@ -177,13 +177,13 @@ namespace vkhr {
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
                                                 query_pools[frame].get_query_count());
 
-        vk::DebugMarker::begin(command_buffers[frame], "Total Frame Time", query_pools[frame]);
+        vk::DebugMarker::begin(command_buffers[frame], "Frame");
 
         draw_depth(scene_graph, command_buffers[frame]);
 
         draw_color(scene_graph, command_buffers[frame]);
 
-        vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
+        vk::DebugMarker::close(command_buffers[frame]);
 
         command_buffers[frame].end();
 
@@ -563,5 +563,8 @@ namespace vkhr {
         depth_pass = {};
         color_pass = {};
         imgui_pass = {};
+    }
+
+    void Rasterizer::benchmark(const SceneGraph& scene_graph) {
     }
 }

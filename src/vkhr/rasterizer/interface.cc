@@ -12,6 +12,10 @@
 #include <iostream>
 #include <utility>
 
+#include <ctime>
+#include <cstring>
+#include <cstdio>
+
 namespace vkhr {
     static void imgui_debug_callback(VkResult error) {
         if (error == 0) return; // VK_SUCCESS
@@ -317,12 +321,13 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::Button("Recompile Shaders"))
-                rasterizer.recompile();
+            if (ImGui::Button("Take Performance Snapshots"))
+                export_performance();
 
             ImGui::SameLine();
 
-            ImGui::Checkbox("Display Sources of Light", &light_debugger);
+            if (ImGui::Button("Recompile Shaders"))
+                rasterizer.recompile();
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -338,7 +343,7 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::CollapsingHeader("Shader Profiler", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (ImGui::CollapsingHeader("Shader Profiler")) {
                 for (auto& profile : profiles)
                     ImGui::PlotLines(profile.first.c_str(),
                                      profile.second.timestamps.data(),
@@ -523,8 +528,9 @@ namespace vkhr {
 
     void Interface::export_performance(const std::string& file_path, const std::string& headers, const std::string& content) {
         std::ofstream csv { file_path };
+
         if (!csv) {
-            throw std::runtime_error { "Couldn't write a CSV!" };
+            throw std::runtime_error { "Couldn't write CSV!" };
         }
 
         csv << "Frame";
@@ -540,6 +546,21 @@ namespace vkhr {
             if (content != "") csv << ", " << content;
             csv << "\r\n";
         }
+    }
+
+    void Interface::export_performance(const std::string& headers, const std::string& content) {
+        time_t current_time { time(0) };
+        struct tm time_structure;
+        char current_time_buffer[80];
+
+        time_structure = *localtime(&current_time);
+        strftime(current_time_buffer, sizeof(current_time_buffer),
+                 "%F %H-%M-%S", &time_structure);
+
+        std::string date { current_time_buffer };
+        std::string file { date + ".csv" };
+
+        export_performance(file, headers, content);
     }
 
     void Interface::record_performance(const std::unordered_map<std::string, float>& timestamps) {
