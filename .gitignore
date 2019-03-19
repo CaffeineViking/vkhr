@@ -2,7 +2,7 @@
 
 bin/
 docs/build/
-benchmark/
+benchmarks/
 build/
 
 /*.png
