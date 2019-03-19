@@ -87,9 +87,11 @@ namespace vkhr {
             glfwSetWindowMonitor(handle, monitor, 0, 0,
                                  monitor_width, monitor_height,
                                  monitor_refresh_rate);
+            fullscreen = true;
         } else {
             glfwSetWindowMonitor(handle, nullptr, window_x, window_y,
                                  width, height, monitor_refresh_rate);
+            fullscreen = false;
         }
     }
 
