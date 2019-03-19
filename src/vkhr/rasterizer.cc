@@ -601,6 +601,8 @@ namespace vkhr {
         if (!benchmarking)
             return false;
 
+        auto& actual_window = window_surface.get_glfw_window();
+
         imgui.set_visibility(false);
 
         benchmarked_frames++;

@@ -101,7 +101,7 @@ namespace vkhr {
     }
 
     bool Image::save_time() const {
-        save_time(""); // i.e. here
+        return  save_time("");
     }
 
     bool Image::save_time(const std::string& path) const {

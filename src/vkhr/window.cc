@@ -87,11 +87,9 @@ namespace vkhr {
             glfwSetWindowMonitor(handle, monitor, 0, 0,
                                  monitor_width, monitor_height,
                                  monitor_refresh_rate);
-            fullscreen = true;
         } else {
             glfwSetWindowMonitor(handle, nullptr, window_x, window_y,
                                  width, height, monitor_refresh_rate);
-            fullscreen = false;
         }
     }
 
@@ -187,6 +185,12 @@ namespace vkhr {
         surface.set_glfw_window(*this);
 
         return surface;
+    }
+
+    void Window::center() {
+        const int monitor_center_x { monitor_width  / 2 - width  / 2 },
+                  monitor_center_y { monitor_height / 2 - height / 2 };
+        glfwSetWindowPos(handle,  monitor_center_x,  monitor_center_y);
     }
 
     void Window::resize(const int width, const int height) {
@@ -285,20 +289,20 @@ namespace vkhr {
     }
 
     void Window::maximized() {
-        int    width = 0,    height = 0;
-        while (width == 0 || height == 0) {
-            glfwGetFramebufferSize(handle, &width, &height);
+        int    new_width  = 0,   new_height  = 0;
+        while (new_width == 0 || new_height == 0) {
+            glfwGetFramebufferSize(handle, &new_width, &new_height);
             glfwWaitEvents();
         }
 
-        set_resolution(width, height);
+        set_resolution(new_width, new_height);
     }
 
-    void Window::framebuffer_callback(GLFWwindow* handle, int width, int height) {
+    void Window::framebuffer_callback(GLFWwindow* handle, int new_width, int new_height) {
         Window* window { static_cast<Window*>(glfwGetWindowUserPointer(handle)) };
-        if (window->get_width() != width || window->get_height() != height) {
-            window->set_resolution(width, height);
+        if (window->get_width() != new_width || window->get_height() != new_height) {
             window->surface_dirty = true;
+            window->set_resolution(new_width, new_height);
         }
     }
 }

@@ -45,6 +45,8 @@ namespace vkhr {
         std::vector<vkpp::Extension> get_vulkan_surface_extensions() const;
         vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance);
 
+        void center();
+
         void resize(const int width, const int height);
 
         void maximized();

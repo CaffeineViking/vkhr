@@ -40,7 +40,6 @@ int main(int argc, char** argv) {
 
     input_map.bind("toggle_ui", vkhr::Input::Key::U);
     input_map.bind("grab", vkhr::Input::MouseButton::Left);
-    input_map.bind("toggle_fullscreen", vkhr::Input::Key::F);
     input_map.bind("take_screenshot", vkhr::Input::Key::S);
     input_map.bind("quit", std::vector<vkhr::Input::Key> { vkhr::Input::Key::Escape, vkhr::Input::Key::Q });
     input_map.bind("toggle_renderer", vkhr::Input::Key::T);
@@ -65,11 +64,9 @@ int main(int argc, char** argv) {
             window.close();
         } else if (input_map.just_pressed("toggle_ui")) {
             imgui.toggle_visibility();
-        } else if (input_map.just_pressed("toggle_fullscreen")) {
-            window.toggle_fullscreen();
         } else if (input_map.just_pressed("take_screenshot")) {
             rasterizer.get_screenshot(scene_graph, ray_tracer)
-                      .save_time(); // label using date/time.
+                      .save_time();
         } else if (input_map.just_pressed("toggle_renderer")) {
             imgui.toggle_renderer();
         } else if (input_map.just_pressed("rotate_light")) {

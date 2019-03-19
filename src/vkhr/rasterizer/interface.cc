@@ -116,8 +116,10 @@ namespace vkhr {
                          &gui_visible, ImGuiWindowFlags_AlwaysAutoResize |
                                        ImGuiWindowFlags_NoCollapse);
 
-            if (ImGui::Checkbox("Fullscreen", &window.fullscreen))
+            // Changed with both ImGui and the keyboard shortcuts.
+            if (ImGui::Checkbox("Fullscreen", &window.fullscreen)) {
                 window.toggle_fullscreen(window.fullscreen);
+            }
 
             ImGui::SameLine(0.0f, 10.0f);
 
