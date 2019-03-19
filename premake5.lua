@@ -83,7 +83,7 @@ project (name)
 
         buildoptions { "-fopenmp" }
 
-        linkoptions { STATIC_LINK, "-fopenmp", "-mwindows" }
+        linkoptions { STATIC_LINK, "-fopenmp", "-mwindows", "-lstdc++fs" }
 
         links { SDK.."/lib/vulkan-1" }
         links { GLFW.."/lib/glfw3dll" }
