@@ -58,6 +58,8 @@ namespace vkhr {
         void benchmark(const SceneGraph& scene_graph);
         Image get_screenshot(SceneGraph& scene_graph,
                              Raytracer&  ray_tracer);
+        Image get_screenshot(SceneGraph& scene_graph);
+        Image get_screenshot();
 
     private:
         vk::Instance instance;

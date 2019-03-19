@@ -465,17 +465,7 @@ namespace vkhr {
         return false;
     }
 
-    Image Rasterizer::get_screenshot(SceneGraph& scene_graph, Raytracer& ray_tracer) {
-        bool previous_visibility { imgui.hide() };
-
-        if (imgui.raytracing_enabled())
-            draw(ray_tracer.get_framebuffer());
-        else draw(scene_graph); // hides ImGui.
-
-        imgui.set_visibility(previous_visibility);
-
-        device.wait_idle();
-
+    Image Rasterizer::get_screenshot() {
         vk::Image screenshot_image {
             device,
             swap_chain.get_width(),
@@ -521,9 +511,29 @@ namespace vkhr {
         std::memcpy(screenshot.get_data(), buffer, screenshot.get_size_in_bytes());
         screenshot_memory.unmap();
 
-        screenshot.flip_channels();
+        screenshot.flip_channels(); // Swaps between; R <---> B
 
         return screenshot;
+    }
+
+    Image Rasterizer::get_screenshot(SceneGraph& scene_graph) {
+        bool previous_visibility { imgui.hide() };
+
+        draw(scene_graph);
+
+        imgui.set_visibility(previous_visibility);
+        return get_screenshot();
+    }
+
+    Image Rasterizer::get_screenshot(SceneGraph& scene_graph, Raytracer& ray_tracer) {
+        bool previous_visibility { imgui.hide() };
+
+        if (imgui.raytracing_enabled())
+            draw(ray_tracer.get_framebuffer());
+        else draw(scene_graph);
+
+        imgui.set_visibility(previous_visibility);
+        return get_screenshot();
     }
 
     void Rasterizer::recompile() {

@@ -237,6 +237,7 @@ namespace vkhr {
         for (int j = 0; j < height; ++j)
         for (int i { 0 }; i < width; ++i) {
             auto color = get_pixel(i, j);
+            color.a = 255; // Alpha hack.
             std::swap(color.r, color.b);
             set_pixel(i, j, color);
         }
