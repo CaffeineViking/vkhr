@@ -74,6 +74,8 @@ namespace vkhr {
 
         void flip_channels();
 
+        std::size_t get_shaded_pixel_count(const Color& background_color) const;
+
         template<typename F> void filter_neighborhood(F functor);
         template<typename F> void filter(F functor);
 

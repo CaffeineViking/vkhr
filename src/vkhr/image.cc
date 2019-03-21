@@ -254,6 +254,20 @@ namespace vkhr {
         }
     }
 
+    std::size_t Image::get_shaded_pixel_count(const Color& background_color) const {
+        std::size_t shaded_pixels { 0 };
+        #pragma omp parallel for schedule(dynamic)
+        for (int j = 0; j < height; ++j)
+        for (int i = 0; i < width;  ++i) {
+            if (get_pixel(i, j) != background_color) {
+                #pragma omp atomic
+                shaded_pixels += 1;
+            }
+        }
+
+        return shaded_pixels;
+    }
+
     void Image::free_image_buffers() {
         if (image_data != nullptr) {
             if (!is_stb_image) {

@@ -10,8 +10,6 @@
 
 #include <glm/glm.hpp>
 
-#include <iostream>
-
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
