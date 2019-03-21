@@ -11,8 +11,8 @@ namespace vkhr {
 
     std::string ArgParser::parse(int argc, char** argv) {
         current_argument = 1;
-        argument_count  = argc;
-        argument_values = argv;
+        argument_count   = argc;
+        argument_values  = argv;
 
         std::string parse_tail;
 

@@ -10,10 +10,12 @@
 #include <vkhr/rasterizer/volume.hh>
 
 #include <vkhr/rasterizer/depth_map.hh>
+#include <vkhr/renderer.hh>
 #include <vkhr/rasterizer/pipeline.hh>
 
 #include <vkpp/vkpp.hh>
 
+#include <queue>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -55,8 +57,19 @@ namespace vkhr {
 
         Interface& get_imgui();
 
-        void begin_benchmark();
+        struct Benchmark {
+            std::string scene;
+            int width, height;
+            Renderer::Type renderer;
+            float view_distance;
+            float strand_reduction;
+            int raymarch_steps;
+        };
+
+        void append_benchmark(const Benchmark& benchmark_parameters);
+        void start_benchmark();
         bool benchmark(const SceneGraph& scene_graph);
+        void append_benchmarks(const std::vector<Benchmark>& params);
 
         Image get_screenshot(const SceneGraph& scene_graph);
         Image get_screenshot(const SceneGraph& scene_graph,
@@ -116,7 +129,18 @@ namespace vkhr {
 
         Interface imgui;
 
+        void apply_benchmark_parameters(const Benchmark& benchmark_params);
+        std::string get_benchmark_results(const Benchmark& benchmark,
+                                          const SceneGraph& scene_graph,
+                                          const Image& screenshot);
+        std::string get_benchmark_header();
+
+        std::string final_benchmark_csv { "" };
+        std::string benchmark_start_time;
+        int benchmark_counter = 0;
+        std::queue<Benchmark> benchmark_queue;
         int frames_benchmarked = 0;
+        Benchmark loaded_benchmark;
         std::string benchmark_directory { "" };
 
         std::vector<vk::QueryPool> query_pools;

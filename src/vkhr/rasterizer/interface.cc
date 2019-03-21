@@ -539,29 +539,30 @@ namespace vkhr {
         return true;
     }
 
-    void Interface::export_performance(const std::string& file_path, const std::string& headers, const std::string& content) {
-        std::ofstream csv { file_path };
-
-        if (!csv) {
-            throw std::runtime_error { "Couldn't write CSV!" };
-        }
-
-        csv << "Frame";
+    std::string Interface::get_performance_header() {
+        std::ostringstream performance_header;
+        performance_header << "Frame";
         for (const auto& profile : profiles)
-            csv << ", " << profile.first;
-        if (headers != "") csv << ", " << headers;
-        csv << "\r\n";
-
-        for (int i = 0; i < profile_limit; ++i) {
-            csv << i;
-            for (const auto& timing : profiles)
-                csv << ", " << timing.second.timestamps[i];
-            if (content != "") csv << ", " << content;
-            csv << "\r\n";
-        }
+            performance_header << "," << profile.first;
+        return performance_header.str();
     }
 
-    void Interface::export_performance(const std::string& headers, const std::string& content) {
+    std::string Interface::get_performance(const std::string& parameters) {
+        std::ostringstream performance;
+
+        for (int i = 0; i < profile_limit; ++i) {
+            if (parameters != "")
+                performance << parameters << ",";
+            performance << i;
+            for (const auto& timing : profiles)
+                performance << "," << timing.second.timestamps[i];
+            performance << "\n";
+        }
+
+        return performance.str();
+    }
+
+    void Interface::export_performance() {
         time_t current_time { time(0) };
         struct tm time_structure;
         char current_time_buffer[80];
@@ -573,7 +574,15 @@ namespace vkhr {
         std::string date { current_time_buffer };
         std::string file { date + ".csv" };
 
-        export_performance(file, headers, content);
+        std::ofstream csv { file };
+
+        if (!csv) {
+            throw std::runtime_error { "Couldn't write CSV!" };
+        }
+
+        csv << "\n"
+            << get_performance_header()
+            << get_performance();
     }
 
     void Interface::record_performance(const std::unordered_map<std::string, float>& timestamps) {

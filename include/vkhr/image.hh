@@ -38,8 +38,8 @@ namespace vkhr {
         bool load(const std::string& file_path);
         bool save(const std::string& file_path) const;
 
-        bool save_time(const std::string& path) const;
-        bool save_time() const;
+        std::string save_time(const std::string& path) const;
+        std::string save_time() const;
 
         void set_quality(int quality); // saving JPEG.
 

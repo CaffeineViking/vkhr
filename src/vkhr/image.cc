@@ -100,11 +100,11 @@ namespace vkhr {
         return !error;
     }
 
-    bool Image::save_time() const {
-        return  save_time("");
+    std::string Image::save_time() const {
+        return save_time("");
     }
 
-    bool Image::save_time(const std::string& path) const {
+    std::string Image::save_time(const std::string& path) const {
         time_t current_time { time(0) };
         struct tm time_structure;
         char current_time_buffer[80];
@@ -123,7 +123,9 @@ namespace vkhr {
             file = path + "/" + date + ".png";
         }
 
-        return save(file);
+        save(file);
+
+        return file;
     }
 
     // Values between 0 -> 100 as the RFC.

@@ -125,6 +125,10 @@ namespace vkhr {
         glfwHideWindow(handle);
     }
 
+    int Window::get_screen_width() const {
+        return monitor_width;
+    }
+
     int Window::get_width() const {
         if (fullscreen) {
             return monitor_width;
@@ -143,6 +147,10 @@ namespace vkhr {
         } else {
             return height;
         }
+    }
+
+    int Window::get_screen_height() const {
+        return monitor_height;
     }
 
     void Window::set_resolution(int width, int height) {
@@ -192,7 +200,11 @@ namespace vkhr {
     void Window::center() {
         const int monitor_center_x { monitor_width  / 2 - width  / 2 },
                   monitor_center_y { monitor_height / 2 - height / 2 };
-        glfwSetWindowPos(handle,  monitor_center_x,  monitor_center_y);
+        set_position(monitor_center_x, monitor_center_y);
+    }
+
+    void Window::set_position(const int x, const int y) {
+        glfwSetWindowPos(handle, x, y);
     }
 
     void Window::resize(const int width, const int height) {

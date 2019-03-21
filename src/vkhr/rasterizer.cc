@@ -4,6 +4,7 @@
 #include <cstring>
 #include <filesystem>
 #include <cstdio>
+#include <cctype>
 
 namespace vkhr {
     Rasterizer::Rasterizer(Window& window, const SceneGraph& scene_graph) {
@@ -580,7 +581,17 @@ namespace vkhr {
         imgui_pass = {};
     }
 
-    void Rasterizer::begin_benchmark() {
+    void Rasterizer::append_benchmarks(const std::vector<Benchmark>& benchmarks) {
+        for (auto& benchmark : benchmarks) {
+            benchmark_queue.push(benchmark);
+        }
+    }
+
+    void Rasterizer::append_benchmark(const Benchmark& benchmark) {
+        benchmark_queue.push(benchmark);
+    }
+
+    void Rasterizer::start_benchmark() {
         if (!imgui.parameters.benchmarking) {
             time_t current_time = time(0);
             struct tm time_structure;
@@ -588,13 +599,19 @@ namespace vkhr {
 
             time_structure = *localtime(&current_time);
             strftime(current_time_buffer, sizeof(current_time_buffer),
-                     "%F %H-%M", &time_structure);
+                     "%F %H-%M-%S",   &time_structure);
+            benchmark_start_time = current_time_buffer;
 
-            std::string benchmark_start_time = current_time_buffer;
             benchmark_directory = "benchmarks/" + benchmark_start_time + "/";
             std::filesystem::create_directories(benchmark_directory);
 
-            imgui.parameters.benchmarking = true;
+            imgui.set_visibility(false); // Don't allow any GUI.
+            apply_benchmark_parameters(benchmark_queue.front());
+            benchmark_queue.pop(); // Only runs through it once.
+            final_benchmark_csv = ""; // Clean up the final CSV.
+
+            benchmark_counter = 0; // Reset the benchmark count.
+            imgui.parameters.benchmarking = true; // let's a go!
         }
     }
 
@@ -602,14 +619,78 @@ namespace vkhr {
         if (!imgui.parameters.benchmarking)
             return false;
 
-        auto& actual_window = window_surface.get_glfw_window();
-
         frames_benchmarked++;
 
         if (frames_benchmarked > 2*imgui.get_profile_limit()) {
+            Image screenshot { get_screenshot(scene_graph) };
+            std::string benchmark_number { std::to_string(benchmark_counter) };
+            screenshot.save(benchmark_directory + std::to_string(benchmark_counter) + ".png");
+            std::string benchmark_parameters { get_benchmark_results(loaded_benchmark, scene_graph, screenshot) };
+            std::string benchmark_results { imgui.get_performance(benchmark_parameters) };
+            final_benchmark_csv += benchmark_results;
+
+            if (benchmark_queue.empty()) {
+                std::ofstream benchmark_csv { "benchmarks/" + benchmark_start_time + ".csv" };
+                benchmark_csv << get_benchmark_header() << "," << imgui.get_performance_header() << "\n"
+                              << final_benchmark_csv;
+                imgui.parameters.benchmarking = false;
+                return false;
+            }
+
+            benchmark_counter += 1;
+
+            apply_benchmark_parameters(benchmark_queue.front());
+            benchmark_queue.pop(); // Only runs through it once.
+
             frames_benchmarked = 0;
         }
 
         return true;
+    }
+
+    void Rasterizer::apply_benchmark_parameters(const Benchmark& benchmark) {
+        auto& window = window_surface.get_glfw_window();
+        window.resize(benchmark.width,benchmark.height);
+        window.center();
+
+        loaded_benchmark = benchmark;
+    }
+
+    std::string Rasterizer::get_benchmark_header() { return "Benchmark,Renderer,Scene,Width,Height,Distance,Pixels,Strands,Samples"; }
+    std::string Rasterizer::get_benchmark_results(const Benchmark& benchmark, const SceneGraph& scene_graph, const Image& screenshot) {
+        std::string string;
+
+        string += std::to_string(benchmark_counter) + ",";
+
+        switch (benchmark.renderer) {
+        case Renderer::Type::Rasterizer:
+            string += "Rasterized,";
+            break;
+        case Renderer::Type::Raymarcher:
+            string += "Raymarched,";
+            break;
+        case Renderer::Type::Ray_Tracer:
+            string += "Ray Traced,";
+            break;
+        case Renderer::Type::Transition:
+            string += "Hybrid LoD,";
+            break;
+        default: break;
+        }
+
+        string += std::filesystem::path(benchmark.scene).stem().string() + ",";
+        string += std::to_string(benchmark.width)  + ",";
+        string += std::to_string(benchmark.height) + ",";
+        string += std::to_string(static_cast<int>(benchmark.view_distance)) + ",";
+        string += std::to_string(screenshot.get_shaded_pixel_count({ 0xFF, 0xFF, 0xFF, 0xFF })) + ",";
+
+        std::size_t hair_strands { 0 };
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles())
+            for (auto& hair_style : hair_node->get_hair_styles())
+                hair_strands += hair_style->get_strand_count();
+
+        string += std::to_string(hair_strands) + ",";
+        string += std::to_string(benchmark.raymarch_steps);
+        return string;
     }
 }

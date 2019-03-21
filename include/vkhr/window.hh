@@ -32,8 +32,11 @@ namespace vkhr {
         void hide(); void show();
 
         int get_width()  const;
+        int get_screen_width() const;
         float get_aspect_ratio() const;
+        int get_screen_height() const;
         int get_height() const;
+
 
         VkExtent2D get_extent() const;
         void set_resolution(int width, int height);
@@ -46,6 +49,7 @@ namespace vkhr {
         vkpp::Surface create_vulkan_surface_with(vkpp::Instance& instance);
 
         void center();
+        void set_position(const int x, const int y);
 
         void resize(const int width, const int height);
 
@@ -64,7 +68,7 @@ namespace vkhr {
         float get_horizontal_dpi() const;
         bool  surface_is_dirty()   const;
 
-        void set_time(const float time);
+        void  set_time(const float time);
         float get_current_time() const;
         float delta_time() const;
 

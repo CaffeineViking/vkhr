@@ -10,6 +10,8 @@
 
 #include <glm/glm.hpp>
 
+void build_benchmarks(vkhr::Rasterizer& dut);
+
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
     auto scene_file = argp.parse(argc, argv);
@@ -55,8 +57,10 @@ int main(int argc, char** argv) {
 
     window.show();
 
-    if (argp["benchmark"].value.boolean == 1)
-        rasterizer.begin_benchmark();
+    if (argp["benchmark"].value.boolean == 1) {
+        build_benchmarks(rasterizer);
+        rasterizer.start_benchmark();
+    }
 
     while (window.is_open()) {
         if (input_map.just_pressed("quit")) {
@@ -106,4 +110,8 @@ int main(int argc, char** argv) {
     }
 
     return 0;
+}
+
+void build_benchmarks(vkhr::Rasterizer& rasterizer) {
+    // TODO: build a nice benchmark suite here :-)!
 }
