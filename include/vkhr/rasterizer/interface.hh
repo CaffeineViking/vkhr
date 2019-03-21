@@ -81,6 +81,8 @@ namespace vkhr {
             float lod_magnified_distance;
             Renderer::Type renderer;
             float lod_minified_distance;
+
+            int benchmarking;
         } parameters {
             KajiyaKay,
 
@@ -105,6 +107,8 @@ namespace vkhr {
             400.0,
             Renderer::Type::Rasterizer,
             800.0,
+
+            false
         };
 
         void default_parameters();

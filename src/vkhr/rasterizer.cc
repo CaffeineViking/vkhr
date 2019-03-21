@@ -581,7 +581,7 @@ namespace vkhr {
     }
 
     void Rasterizer::begin_benchmark() {
-        if (!benchmarking) {
+        if (!imgui.parameters.benchmarking) {
             time_t current_time = time(0);
             struct tm time_structure;
             char current_time_buffer[80];
@@ -591,24 +591,23 @@ namespace vkhr {
                      "%F %H-%M", &time_structure);
 
             std::string benchmark_start_time = current_time_buffer;
-            benchmark_folder = "benchmarks/" + benchmark_start_time + "/";
-            std::filesystem::create_directories(benchmark_folder);
-            benchmarking = true;
+            benchmark_directory = "benchmarks/" + benchmark_start_time + "/";
+            std::filesystem::create_directories(benchmark_directory);
+
+            imgui.parameters.benchmarking = true;
         }
     }
 
     bool Rasterizer::benchmark(const SceneGraph& scene_graph) {
-        if (!benchmarking)
+        if (!imgui.parameters.benchmarking)
             return false;
 
         auto& actual_window = window_surface.get_glfw_window();
 
-        imgui.set_visibility(false);
+        frames_benchmarked++;
 
-        benchmarked_frames++;
-
-        if (benchmarked_frames > 2*imgui.get_profile_limit()) {
-            benchmarked_frames = 0;
+        if (frames_benchmarked > 2*imgui.get_profile_limit()) {
+            frames_benchmarked = 0;
         }
 
         return true;

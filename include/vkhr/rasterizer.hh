@@ -116,9 +116,8 @@ namespace vkhr {
 
         Interface imgui;
 
-        bool benchmarking { false };
-        std::string benchmark_folder { "" };
-        int benchmarked_frames = 0;
+        int frames_benchmarked = 0;
+        std::string benchmark_directory { "" };
 
         std::vector<vk::QueryPool> query_pools;
 

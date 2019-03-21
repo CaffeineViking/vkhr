@@ -1288,6 +1288,9 @@
     <None Include="..\share\shaders\anti-aliasing\gbaa.glsl">
       <Filter>shaders\anti-aliasing</Filter>
     </None>
+    <None Include="..\share\shaders\anti-aliasing\gpaa.glsl">
+      <Filter>shaders\anti-aliasing</Filter>
+    </None>
     <None Include="..\share\shaders\anti-aliasing\phone-wire.glsl">
       <Filter>shaders\anti-aliasing</Filter>
     </None>
@@ -1303,7 +1306,7 @@
     <None Include="..\share\shaders\level_of_detail\dither.glsl">
       <Filter>shaders\level_of_detail</Filter>
     </None>
-    <None Include="..\share\shaders\level_of_detail\metric.glsl">
+    <None Include="..\share\shaders\level_of_detail\scheme.glsl">
       <Filter>shaders\level_of_detail</Filter>
     </None>
     <None Include="..\share\shaders\models\model.frag">
@@ -1424,12 +1427,6 @@
       <Filter>shaders\volumes</Filter>
     </None>
     <None Include="..\share\shaders\volumes\voxelize.comp">
-      <Filter>shaders\volumes</Filter>
-    </None>
-    <None Include="..\share\shaders\volumes\voxelize_segments.comp">
-      <Filter>shaders\volumes</Filter>
-    </None>
-    <None Include="..\share\shaders\volumes\voxelize_vertices.comp">
       <Filter>shaders\volumes</Filter>
     </None>
   </ItemGroup>

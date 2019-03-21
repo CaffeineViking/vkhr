@@ -28,6 +28,8 @@ layout(binding = 4) uniform Params {
     float magnified_distance;
     int renderer;
     float minified_distance;
+
+    int benchmarking;
 };
 
 #endif

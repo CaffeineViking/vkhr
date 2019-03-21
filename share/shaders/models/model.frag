@@ -40,5 +40,10 @@ void main() {
                                     pcf_shadows_bias);
     }
 
-    color = vec4(shading * occlusion, 1.0f);
+    float visibility = 1.0f;
+    if (benchmarking == 1) {
+        visibility   = 0.0f;
+    }
+
+    color = vec4(shading * occlusion, visibility);
 }

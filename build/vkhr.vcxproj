@@ -501,12 +501,13 @@
     <None Include="..\share\scenes\bear.vkhr" />
     <None Include="..\share\scenes\ponytail.vkhr" />
     <None Include="..\share\shaders\anti-aliasing\gbaa.glsl" />
+    <None Include="..\share\shaders\anti-aliasing\gpaa.glsl" />
     <None Include="..\share\shaders\anti-aliasing\phone-wire.glsl" />
     <None Include="..\share\shaders\billboards\billboard.frag" />
     <None Include="..\share\shaders\billboards\billboard.glsl" />
     <None Include="..\share\shaders\billboards\billboard.vert" />
     <None Include="..\share\shaders\level_of_detail\dither.glsl" />
-    <None Include="..\share\shaders\level_of_detail\metric.glsl" />
+    <None Include="..\share\shaders\level_of_detail\scheme.glsl" />
     <None Include="..\share\shaders\models\model.frag" />
     <None Include="..\share\shaders\models\model.glsl" />
     <None Include="..\share\shaders\models\model.vert" />
@@ -547,8 +548,6 @@
     <None Include="..\share\shaders\volumes\volume.vert" />
     <None Include="..\share\shaders\volumes\volume_rendering.glsl" />
     <None Include="..\share\shaders\volumes\voxelize.comp" />
-    <None Include="..\share\shaders\volumes\voxelize_segments.comp" />
-    <None Include="..\share\shaders\volumes\voxelize_vertices.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
