@@ -574,8 +574,8 @@ namespace vkhr {
             throw std::runtime_error { "Couldn't write CSV!" };
         }
 
-        csv << "\n"
-            << get_performance_header()
+        csv << get_performance_header()
+            << "\n"
             << get_performance();
     }
 
