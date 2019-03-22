@@ -614,7 +614,7 @@ namespace vkhr {
         return profile_limit;
     }
 
-    void Interface::switch_scene(const std::string& scene_name, SceneGraph scene_graph, Rasterizer& rasterizer) {
+    void Interface::switch_scene(const std::string& scene_name, SceneGraph& scene_graph, Rasterizer& rasterizer) {
         for (int i { 0 }; i < scene_files.size(); ++i) {
             if (scene_files[i] == scene_name)
                 scene_file = i;
@@ -633,7 +633,7 @@ namespace vkhr {
         }
     }
 
-    void Interface::switch_scene(SceneGraph scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
+    void Interface::switch_scene(SceneGraph& scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
         if (scene_file != previous_scene_file) {
             scene_graph.load(scene_files[scene_file]);
             rasterizer.load(scene_graph);

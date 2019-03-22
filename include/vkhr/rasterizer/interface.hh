@@ -121,8 +121,8 @@ namespace vkhr {
         void set_visibility(bool visible);
         bool show();
 
-        void switch_scene(const std::string& scene_name, SceneGraph scene_graph, Rasterizer& rasterizer);
-        void switch_scene(SceneGraph scene_graph,
+        void switch_scene(const std::string& scene_name, SceneGraph& scene_graph, Rasterizer& rasterizer);
+        void switch_scene(SceneGraph& scene_graph,
                           Rasterizer& rasterizer,
                           Raytracer& ray_tracer);
 
