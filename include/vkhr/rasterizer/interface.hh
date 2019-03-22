@@ -121,11 +121,17 @@ namespace vkhr {
         void set_visibility(bool visible);
         bool show();
 
+        void switch_scene(const std::string& scene_name, SceneGraph scene_graph, Rasterizer& rasterizer);
+        void switch_scene(SceneGraph scene_graph,
+                          Rasterizer& rasterizer,
+                          Raytracer& ray_tracer);
+
         bool rasterizer_enabled(float level_of_detail);
         bool raytracing_enabled();
         void toggle_light_rotation();
         bool raymarcher_enabled(float level_of_detail);
         void toggle_renderer();
+        void make_current_renderer(Renderer::Type ren);
 
         void export_performance();
 

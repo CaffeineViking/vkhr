@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
     if (argp["benchmark"].value.boolean == 1) {
         build_benchmarks(rasterizer);
-        rasterizer.start_benchmark();
+        rasterizer.start_benchmark(scene_graph);
     }
 
     while (window.is_open()) {

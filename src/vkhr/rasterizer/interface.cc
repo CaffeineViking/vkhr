@@ -272,19 +272,7 @@ namespace vkhr {
                          static_cast<void*>(&scene_files),
                          scene_files.size());
 
-            // Switch to the new scene by loading it
-            if (scene_file != previous_scene_file) {
-                scene_graph.load(scene_files[scene_file]);
-                rasterizer.load(scene_graph);
-                ray_tracer.load(scene_graph);
-                previous_scene_file = scene_file;
-
-                if (scene_file == 1) {
-                    parameters.ctsm_bias = 0.00000f;
-                } else {
-                    parameters.ctsm_bias = 0.00005f;
-                }
-            }
+            switch_scene(scene_graph, rasterizer, ray_tracer);
 
             ImGui::Spacing();
             ImGui::Separator();
@@ -475,6 +463,12 @@ namespace vkhr {
         previous_renderer = tmp;
     }
 
+    void Interface::make_current_renderer(Renderer::Type renderer) {
+        previous_renderer   = current_renderer;
+        current_renderer    = renderer;
+        parameters.renderer = renderer;
+    }
+
     bool Interface::show() {
         auto previous_visibility = gui_visible;
         gui_visible = true;
@@ -618,5 +612,39 @@ namespace vkhr {
 
     int Interface::get_profile_limit() const {
         return profile_limit;
+    }
+
+    void Interface::switch_scene(const std::string& scene_name, SceneGraph scene_graph, Rasterizer& rasterizer) {
+        for (int i { 0 }; i < scene_files.size(); ++i) {
+            if (scene_files[i] == scene_name)
+                scene_file = i;
+        }
+
+        if (scene_file != previous_scene_file) {
+            scene_graph.load(scene_files[scene_file]);
+            rasterizer.load(scene_graph);
+            previous_scene_file = scene_file;
+
+            if (scene_file == 1) { // Bear hair.
+                parameters.ctsm_bias = 0.00000f;
+            } else { // anything else, really...
+                parameters.ctsm_bias = 0.00005f;
+            }
+        }
+    }
+
+    void Interface::switch_scene(SceneGraph scene_graph, Rasterizer& rasterizer, Raytracer& ray_tracer) {
+        if (scene_file != previous_scene_file) {
+            scene_graph.load(scene_files[scene_file]);
+            rasterizer.load(scene_graph);
+            ray_tracer.load(scene_graph);
+            previous_scene_file = scene_file;
+
+            if (scene_file == 1) { // Bear hair.
+                parameters.ctsm_bias = 0.00000f;
+            } else { // anything else, really...
+                parameters.ctsm_bias = 0.00005f;
+            }
+        }
     }
 }

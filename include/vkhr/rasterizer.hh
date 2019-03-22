@@ -61,15 +61,16 @@ namespace vkhr {
             std::string scene;
             int width, height;
             Renderer::Type renderer;
-            float view_distance;
+            float viewing_distance;
             float strand_reduction;
             int raymarch_steps;
         };
 
         void append_benchmark(const Benchmark& benchmark_parameters);
-        void start_benchmark();
-        bool benchmark(const SceneGraph& scene_graph);
+        void start_benchmark(SceneGraph& scene_graph);
         void append_benchmarks(const std::vector<Benchmark>& params);
+
+        bool benchmark(SceneGraph& scene_graph);
 
         Image get_screenshot(const SceneGraph& scene_graph);
         Image get_screenshot(const SceneGraph& scene_graph,
@@ -129,10 +130,9 @@ namespace vkhr {
 
         Interface imgui;
 
-        void apply_benchmark_parameters(const Benchmark& benchmark_params);
-        std::string get_benchmark_results(const Benchmark& benchmark,
-                                          const SceneGraph& scene_graph,
-                                          const Image& screenshot);
+        void set_benchmark_configurations(const Benchmark& benchmark,       SceneGraph& scene_graph);
+        std::string get_benchmark_results(const Benchmark& benchmark, const SceneGraph& scene_graph,
+                                          const Image& screenshot); // For finding the shaded pixels.
         std::string get_benchmark_header();
 
         std::string final_benchmark_csv { "" };

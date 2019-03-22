@@ -361,6 +361,9 @@ namespace vkhr {
         return true;
     }
 
+    void HairStyle::reduce(float ratio) {
+    }
+
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {
         std::vector<glm::vec4> position_thicknesses(get_vertex_count());
         #pragma omp parallel for schedule(dynamic)

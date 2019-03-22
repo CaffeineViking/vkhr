@@ -591,8 +591,8 @@ namespace vkhr {
         benchmark_queue.push(benchmark);
     }
 
-    void Rasterizer::start_benchmark() {
-        if (!imgui.parameters.benchmarking) {
+    void Rasterizer::start_benchmark(SceneGraph& scene_graph) {
+        if (!imgui.parameters.benchmarking && !benchmark_queue.empty()) {
             time_t current_time = time(0);
             struct tm time_structure;
             char current_time_buffer[80];
@@ -606,7 +606,7 @@ namespace vkhr {
             std::filesystem::create_directories(benchmark_directory);
 
             imgui.set_visibility(false); // Don't allow any GUI.
-            apply_benchmark_parameters(benchmark_queue.front());
+            set_benchmark_configurations(benchmark_queue.front(), scene_graph);
             benchmark_queue.pop(); // Only runs through it once.
             final_benchmark_csv = ""; // Clean up the final CSV.
 
@@ -615,7 +615,7 @@ namespace vkhr {
         }
     }
 
-    bool Rasterizer::benchmark(const SceneGraph& scene_graph) {
+    bool Rasterizer::benchmark(SceneGraph& scene_graph) {
         if (!imgui.parameters.benchmarking)
             return false;
 
@@ -639,8 +639,8 @@ namespace vkhr {
 
             benchmark_counter += 1;
 
-            apply_benchmark_parameters(benchmark_queue.front());
-            benchmark_queue.pop(); // Only runs through it once.
+            set_benchmark_configurations(benchmark_queue.front(), scene_graph);
+            benchmark_queue.pop();
 
             frames_benchmarked = 0;
         }
@@ -648,10 +648,17 @@ namespace vkhr {
         return true;
     }
 
-    void Rasterizer::apply_benchmark_parameters(const Benchmark& benchmark) {
+    void Rasterizer::set_benchmark_configurations(const Benchmark& benchmark, SceneGraph& scene_graph) {
         auto& window = window_surface.get_glfw_window();
         window.resize(benchmark.width,benchmark.height);
         window.center();
+
+        auto& camera = scene_graph.get_camera();
+
+        imgui.make_current_renderer(benchmark.renderer);
+        imgui.switch_scene(benchmark.scene, scene_graph,
+                           *this);
+        camera.set_distance(benchmark.viewing_distance);
 
         loaded_benchmark = benchmark;
     }
@@ -681,7 +688,7 @@ namespace vkhr {
         string += std::filesystem::path(benchmark.scene).stem().string() + ",";
         string += std::to_string(benchmark.width)  + ",";
         string += std::to_string(benchmark.height) + ",";
-        string += std::to_string(static_cast<int>(benchmark.view_distance)) + ",";
+        string += std::to_string(static_cast<int>(benchmark.viewing_distance)) + ",";
         string += std::to_string(screenshot.get_shaded_pixel_count({ 0xFF, 0xFF, 0xFF, 0xFF })) + ",";
 
         std::size_t hair_strands { 0 };
