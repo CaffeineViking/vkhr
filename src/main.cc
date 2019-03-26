@@ -113,5 +113,7 @@ int main(int argc, char** argv) {
 }
 
 void build_benchmarks(vkhr::Rasterizer& rasterizer) {
-    // TODO: build a nice benchmark suite here :-)!
+    rasterizer.append_benchmarks({
+        { SCENE("ponytail.vkhr"), 1280, 720, vkhr::Renderer::Type::Rasterizer, 226, 1.0, 1024  }
+    });
 }

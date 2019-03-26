@@ -679,7 +679,7 @@ namespace vkhr {
         case Renderer::Type::Ray_Tracer:
             string += "Ray Traced,";
             break;
-        case Renderer::Type::Transition:
+        case Renderer::Type::Hybrid_LoD:
             string += "Hybrid LoD,";
             break;
         default: break;

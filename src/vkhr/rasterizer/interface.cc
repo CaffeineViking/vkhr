@@ -77,7 +77,7 @@ namespace vkhr {
         renderers.push_back("Rasterizer");
         renderers.push_back("Ray Tracer");
         renderers.push_back("Raymarcher");
-        renderers.push_back("Transition");
+        renderers.push_back("Hybrid LoD");
 
         scene_files.push_back(SCENE("ponytail.vkhr"));
         scene_files.push_back(SCENE("bear.vkhr"));
@@ -157,7 +157,7 @@ namespace vkhr {
             if (ImGui::Button("Toggle Renderer"))
                 toggle_renderer();
 
-            if (current_renderer == Renderer::Type::Transition) {
+            if (current_renderer == Renderer::Type::Hybrid_LoD) {
                 ImGui::PushItemWidth(94);
                 ImGui::DragFloat("Magnified", &parameters.lod_magnified_distance);
                 ImGui::SameLine(0.0, 8.0);
@@ -476,11 +476,11 @@ namespace vkhr {
     }
 
     bool Interface::rasterizer_enabled(float level_of_detail) {
-        return current_renderer == Renderer::Rasterizer || (current_renderer == Renderer::Transition && level_of_detail != 1.0);
+        return current_renderer == Renderer::Rasterizer || (current_renderer == Renderer::Hybrid_LoD && level_of_detail != 1.0);
     }
 
     bool Interface::raymarcher_enabled(float level_of_detail) {
-        return current_renderer == Renderer::Raymarcher || (current_renderer == Renderer::Transition && level_of_detail != 0.0);
+        return current_renderer == Renderer::Raymarcher || (current_renderer == Renderer::Hybrid_LoD && level_of_detail != 0.0);
     }
 
     bool Interface::raytracing_enabled() {

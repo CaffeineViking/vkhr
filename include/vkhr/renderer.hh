@@ -14,7 +14,7 @@ namespace vkhr {
             Rasterizer = 0,
             Ray_Tracer = 1,
             Raymarcher = 2,
-            Transition = 3,
+            Hybrid_LoD = 3,
         };
     };
 }
