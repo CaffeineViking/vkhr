@@ -599,6 +599,7 @@ namespace vkhr {
             struct tm time_structure;
             char current_time_buffer[80];
 
+            queued_benchmarks = benchmark_queue.size();
             time_structure = *localtime(&current_time);
             strftime(current_time_buffer, sizeof(current_time_buffer),
                      "%F %H-%M-%S",   &time_structure);
@@ -654,6 +655,7 @@ namespace vkhr {
         auto& window = window_surface.get_glfw_window();
         window.resize(benchmark.width,benchmark.height);
         window.center();
+        window.append_string("Testing " + std::to_string(benchmark_counter) + " / " + std::to_string(queued_benchmarks));
 
         auto& camera = scene_graph.get_camera();
 

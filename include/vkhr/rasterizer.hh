@@ -141,7 +141,8 @@ namespace vkhr {
 
         std::string final_benchmark_csv { "" };
         std::string benchmark_start_time;
-        int benchmark_counter = 0;
+        int benchmark_counter  = 0;
+        int queued_benchmarks  = 0;
         std::queue<Benchmark> benchmark_queue;
         int frames_benchmarked = 0;
         Benchmark loaded_benchmark;
