@@ -257,7 +257,7 @@ namespace vkhr {
 
                 if (ImGui::TreeNodeEx("Raymarcher")) {
                     ImGui::PushItemWidth(171);
-                    ImGui::SliderFloat("Isosurface Density", &parameters.isosurface,    0.0f, 0.1f);
+                    ImGui::SliderFloat("Isosurface Density", &parameters.isosurface,    0.0f, 0.2f);
                     ImGui::SliderFloat("Raycasting Samples", &parameters.raycast_steps, 0.0, 1024, "%.0f");
                     ImGui::PopItemWidth();
                     ImGui::TreePop();

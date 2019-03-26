@@ -180,6 +180,9 @@ namespace vkhr {
 
         bool set_error_state(const Error error_state) const;
 
+        std::uint64_t seed;
+        static std::uint64_t xorshift64(std::uint64_t s[1]);
+
         template<typename T>
         bool read_field(std::ifstream& file, std::vector<T>& field);
 

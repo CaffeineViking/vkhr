@@ -69,6 +69,8 @@ namespace vkhr {
 
             Volume volume;
 
+            std::size_t segments_per_strand;
+
             friend class Volume;
 
             static int id;

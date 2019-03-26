@@ -19,16 +19,22 @@ vec3 volume_normal(sampler3D volume, vec3 position, vec3 volume_origin, vec3 vol
 vec4 volume_surface(sampler3D volume, vec3 volume_start, vec3 volume_end, float steps, float surface_density, vec3 volume_origin, vec3 volume_size) {
     float density = 0.0f; // current density values.
     float step_size = 1.0f / steps; // for raymarch.
+
+    vec3  surface_point = vec3(0); // an isosurface.
+    bool  surface_found = false; // shade only once.
+
     for (float t = 0.0f; t < 1.0f; t += step_size) {
         vec3 P = mix(volume_start, volume_end, t);
         density += sample_volume(volume, P,
                                  volume_origin,
                                  volume_size).r;
-        if (density >= surface_density)
-            return vec4(P, 1.0f);
+        if (!surface_found && density >= surface_density) {
+            surface_point = P;
+            surface_found = true;
+        }
     }
 
-    return vec4(0.0); // nothing.
+    return vec4(surface_point,  density / surface_density);
 }
 
 #endif

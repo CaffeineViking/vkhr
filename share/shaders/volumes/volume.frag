@@ -51,7 +51,7 @@ void main() {
     if (depth_buffer < surface_depth)
         discard;
 
-    float coverage = lod(magnified_distance, minified_distance, camera.look_at_distance);
+    float coverage = lod(magnified_distance, minified_distance, camera.look_at_distance) * surface_position.a * hair_alpha;
 
     vec3 shading = vec3(1.0);
 
@@ -75,13 +75,13 @@ void main() {
     float occlusion = 1.000f;
 
     if (deep_shadows_on == YES && shading_model != LAO) {
-        occlusion *= volume_approximated_deep_shadows(strand_density,
+        occlusion *= max(volume_approximated_deep_shadows(strand_density,
                                                       surface_position.xyz,
                                                       lights[0].origin,
                                                       raycast_steps, hair_alpha,
                                                       volume_bounds.origin,
                                                       volume_bounds.size,
-                                                      11.0f);
+                                                      6.0f), 0.1);
     }
 
     if (shading_model != ADSM) {

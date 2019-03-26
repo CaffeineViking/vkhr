@@ -1,11 +1,14 @@
 #include <vkhr/scene_graph/hair_style.hh>
 
+#include <random>
 #include <cstring>
 #include <algorithm>
 #include <fstream>
 
 namespace vkhr {
     HairStyle::HairStyle(const std::string& file_path) {
+        std::random_device random;
+        seed = random();
         load(file_path);
     }
 
@@ -362,6 +365,9 @@ namespace vkhr {
     }
 
     void HairStyle::reduce(float ratio) {
+        unsigned strands_left = get_strand_count() - std::ceil(get_strand_count() * (1.0f / ratio));
+        while (--strands_left) {
+        }
     }
 
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {
@@ -590,5 +596,13 @@ namespace vkhr {
         size_in_bytes += indices.size() * sizeof(indices[0]);
         size_in_bytes += sizeof(FileHeader);
         return size_in_bytes;
+    }
+
+    std::uint64_t HairStyle::xorshift64(std::uint64_t seed[1]) {
+        uint64_t x = seed[0];
+        x ^= x << 13;
+        x ^= x >> 7;
+        x ^= x << 17;
+        return seed[0] = x;
     }
 }
