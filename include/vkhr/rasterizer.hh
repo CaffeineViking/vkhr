@@ -58,12 +58,16 @@ namespace vkhr {
         Interface& get_imgui();
 
         struct Benchmark {
+            std::string description;
             std::string scene;
+
             int width, height;
+
             Renderer::Type renderer;
+
             float viewing_distance;
             float strand_reduction;
-            int raymarch_steps;
+            int   raymarch_steps;
         };
 
         void append_benchmark(const Benchmark& benchmark_parameters);

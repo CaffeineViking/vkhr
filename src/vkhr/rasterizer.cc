@@ -3,6 +3,8 @@
 #include <ctime>
 #include <cstring>
 #include <filesystem>
+#include <sstream>
+#include <iomanip>
 #include <cstdio>
 #include <cctype>
 
@@ -631,7 +633,7 @@ namespace vkhr {
 
             if (benchmark_queue.empty()) {
                 std::ofstream benchmark_csv { "benchmarks/" + benchmark_start_time + ".csv" };
-                benchmark_csv << get_benchmark_header() << "," << imgui.get_performance_header() << "\n"
+                benchmark_csv << get_benchmark_header() << imgui.get_performance_header() << "\n"
                               << final_benchmark_csv;
                 imgui.parameters.benchmarking = false;
                 return false;
@@ -663,41 +665,64 @@ namespace vkhr {
         loaded_benchmark = benchmark;
     }
 
-    std::string Rasterizer::get_benchmark_header() { return "Benchmark,Renderer,Scene,Width,Height,Distance,Pixels,Strands,Samples"; }
-    std::string Rasterizer::get_benchmark_results(const Benchmark& benchmark, const SceneGraph& scene_graph, const Image& screenshot) {
-        std::string string;
+    std::string Rasterizer::get_benchmark_header() {
+        std::stringstream header;
 
-        string += std::to_string(benchmark_counter) + ",";
+        header << std::left;
+
+        header << std::setw(28) << "Screenshot,";
+        header << std::setw(42) << "Description,";
+        header << std::setw(12) << "Renderer,";
+        header << std::setw(10) << "Scene,";
+        header << std::setw(7)  << "Width,";
+        header << std::setw(8)  << "Height,";
+        header << std::setw(10) << "Distance,";
+        header << std::setw(9)  << "Pixels,";
+        header << std::setw(9)  << "Strands,";
+        header << std::setw(9)  << "Samples,";
+        header << std::setw(25) << "GPU,";
+
+        return header.str();
+    }
+
+    std::string Rasterizer::get_benchmark_results(const Benchmark& benchmark, const SceneGraph& scene_graph, const Image& screenshot) {
+        std::stringstream results;
+
+        results << std::left;
+
+        results << std::setw(28) << benchmark_start_time + "/" + std::to_string(benchmark_counter) + ".png,";
+        results << std::setw(42) << benchmark.description + ",";
+
+        results << std::setw(12);
 
         switch (benchmark.renderer) {
         case Renderer::Type::Rasterizer:
-            string += "Rasterized,";
+            results << "Rasterized,";
             break;
         case Renderer::Type::Raymarcher:
-            string += "Raymarched,";
+            results << "Raymarched,";
             break;
         case Renderer::Type::Ray_Tracer:
-            string += "Ray Traced,";
+            results << "Ray Traced,";
             break;
         case Renderer::Type::Hybrid_LoD:
-            string += "Hybrid LoD,";
+            results << "Hybrid LoD,";
             break;
         default: break;
         }
 
-        string += std::filesystem::path(benchmark.scene).stem().string() + ",";
-        string += std::to_string(benchmark.width)  + ",";
-        string += std::to_string(benchmark.height) + ",";
-        string += std::to_string(static_cast<int>(benchmark.viewing_distance)) + ",";
-        string += std::to_string(screenshot.get_shaded_pixel_count({ 0xFF, 0xFF, 0xFF, 0xFF })) + ",";
+        auto shortened_scene_name = std::filesystem::path(benchmark.scene).stem().string();
+        shortened_scene_name[0] = std::toupper(shortened_scene_name[0]);
 
-        std::size_t hair_strands { 0 };
-        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles())
-            for (auto& hair_style : hair_node->get_hair_styles())
-                hair_strands += hair_style->get_strand_count();
+        results << std::setw(10) << shortened_scene_name + ",";
+        results << std::setw(7) << std::to_string(benchmark.width) + ",";
+        results << std::setw(8) << std::to_string(benchmark.height) + ",";
+        results << std::setw(10) << std::to_string(static_cast<int>(benchmark.viewing_distance)) + ",";
+        results << std::setw(9) << std::to_string(screenshot.get_shaded_pixel_count({ 0xFF, 0xFF, 0xFF, 0xFF })) + ",";
+        results << std::setw(9) << std::to_string(scene_graph.get_strand_count()) + ",";
+        results << std::setw(9) << std::to_string(benchmark.raymarch_steps) + ",";
+        results << std::setw(25) << physical_device.get_name() + ",";
 
-        string += std::to_string(hair_strands) + ",";
-        string += std::to_string(benchmark.raymarch_steps);
-        return string;
+        return results.str();
     }
 }

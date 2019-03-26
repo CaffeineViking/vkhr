@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <utility>
 
 #include <ctime>
@@ -534,22 +535,37 @@ namespace vkhr {
     }
 
     std::string Interface::get_performance_header() {
-        std::ostringstream performance_header;
-        performance_header << "Frame";
-        for (const auto& profile : profiles)
-            performance_header << "," << profile.first;
-        return performance_header.str();
+        std::ostringstream header;
+
+        header << std::left << std::setw(7) << "Frame,";
+
+        for (auto profile = profiles.cbegin(); profile != profiles.cend(); ++profile) {
+            if (std::next(profile) != profiles.end())
+                header << std::setw(18) << profile->first + ",";
+            else
+                header << profile->first;
+        }
+
+        return header.str();
     }
 
     std::string Interface::get_performance(const std::string& parameters) {
         std::ostringstream performance;
 
+        performance << std::left;
+
         for (int i = 0; i < profile_limit; ++i) {
             if (parameters != "")
-                performance << parameters << ",";
-            performance << i;
-            for (const auto& timing : profiles)
-                performance << "," << timing.second.timestamps[i];
+                performance << parameters;
+            performance << std::setw(7) << std::to_string(i) + ",";
+
+            for (auto profile = profiles.cbegin(); profile != profiles.end(); ++profile) {
+                if (std::next(profile) != profiles.end())
+                    performance << std::setw(18) << std::to_string(profile->second.timestamps[i]) + ",";
+                else
+                    performance << std::to_string(profile->second.timestamps[i]);
+            }
+
             performance << "\n";
         }
 

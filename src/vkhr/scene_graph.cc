@@ -537,4 +537,12 @@ namespace vkhr {
     SceneGraph::Error SceneGraph::get_last_error_state() const {
         return error_state;
     }
+
+    std::size_t SceneGraph::get_strand_count() const {
+        std::size_t hair_strands { 0 };
+        for (auto& hair_node : get_nodes_with_hair_styles())
+            for (auto& hair_style : hair_node->get_hair_styles())
+                hair_strands += hair_style->get_strand_count();
+        return hair_strands;
+    }
 }
