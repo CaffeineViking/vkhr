@@ -125,6 +125,7 @@ namespace vkhr {
         void switch_scene(SceneGraph& scene_graph,
                           Rasterizer& rasterizer,
                           Raytracer& ray_tracer);
+        void set_sample_size(int raymarch_steps);
 
         bool rasterizer_enabled(float level_of_detail);
         bool raytracing_enabled();
@@ -169,6 +170,15 @@ namespace vkhr {
 
         int profile_limit { 60 }; // Might change at run-time.
         std::unordered_map<std::string, ProfilePair> profiles;
+        std::vector<std::string> export_profiles {
+            "Bake Shadow Maps",
+            "Voxelize Strands",
+            "Clear PPLL Nodes",
+            "Draw Mesh Models",
+            "Draw Hair Styles",
+            "Raymarch Strands",
+            "Resolve the PPLL"
+        };
 
         static bool get_string_from_vector(void*, int, const char**);
 

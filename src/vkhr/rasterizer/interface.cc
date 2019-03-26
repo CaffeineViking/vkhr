@@ -539,12 +539,9 @@ namespace vkhr {
 
         header << std::left << std::setw(7) << "Frame,";
 
-        for (auto profile = profiles.cbegin(); profile != profiles.cend(); ++profile) {
-            if (std::next(profile) != profiles.end())
-                header << std::setw(18) << profile->first + ",";
-            else
-                header << profile->first;
-        }
+        for (std::size_t i { 0 }; i < export_profiles.size() - 1; ++i)
+            header << std::setw(18) << export_profiles[i] + ",";
+        header << export_profiles[export_profiles.size() - 1];
 
         return header.str();
     }
@@ -555,15 +552,24 @@ namespace vkhr {
         performance << std::left;
 
         for (int i = 0; i < profile_limit; ++i) {
-            if (parameters != "")
-                performance << parameters;
+            if (parameters != "") performance << parameters; // app
             performance << std::setw(7) << std::to_string(i) + ",";
 
-            for (auto profile = profiles.cbegin(); profile != profiles.end(); ++profile) {
-                if (std::next(profile) != profiles.end())
+            for (std::size_t j { 0 }; j < export_profiles.size() - 1; ++j) {
+                auto profile = profiles.find(export_profiles[j]);
+                if (profile != profiles.end()) {
                     performance << std::setw(18) << std::to_string(profile->second.timestamps[i]) + ",";
-                else
-                    performance << std::to_string(profile->second.timestamps[i]);
+                } else {
+                    performance << std::setw(18) << + "0,";
+                }
+            }
+
+            auto profile = profiles.find(export_profiles[export_profiles.size() - 1]);
+
+            if (profile != profiles.end()) {
+                performance << std::to_string(profile->second.timestamps[i]);
+            } else {
+                performance << "0";
             }
 
             performance << "\n";
@@ -662,5 +668,9 @@ namespace vkhr {
                 parameters.ctsm_bias = 0.00005f;
             }
         }
+    }
+
+    void Interface::set_sample_size(int steps) {
+        parameters.raycast_steps = steps;
     }
 }

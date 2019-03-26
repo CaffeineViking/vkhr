@@ -661,6 +661,7 @@ namespace vkhr {
         imgui.switch_scene(benchmark.scene, scene_graph,
                            *this);
         camera.set_distance(benchmark.viewing_distance);
+        imgui.set_sample_size(benchmark.raymarch_steps);
 
         loaded_benchmark = benchmark;
     }

@@ -113,7 +113,8 @@ int main(int argc, char** argv) {
 }
 
 void build_benchmarks(vkhr::Rasterizer& rasterizer) {
-    rasterizer.append_benchmarks({
-        { "Testing", SCENE("ponytail.vkhr"), 1280, 720, vkhr::Renderer::Type::Rasterizer, 226, 1.0, 1024  }
-    });
+    for (int i = 0; i < 1024; i += 64) {
+        rasterizer.append_benchmark({"Raymarch Step Scaling", SCENE("ponytail.vkhr"), 1280, 720, vkhr::Renderer::Type::Raymarcher, 226, 1.0, i });
+        rasterizer.append_benchmark({"Raymarch Step Scaling", SCENE("ponytail.vkhr"), 1280, 720, vkhr::Renderer::Type::Rasterizer, 226, 1.0, i });
+    }
 }
