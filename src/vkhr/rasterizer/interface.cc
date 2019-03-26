@@ -312,7 +312,7 @@ namespace vkhr {
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::Button("Take Performance Snapshots"))
+            if (ImGui::Button("Take Profiler CSV Snapshot"))
                 export_performance();
 
             ImGui::SameLine();

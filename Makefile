@@ -4,6 +4,8 @@ config = "release"
 all: shaders program
 run: all
 	bin/${name} ${args}
+benchmark: all
+	bin/${name} --benchmark
 
 help: FORCE
 	@echo "Usage: make [config=name] [target]"
@@ -15,6 +17,7 @@ help: FORCE
 	@echo "TARGETS:"
 	@echo "   all"
 	@echo "   run"
+	@echo "   benchmark"
 	@echo "   help"
 	@echo "   shaders"
 	@echo "   program"
@@ -88,4 +91,4 @@ distclean: clean
 	find bin/ -type f ! -name "*.dll" -delete
 FORCE:
 
-.PHONY: all run help program shaders download download-modules pre-generate solution bundle-assets distribute docs tags clean distclean
+.PHONY: all run benchmark help program shaders download download-modules pre-generate solution bundle-assets distribute docs tags clean distclean
