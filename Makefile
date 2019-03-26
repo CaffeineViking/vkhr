@@ -5,7 +5,7 @@ all: shaders program
 run: all
 	bin/${name} ${args}
 benchmark: all
-	bin/${name} --benchmark
+	bin/${name} --benchmark yes
 
 help: FORCE
 	@echo "Usage: make [config=name] [target]"
