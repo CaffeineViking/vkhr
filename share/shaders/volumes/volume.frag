@@ -33,25 +33,19 @@ void main() {
     float raycast_length = volume_bounds.radius;
     vec3  raycast_end    = raycast_start + normalize(raycast_start - camera.position) * raycast_length;
 
+    float depth_buffer = subpassLoad(depth_buffer).r;
+
     vec4 surface_position = volume_surface(strand_density,
                                            raycast_start, raycast_end,
                                            raycast_steps, isosurface,
                                            volume_bounds.origin,
-                                           volume_bounds.size);
+                                           volume_bounds.size,
+                                           depth_buffer);
 
     if (surface_position.a == 0.0f)
         discard;
 
-    float depth_buffer = subpassLoad(depth_buffer).r;
-
-    vec4 projected_surface = camera.projection * camera.view * vec4(surface_position.xyz, 1.0f);
-
-    float surface_depth = projected_surface.z / projected_surface.w;
-
-    if (depth_buffer < surface_depth)
-        discard;
-
-    float coverage = lod(magnified_distance, minified_distance, camera.look_at_distance) * surface_position.a * hair_alpha;
+    float coverage = lod(magnified_distance, minified_distance, camera.look_at_distance) * surface_position.a * (1.0f - hair_alpha);
 
     vec3 shading = vec3(1.0);
 
@@ -75,13 +69,13 @@ void main() {
     float occlusion = 1.000f;
 
     if (deep_shadows_on == YES && shading_model != LAO) {
-        occlusion *= max(volume_approximated_deep_shadows(strand_density,
+        occlusion *= volume_approximated_deep_shadows(strand_density,
                                                       surface_position.xyz,
                                                       lights[0].origin,
                                                       raycast_steps, hair_alpha,
                                                       volume_bounds.origin,
                                                       volume_bounds.size,
-                                                      6.0f), 0.1);
+                                                      6.0f);
     }
 
     if (shading_model != ADSM) {
@@ -93,13 +87,16 @@ void main() {
                                              ao_exponent, ao_max);
     }
 
+    vec4 surface = camera.projection * camera.view * vec4(surface_position.xyz, 1.0f);
+    float depth  = surface.z / surface.w;
+
     color = vec4(shading * occlusion, coverage);
 
     ivec2 pixel = ivec2(gl_FragCoord.xy);
 
     uint node = ppll_next_node();
     if (node == PPLL_NULL_NODE) discard;
-    ppll_node_data(node, color, surface_depth);
+    ppll_node_data(node, color, depth);
     ppll_link_node(pixel, node);
 
     discard; // Fragments resolved in next pass.
