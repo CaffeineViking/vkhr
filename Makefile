@@ -65,7 +65,6 @@ solution: FORCE
 bundle-assets: FORCE
 	rm -rf bin/share
 	cp -r share bin/share
-	cp vkhr.ico bin/
 
 archive-build: FORCE
 	mv bin ${name}
