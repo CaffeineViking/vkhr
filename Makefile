@@ -5,7 +5,7 @@ all: shaders program
 run: all
 	bin/${name} ${args}
 benchmark: all
-	bin/${name} --benchmark yes
+	bin/${name} ${args} --benchmark yes
 
 help: FORCE
 	@echo "Usage: make [config=name] [target]"
@@ -26,6 +26,7 @@ help: FORCE
 	@echo "   pre-generate"
 	@echo "   solution"
 	@echo "   bundle-assets"
+	@echo "   archive-build"
 	@echo "   distribute"
 	@echo "   docs"
 	@echo "   tags"
@@ -64,11 +65,14 @@ solution: FORCE
 bundle-assets: FORCE
 	rm -rf bin/share
 	cp -r share bin/share
+	cp vkhr.ico bin/
 
-distribute: bundle-assets
+archive-build: FORCE
 	mv bin ${name}
 	zip -r ${name} ${name}
 	mv ${name} bin
+
+distribute: bundle-assets archive-build
 
 docs: FORCE
 	make -C docs

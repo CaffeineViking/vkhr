@@ -1,7 +1,6 @@
 Real-Time Hair Renderer
 =======================
 
-
 <p align="center">
     <img src="https://eriksvjansson.net/images/vkhr/screenshot-2.png" alt="VKHR 1920x1080 Ponytail"/>
     <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-23-bear-3.png" alt="VKHR 1280x720 Bear"/>

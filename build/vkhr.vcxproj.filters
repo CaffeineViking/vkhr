@@ -1354,9 +1354,6 @@
     <None Include="..\share\shaders\shading\lambertian.glsl">
       <Filter>shaders\shading</Filter>
     </None>
-    <None Include="..\share\shaders\shading\marschner.glsl">
-      <Filter>shaders\shading</Filter>
-    </None>
     <None Include="..\share\shaders\shading\scheuermann.glsl">
       <Filter>shaders\shading</Filter>
     </None>
@@ -1376,12 +1373,6 @@
       <Filter>shaders\transparency</Filter>
     </None>
     <None Include="..\share\shaders\transparency\resolve.comp">
-      <Filter>shaders\transparency</Filter>
-    </None>
-    <None Include="..\share\shaders\transparency\sorting.glsl">
-      <Filter>shaders\transparency</Filter>
-    </None>
-    <None Include="..\share\shaders\transparency\sshd.glsl">
       <Filter>shaders\transparency</Filter>
     </None>
     <None Include="..\share\shaders\utils\imageAtomicAverageRGBA8.glsl">
