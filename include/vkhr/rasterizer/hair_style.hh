@@ -49,7 +49,10 @@ namespace vkhr {
                 glm::vec3 hair_color;
                 float hair_opacity;
                 float hair_shininess;
+                float strand_ratio;
             } parameters;
+
+            void reduce(float ratio);
 
         private:
             vk::IndexBuffer  segments;

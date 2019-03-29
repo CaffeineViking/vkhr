@@ -391,10 +391,7 @@ namespace vkhr {
         if (has_transparency()) reduced_transparency.reserve(vertex_count);
         if (has_color()) reduced_color.reserve(vertex_count);
 
-        // We need to find vertex offsets for each of the strands.
         std::vector<std::size_t> strand_offset(get_strand_count());
-
-        // i.e. a partial sum on the number of vertices per strand:
 
         if (has_segments()) {
             std::copy(segments.begin(), segments.end(), strand_offset.begin() + 1);
@@ -413,7 +410,7 @@ namespace vkhr {
                              strand_offset.begin());
         }
 
-        while (--strands_left) {
+        while (--strands_left && strand_offset.size() != 0) {
             double random = xorshift64(&seed) / static_cast<double>(std::numeric_limits<std::uint64_t>::max());
             std::size_t random_strand = random * strand_offset.size();
 
@@ -442,11 +439,13 @@ namespace vkhr {
 
         segments = reduced_segments;
         vertices = reduced_vertices;
+
+        generate_indices();
+
         thickness = reduced_thickness;
         tangents = reduced_tangents;
         transparency = reduced_transparency;
         color = reduced_color;
-        generate_indices();
     }
 
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {

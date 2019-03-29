@@ -390,6 +390,8 @@ namespace vkhr {
                             parameters_dirty = true;
                         if (ImGui::SliderFloat("Width", &hair.parameters.strand_radius,  0.0f, 8.0f))
                             parameters_dirty = true;
+                        if (ImGui::SliderFloat("Ratio", &hair.parameters.strand_ratio,   0.0f, 1.0f))
+                            parameters_dirty = true;
                         ImGui::PopItemWidth();
 
                         if (parameters_dirty) {
@@ -407,9 +409,9 @@ namespace vkhr {
                         ImGui::Indent();
                         ImGui::Text("magic id: H A I R");
                         ImGui::Text("%.4f megabytes", hair_style->get_size() / static_cast<float>(1 << 20));
-                        ImGui::Text("vertices: %d", hair_style->get_vertex_count());
-                        ImGui::Text("segments: %d", hair_style->get_segment_count());
-                        ImGui::Text("strands:  %d", hair_style->get_strand_count());
+                        ImGui::Text("vertices: %d", static_cast<unsigned>(hair_style->get_vertex_count() * hair.parameters.strand_ratio));
+                        ImGui::Text("segments: %d", static_cast<unsigned>(hair_style->get_segment_count() * hair.parameters.strand_ratio));
+                        ImGui::Text("strands:  %d", static_cast<unsigned>(hair_style->get_strand_count() * hair.parameters.strand_ratio));
                         ImGui::Text("%d segment/strand", hair_style->get_default_segment_count());
                         ImGui::Text("feature bitfield:");
                         ImGui::Text("0 1 0 0 0 1 1 1 0");

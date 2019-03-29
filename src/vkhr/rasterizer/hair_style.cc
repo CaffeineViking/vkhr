@@ -59,6 +59,7 @@ namespace vkhr {
             parameters.hair_shininess = 50.0f; // Using Kajiya-Kay.
             parameters.strand_radius = hair_style.get_default_thickness();
             parameters.hair_opacity = hair_style.get_default_transparency();
+            parameters.strand_ratio = 1.00f; // i.e. don't reduce strands.
             parameters.hair_color = hair_style.get_default_color();
 
             parameters.volume_resolution = glm::vec3 { 256,256,256 };
@@ -194,7 +195,7 @@ namespace vkhr {
 
             command_buffer.bind_index_buffer(segments);
 
-            command_buffer.draw_indexed(segments.count());
+            command_buffer.draw_indexed(segments.count() * parameters.strand_ratio);
         }
 
         void HairStyle::update_parameters() {
@@ -397,6 +398,10 @@ namespace vkhr {
 
             vk::DebugMarker::object_name(vulkan_renderer.device, pipeline.compute_pipeline,
                                          VK_OBJECT_TYPE_PIPELINE, "Hair Voxel Pipeline");
+        }
+
+        void HairStyle::reduce(float ratio) {
+            parameters.strand_ratio = ratio;
         }
 
         int HairStyle::id { 0 };

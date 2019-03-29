@@ -230,6 +230,8 @@ namespace vkhr {
         // If you get this exception, it most likely means you haven't cloned using Git LFS.
         if (!hair_styles[path]) throw std::runtime_error { "Couldn't find: " + path + "!" };
 
+        hair_styles[path].shuffle();
+
         if (!hair_styles[path].has_tangents())
             hair_styles[path].generate_tangents();
         if (!hair_styles[path].has_thickness())

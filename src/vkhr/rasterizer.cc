@@ -665,6 +665,12 @@ namespace vkhr {
         camera.set_distance(benchmark.viewing_distance);
         imgui.set_sample_size(benchmark.raymarch_steps);
 
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
+            for (auto& hair_style : hair_node->get_hair_styles()) {
+                hair_styles[hair_style].reduce(benchmark.strand_reduction);
+            }
+        }
+
         loaded_benchmark = benchmark;
     }
 
@@ -722,7 +728,7 @@ namespace vkhr {
         results << std::setw(8) << std::to_string(benchmark.height) + ",";
         results << std::setw(10) << std::to_string(static_cast<int>(benchmark.viewing_distance)) + ",";
         results << std::setw(9) << std::to_string(screenshot.get_shaded_pixel_count({ 0xFF, 0xFF, 0xFF, 0xFF })) + ",";
-        results << std::setw(9) << std::to_string(scene_graph.get_strand_count()) + ",";
+        results << std::setw(9) << std::to_string(static_cast<std::size_t>(scene_graph.get_strand_count() * benchmark.strand_reduction)) + ",";
         results << std::setw(9) << std::to_string(benchmark.raymarch_steps) + ",";
         results << std::setw(25) << physical_device.get_name() + ",";
 

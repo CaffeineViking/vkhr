@@ -75,7 +75,7 @@ void main() {
                                                       raycast_steps, hair_alpha,
                                                       volume_bounds.origin,
                                                       volume_bounds.size,
-                                                      6.0f);
+                                                      11.0f);
     }
 
     if (shading_model != ADSM) {

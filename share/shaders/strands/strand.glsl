@@ -12,6 +12,7 @@ layout(binding = 2) uniform Strand {
     vec3 hair_color;
     float hair_alpha;
     float hair_exponent;
+    float strand_ratio;
 };
 
 #endif
