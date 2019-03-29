@@ -45,7 +45,7 @@ void main() {
     if (surface_position.a == 0.0f)
         discard;
 
-    float coverage = lod(magnified_distance, minified_distance, camera.look_at_distance) * surface_position.a * (1.0f - hair_alpha);
+    float coverage = lod(magnified_distance, minified_distance, camera.look_at_distance) * surface_position.a * hair_alpha;
 
     vec3 shading = vec3(1.0);
 

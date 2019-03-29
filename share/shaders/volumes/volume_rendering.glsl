@@ -17,11 +17,13 @@ vec3 volume_normal(sampler3D volume, vec3 position, vec3 volume_origin, vec3 vol
 
 // Finds the isosurface of a volume with at least 'surface_density' starting from 'volume_start' to 'volume_end' when it has been sampled 'step' times.
 vec4 volume_surface(sampler3D volume, vec3 volume_start, vec3 volume_end, float steps, float surface_density, vec3 volume_origin, vec3 volume_size, float depth_buffer) {
-    float density = 0.0f; // current density values.
-    float step_size = 1.0f / steps; // for raymarch.
+    float accumulated_density = 0.0f;
+    float step_size = (1.0f / steps);
 
-    vec3  surface_point = vec3(0); // an isosurface.
-    bool  surface_found = false; // shade only once.
+    vec3 surface_point = vec3(0.0f);
+    bool surface_point_found = false;
+    bool entry_point_found   = false;
+    vec3 entry_point   = vec3(0.0f);
 
     for (float t = 0.0f; t < 1.0f; t += step_size) {
         vec3 P = mix(volume_start, volume_end, t);
@@ -31,15 +33,24 @@ vec4 volume_surface(sampler3D volume, vec3 volume_start, vec3 volume_end, float 
         if (depth_buffer < depth)
             break;
 
-        density += sample_volume(volume, P, volume_origin, volume_size).r;
+        float density = sample_volume(volume, P, volume_origin, volume_size).r;
+        accumulated_density += density; // total amount of screen-space density
 
-        if (!surface_found && density >= surface_density) {
-            surface_point = P;
-            surface_found = true;
+        if (density != 0.0f) {
+            if (accumulated_density <= surface_density) surface_point = P;
+            if (accumulated_density >= surface_density) surface_point_found = true;
+            if (!entry_point_found) {
+                entry_point = P;
+                entry_point_found = true;
+            }
         }
     }
 
-    return vec4(surface_point,  density / surface_density);
+    if (!surface_point_found && entry_point_found) {
+        surface_point = mix(entry_point, surface_point, 0.5);
+    }
+
+    return vec4(surface_point, accumulated_density / surface_density);
 }
 
 #endif
