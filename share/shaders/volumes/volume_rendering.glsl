@@ -46,10 +46,8 @@ vec4 volume_surface(sampler3D volume, vec3 volume_start, vec3 volume_end, float 
         }
     }
 
-    if (!surface_point_found && entry_point_found) {
-        surface_point = mix(entry_point, surface_point, 0.5);
-    }
-
+    if (!surface_point_found && entry_point_found)
+        surface_point = entry_point;
     return vec4(surface_point, accumulated_density / surface_density);
 }
 
