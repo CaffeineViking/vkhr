@@ -103,6 +103,7 @@ namespace vkhr {
         Volume voxelize_vertices(std::size_t width, std::size_t height, std::size_t depth) const;
         Volume voxelize_segments(std::size_t width, std::size_t height, std::size_t depth) const;
 
+        void shuffle();
         void reduce(float ratio);
 
         void generate_thickness(float radius);

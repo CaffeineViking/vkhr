@@ -368,6 +368,10 @@ namespace vkhr {
         return true;
     }
 
+    void HairStyle::shuffle() {
+        reduce(1.0f);
+    }
+
     void HairStyle::reduce(float ratio) {
         unsigned strands_left = get_strand_count() - std::ceil(get_strand_count() * ratio);
         unsigned vertex_count = get_vertex_count() - std::ceil(get_vertex_count() * ratio);
