@@ -17,7 +17,6 @@ vkhr.lnk
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -45,7 +44,6 @@ vkhr.lnk
 # Object files
 *.o
 *.ko
-*.obj
 *.elf
 
 # Precompiled Headers

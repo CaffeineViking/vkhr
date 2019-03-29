@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <fstream>
+#include <numeric>
 
 namespace vkhr {
     HairStyle::HairStyle(const std::string& file_path) {
@@ -152,6 +153,7 @@ namespace vkhr {
     }
 
     void HairStyle::generate_thickness(float radius) {
+        thickness.clear();
         thickness.reserve(get_vertex_count());
 
         for (std::size_t strand { 0 }; strand < get_strand_count(); ++strand) {
@@ -167,6 +169,7 @@ namespace vkhr {
     }
 
     void HairStyle::generate_tangents() {
+        tangents.clear();
         tangents.reserve(get_vertex_count());
 
         std::size_t vertex { 0 };
@@ -191,6 +194,7 @@ namespace vkhr {
     }
 
     void HairStyle::generate_indices() {
+        indices.clear();
         indices.reserve(get_segment_count() * 2);
 
         std::size_t vertex { 0 };
@@ -365,9 +369,80 @@ namespace vkhr {
     }
 
     void HairStyle::reduce(float ratio) {
-        unsigned strands_left = get_strand_count() - std::ceil(get_strand_count() * (1.0f / ratio));
-        while (--strands_left) {
+        unsigned strands_left = get_strand_count() - std::ceil(get_strand_count() * ratio);
+        unsigned vertex_count = get_vertex_count() - std::ceil(get_vertex_count() * ratio);
+
+        std::vector<unsigned short> reduced_segments;
+        std::vector<glm::vec3> reduced_vertices;
+        std::vector<float> reduced_thickness;
+        std::vector<glm::vec3> reduced_tangents;
+        std::vector<float> reduced_transparency;
+        std::vector<glm::vec3> reduced_color;
+
+        // Pre-allocate memory to avoid making the re-allocations.
+        if (has_segments()) reduced_segments.reserve(strands_left);
+        if (has_vertices()) reduced_vertices.reserve(vertex_count);
+        if (has_thickness()) reduced_thickness.reserve(vertex_count);
+        if (has_tangents()) reduced_tangents.reserve(vertex_count);
+        if (has_transparency()) reduced_transparency.reserve(vertex_count);
+        if (has_color()) reduced_color.reserve(vertex_count);
+
+        // We need to find vertex offsets for each of the strands.
+        std::vector<std::size_t> strand_offset(get_strand_count());
+
+        // i.e. a partial sum on the number of vertices per strand:
+
+        if (has_segments()) {
+            std::copy(segments.begin(), segments.end(), strand_offset.begin() + 1);
+            std::transform(strand_offset.begin(), strand_offset.end(),
+                           strand_offset.begin(), [](std::size_t i) { return i + 1; });
+            strand_offset[0] = 0;
+            std::partial_sum(strand_offset.begin(),
+                             strand_offset.end(),
+                             strand_offset.begin());
+        } else {
+            auto vertices_per_segment = get_default_segment_count() + 1;
+            std::fill(strand_offset.begin() + 1, strand_offset.end(), vertices_per_segment);
+            strand_offset[0] = 0;
+            std::partial_sum(strand_offset.begin(),
+                             strand_offset.end(),
+                             strand_offset.begin());
         }
+
+        while (--strands_left) {
+            double random = xorshift64(&seed) / static_cast<double>(std::numeric_limits<std::uint64_t>::max());
+            std::size_t random_strand = random * strand_offset.size();
+
+            unsigned segment_count { get_default_segment_count() };
+
+            if (has_segments()) {
+                segment_count = segments[random_strand];
+                std::swap(segments[random_strand], segments.back());
+                segments.pop_back();
+            }
+
+            reduced_segments.push_back(segment_count);
+
+            std::size_t attribute_start = strand_offset[random_strand];
+            auto attribute_end = attribute_start + segment_count + 1ul;
+
+            if (has_vertices()) std::copy(vertices.begin() + attribute_start, vertices.begin() + attribute_end, std::back_inserter(reduced_vertices));
+            if (has_thickness()) std::copy(thickness.begin() + attribute_start, thickness.begin() + attribute_end, std::back_inserter(reduced_thickness));
+            if (has_tangents()) std::copy(tangents.begin() + attribute_start, tangents.begin() + attribute_end, std::back_inserter(reduced_tangents));
+            if (has_transparency()) std::copy(transparency.begin() + attribute_start, transparency.begin() + attribute_end, std::back_inserter(reduced_transparency));
+            if (has_color()) std::copy(color.begin() + attribute_start, color.begin() + attribute_end, std::back_inserter(reduced_color));
+
+            std::swap(strand_offset[random_strand], strand_offset.back());
+            strand_offset.pop_back();
+        }
+
+        segments = reduced_segments;
+        vertices = reduced_vertices;
+        thickness = reduced_thickness;
+        tangents = reduced_tangents;
+        transparency = reduced_transparency;
+        color = reduced_color;
+        generate_indices();
     }
 
     std::vector<glm::vec4> HairStyle::create_position_thickness_data() const {
