@@ -154,7 +154,7 @@ namespace vkhr {
                                       VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
                                       VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 
-            command_buffer.clear_color_image(density_volume, { /*  0  */ });
+            // command_buffer.clear_color_image(density_volume, { /* 0 */ });
 
             density_volume.transition(command_buffer,
                                       VK_ACCESS_TRANSFER_WRITE_BIT,

@@ -189,6 +189,8 @@ namespace vkhr {
 
         draw_depth(scene_graph, command_buffers[frame]);
 
+        voxelize(scene_graph, command_buffers[frame]);
+
         draw_color(scene_graph, command_buffers[frame]);
 
         vk::DebugMarker::close(command_buffers[frame]);
@@ -289,6 +291,11 @@ namespace vkhr {
     }
 
     void Rasterizer::draw_depth(const SceneGraph& scene_graph, vk::CommandBuffer& command_buffer) {
+        if (!imgui.rasterizer_enabled(level_of_detail) &&
+             imgui.raymarcher_enabled(level_of_detail)) {
+            return; // no need to bake shadow for volume.
+        }
+
         vk::DebugMarker::begin(command_buffers[frame], "Depth Pass");
 
         vk::DebugMarker::begin(command_buffers[frame], "Bake Shadow Maps", query_pools[frame]);
