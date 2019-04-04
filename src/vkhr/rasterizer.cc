@@ -185,7 +185,7 @@ namespace vkhr {
         command_buffers[frame].reset_query_pool(query_pools[frame], 0, // performance.
                                                 query_pools[frame].get_query_count());
 
-        vk::DebugMarker::begin(command_buffers[frame], "Frame");
+        vk::DebugMarker::begin(command_buffers[frame], "Total Frame Time", query_pools[frame]);
 
         draw_depth(scene_graph, command_buffers[frame]);
 
@@ -193,7 +193,7 @@ namespace vkhr {
 
         draw_color(scene_graph, command_buffers[frame]);
 
-        vk::DebugMarker::close(command_buffers[frame]);
+        vk::DebugMarker::close(command_buffers[frame], "Total Frame Time", query_pools[frame]);
 
         command_buffers[frame].end();
 

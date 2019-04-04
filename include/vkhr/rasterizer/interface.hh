@@ -171,13 +171,14 @@ namespace vkhr {
         int profile_limit { 60 }; // Might change at run-time.
         std::unordered_map<std::string, ProfilePair> profiles;
         std::vector<std::string> export_profiles {
+            "Total Frame Time",
             "Bake Shadow Maps",
             "Voxelize Strands",
             "Clear PPLL Nodes",
             "Draw Mesh Models",
             "Draw Hair Styles",
             "Raymarch Strands",
-            "Resolve the PPLL"
+            "Resolve the PPLL",
         };
 
         static bool get_string_from_vector(void*, int, const char**);
