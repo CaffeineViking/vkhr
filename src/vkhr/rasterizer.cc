@@ -713,13 +713,13 @@ namespace vkhr {
 
         switch (benchmark.renderer) {
         case Renderer::Type::Rasterizer:
-            results << "Rasterized,";
+            results << "Rasterizer,";
             break;
         case Renderer::Type::Raymarcher:
-            results << "Raymarched,";
+            results << "Raymarcher,";
             break;
         case Renderer::Type::Ray_Tracer:
-            results << "Ray Traced,";
+            results << "Ray Tracer,";
             break;
         case Renderer::Type::Hybrid_LoD:
             results << "Hybrid LoD,";
