@@ -140,13 +140,13 @@ void build_benchmarks(vkhr::Rasterizer& rasterizer) {
                                       default_parameter.raymarch_steps });
     }
 
-    for (float strands { 1.0f }; strands >= 0.0f; strands -= 1.0f / 64.0f) {
+    for (float strands { 1.0f }; strands > 0.0f; strands -= 1.0f / 64.0f) {
         rasterizer.append_benchmark({ "Rasterized Time vs. Strands (Ponytail)",
                                       SCENE("ponytail.vkhr"),
                                       default_parameter.width,
                                       default_parameter.height,
                                       vkhr::Renderer::Rasterizer,
-                                      default_parameter.viewing_distance,
+                                      226,
                                       strands,
                                       default_parameter.raymarch_steps });
     }
@@ -170,7 +170,7 @@ void build_benchmarks(vkhr::Rasterizer& rasterizer) {
                                       default_parameter.width,
                                       default_parameter.height,
                                       vkhr::Renderer::Raymarcher,
-                                      default_parameter.viewing_distance,
+                                      226,
                                       default_parameter.strand_reduction,
                                       samples });
     }
@@ -188,13 +188,13 @@ void build_benchmarks(vkhr::Rasterizer& rasterizer) {
                                       default_parameter.raymarch_steps });
     }
 
-    for (float strands { 1.0f }; strands >= 0.0f; strands -= 1.0f / 64.0f) {
+    for (float strands { 1.0f }; strands > 0.0f; strands -= 1.0f / 64.0f) {
         rasterizer.append_benchmark({ "Rasterized Time vs. Strands (Bear)",
                                       SCENE("bear.vkhr"),
                                       default_parameter.width,
                                       default_parameter.height,
                                       vkhr::Renderer::Rasterizer,
-                                      default_parameter.viewing_distance,
+                                      385,
                                       strands,
                                       default_parameter.raymarch_steps });
     }
@@ -218,7 +218,7 @@ void build_benchmarks(vkhr::Rasterizer& rasterizer) {
                                       default_parameter.width,
                                       default_parameter.height,
                                       vkhr::Renderer::Raymarcher,
-                                      default_parameter.viewing_distance,
+                                      385,
                                       default_parameter.strand_reduction,
                                       samples });
     }
