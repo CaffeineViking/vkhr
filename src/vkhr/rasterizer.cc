@@ -655,7 +655,7 @@ namespace vkhr {
         auto& window = window_surface.get_glfw_window();
         window.resize(benchmark.width,benchmark.height);
         window.center();
-        window.append_string("Testing " + std::to_string(benchmark_counter) + " / " + std::to_string(queued_benchmarks));
+        window.append_string("Benchmarking " + std::to_string(benchmark_counter) + " / " + std::to_string(queued_benchmarks));
 
         auto& camera = scene_graph.get_camera();
 

@@ -36,6 +36,9 @@ int main(int argc, char** argv) {
 
     window.enable_vsync(argp["vsync"].value.boolean);
 
+    if (argp["benchmark"].value.boolean == 1)
+        window.enable_vsync(false);
+
     vkhr::InputMap input_map { window };
 
     input_map.bind("toggle_ui", vkhr::Input::Key::U);
@@ -113,4 +116,36 @@ int main(int argc, char** argv) {
 }
 
 void build_benchmarks(vkhr::Rasterizer& rasterizer) {
+    vkhr::Rasterizer::Benchmark default_parameter {
+        "Standard Parameters:",
+        SCENE("ponytail.vkhr"),
+        1280,
+        720,
+        vkhr::Renderer::Rasterizer,
+        226,
+        1,
+        512
+    };
+
+    for (float distance { 200.0f }; distance < 2000.0f; distance += 1800.0f / 64.0f) {
+        rasterizer.append_benchmark({ "Rasterized Time vs. Distance (Ponytail)",
+                                      SCENE("ponytail.vkhr"),
+                                     default_parameter.width,
+                                     default_parameter.height,
+                                     vkhr::Renderer::Rasterizer,
+                                     distance,
+                                     default_parameter.strand_reduction,
+                                     default_parameter.raymarch_steps });
+    }
+
+    for (float distance { 300.0f }; distance < 3000.0f; distance += 2700.0f / 64.0f) {
+        rasterizer.append_benchmark({ "Rasterized Time vs. Distance (Bear)",
+                                      SCENE("bear.vkhr"),
+                                     default_parameter.width,
+                                     default_parameter.height,
+                                     vkhr::Renderer::Rasterizer,
+                                     distance,
+                                     default_parameter.strand_reduction,
+                                     default_parameter.raymarch_steps });
+    }
 }
