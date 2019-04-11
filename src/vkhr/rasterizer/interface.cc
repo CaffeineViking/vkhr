@@ -539,7 +539,7 @@ namespace vkhr {
     std::string Interface::get_performance_header() {
         std::ostringstream header;
 
-        header << std::left << std::setw(7) << "Frame,";
+        header << std::left;
 
         for (std::size_t i { 0 }; i < export_profiles.size() - 1; ++i)
             header << std::setw(18) << export_profiles[i] + ",";
@@ -553,29 +553,32 @@ namespace vkhr {
 
         performance << std::left;
 
-        for (int i = 0; i < profile_limit; ++i) {
-            if (parameters != "") performance << parameters; // app
-            performance << std::setw(7) << std::to_string(i) + ",";
+        if (parameters != "") performance << parameters; // append!
 
-            for (std::size_t j { 0 }; j < export_profiles.size() - 1; ++j) {
-                auto profile = profiles.find(export_profiles[j]);
-                if (profile != profiles.end()) {
-                    performance << std::setw(18) << std::to_string(profile->second.timestamps[i]) + ",";
-                } else {
-                    performance << std::setw(18) << + "0,";
-                }
-            }
-
-            auto profile = profiles.find(export_profiles[export_profiles.size() - 1]);
-
+        for (std::size_t i { 0 }; i < export_profiles.size() - 1; ++i) {
+            auto profile = profiles.find(export_profiles[i]);
             if (profile != profiles.end()) {
-                performance << std::to_string(profile->second.timestamps[i]);
+                auto sum = std::accumulate(profile->second.timestamps.begin(),
+                                           profile->second.timestamps.end(), 0.0f);
+                auto average = sum / profile->second.timestamps.size();
+                performance << std::setw(18) << std::to_string(average) + ",";
             } else {
-                performance << "0";
+                performance << std::setw(18) << +"0,"; // i.e. no measurement.
             }
-
-            performance << "\n";
         }
+
+        auto profile = profiles.find(export_profiles[export_profiles.size() - 1]);
+
+        if (profile != profiles.end()) {
+            auto sum = std::accumulate(profile->second.timestamps.begin(),
+                                       profile->second.timestamps.end(), 0.0f);
+            auto average = sum / profile->second.timestamps.size();
+            performance << std::to_string(average);
+        } else {
+            performance << "0";
+        }
+
+        performance << "\n";
 
         return performance.str();
     }
