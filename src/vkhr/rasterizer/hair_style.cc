@@ -169,7 +169,7 @@ namespace vkhr {
             descriptor_set.write(3, density_view);
 
             command_buffer.bind_descriptor_set(descriptor_set, voxel_pipeline);
-            command_buffer.dispatch(vertices.count() / 512);
+            command_buffer.dispatch((vertices.count()*parameters.strand_ratio) / 512);
         }
 
         void HairStyle::draw_volume(Pipeline& pipeline, vk::DescriptorSet& descriptor_set, vk::CommandBuffer& command_buffer) {
@@ -402,6 +402,18 @@ namespace vkhr {
 
         void HairStyle::reduce(float ratio) {
             parameters.strand_ratio = ratio;
+        }
+
+        std::size_t HairStyle::get_geometry_size() const {
+            return segments.get_size() +
+                   vertices.get_size() +
+                   tangents.get_size() +
+                   thickness.get_size();
+        }
+
+        std::size_t HairStyle::get_volume_size() const {
+            return density_volume.get_memory_requirements().size +
+                   tangent_volume.get_memory_requirements().size;
         }
 
         int HairStyle::id { 0 };

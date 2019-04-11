@@ -697,6 +697,10 @@ namespace vkhr {
         header << std::setw(9)  << "Strands,";
         header << std::setw(9)  << "Samples,";
         header << std::setw(25) << "GPU,";
+        header << std::setw(18) << "Total Memory Use,";
+        header << std::setw(18) << "PPLL,";
+        header << std::setw(18) << "Geometry,";
+        header << std::setw(18) << "Volume,";
 
         return header.str();
     }
@@ -738,6 +742,24 @@ namespace vkhr {
         results << std::setw(9) << std::to_string(static_cast<std::size_t>(scene_graph.get_strand_count() * benchmark.strand_reduction)) + ",";
         results << std::setw(9) << std::to_string(benchmark.raymarch_steps) + ",";
         results << std::setw(25) << physical_device.get_name() + ",";
+
+        std::size_t volume_memory_usage { 0 }, strand_memory_usage { 0 },
+                    linked_memory_usage { ppll.get_heads_size_in_bytes() +
+                                          ppll.get_nodes_size_in_bytes() };
+
+        for (auto& hair_node : scene_graph.get_nodes_with_hair_styles()) {
+            for (auto& hair_style : hair_node->get_hair_styles()) {
+                volume_memory_usage += hair_styles[hair_style].get_volume_size();
+                strand_memory_usage += hair_styles[hair_style].get_geometry_size();
+            }
+        }
+
+        results << std::setw(18) << std::to_string(volume_memory_usage +
+                                                   strand_memory_usage +
+                                                   linked_memory_usage) + ",";
+        results << std::setw(18) << std::to_string(linked_memory_usage) + ",";
+        results << std::setw(18) << std::to_string(strand_memory_usage) + ",";
+        results << std::setw(18) << std::to_string(volume_memory_usage) + ",";
 
         return results.str();
     }

@@ -547,4 +547,12 @@ namespace vkhr {
                 hair_strands += hair_style->get_strand_count();
         return hair_strands;
     }
+
+    std::size_t SceneGraph::get_memory_usage() const {
+        std::size_t bytes { 0 };
+        for (auto& hair_node : get_nodes_with_hair_styles())
+            for (auto& hair_style : hair_node->get_hair_styles())
+                bytes += hair_style->get_size();
+        return bytes;
+    }
 }

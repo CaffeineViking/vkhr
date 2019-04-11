@@ -128,6 +128,7 @@ namespace vkhr {
         Node* find_node_by_name(const std::string& name);
 
         std::size_t get_strand_count() const;
+        std::size_t get_memory_usage() const;
 
         const std::vector<Node*>& get_nodes_with_models() const;
         const std::vector<Node*>& get_nodes_with_hair_styles() const;

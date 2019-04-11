@@ -49,6 +49,8 @@ namespace vkhr {
                 node_count * node_size
             };
 
+            this->node_size = node_size;
+
             vk::DebugMarker::object_name(rasterizer.device, nodes, VK_OBJECT_TYPE_BUFFER, "PPLL Nodes", id);
             vk::DebugMarker::object_name(rasterizer.device, nodes.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "PPLL Nodes Device Memory", id);

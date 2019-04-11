@@ -42,6 +42,9 @@ namespace vkhr {
 
             void update_parameters();
 
+            std::size_t get_geometry_size() const;
+            std::size_t get_volume_size()   const;
+
             struct Parameters {
                 AABB volume_bounds;
                 glm::vec3 volume_resolution;
