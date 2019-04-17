@@ -1,5 +1,5 @@
-Real-Time Hair Renderer
-=======================
+Real-Time Hybrid Hair Renderer in Vulkan™
+=========================================
 
 <p align="center">
     <img src="https://eriksvjansson.net/images/vkhr/screenshot-2.png" alt="VKHR 1920x1080 Ponytail"/>
