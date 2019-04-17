@@ -50,6 +50,15 @@ System Requirements
 
 Platforms *must* support Vulkan™.
 
+It has been tested on these GPUs:
+
+* NVIDIA® GeForce® MX150,
+* Radeon™ Pro WX 9100 Graphics,
+* Intel® HD Graphics 620.
+
+on Windows 10 and GNU / Linux.
+
+
 Dependencies
 ------------
 
