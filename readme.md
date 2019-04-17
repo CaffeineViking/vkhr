@@ -36,10 +36,13 @@ Compiling and Running
 Usage and Documents
 -------------------
 
-* `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
-* `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--width 1280`, `--height 720` , `--fullscreen no` , `--msaa off` , `--vsync on` , `--profile off`, `--ui on`.
-* **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **imgui** to modify everything else.
+* `bin/vkhr`: loads the default `vkhr` scene `share/scenes/ponytail.vkhr` with the default render settings.
+* `bin/vkhr <settings> <path-to-scene>`: loads the specified  `vkhr` scene, with the given render settings.
+* `bin/vkhr --benchmark yes`: runs the default benchmark and saves the profiles to an `benchmarks/` CSV.
+* **Default settings:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
+* **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` or `ESC` quits the application.
+* **Controls:** simply click and drag to rotate the camera, scroll to zoom, use the middle mouse button to pan.
+* **UI:** all configuration happens in the ImGUI window that is documented under the `Help` button in the UI.
 
 System Requirements
 -------------------
