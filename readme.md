@@ -68,8 +68,6 @@ Dependencies
 * `embree3` (uses v3.2.4)
 * Any C++17 compiler!
 
-All other dependencies are fetched with `git submodules`. They include the following libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`.
-
 All other dependencies are fetched with `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
 
 Structure
