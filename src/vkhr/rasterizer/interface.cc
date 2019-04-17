@@ -113,7 +113,7 @@ namespace vkhr {
         if (gui_visible) {
             auto& window = rasterizer.window_surface.get_glfw_window();
 
-            ImGui::Begin(" VKHR - a Scalable Strand-Based Hair Renderer",
+            ImGui::Begin(" Real-Time Hybrid Hair Renderer in Vulkan",
                          &gui_visible, ImGuiWindowFlags_AlwaysAutoResize |
                                        ImGuiWindowFlags_NoCollapse);
 
