@@ -1,5 +1,5 @@
-Real-Time Hair Renderer
-=======================
+Real-Time Hybrid Hair Renderer in Vulkan™
+=========================================
 
 <p align="center">
     <img src="https://eriksvjansson.net/images/vkhr/screenshot-2.png" alt="VKHR 1920x1080 Ponytail"/>
@@ -30,21 +30,34 @@ Compiling and Running
 6. Generate the `vkhr` project files by targeting your current setup
     * **Visual Studio:** `premake5 vs2017` or my alias `make solution`
         * then open the Visual Studio project in `build/vkhr.sln`
+        * you might have to retarget the VS solution to your SDK
     * **GNU Makefiles:** `premake5 gmake` or just call `make all/run`.
 7. Build as usual in your platform, and run with `bin/vkhr <scene>`.
 
 Usage and Documents
 -------------------
 
-* `bin/vkhr`: loads the default `vkhr` scene in `share/scenes/curly.vkhr` with the standard window and renderer settings.
-* `bin/vkhr share/scenes/curly.vkhr`: loads any `vkhr` scene file with the default settings. It is *always* the final argument.
-* **Arguments:** `--width 1280`, `--height 720` , `--fullscreen no` , `--msaa off` , `--vsync on` , `--profile off`, `--ui on`.
-* **Controls:** simply **click** and **drag** to rotate the camera, use **scrolling** to zoom, and use the **imgui** to modify everything else.
+* `bin/vkhr`: loads the default `vkhr` scene `share/scenes/ponytail.vkhr` with the default render settings.
+* `bin/vkhr <settings> <path-to-scene>`: loads the specified  `vkhr` scene, with the given render settings.
+* `bin/vkhr --benchmark yes`: runs the default benchmark and saves the profiles to an `benchmarks/` CSV.
+* **Default settings:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
+* **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` / `ESC` quits the app.
+* **Controls:** simply click and drag to rotate the camera, scroll to zoom, use the middle mouse button to pan.
+* **UI:** all configuration happens in the ImGUI window that is documented under the `Help` button in the UI.
 
 System Requirements
 -------------------
 
 Platforms *must* support Vulkan™.
+
+It has been tested on these GPUs:
+
+* NVIDIA® GeForce® MX150,
+* Radeon™ Pro WX 9100 Graphics,
+* Intel® HD Graphics 620.
+
+on Windows 10 and GNU / Linux.
+
 
 Dependencies
 ------------
@@ -55,11 +68,12 @@ Dependencies
 * `embree3` (uses v3.2.4)
 * Any C++17 compiler!
 
-All other dependencies are fetched using `git submodules`, and include the following libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`. The Vulkan C++ wrapper `vkpp` is being developed alongside `vkhr`.
+All other dependencies are fetched with `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
 
 Structure
 ---------
 
+* `benchmarks`: output from the bundled benchmarks goes in here.
 * `bin`: contains the built software and any other accompanying tools.
 * `build`: stores intermediate object files and generated GNU Make files.
     * `obj`: has all of the generated object files given under compilation.
@@ -99,7 +113,7 @@ Acknowledgements
 
 All hair styles are courtesy of Cem Yuksel's great [HAIR model files](http://www.cemyuksel.com/research/hairmodels/) repository.
 
-The ponytail and bear hair geometry are from the [TressFX 3.1](https://github.com/GPUOpen-Effects/TressFX/tree/3.1.1) repository, and proper rights have been granted by AMD Inc.
+The ponytail and bear hair geometry are from the [TressFX 3.1](https://github.com/GPUOpen-Effects/TressFX/tree/3.1.1) repository, and proper rights have been granted by AMD Inc. to be used in this repository. However, you are *not* allowed to use it outside of this repository! i.e. not the MIT license for it!
 
 The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
 
