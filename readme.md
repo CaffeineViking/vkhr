@@ -41,7 +41,7 @@ Usage and Documents
 * `bin/vkhr <settings> <path-to-scene>`: loads the specified  `vkhr` scene, with the given render settings.
 * `bin/vkhr --benchmark yes`: runs the default benchmark and saves the profiles to an `benchmarks/` CSV.
 * **Default settings:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
-* **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` or `ESC` quits the application.
+* **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` / `ESC` quits the app.
 * **Controls:** simply click and drag to rotate the camera, scroll to zoom, use the middle mouse button to pan.
 * **UI:** all configuration happens in the ImGUI window that is documented under the `Help` button in the UI.
 
