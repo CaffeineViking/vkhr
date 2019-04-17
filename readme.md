@@ -73,6 +73,7 @@ All other dependencies are fetched with `git submodules`. They include the follo
 Structure
 ---------
 
+* `benchmarks`: output from the bundled benchmarks goes in here.
 * `bin`: contains the built software and any other accompanying tools.
 * `build`: stores intermediate object files and generated GNU Make files.
     * `obj`: has all of the generated object files given under compilation.
