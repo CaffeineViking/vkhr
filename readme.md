@@ -2,12 +2,7 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
 <p align="center">
-    <img src="/share/images/screenshots/ponytail.jpg"                  alt=""/>
     <img width=50% src="/share/images/screenshots/ponytail-hair.jpg"   alt=""/>
-    <img width=50% src="/share/images/screenshots/bear-fur.jpg"        alt=""/>
-    <img src="/share/images/screenshots/bear.jpg"                      alt=""/>
-    <img src="/share/images/screenshots/ponytail-hybrid.jpg"           alt=""/>
-    <img src="/share/images/screenshots/bear-hybrid.jpg"               alt=""/>
 </p>
 
 List of Features
