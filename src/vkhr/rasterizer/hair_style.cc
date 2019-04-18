@@ -56,7 +56,7 @@ namespace vkhr {
             vk::DebugMarker::object_name(vulkan_renderer.device, segments.get_device_memory(), VK_OBJECT_TYPE_DEVICE_MEMORY,
                                          "Hair Index Device Memory", id);
 
-            parameters.hair_shininess = 50.0f; // Using Kajiya-Kay.
+            parameters.hair_shininess = 80.0f; // Using Kajiya-Kay.
             parameters.strand_radius = hair_style.get_default_thickness();
             parameters.hair_opacity = hair_style.get_default_transparency();
             parameters.strand_ratio = 1.00f; // i.e. don't reduce strands.

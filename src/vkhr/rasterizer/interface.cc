@@ -237,7 +237,7 @@ namespace vkhr {
 
                     ImGui::SliderFloat("AO Estimate Radius", &parameters.occlusion_radius, 0.0f,  8.0f, "%.1f");
                     ImGui::SliderFloat("AO Intensity Power", &parameters.ao_exponent,      0.0f, 32.0f, "%.0f");
-                    ImGui::SliderFloat("AO Intensity Clamp", &parameters.ao_clamp,         0.0f, 0.3f);
+                    ImGui::SliderFloat("AO Intensity Clamp", &parameters.ao_clamp,         0.0f, 0.4f);
 
                     ImGui::PopItemWidth();
 

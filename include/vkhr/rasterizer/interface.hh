@@ -88,7 +88,7 @@ namespace vkhr {
 
             3,
             Uniform,
-            3,
+            4,
             true,
 
             5,
@@ -98,11 +98,11 @@ namespace vkhr {
 
             ApproximateDeepShadows,
 
-            0.125,
+            0.115,
             1024,
             2.50f,
             10.0f,
-            0.150,
+            0.160,
 
             400.0,
             Renderer::Type::Rasterizer,
