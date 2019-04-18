@@ -2,9 +2,7 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
 <p align="center">
-    <img width=80% src="/share/images/screenshots/ponytail-hair.jpg" alt="Lara Croft's Ponytail"/>
-    <br>
-    <b>Figure 1:</b>
+    <img src="/share/images/screenshots/ponytail.jpg" alt="Lara Croft's Ponytail"/>
 </p>
 
 List of Features
