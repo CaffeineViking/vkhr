@@ -2,10 +2,12 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
 <p align="center">
-    <img src="https://eriksvjansson.net/images/vkhr/screenshot-2.png" alt="VKHR 1920x1080 Ponytail"/>
-    <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-23-bear-3.png" alt="VKHR 1280x720 Bear"/>
-    <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-09-smoothed-deep-shadows.png" alt="VKHR 1280x720 ADSM"/>
-    <img width=33% src="https://eriksvjansson.net/images/vkhr/2018-12-09-smooth-deep-shadows-shaded.png" alt="VKRHR 1280x720 Shaded ADSM"/>
+    <img src="/share/images/screenshots/ponytail.jpg"                  alt=""/>
+    <img width=50% src="/share/images/screenshots/ponytail-hair.jpg"   alt=""/>
+    <img width=50% src="/share/images/screenshots/bear-fur.jpg"        alt=""/>
+    <img src="/share/images/screenshots/bear.jpg"                      alt=""/>
+    <img src="/share/images/screenshots/ponytail-hybrid.jpg"           alt=""/>
+    <img src="/share/images/screenshots/bear-hybrid.jpg"               alt=""/>
 </p>
 
 List of Features
