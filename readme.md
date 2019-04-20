@@ -3,32 +3,22 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 
 <p align="center">
     <img src="/share/images/screenshots/ponytail.jpg"/>
-    <br>
-    <b>Figure 1:</b> Lara Croft's ponytail from Tomb Raider (2013)
 </p>
 
 <p align="center">
     <img src="/share/images/screenshots/ponytail-hair.jpg"/>
-    <br>
-    <b>Figure 2:</b>
 </p>
 
 <p align="center">
     <img src="/share/images/screenshots/hybrid.jpg"/>
-    <br>
-    <b>Figure 3:</b>
 </p>
 
 <p align="center">
     <img src="/share/images/screenshots/bear-fur.jpg"/>
-    <br>
-    <b>Figure 4:</b>
 </p>
 
 <p align="center">
     <img src="/share/images/screenshots/bear.jpg"/>
-    <br>
-    <b>Figure 5:</b>
 </p>
 
 Table of Contents
