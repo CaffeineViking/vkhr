@@ -1,8 +1,27 @@
 Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
+Contents
+--------
+
+1. [Contents](#contents)
+2. [Introduction](#introduction)
+3. [Features](#features)
+4. [Dependencies](#dependencies)
+5. [Compiling](#compiling)
+6. [System Requirements](#system-requirements)
+7. [Usage](#usage)
+8. [Documentation](#documentation)
+9. [Directories](#directories)
+10. [Reporting Bugs](#reporting-bugs)
+11. [Acknowledgements](#acknowledgements)
+12. [Legal Notice](#legal-notice)
+
+Introduction
+------------
+
 <p align="center">
-    <imgrc="/share/images/screenshots/ponytail.jpg"/>
+    <img src="/share/images/screenshots/ponytail.jpg"/>
     <br>
     <b>Figure 1:</b> Tomb Raider (2013)
 </p>
@@ -32,8 +51,22 @@ Real-Time Hybrid Hair Renderer in Vulkan™
     <b>Figure 5:</b>
 </p>
 
-Compiling and Running
----------------------
+Features
+--------
+
+Dependencies
+------------
+
+* `premake5` (pre-build)
+* Any Vulkan™ 1.1 SDK
+* `glfw3` (tested v3.2.1)
+* `embree3` (uses v3.2.4)
+* Any C++17 compiler!
+
+All other dependencies are fetched using `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb` and `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
+
+Compiling
+---------
 
 1. First, make sure you've changed your current directory to `vkhr`
 2. Then do `git submodule update --init --recursive --depth 1`
@@ -55,17 +88,6 @@ Compiling and Running
     * **GNU Makefiles:** `premake5 gmake` or just call `make all/run`.
 7. Build as usual in your platform, and run with `bin/vkhr <scene>`.
 
-Usage and Documents
--------------------
-
-* `bin/vkhr`: loads the default `vkhr` scene `share/scenes/ponytail.vkhr` with the default render settings.
-* `bin/vkhr <settings> <path-to-scene>`: loads the specified  `vkhr` scene, with the given render settings.
-* `bin/vkhr --benchmark yes`: runs the default benchmark and saves the profiles to an `benchmarks/` CSV.
-* **Default settings:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
-* **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` / `ESC` quits the app.
-* **Controls:** simply click and drag to rotate the camera, scroll to zoom, use the middle mouse button to pan.
-* **UI:** all configuration happens in the ImGUI window that is documented under the `Help` button in the UI.
-
 System Requirements
 -------------------
 
@@ -79,20 +101,22 @@ It has been tested on these GPUs:
 
 on Windows 10 and GNU / Linux.
 
+Usage
+-----
 
-Dependencies
-------------
+* `bin/vkhr`: loads the default `vkhr` scene `share/scenes/ponytail.vkhr` with the default render settings.
+* `bin/vkhr <settings> <path-to-scene>`: loads the specified  `vkhr` scene, with the given render settings.
+* `bin/vkhr --benchmark yes`: runs the default benchmark and saves the profiles to an `benchmarks/` CSV.
+* **Default settings:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
+* **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` / `ESC` quits the app.
+* **Controls:** simply click and drag to rotate the camera, scroll to zoom, use the middle mouse button to pan.
+* **UI:** all configuration happens in the ImGUI window that is documented under the `Help` button in the UI.
 
-* `premake5` (pre-build)
-* Any Vulkan™ 1.1 SDK
-* `glfw3` (tested v3.2.1)
-* `embree3` (uses v3.2.4)
-* Any C++17 compiler!
+Documentation
+-------------
 
-All other dependencies are fetched using `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb` and `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
-
-Structure
----------
+Directories
+-----------
 
 * `benchmarks`: output from the bundled benchmarks goes in here.
 * `bin`: contains the built software and any other accompanying tools.
