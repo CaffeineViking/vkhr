@@ -2,11 +2,35 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
 <p align="center">
-    <img src="/share/images/screenshots/ponytail.jpg" alt="Lara Croft's Ponytail"/>
+    <imgrc="/share/images/screenshots/ponytail.jpg"/>
+    <br>
+    <b>Figure 1:</b> Tomb Raider (2013)
 </p>
 
-List of Features
-----------------
+<p align="center">
+    <img src="/share/images/screenshots/ponytail-hair.jpg"/>
+    <br>
+    <b>Figure 2:</b>
+</p>
+
+<p align="center">
+    <img src="/share/images/screenshots/ponytail-hybrid.jpg"/>
+    <img src="/share/images/screenshots/bear-hybrid.jpg"/>
+    <br>
+    <b>Figure 3:</b>
+</p>
+
+<p align="center">
+    <img src="/share/images/screenshots/bear-fur.jpg"/>
+    <br>
+    <b>Figure 4:</b>
+</p>
+
+<p align="center">
+    <img src="/share/images/screenshots/bear.jpg"/>
+    <br>
+    <b>Figure 5:</b>
+</p>
 
 Compiling and Running
 ---------------------
@@ -65,7 +89,7 @@ Dependencies
 * `embree3` (uses v3.2.4)
 * Any C++17 compiler!
 
-All other dependencies are fetched with `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb`, `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
+All other dependencies are fetched using `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb` and `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
 
 Structure
 ---------
