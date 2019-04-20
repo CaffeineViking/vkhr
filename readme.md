@@ -14,11 +14,11 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 </p>
 
 <p align="center">
-    <img src="/share/images/screenshots/bear-fur.jpg"/>
+    <img src="/share/images/screenshots/bear.jpg"/>
 </p>
 
 <p align="center">
-    <img src="/share/images/screenshots/bear.jpg"/>
+    <img src="/share/images/screenshots/bear-fur.jpg"/>
 </p>
 
 Table of Contents
