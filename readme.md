@@ -23,7 +23,7 @@ Introduction
 <p align="center">
     <img src="/share/images/screenshots/ponytail.jpg"/>
     <br>
-    <b>Figure 1:</b> Tomb Raider (2013)
+    <b>Figure 1:</b> Lara Croft's ponytail from Tomb Raider (2013)
 </p>
 
 <p align="center">
