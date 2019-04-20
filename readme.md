@@ -33,8 +33,7 @@ Introduction
 </p>
 
 <p align="center">
-    <img height=365 src="/share/images/screenshots/ponytail-hybrid.jpg"/>
-    <img height=365 src="/share/images/screenshots/bear-hybrid.jpg"/>
+    <img src="/share/images/screenshots/hybrid.jpg"/>
     <br>
     <b>Figure 3:</b>
 </p>
