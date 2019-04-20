@@ -4,18 +4,18 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 Contents
 --------
 
-1. [Contents](#contents)
-2. [Introduction](#introduction)
-3. [Features](#features)
-4. [Dependencies](#dependencies)
-5. [Compiling](#compiling)
-6. [System Requirements](#system-requirements)
-7. [Usage](#usage)
-8. [Documentation](#documentation)
-9. [Directories](#directories)
-10. [Reporting Bugs](#reporting-bugs)
-11. [Acknowledgements](#acknowledgements)
-12. [Legal Notice](#legal-notice)
+* [Contents](#contents)
+* [Introduction](#introduction)
+* [Features](#features)
+* [Dependencies](#dependencies)
+* [Compiling](#compiling)
+* [System Requirements](#system-requirements)
+* [Usage](#usage)
+* [Documentation](#documentation)
+* [Directories](#directories)
+* [Reporting Bugs](#reporting-bugs)
+* [Acknowledgements](#acknowledgements)
+* [Legal Notice](#legal-notice)
 
 Introduction
 ------------
