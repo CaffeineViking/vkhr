@@ -24,8 +24,6 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 Table of Contents
 -----------------
 
-* [Introduction](#real-time-hybrid-hair-renderer-in-vulkan)
-* [Table of Contents](#table-of-contents)
 * [Features](#features)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
