@@ -153,8 +153,6 @@ Legal Notice
 
 Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
 
-Everything in this repository is under the MIT license *except* most of the assets I've used. Those fall under the license terms from their respective creators. All of the code in this repository is my own and that you can use however you like (see [license](/license.md)).
-
 Everything in this repository is under the MIT license *except* the assets I've used. Those fall under the license terms of their respective creators. All of the code in this repository is my own, and that you can use however you like (under the [license](/license.md)).
 
 See: [foreign/glfw/COPYING.txt](foreign/glfw/COPYING.txt) plus [foreign/embree/LICENSE.txt](foreign/embree/LICENSE.txt) for licenses.
