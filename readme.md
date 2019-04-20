@@ -1,25 +1,6 @@
 Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
-Contents
---------
-
-* [Contents](#contents)
-* [Introduction](#introduction)
-* [Features](#features)
-* [Dependencies](#dependencies)
-* [Compiling](#compiling)
-* [System Requirements](#system-requirements)
-* [Usage](#usage)
-* [Documentation](#documentation)
-* [Directories](#directories)
-* [Reporting Bugs](#reporting-bugs)
-* [Acknowledgements](#acknowledgements)
-* [Legal Notice](#legal-notice)
-
-Introduction
-------------
-
 <p align="center">
     <img src="/share/images/screenshots/ponytail.jpg"/>
     <br>
@@ -49,6 +30,22 @@ Introduction
     <br>
     <b>Figure 5:</b>
 </p>
+
+Table of Contents
+-----------------
+
+* [Introduction](#real-time-hybrid-hair-renderer-in-vulkan)
+* [Table of Contents](#table-of-contents)
+* [Features](#features)
+* [Dependencies](#dependencies)
+* [Compiling](#compiling)
+* [System Requirements](#system-requirements)
+* [Usage](#usage)
+* [Documentation](#documentation)
+* [Directories](#directories)
+* [Reporting Bugs](#reporting-bugs)
+* [Acknowledgements](#acknowledgements)
+* [Legal Notice](#legal-notice)
 
 Features
 --------
