@@ -169,11 +169,7 @@ Still, if you find anything, feel free to open an issue and I'll fix it!
 Acknowledgements
 ----------------
 
-All hair styles are courtesy of Cem Yuksel's great [HAIR model files](http://www.cemyuksel.com/research/hairmodels/) repository.
-
-The ponytail and bear hair geometry are from the [TressFX 3.1](https://github.com/GPUOpen-Effects/TressFX/tree/3.1.1) repository, and proper rights have been granted by AMD Inc. to be used in this repository. However, you are *not* allowed to use it outside of this repository! i.e. not the MIT license for it!
-
-The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
+First I would like to thank Matthäus Chajdas, Dominik Baumeister, and Jason Lacroix at AMD for supervising this thesis, and for always guiding me in the right direction. I'd also like to thank the fine folk at LiU for providing feedback and support, in particular, my examinator Ingemar Ragnemalm and Harald Nautsch at ISY and Stefan Gustavson from ITN. I would also like to thank AMD and RTG Game Engineering for their hospitality and friendliness, and for letting me sit in their Munich office.
 
 Legal Notice
 ------------
@@ -181,6 +177,12 @@ Legal Notice
 <img width=66% src="https://www.khronos.org/assets/images/api_logos/vulkan.svg"/>
 
 Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
+
+All hair styles are courtesy of Cem Yuksel's great [HAIR model files](http://www.cemyuksel.com/research/hairmodels/) repository.
+
+The ponytail and bear hair geometry are from the [TressFX 3.1](https://github.com/GPUOpen-Effects/TressFX/tree/3.1.1) repository, and proper rights have been granted by AMD Inc. to be used in this repository. However, you are *not* allowed to use it outside of this repository! i.e. not the MIT license for it!
+
+The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
 
 Everything in this repository is under the MIT license *except* the assets I've used. Those fall under the license terms of their respective creators. All of the code in this repository is my own, and that you can use however you like (under the [license](/license.md)).
 
