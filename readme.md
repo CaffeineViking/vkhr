@@ -178,6 +178,8 @@ The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
 Legal Notice
 ------------
 
+<img width=66% src="https://www.khronos.org/assets/images/api_logos/vulkan.svg"/>
+
 Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
 
 Everything in this repository is under the MIT license *except* the assets I've used. Those fall under the license terms of their respective creators. All of the code in this repository is my own, and that you can use however you like (under the [license](/license.md)).
