@@ -115,7 +115,7 @@ Documentation
 
 You're reading part of it! Besides this [readme.md](/readme.md), you'll find that most of the important shaders are nicely documented. Two good examples are [GPAA.glsl](/share/shaders/anti-aliasing/gpaa.glsl) for the line coverage calculations, and [approximate_deep_shadows.glsl](/share/shaders/self-shadows/approximate_deep_shadows.glsl) for the self-shadowing technique. You'll notice that the quality of it varies quite a bit, feel free to open an issue if you sense something isn't clear. I haven't documented the host-side of the implementation yet as that would take too long, and isn't that interesting anyway.
 
-If you want a high-level summary of our technique read [Real-Time Hybrid Hair Rendering](https://eriksvjansson.net/papers/rthhr.pdf), which is a short conference paper on our method (only the pre-print). You'll also find a copy of it here, which you can build by using LaTeX. If you want a more extensive and detailed version of our paper, my thesis [Scalable Strand-Based Hair Rendering](https://eriksvjansson.net/papers/ssbhr.pdf), will soon be available. Both of these also show the difference between our technique, and other existing frameworks like TressFX that only use a rasterizer.
+If you want a high-level summary of our technique read [Real-Time Hybrid Hair Rendering](https://eriksvjansson.net/papers/rthhr.pdf), which is a short conference paper on our method (only the pre-print). You'll also find a copy of it here, which you can build by using LaTeX. If you want a more extensive and detailed version of our paper, my thesis [Scalable Strand-Based Hair Rendering](https://eriksvjansson.net/papers/ssbhr.pdf), will soon be available. Both of these also show the difference between our technique and other existing frameworks like TressFX, that only use a rasterizer.
 
 And if you still haven't had enough, I have written a bunch of entries in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log), that shows the progress log from day 1 to the current version. Besides having a lot of pretty pictures, it shows the problems we encountered, and how we've solved them. This gives a bit more insight into why we have chosen this approach, and not something completely different. Oh right, we also have a short [presentation](https://eriksvjansson.net/others/sshr.pptx) if you don't want to read the paper or thesis, it has everything but in less detail.
 
@@ -134,7 +134,6 @@ Directories
 * `include`: only internal headers from this project should go here.
     * `vkhr`: internal headers for the Vulkan hair renderer project.
     * `vkpp`: headers for a minimal modern C++ Vulkan wrapper.
-* `lib`: any generated libraries from the project reside here.
 * `license.md`: please look through this very carefully.
 * `premake5.lua`: configuration file for the build system.
 * `readme.md`: this file contains information on the project.
