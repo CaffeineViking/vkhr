@@ -27,7 +27,7 @@ Table of Contents
 * [Introduction](#real-time-hybrid-hair-renderer-in-vulkan)
 * [Table of Contents](#table-of-contents)
 * [Features](#features)
-* [Benchmarks](#benchmarks)
+* [Benchmark](#benchmark)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
 * [System Requirements](#system-requirements)
@@ -41,8 +41,16 @@ Table of Contents
 Features
 --------
 
-Benchmarks
-----------
+Benchmark
+---------
+
+<p align="center">
+    <img src="/share/images/figures/performance-memory.png"/>
+</p>
+
+<p align="center">
+    <img src="/share/images/figures/pixels-strands.png"/>
+</p>
 
 Dependencies
 ------------
