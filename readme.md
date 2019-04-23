@@ -160,11 +160,11 @@ Directories
 Reporting Bugs
 --------------
 
-There are definitely no known bugs in this software at this time.
+`vkhr` is 100% bug-free, anything that seems like a bug is in fact a feature.
 
 This is a proof-of-concept research prototype, and as such, I wouldn't recommend using it for something serious, at least as it is. Also, do not expect this repository to be well maintained, I will not spend too much time with it after the thesis is done.
 
-Still, if you find anything, feel free to open an issue and I'll fix it!
+Still, if you find anything, feel free to open an issue, I'll see what I can do :)
 
 Acknowledgements
 ----------------
