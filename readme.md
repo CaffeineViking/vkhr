@@ -44,6 +44,20 @@ Features
 Benchmarks
 ----------
 
+Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterized and raymarched solutions and how these perf scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
+
+<p align="center">
+    <img src="/share/images/figures/performance-memory.png"/>
+</p>
+
+In the above plot to the left we see how the rasterizer and raymarcher fare at different distances, and how much time each of the rendering passes take. For the near case (e.g. an character close-up) the raymarched solution is around twice as fast, but the quality isn't so good, as strands are "lumped" together because of the volume approximations. On the other hand, the rasterized solution produces high-quality output as each strand is individually distinguishable. However, for far away to medium distances, these small details are not noticable, and the rasterized and raymarched solution are indistinguishable. The raymarcher on the other hand is now 5x faster in these distances! It has better scaling with distance for far away shots.
+
+The raymarcher also doesn't have to produce shadow maps, which would scale linearly with the number of light sources for a scene. Finally, notice that the strand voxelization is quite cheap and doesn't account for much of the total rendering time. In the memory department the figure on the right shows the GPU data breakdown. When comparing to the original strand-based geometry, the volume does not consume an inordinate amount of memory, and this value can also be tweaked with the volume resolution. The main culpit are the PPLL nodes that are used for our transparency solution. These scale with the resolution and also depedn on how many strands are being shaded (that might lead to artifacts if memory underallocated).
+
+<p align="center">
+    <img src="/share/images/figures/pixels-strands.png"/>
+</p>
+
 Dependencies
 ------------
 
@@ -152,14 +166,23 @@ Directories
 Reporting Bugs
 --------------
 
-There are definitely no known bugs in this software at this time.
+`vkhr` is 100% bug-free, anything that seems like a bug is in fact a feature.
 
 This is a proof-of-concept research prototype, and as such, I wouldn't recommend using it for something serious, at least as it is. Also, do not expect this repository to be well maintained, I will not spend too much time with it after the thesis is done.
 
-Still, if you find anything, feel free to open an issue and I'll fix it!
+Still, if you find anything, feel free to open an issue, I'll see what I can do :)
 
 Acknowledgements
 ----------------
+
+First I would like to thank Matthäus Chajdas, Dominik Baumeister, and Jason Lacroix at AMD for supervising this thesis, and for always guiding me in the right direction. I'd also like to thank the fine folk at LiU for providing feedback and support, in particular, my examinator Ingemar Ragnemalm and Harald Nautsch at ISY and Stefan Gustavson from ITN. I would also like to thank AMD and RTG Game Engineering for their hospitality and friendliness, and for letting me sit in their Munich office.
+
+Legal Notice
+------------
+
+<img width=66% src="https://www.khronos.org/assets/images/api_logos/vulkan.svg"/>
+
+Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
 
 All hair styles are courtesy of Cem Yuksel's great [HAIR model files](http://www.cemyuksel.com/research/hairmodels/) repository.
 
@@ -167,11 +190,8 @@ The ponytail and bear hair geometry are from the [TressFX 3.1](https://github.co
 
 The woman model was created by Murat Afshar (also for Cem Yuksel's repo).
 
-Legal Notice
-------------
-
-Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
-
 Everything in this repository is under the MIT license *except* the assets I've used. Those fall under the license terms of their respective creators. All of the code in this repository is my own, and that you can use however you like (under the [license](/license.md)).
 
-See: [foreign/glfw/COPYING.txt](foreign/glfw/COPYING.txt) plus [foreign/embree/LICENSE.txt](foreign/embree/LICENSE.txt) for licenses.
+Both GLFW and Embree are pre-compiled to facilitate building on Windows.
+
+See: [foreign/glfw/COPYING](foreign/glfw/COPYING.txt) and [foreign/embree/LICENSE](foreign/embree/LICENSE.txt) for these licenses.
