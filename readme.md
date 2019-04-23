@@ -1,12 +1,33 @@
 Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
-Contents
---------
+<p align="center">
+    <img src="/share/images/screenshots/ponytail.jpg"/>
+</p>
 
-* [Contents](#contents)
-* [Introduction](#introduction)
+<p align="center">
+    <img src="/share/images/screenshots/ponytail-hair.jpg"/>
+</p>
+
+<p align="center">
+    <img src="/share/images/screenshots/hybrid.jpg"/>
+</p>
+
+<p align="center">
+    <img src="/share/images/screenshots/bear.jpg"/>
+</p>
+
+<p align="center">
+    <img src="/share/images/screenshots/bear-fur.jpg"/>
+</p>
+
+Table of Contents
+-----------------
+
+* [Introduction](#real-time-hybrid-hair-renderer-in-vulkan)
+* [Table of Contents](#table-of-contents)
 * [Features](#features)
+* [Benchmarks](#benchmarks)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
 * [System Requirements](#system-requirements)
@@ -17,41 +38,11 @@ Contents
 * [Acknowledgements](#acknowledgements)
 * [Legal Notice](#legal-notice)
 
-Introduction
-------------
-
-<p align="center">
-    <img src="/share/images/screenshots/ponytail.jpg"/>
-    <br>
-    <b>Figure 1:</b> Lara Croft's ponytail from Tomb Raider (2013)
-</p>
-
-<p align="center">
-    <img src="/share/images/screenshots/ponytail-hair.jpg"/>
-    <br>
-    <b>Figure 2:</b>
-</p>
-
-<p align="center">
-    <img src="/share/images/screenshots/hybrid.jpg"/>
-    <br>
-    <b>Figure 3:</b>
-</p>
-
-<p align="center">
-    <img src="/share/images/screenshots/bear-fur.jpg"/>
-    <br>
-    <b>Figure 4:</b>
-</p>
-
-<p align="center">
-    <img src="/share/images/screenshots/bear.jpg"/>
-    <br>
-    <b>Figure 5:</b>
-</p>
-
 Features
 --------
+
+Benchmarks
+----------
 
 Dependencies
 ------------
@@ -87,6 +78,14 @@ Compiling
     * **GNU Makefiles:** `premake5 gmake` or just call `make all/run`.
 7. Build as usual in your platform, and run with `bin/vkhr <scene>`.
 
+### Distribution
+
+**Install:** if you're on Arch Linux it's as simple as running `makepkg -i`.
+
+For Windows just call `make distribute` for a "portable" ZIP archive.
+
+The client then only needs a working Vulkan runtime to start `vkhr`.
+
 System Requirements
 -------------------
 
@@ -114,6 +113,12 @@ Usage
 Documentation
 -------------
 
+You're reading part of it! Besides this [readme.md](/readme.md), you'll find that most of the important shaders are nicely documented. Two good examples are [GPAA.glsl](/share/shaders/anti-aliasing/gpaa.glsl) for the line coverage calculations, and [approximate_deep_shadows.glsl](/share/shaders/self-shadows/approximate_deep_shadows.glsl) for the self-shadowing technique. You'll notice that the quality of it varies quite a bit, feel free to open an issue if you sense something isn't clear. I haven't documented the host-side of the implementation yet as that would take too long, and isn't that interesting anyway.
+
+If you want a high-level summary of our technique read [Real-Time Hybrid Hair Rendering](https://eriksvjansson.net/papers/rthhr.pdf), which is a short conference paper on our method (only the pre-print). You'll also find a copy of it here, which you can build by using LaTeX. If you want a more extensive and detailed version of our paper, my thesis [Scalable Strand-Based Hair Rendering](https://eriksvjansson.net/papers/ssbhr.pdf), will soon be available. Both of these also show the difference between our technique and other existing frameworks like TressFX, that only use a rasterizer.
+
+And if you still haven't had enough, I have written a bunch of entries in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log), that shows the progress log from day 1 to the current version. Besides having a lot of pretty pictures, it shows the problems we encountered, and how we've solved them. This gives a bit more insight into why we have chosen this approach, and not something completely different. Oh right, we also have a short [presentation](https://eriksvjansson.net/others/sshr.pptx) if you don't want to read the paper or thesis, it has everything but in less detail.
+
 Directories
 -----------
 
@@ -129,7 +134,6 @@ Directories
 * `include`: only internal headers from this project should go here.
     * `vkhr`: internal headers for the Vulkan hair renderer project.
     * `vkpp`: headers for a minimal modern C++ Vulkan wrapper.
-* `lib`: any generated libraries from the project reside here.
 * `license.md`: please look through this very carefully.
 * `premake5.lua`: configuration file for the build system.
 * `readme.md`: this file contains information on the project.
@@ -150,6 +154,8 @@ Reporting Bugs
 
 There are definitely no known bugs in this software at this time.
 
+This is a proof-of-concept research prototype, and as such, I wouldn't recommend using it for something serious, at least as it is. Also, do not expect this repository to be well maintained, I will not spend too much time with it after the thesis is done.
+
 Still, if you find anything, feel free to open an issue and I'll fix it!
 
 Acknowledgements
@@ -165,5 +171,7 @@ Legal Notice
 ------------
 
 Vulkan and the Vulkan logo are registered trademarks of Khronos Group Inc.
+
+Everything in this repository is under the MIT license *except* the assets I've used. Those fall under the license terms of their respective creators. All of the code in this repository is my own, and that you can use however you like (under the [license](/license.md)).
 
 See: [foreign/glfw/COPYING.txt](foreign/glfw/COPYING.txt) plus [foreign/embree/LICENSE.txt](foreign/embree/LICENSE.txt) for licenses.
