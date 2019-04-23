@@ -30,6 +30,7 @@ Table of Contents
 * [Benchmarks](#benchmarks)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
+    * [Install](#distribution)
 * [System Requirements](#system-requirements)
 * [Usage](#usage)
 * [Documentation](#documentation)
@@ -77,6 +78,14 @@ Compiling
         * you might have to retarget the VS solution to your SDK
     * **GNU Makefiles:** `premake5 gmake` or just call `make all/run`.
 7. Build as usual in your platform, and run with `bin/vkhr <scene>`.
+
+### Distribution
+
+**Install:** if you're on Arch Linux it's as simple as running `makepkg -i`.
+
+For Windows just call `make distribute` for a "portable" ZIP archive.
+
+The client then only needs a working Vulkan runtime to start `vkhr`.
 
 System Requirements
 -------------------
