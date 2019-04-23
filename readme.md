@@ -27,7 +27,7 @@ Table of Contents
 * [Introduction](#real-time-hybrid-hair-renderer-in-vulkan)
 * [Table of Contents](#table-of-contents)
 * [Features](#features)
-* [Benchmark](#benchmark)
+* [Benchmarks](#benchmarks)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
 * [System Requirements](#system-requirements)
@@ -41,8 +41,8 @@ Table of Contents
 Features
 --------
 
-Benchmark
----------
+Benchmarks
+----------
 
 Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterized and raymarched solutions and how these perf scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
 
@@ -50,7 +50,9 @@ Along with this project we bundle a set of benchmarks that can be run by passing
     <img src="/share/images/figures/performance-memory.png"/>
 </p>
 
-In the plot to the left
+In the above plot to the left we see how the rasterizer and raymarcher fare at different distances, and how much time each of the rendering passes take. For the near case (e.g. an character close-up) the raymarched solution is around twice as fast, but the quality isn't so good, as strands are "lumped" together because of the volume approximations. On the other hand, the rasterized solution produces high-quality output as each strand is individually distinguishable. However, for far away to medium distances, these small details are not noticable, and the rasterized and raymarched solution are indistinguishable. The raymarcher on the other hand is now 5x faster in these distances! It has better scaling with distance for far away shots.
+
+The raymarcher also doesn't have to produce shadow maps, which would scale linearly with the number of light sources for a scene. Finally, notice that the strand voxelization is quite cheap and doesn't account for much of the total rendering time. In the memory department the figure on the right shows the GPU data breakdown. When comparing to the original strand-based geometry, the volume does not consume an inordinate amount of memory, and this value can also be tweaked with the volume resolution. The main culpit are the PPLL nodes that are used for our transparency solution. These scale with the resolution and also depedn on how many strands are being shaded (that might lead to artifacts if memory underallocated).
 
 <p align="center">
     <img src="/share/images/figures/pixels-strands.png"/>
