@@ -30,7 +30,6 @@ Table of Contents
 * [Benchmarks](#benchmarks)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
-    * [Install](#distribution)
 * [System Requirements](#system-requirements)
 * [Usage](#usage)
 * [Documentation](#documentation)
