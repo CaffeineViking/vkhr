@@ -57,7 +57,7 @@ Benchmark
 
 Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterized and raymarched solutions and how these perf scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
 
-**Settings:** 1280x720 Rendering Resolution, V-Sync Off, Ponytail Scenario, 512 Raymarching Steps, 1024x1024 Shadow Maps.
+**Setup:** Rendering at 1280x720, Ponytail Scene, V-Sync Off, 1024x1024 Shadow Maps, 256³ Volume, 512 Raymarching Steps.
 
 <p align="center">
     <img width=96% src="/share/images/figures/performance-memory.png"/>
