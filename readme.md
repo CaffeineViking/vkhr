@@ -58,7 +58,7 @@ The raymarcher also doesn't have to produce shadow maps, which would scale linea
     <img src="/share/images/figures/pixels-strands.png"/>
 </p>
 
-
+For the two plots above we see how performance scales for each renderer with respect to screen coverage and number of hair strands. The raymarcher has a lower intercept, making it cheap to render for low screen coverage (far away distances). Performance on the rasterizer scales linearly with the number of hair strands (as expected), and also for the raymarcher but with a very slow slope (caused by the voxelization). Our technique works especially well for realistic amounts of hair, where anything less than ~20,000 strands of hair will look bald. While the scaling on the right doesn't look very promising for the raymarcher, its performance can be tuned by changing the number of raymarch steps that moves the intercept up / down.
 
 Dependencies
 ------------
