@@ -62,13 +62,13 @@ Benchmark
 
 Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterized and raymarched solutions and how these perf scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
 
-**Setup:** Rendering at 1280x720, Ponytail Scene, V-Sync Off, 1024x1024 Shadow Maps, 256³ Volume, 512 Raymarching Steps.
-
 <p align="center">
     <img width=96% src="/share/images/figures/performance-memory.png"/>
 </p>
 
 In the above plot to the left we see how the rasterizer and raymarcher fare at different distances, and how much time each rendering pass takes. For the near cases (e.g. a character close-up) the raymarched solution is around twice as fast, but the fidelity isn't as good, as strands appear to be clumped together because of the volume approximation. On the other hand, the rasterized solution produces high-quality output as each strand is individually distinguishable. However for far away to medium distances, these small details are not noticable, and the rasterized and raymarched solution are indistinguishable. The raymarcher on the other hand is now 5x faster in these distances! It has better scaling with distance for far away shots.
+
+**Setup:** Rendering at 1280x720, Ponytail Scene, V-Sync Off, 1024x1024 Shadow Maps, 256³ Volume, 512 Raymarching Steps.
 
 The raymarcher also doesn't have to produce shadow maps, which would scale linearly with the number of light sources for the scene. Finally, notice that the strand voxelization is quite cheap and does not account for much of the total render time. In the memory department, the figure to the right shows the GPU data breakdown. When comparing to the original strand-based geometry, the volume does not consume an inordinate amount of memory, and this value can also be tweaked with the volume resolution. The main culpit are the PPLL nodes that are used for our transparency solution. These scale with the resolution and also depend on how many strands are being shaded (and might lead to artifacts if memory underallocated).
 
