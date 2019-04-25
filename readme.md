@@ -45,11 +45,17 @@ Features
 * Estimates hair **self-shadowing** with a fast **[Approximated Deep Shadow Map (ADSM)](developer.amd.com/wordpress/media/2013/05/HairInTombRaider_FMX2013.ppsx)** method à la **[Tomb Raider (2013)](https://www.gdcvault.com/play/1017625/Advanced-Visual-Effects-with-DirectX)**,
 * Produces **anti-aliased** strands by using a simple, but effective, line coverage calculation similar to Emil Persson's **[GPAA](www.humus.name/Articles/Persson_GraphicsGemsForGames.pptx)**,
 * Resolves strand **transparency** with an fragment **[k-Buffer](http://www-rev.sci.utah.edu/publications/SCITechReports/UUSCI-2006-032.pdf)** **[PPLL](http://developer.amd.com/wordpress/media/2013/06/2041_final.pdf)** similar to **[TressFX's](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.231.5679&rep=rep1&type=pdf)** OIT that builds and sorts on the GPU,
-* A new scalable **level of detail** scheme based on volume ray casting.
+* Has a scalable **level-of-detail** scheme based on volume ray casting.
 
-This novel volumetric approximation for strand-based hair can be calculated once per-frame to support fully simulated hair styles. It features:
+This novel volumetric approximation for strand-based hair can be found once per-frame for fully simulated hair. It features:
 
 * A very fast compute-based **strand voxelization** technique for hairs,
+* An approximation of **Kajiya-Kay's** model by finding the **tangents** inside of a volume by **quantized strand voxelization**,
+* An **ADSM** equivalent, that also takes into account the varying hair spacing by using the actual **strand density** as input,
+* A way to approximate the **local ambient occlusion** by using the same **strand density** (a useful representation for hair),
+* That can also be used to "fake" **transparency** for **low density areas**.
+
+It gives a complete and scalable solution to hair rendering which combines the best of strand- and volume-based methods.
 
 Benchmark
 ---------
