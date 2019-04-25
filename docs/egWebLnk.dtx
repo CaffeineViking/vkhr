@@ -1,0 +1,158 @@
+\def\fileversion{2.3}
+\def\filedate{2018/12/14}
+\def\docdate {2018/12/14}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{egweblnk}[\filedate \space v\fileversion \space DF's support for http web links in class egpubl]
+
+% commands
+%   \httpsAddr            {URL *without* leading string 'https:'} 
+%   \httpAddr             {URL *without* leading string 'http:'}
+%   \ftpAddr              {URL *without* leading string 'ftp:'}
+%   \httpLinkPlusFootnote {URL *without* leading 'http:'}{source text}
+%   \URL		  {url}
+%   \MailTo		  {Email addr}
+%   \MailToNA		  {emailName}{@emailSiteAddress}
+%   \GotoFile		  {destination file}{source text}
+%   
+%   \webLinkFont
+% -----------------------------------------------------------------------
+
+% revisions:
+% in version 2.3:
+% added \httpsAddr
+% revisions:
+% in version 2.2:
+%   use \DeclareUrlCommand instead of replicating code
+% in version 2.1:
+%   define url@dfstyle according to version of package url
+% in version 2.0:
+%   take a new approach for almost all commands based on the url package
+%   add new command \MailToNA
+%   replace \WebLinkPlusFootnote by \httpLinkPlusFootnote
+% in version 1.3:
+%   adapt to hyperref 1999/10/14 v6.66m
+
+\def\LinkColor{blue}%        % color BLUE for external links
+
+% define condensed teletype font 
+%
+\def\ttcond{%
+% \usefont{T1}{pcr}{mc}{n}%
+  \ttfamily\fontseries{mc}\fontshape{n}\selectfont%
+}
+
+% ---------------- url package ---
+
+%*% \RequirePackage[T1]{url}
+% \let\urlorg\url
+
+% check for URL version 1.5
+% \@ifundefined{Url@ttdo}{%
+%   \PackageError{dfweblnk}%
+%   {incompatible version of package 'url' installed!}%
+%   {command \backslash URL@ttdo undefined in used package 'url'}%
+% }{}%
+
+% ----------------
+% define a new url-style called 'df'
+
+\def\url@dfstyle{%
+  \def\UrlFont{\ttcond}%
+  \@ifundefined{Url@ttdo}{}{\Url@ttdo}% if this cmd is not defined in package url then we are using
+  % a package newer than version 1.6 - where this command is not necessary anymore
+}
+
+% ----------------
+% add a new customized command \webLink replacing the \url command
+%
+% \newcommand\webLink{\begingroup \urlstyle{df}\Url}
+%
+\DeclareUrlCommand\webLink{\urlstyle{df}}
+
+% ---------------- hyperref package ---
+
+%*% \RequirePackage[pdfmark]{hyperref}
+%*% \hypersetup{%
+%*%   colorlinks,linkcolor=\LinkColor,citecolor=\LinkColor,urlcolor=\LinkColor,
+%*% }
+
+% select font to typeset web-link
+\let\webLinkFont=\ttcond
+
+
+% ----------------
+
+% \httpAddr #1 
+%    with #1 a URL *without* leading string 'http:'
+%    creates a hypertext link from string 'http:' to URL 'http:#1'
+%    all typeset with \webLinkFont
+%
+\def\httpAddr#1{\href{http:#1}{\webLinkFont http:}\webLink{#1}}
+
+% ----------------
+
+% \httpsAddr #1 
+%    with #1 a URL *without* leading string 'https:'
+%    creates a hypertext link from string 'https:' to URL 'https:#1'
+%    all typeset with \webLinkFont
+%
+\def\httpsAddr#1{\href{https:#1}{\webLinkFont https:}\webLink{#1}}
+
+% ----------------
+
+% \ftpAddr #1 
+%    with #1 a URL *without* leading string 'ftp:'
+%    creates a hypertext link from string 'ftp:' to URL 'ftp:#1'
+%    all typeset with \webLinkFont
+%
+\def\ftpAddr#1{\href{ftp:#1}{\webLinkFont ftp:}\webLink{#1}}
+
+
+% \httpLinkPlusFootnote is basically the same as \htmladdnormallinkfoot
+%   with the difference that the footnote is typeset with \webLink
+%   (in order to have correct handling of special symbols like _ or ~)
+% The command creates a link to URL http:#1 from 
+%   active string #2='source text' and
+%   typesets a footnote printing the URL.
+%
+\newcommand{\httpLinkPlusFootnote}[2]{% par #1: destination URL
+  %                                   % par #2: source text
+  \href{http:#1}{#2}\footnote{\httpAddr{#1}}%
+}%
+
+
+% \URL
+%   typeset URL with font \webLinkFont
+%   and create URL to #1='URL'
+%
+\newcommand{\URL}[1]{\href{#1}{\webLink{#1}}}
+
+
+% \MailTo
+%   typeset email address with font \webLinkFont
+%   and create mailto-URL for #1='Email addr'
+%   eg  \MailTo{d.fellner@tu-bs.de}
+%
+\newcommand{\MailTo}[1]{\href{mailto:#1}{\webLinkFont #1}} 
+
+
+% \MailToNA
+%   like \MailTo but with 2 parameters separately defining 
+%   Name and site Address
+%   eg  \MailToNA{d.fellner}{@tu-bs.de}
+%
+\newcommand{\MailToNA}[2]{\href{mailto:#1#2}{\webLinkFont #1}\webLink{#2}}
+
+
+% \GotoFile
+%   create link to 'destination file' from active string 'source text' 
+%   (for pdf files this will result in a GotoR command)
+%
+\newcommand{\GotoFile}[2]{%         % par #1: destination file
+%                                   % par #2: source text
+%
+  \href{file:#1}{#2}%
+}%
+
+
+\endinput

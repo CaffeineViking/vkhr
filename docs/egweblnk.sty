@@ -1,0 +1,29 @@
+\def\fileversion{2.2}
+\def\filedate{2004/10/29}
+\def\docdate {2004/10/29}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{egweblnk}[\filedate \space v\fileversion \space
+DF's support for http web links in class egpubl]
+\def\LinkColor{blue}%
+\def\ttcond{%
+\ttfamily\fontseries{mc}\fontshape{n}\selectfont%
+}
+\def\url@dfstyle{%
+\def\UrlFont{\ttcond}%
+\@ifundefined{Url@ttdo}{}{\Url@ttdo}%
+}
+\DeclareUrlCommand\webLink{\urlstyle{df}}
+\let\webLinkFont=\ttcond
+\def\httpAddr#1{\href{http:#1}{\webLinkFont http:}\webLink{#1}}
+\def\httpsAddr#1{\href{https:#1}{\webLinkFont https:}\webLink{#1}}
+\def\ftpAddr#1{\href{ftp:#1}{\webLinkFont ftp:}\webLink{#1}}
+\newcommand{\httpLinkPlusFootnote}[2]{%
+\href{http:#1}{#2}\footnote{\httpAddr{#1}}%
+}%
+\newcommand{\URL}[1]{\href{#1}{\webLink{#1}}}
+\newcommand{\MailTo}[1]{\href{mailto:#1}{\webLinkFont #1}} 
+\newcommand{\MailToNA}[2]{\href{mailto:#1#2}{\webLinkFont #1}\webLink{#2}}
+\newcommand{\GotoFile}[2]{%
+\href{file:#1}{#2}%
+}%
+\endinput

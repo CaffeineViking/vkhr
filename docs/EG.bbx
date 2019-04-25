@@ -1,0 +1,96 @@
+% 2018-12-14 SB: adapted "alphabetic" style for Eurographics Publications
+
+\ProvidesFile{EG.bbx}
+[\abx@bbxid]
+
+\RequireBibliographyStyle{standard}
+\ExecuteBibliographyOptions{labelalpha,sorting=anyt,maxnames=4,minnames=3,maxalphanames=4,minalphanames=3,useprefix=true}
+
+\providebool{bbx:subentry}
+
+\DeclareBibliographyOption[boolean]{subentry}[true]{%
+  \setbool{bbx:subentry}{#1}}
+
+\DeclareNameAlias{author}{default}
+\DeclareNameAlias{editor}{default}
+\DeclareNameAlias{translator}{default}
+
+\DeclareFieldFormat{bibentrysetcount}{\mkbibparens{\mknumalph{#1}}}
+\DeclareFieldFormat{labelalphawidth}{\mkbibbrackets{#1}}
+\DeclareFieldFormat{shorthandwidth}{\mkbibbrackets{#1}}
+
+% \@ifundefined{bibhang}{%
+% \newlength{\bibhang}
+% \setlength{\bibhang}{1em}}
+% {\setlength{\bibhang}{1em}}
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
+\renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
+\renewcommand*{\labelalphaothers}{*} 
+\DeclareNameAlias{default}{family-given}
+\DefineBibliographyStrings{english}{%
+    backrefpage  = {}, % for single page number
+    backrefpages = {}, % for multiple page numbers
+    page             = {},
+    pages            = {},
+    in               = {},
+    inseries         = {},
+} 
+\renewbibmacro*{pageref}{%
+  \iflistundef{pageref}
+    {}
+    {{%
+       \ifnumgreater{\value{pageref}}{1}
+         {\bibstring{backrefpages}\ppspace}
+         {\bibstring{backrefpage}\ppspace}%
+       \printlist[pageref][-\value{listtotal}]{pageref}}}} 
+
+\defbibenvironment{bibliography}
+  {\list
+     {\printtext[labelalphawidth]{%
+        \printfield{labelprefix}%
+        \printfield{labelalpha}%
+        \printfield{extraalpha}}}
+     { \setlength{\itemindent}{0pt}
+    \setlength{\leftmargin}{\bibhang}
+    \itemsep 4pt plus 1pt minus 1pt%
+     \fontsize{8} {9} \selectfont     }
+%      \setlength{\labelwidth}{\labelalphawidth}%
+%       \setlength{\leftmargin}{\labelwidth}%
+%       \setlength{\itemindent}{\labelwidth}%
+%       \setlength{\labelsep}{\biblabelsep}%
+%       \addtolength{\leftmargin}{\labelsep}%
+%       \setlength{\itemsep}{\bibitemsep}%
+%       \setlength{\parsep}{\bibparsep}}%        
+      \renewcommand*{\makelabel}[1]{##1\hss}}
+  {\endlist}
+  {\item}
+
+\defbibenvironment{shorthand}
+  {\list
+     {\printfield[shorthandwidth]{shorthand}}
+     {  \setlength{\itemindent}{0pt}
+    \setlength{\leftmargin}{\bibhang}
+    \itemsep 4pt plus 1pt minus 1pt%
+     \fontsize{8} {9} \selectfont     
+%      \setlength{\labelwidth}{\shorthandwidth}%
+%       \setlength{\leftmargin}{\labelwidth}%
+%       \setlength{\labelsep}{\biblabelsep}%
+%       \addtolength{\leftmargin}{\labelsep}%
+%       \setlength{\itemsep}{\bibitemsep}%
+%       \setlength{\parsep}{\bibparsep}%
+      \renewcommand*{\makelabel}[1]{##1\hss}}}
+  {\endlist}
+  {\item}
+
+\DeclareBibliographyDriver{set}{%
+  \entryset
+    {\ifbool{bbx:subentry}
+       {\printfield[bibentrysetcount]{entrysetcount}%
+        \printunit*{\addnbspace}}
+       {}}
+    {}%
+  \newunit\newblock
+  \usebibmacro{setpageref}%
+  \finentry}
+
+\endinput
