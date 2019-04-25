@@ -50,7 +50,6 @@ Features
 This novel volumetric approximation for strand-based hair can be calculated once per-frame to support fully simulated hair styles. It features:
 
 * A very fast compute-based **strand voxelization** technique for hairs,
-* 
 
 Benchmark
 ---------
