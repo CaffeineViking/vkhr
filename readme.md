@@ -41,6 +41,16 @@ Table of Contents
 Features
 --------
 
+...
+
+* Written from scratch in **modern C++17** with minimal dependencies,
+* Uses the **[Vulkan™ API](https://www.khronos.org/vulkan/)** with a lightweight wrapper: **[vkpp](https://github.com/CaffeineViking/vkpp)**, written for modern C++17, with proper lifetime management,
+* Has a built-in raytracer based on **[Intel's Embree®](https://embree.github.io/)** with a **[CMJ](https://graphics.pixar.com/library/MultiJitteredSampling/paper.pdf)** sampler to compare ground-truth global effects, like AO,
+* Loads **[Cem Yuksel's](http://www.cemyuksel.com/research/hairmodels/)** free & open **[.hair file format](http://www.cemyuksel.com/research/hairmodels/)**, and has a easy human-readable **[scene graph format](/share/scenes/ponytail.vkhr)** based on JSON,
+* Consists of a strand-based hair **rasterizer** and a volume **raymarcher**.
+
+It uses this rasterized solution for close-up shots, and our raymarched solution for level-of-detail. This hybrid hair renderer:
+
 * Models single **light scattering** in a strand with **[Kajiya-Kay's](http://www.cs.virginia.edu/~mjh7v/bib/Kajiya89.pdf)** shading,
 * Estimates hair **self-shadowing** with a fast **[Approximated Deep Shadow Map (ADSM)](developer.amd.com/wordpress/media/2013/05/HairInTombRaider_FMX2013.ppsx)** method à la **[Tomb Raider (2013)](https://www.gdcvault.com/play/1017625/Advanced-Visual-Effects-with-DirectX)**,
 * Produces **anti-aliased** strands by using a simple, but effective, line coverage calculation similar to Emil Persson's **[GPAA](www.humus.name/Articles/Persson_GraphicsGemsForGames.pptx)**,
@@ -49,10 +59,10 @@ Features
 
 This novel volumetric approximation for strand-based hair can be found once per-frame for fully simulated hair. It features:
 
-* A very fast compute-based **strand voxelization** technique for hairs,
-* An approximation of **Kajiya-Kay's** model by finding the **tangents** inside of a volume by **quantized strand voxelization**,
-* An **ADSM** equivalent, that also takes into account the varying hair spacing by using the actual **strand density** as input,
-* A way to approximate the **local ambient occlusion** by using the same **strand density** (a useful representation for hair),
+* A very fast compute-based **[strand voxelization](https://arxiv.org/pdf/1801.01155.pdf)** technique for hairs,
+* An approximation of **[Kajiya-Kay's](http://www.cs.virginia.edu/~mjh7v/bib/Kajiya89.pdf)** model by finding the **tangents** inside of a volume by **[quantized strand voxelization](https://arxiv.org/pdf/1801.01155.pdf)**,
+* An **[ADSM](developer.amd.com/wordpress/media/2013/05/HairInTombRaider_FMX2013.ppsx)** equivalent, that also takes into account the varying hair spacing by using the actual **strand density** as input,
+* A way to approximate the **[local ambient occlusion](http://www.diva-portal.org/smash/get/diva2:321233/FULLTEXT01.pdf)** by using the same **strand density** (a useful representation for hair),
 * That can also be used to "fake" **transparency** for **low density areas**.
 
 It gives a complete and scalable solution to hair rendering which combines the best of strand- and volume-based methods.
