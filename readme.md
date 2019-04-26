@@ -41,7 +41,7 @@ Table of Contents
 Features
 --------
 
-...
+A real-time hybrid hair rendering pipeline suitable for video games, that scales in the performance and quality domain. It is:
 
 * Written from scratch in **modern C++17** with minimal dependencies,
 * Uses the **[Vulkan™ API](https://www.khronos.org/vulkan/)** with a lightweight wrapper: **[vkpp](https://github.com/CaffeineViking/vkpp)**, written for modern C++17, with proper lifetime management,
@@ -65,7 +65,13 @@ This novel volumetric approximation for strand-based hair can be found once per-
 * A way to approximate the **[local ambient occlusion](http://www.diva-portal.org/smash/get/diva2:321233/FULLTEXT01.pdf)** by using the same **strand density** (a useful representation for hair),
 * That can also be used to "fake" **transparency** for **low density areas**.
 
-It gives a complete and scalable solution to hair rendering which combines the best of strand- and volume-based methods.
+Our hybrid rendering solution combines the best of strand- and volume-based hair representations. Some benefits are that:
+
+* It is **faster** than purely raster-based techniques in the far away case,
+* The **performance** is more **predictable and configurable** as raymarching scales **linearly** with the hair's screen coverage,
+* The **level-of-detail transition** is quite **smooth** because both the rasterizer and raymarcher **approximate similar effects**,
+* The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume**, but not in strand-based renderers,
+* It is **automatic** as our voxelization works even with **simulated hairs**.
 
 Benchmark
 ---------
