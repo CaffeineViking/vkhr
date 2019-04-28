@@ -520,10 +520,8 @@
     <None Include="..\share\shaders\self-shadowing\filter_shadows.glsl" />
     <None Include="..\share\shaders\self-shadowing\linearize_depth.glsl" />
     <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl" />
-    <None Include="..\share\shaders\shading\blinn-phong.glsl" />
     <None Include="..\share\shaders\shading\kajiya-kay.glsl" />
     <None Include="..\share\shaders\shading\lambertian.glsl" />
-    <None Include="..\share\shaders\shading\scheuermann.glsl" />
     <None Include="..\share\shaders\strands\strand.frag" />
     <None Include="..\share\shaders\strands\strand.geom" />
     <None Include="..\share\shaders\strands\strand.glsl" />
@@ -537,7 +535,6 @@
     <None Include="..\share\shaders\volumes\filtered_raymarch.glsl" />
     <None Include="..\share\shaders\volumes\local_ambient_occlusion.glsl" />
     <None Include="..\share\shaders\volumes\naive_ambient_occlusion.glsl" />
-    <None Include="..\share\shaders\volumes\quantize.glsl" />
     <None Include="..\share\shaders\volumes\raymarch.glsl" />
     <None Include="..\share\shaders\volumes\sample_volume.glsl" />
     <None Include="..\share\shaders\volumes\volume.frag" />

@@ -1345,16 +1345,10 @@
     <None Include="..\share\shaders\self-shadowing\tex2Dproj.glsl">
       <Filter>shaders\self-shadowing</Filter>
     </None>
-    <None Include="..\share\shaders\shading\blinn-phong.glsl">
-      <Filter>shaders\shading</Filter>
-    </None>
     <None Include="..\share\shaders\shading\kajiya-kay.glsl">
       <Filter>shaders\shading</Filter>
     </None>
     <None Include="..\share\shaders\shading\lambertian.glsl">
-      <Filter>shaders\shading</Filter>
-    </None>
-    <None Include="..\share\shaders\shading\scheuermann.glsl">
       <Filter>shaders\shading</Filter>
     </None>
     <None Include="..\share\shaders\strands\strand.frag">
@@ -1394,9 +1388,6 @@
       <Filter>shaders\volumes</Filter>
     </None>
     <None Include="..\share\shaders\volumes\naive_ambient_occlusion.glsl">
-      <Filter>shaders\volumes</Filter>
-    </None>
-    <None Include="..\share\shaders\volumes\quantize.glsl">
       <Filter>shaders\volumes</Filter>
     </None>
     <None Include="..\share\shaders\volumes\raymarch.glsl">
