@@ -217,30 +217,42 @@ Screenshots
 -----------
 
 <p align="center">
-   <img width=100% src="/docs/figures/ponytail.jpg" alt=""/>
+   <img src="/docs/figures/ponytail.jpg" alt=""/>
+   <br>
+   The screenshot above is another render from Lara Croft's ponytail (with 136,320 strands of hair) but from a different angle.
 </p>
 
 <p align="center">
-   <img width=100% src="/docs/figures/bear.jpg"     alt=""/>
-   <img width=100% src="/docs/figures/bear-fur.jpg" alt=""/>
+   <img src="/docs/figures/bear.jpg"     alt=""/>
+   <img src="/docs/figures/bear-fur.jpg" alt=""/>
+   <br>
+   Above are screenshots for the bear (with 961,280 strands of fur) from Rise of the Tomb Raider (2015) rendered in real-time.
 </p>
 
 <p align="center">
    <img width=100% src="/docs/figures/composition.jpg" alt=""/>
+   <br>
+   In the figure above we show the component-by-component difference between our rasterized and raymarched solutions.
 </p>
 
 <p align="center">
    <img width=49% src="/docs/figures/bear-tangents.png"           alt=""/>
    <img width=49% src="/docs/figures/bear-voxelized-tangents.png" alt=""/>
+   <br>
+   The comparison above shows the differences between the actual tangents (on the left) and their voxelized approximation.
 </p>
    
 <p align="center">
    <img width=32% src="/docs/figures/ponytail-raytraced-ao-comparison.png"  alt=""/>
    <img width=32% src="/docs/figures/ponytail-rasterized-ao-comparison.png" alt=""/>
    <img width=32% src="/docs/figures/ponytail-raymarched-ao-comparison.png" alt=""/>
+   <br>
+   Above is a comparison of the ground-truth AO (on the left) from our raytracer and our approximation (middle and right).
 </p>
 
 <p align="center">
    <img width=49% src="/docs/figures/ponytail-aliased.png"      alt=""/>
    <img width=49% src="/docs/figures/ponytail-anti-aliased.png" alt=""/>
+   <br>
+   Here we show the difference between not handling anti-aliasing and transparency at all (on the left) and when doing so :-)
 </p>
