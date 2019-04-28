@@ -3,7 +3,7 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 
 <p align="center"><img src="/docs/figures/ponytail-hair.jpg" alt="Lara Croft's Ponytail"/></p>
 
-<p align="center"><img src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Renderer Example"/></p>
+<p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
 Table of Contents
 -----------------
@@ -21,6 +21,7 @@ Table of Contents
 * [Reporting Bugs](#reporting-bugs)
 * [Acknowledgements](#acknowledgements)
 * [Legal Notice](#legal-notice)
+* [Screenshots!](#screenshots)
 
 Features
 --------
@@ -62,7 +63,7 @@ Benchmark
 
 Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterized and raymarched solutions and how these perf scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
 
-<p align="center"><img width=96% src="/docs/figures/breakdown.png" alt="Performance and Memory Breakdown"/></p>
+<p align="center"><img width=97% src="/docs/figures/breakdown.png" alt="Performance and Memory Breakdown"/></p>
 
 In the above plot to the left we see how the rasterizer and raymarcher fare at different distances, and how much time each rendering pass takes. For the near cases (e.g. a character close-up) the raymarched solution is around twice as fast, but the fidelity isn't as good, as strands appear to be clumped together because of the volume approximation. On the other hand, the rasterized solution produces high-quality output as each strand is individually distinguishable. However for far away to medium distances, these small details are not noticable, and the rasterized and raymarched solution are indistinguishable. The raymarcher on the other hand is now 5x faster in these distances! It has better scaling with distance for far away shots.
 
@@ -70,7 +71,7 @@ In the above plot to the left we see how the rasterizer and raymarcher fare at d
 
 The raymarcher also doesn't have to produce shadow maps, which would scale linearly with the number of light sources for the scene. Finally, notice that the strand voxelization is quite cheap and does not account for much of the total render time. In the memory department, the figure to the right shows the GPU data breakdown. When comparing to the original strand-based geometry, the volume does not consume an inordinate amount of memory, and this value can also be tweaked with the volume resolution. The main culpit are the PPLL nodes that are used for our transparency solution. These scale with the resolution and also depend on how many strands are being shaded (and might lead to artifacts if memory underallocated).
 
-<p align="center"><img width=96% src="/docs/figures/scaling.png" alt="Performance Scaling"/></p>
+<p align="center"><img width=97% src="/docs/figures/scaling.png" alt="Performance Scaling"/></p>
 
 For the two plots above we see how performance scales for each renderer with respect to screen coverage and number of hair strands. The raymarcher has a lower intercept, making it cheap to render for low screen coverage (far away distances). Performance on the rasterizer scales linearly with the number of hair strands (as expected), and also for the raymarcher but with a very slow slope (caused by the voxelization). Our technique works especially well for realistic amounts of hair, where anything less than ~20,000 strands of hair will look bald. While the scaling on the right doesn't look very promising for the raymarcher, its performance can be tuned by changing the number of raymarch steps that moves the intercept up / down.
 
@@ -211,3 +212,35 @@ Everything in this repository is under the MIT license *except* the assets I've 
 Both GLFW and Embree are pre-compiled to facilitate building on Windows.
 
 See: [foreign/glfw/COPYING](foreign/glfw/COPYING.txt) and [foreign/embree/LICENSE](foreign/embree/LICENSE.txt) for these licenses.
+
+Screenshots
+-----------
+
+<p align="center">
+   <img width=100% src="/docs/figures/ponytail.jpg" alt=""/>
+</p>
+
+<p align="center">
+   <img width=100% src="/docs/figures/bear.jpg"     alt=""/>
+   <img width=100% src="/docs/figures/bear-fur.jpg" alt=""/>
+</p>
+
+<p align="center">
+   <img width=100% src="/docs/figures/composition.jpg" alt=""/>
+</p>
+
+<p align="center">
+   <img width=49% src="/docs/figures/bear-tangents.png"           alt=""/>
+   <img width=49% src="/docs/figures/bear-voxelized-tangents.png" alt=""/>
+</p>
+   
+<p align="center">
+   <img width=32% src="/docs/figures/ponytail-raytraced-ao-comparison.png"  alt=""/>
+   <img width=32% src="/docs/figures/ponytail-rasterized-ao-comparison.png" alt=""/>
+   <img width=32% src="/docs/figures/ponytail-raymarched-ao-comparison.png" alt=""/>
+</p>
+
+<p align="center">
+   <img width=49% src="/docs/figures/ponytail-aliased.png"      alt=""/>
+   <img width=49% src="/docs/figures/ponytail-anti-aliased.png" alt=""/>
+</p>
