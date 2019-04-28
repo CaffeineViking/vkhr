@@ -226,7 +226,7 @@ Screenshots
    <img src="/docs/figures/bear.jpg"     alt=""/>
    <img src="/docs/figures/bear-fur.jpg" alt=""/>
    <br>
-   Above are screenshots from the bear (with 961,280 strands of fur) from "Rise of the Tomb Raider" (2015) rendered in real-time.
+   Above are screenshots of the bear (with 961,280 strands of fur) from "Rise of the Tomb Raider" (2015) rendered in real-time.
 </p>
 
 <p align="center">
