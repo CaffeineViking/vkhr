@@ -21,7 +21,7 @@ help: FORCE
 	@echo "   help"
 	@echo "   shaders"
 	@echo "   program"
-	@echo "   download (all)"
+	@echo "   download"
 	@echo "   download-modules"
 	@echo "   pre-generate"
 	@echo "   solution"
