@@ -3,7 +3,7 @@
 pkgname=vkhr-git
 pkgver=VERSION
 pkgrel=1
-pkgdesc="A real-time hybrid hair renderer written with Vulkan."
+pkgdesc="Real-Time Hybrid Hair Renderer Written in Vulkan(TM)."
 arch=('i686' 'x86_64')
 url="https://github.com/CaffeineViking/vkhr"
 license=('MIT')
