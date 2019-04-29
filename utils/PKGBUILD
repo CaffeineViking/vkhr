@@ -3,7 +3,7 @@
 pkgname=vkhr-git
 pkgver=VERSION
 pkgrel=1
-pkgdesc="Real-Time Hair Renderer in Vulkan"
+pkgdesc="A real-time hybrid hair renderer written with Vulkan."
 arch=('i686' 'x86_64')
 url="https://github.com/CaffeineViking/vkhr"
 license=('MIT')
@@ -20,34 +20,85 @@ pkgver() {
 
 build() {
 	cd vkhr
-    make download-modules
-    make  config=release
+	make download-modules
+	make config=release
 }
 
 package() {
 	cd vkhr
-	install -Dm755 bin/vkhr                           "$pkgdir"/usr/bin/vkhr
-	install -Dm755 docs/vkhr.1                        "$pkgdir"/usr/share/man/man1/vkhr.1
-	install -Dm644 license.md                         "$pkgdir"/usr/share/licenses/vkhr/LICENSE
 
-	install -Dm644 share/images/vulkan.icon           "$pkgdir"/usr/share/vkhr/images/vulkan.icon
+	install -Dm755 bin/vkhr "$pkgdir"/usr/bin/vkhr
+	install -Dm755 docs/vkhr.1 "$pkgdir"/usr/share/man/man1/vkhr.1
+	install -Dm644 license.md "$pkgdir"/usr/share/licenses/vkhr/LICENSE
 
-	install -Dm644 share/styles/wCurly.hair           "$pkgdir"/usr/share/vkhr/styles/wCurly.hair
-	install -Dm644 share/styles/wStraight.hair        "$pkgdir"/usr/share/vkhr/styles/wStraight.hair
-	install -Dm644 share/styles/wWavy.hair            "$pkgdir"/usr/share/vkhr/styles/wWavy.hair
-	install -Dm644 share/styles/wWavyThin.hair        "$pkgdir"/usr/share/vkhr/styles/wWavyThin.hair
-	install -Dm644 share/styles/ponytail.hair         "$pkgdir"/usr/share/vkhr/styles/ponytail.hair
-	install -Dm644 share/styles/bear.hair             "$pkgdir"/usr/share/vkhr/styles/bear.hair
+	install -Dm644 share/images/vulkan_icon.png "$pkgdir"/usr/share/vkhr/images/vulkan_icon.png
 
-	install -Dm644 share/models/woman/eye.tga         "$pkgdir"/usr/share/vkhr/models/woman/eye.tga
-	install -Dm644 share/models/woman/head.tga        "$pkgdir"/usr/share/vkhr/models/woman/head.tga
-	install -Dm644 share/models/woman/woman.mtl       "$pkgdir"/usr/share/vkhr/models/woman/woman.mtl
-	install -Dm644 share/models/woman/woman.obj       "$pkgdir"/usr/share/vkhr/models/woman/woman.obj
+	install -Dm644 share/models/bear/bear.obj "$pkgdir"/usr/share/vkhr/models/bear/bear.obj
+	install -Dm644 share/models/bear/bear.bmp "$pkgdir"/usr/share/vkhr/models/bear/bear.bmp
 	install -Dm644 share/models/ponytail/ponytail.obj "$pkgdir"/usr/share/vkhr/models/ponytail/ponytail.obj
-	install -Dm644 share/models/bear/bear.obj         "$pkgdir"/usr/share/vkhr/models/bear/bear.obj
+	install -Dm644 share/models/ponytail/ponytail.bmp "$pkgdir"/usr/share/vkhr/models/ponytail/ponytail.bmp
 
-	install -Dm644 share/shaders/kajiya-kay.vert.spv  "$pkgdir"/usr/share/vkhr/shaders/kajiya-kay.vert.spv
-	install -Dm644 share/shaders/kajiya-kay.frag.spv  "$pkgdir"/usr/share/vkhr/shaders/kajiya-kay.frag.spv
-	install -Dm644 share/shaders/billboards.frag.spv  "$pkgdir"/usr/share/vkhr/shaders/billboards.frag.spv
-	install -Dm644 share/shaders/billboards.vert.spv  "$pkgdir"/usr/share/vkhr/shaders/billboards.vert.spv
+	install -Dm644 share/scenes/bear.vkhr "$pkgdir"/usr/share/vkhr/scenes/bear.vkhr
+	install -Dm644 share/scenes/ponytail.vkhr "$pkgdir"/usr/share/vkhr/scenes/ponytail.vkhr
+
+	install -Dm644 share/shaders/anti-aliasing/gpaa.glsl "$pkgdir"/usr/share/vkhr/shaders/anti-aliasing/gpaa.glsl
+
+	install -Dm644 share/shaders/billboards/billboard.frag "$pkgdir"/usr/share/vkhr/shaders/billboards/billboard.frag
+	install -Dm644 share/shaders/billboards/billboard.frag.spv "$pkgdir"/usr/share/vkhr/shaders/billboards/billboard.frag.spv
+	install -Dm644 share/shaders/billboards/billboard.glsl "$pkgdir"/usr/share/vkhr/shaders/billboards/billboard.glsl
+	install -Dm644 share/shaders/billboards/billboard.vert "$pkgdir"/usr/share/vkhr/shaders/billboards/billboard.vert
+	install -Dm644 share/shaders/billboards/billboard.vert.spv "$pkgdir"/usr/share/vkhr/shaders/billboards/billboard.vert.spv
+
+	install -Dm644 share/shaders/level_of_detail/scheme.glsl "$pkgdir"/usr/share/vkhr/shaders/level_of_detail/scheme.glsl
+
+	install -Dm644 share/shaders/models/model.frag "$pkgdir"/usr/share/vkhr/shaders/models/model.frag
+	install -Dm644 share/shaders/models/model.frag.spv "$pkgdir"/usr/share/vkhr/shaders/models/model.frag.spv
+	install -Dm644 share/shaders/models/model.glsl "$pkgdir"/usr/share/vkhr/shaders/models/model.glsl
+	install -Dm644 share/shaders/models/model.vert "$pkgdir"/usr/share/vkhr/shaders/models/model.vert
+	install -Dm644 share/shaders/models/model.vert.spv "$pkgdir"/usr/share/vkhr/shaders/models/model.vert.spv
+
+	install -Dm644 share/shaders/scene_graph/camera.glsl "$pkgdir"/usr/share/vkhr/shaders/scene_graph/camera.glsl
+	install -Dm644 share/shaders/scene_graph/lights.glsl "$pkgdir"/usr/share/vkhr/shaders/scene_graph/lights.glsl
+	install -Dm644 share/shaders/scene_graph/params.glsl "$pkgdir"/usr/share/vkhr/shaders/scene_graph/params.glsl
+	install -Dm644 share/shaders/scene_graph/shadow_maps.glsl "$pkgdir"/usr/share/vkhr/shaders/scene_graph/shadow_maps.glsl
+
+	install -Dm644 share/shaders/self-shadowing/approximate_deep_shadows.glsl "$pkgdir"/usr/share/vkhr/shaders/self-shadowing/approximate_deep_shadows.glsl
+	install -Dm644 share/shaders/self-shadowing/depth_map.vert "$pkgdir"/usr/share/vkhr/shaders/self-shadowing/depth_map.vert
+	install -Dm644 share/shaders/self-shadowing/depth_map.vert.spv "$pkgdir"/usr/share/vkhr/shaders/self-shadowing/depth_map.vert.spv
+	install -Dm644 share/shaders/self-shadowing/filter_shadows.glsl "$pkgdir"/usr/share/vkhr/shaders/self-shadowing/filter_shadows.glsl
+	install -Dm644 share/shaders/self-shadowing/linearize_depth.glsl "$pkgdir"/usr/share/vkhr/shaders/self-shadowing/linearize_depth.glsl
+	install -Dm644 share/shaders/self-shadowing/tex2Dproj.glsl "$pkgdir"/usr/share/vkhr/shaders/self-shadowing/tex2Dproj.glsl
+
+	install -Dm644 share/shaders/shading/kajiya-kay.glsl "$pkgdir"/usr/share/vkhr/shaders/shading/kajiya-kay.glsl
+	install -Dm644 share/shaders/shading/lambertian.glsl "$pkgdir"/usr/share/vkhr/shaders/shading/lambertian.glsl
+
+	install -Dm644 share/shaders/strands/strand.frag "$pkgdir"/usr/share/vkhr/shaders/strands/strand.frag
+	install -Dm644 share/shaders/strands/strand.frag.spv "$pkgdir"/usr/share/vkhr/shaders/strands/strand.frag.spv
+	install -Dm644 share/shaders/strands/strand.glsl "$pkgdir"/usr/share/vkhr/shaders/strands/strand.glsl
+	install -Dm644 share/shaders/strands/strand.vert "$pkgdir"/usr/share/vkhr/shaders/strands/strand.vert
+	install -Dm644 share/shaders/strands/strand.vert.spv "$pkgdir"/usr/share/vkhr/shaders/strands/strand.vert.spv
+
+	install -Dm644 share/shaders/transparency/ppll.glsl "$pkgdir"/usr/share/vkhr/shaders/transparency/ppll.glsl
+	install -Dm644 share/shaders/transparency/resolve.comp "$pkgdir"/usr/share/vkhr/shaders/transparency/resolve.comp
+	install -Dm644 share/shaders/transparency/resolve.comp.spv "$pkgdir"/usr/share/vkhr/shaders/transparency/resolve.comp.spv
+
+	install -Dm644 share/shaders/utils/math.glsl "$pkgdir"/usr/share/vkhr/shaders/utils/math.glsl
+	install -Dm644 share/shaders/utils/rand.glsl "$pkgdir"/usr/share/vkhr/shaders/utils/rand.glsl
+
+	install -Dm644 share/shaders/volumes/bounding_box.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/bounding_box.glsl
+	install -Dm644 share/shaders/volumes/filtered_raymarch.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/filtered_raymarch.glsl
+	install -Dm644 share/shaders/volumes/local_ambient_occlusion.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/local_ambient_occlusion.glsl
+	install -Dm644 share/shaders/volumes/raymarch.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/raymarch.glsl
+	install -Dm644 share/shaders/volumes/sample_volume.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/sample_volume.glsl
+	install -Dm644 share/shaders/volumes/volume.frag "$pkgdir"/usr/share/vkhr/shaders/volumes/volume.frag
+	install -Dm644 share/shaders/volumes/volume.frag.spv "$pkgdir"/usr/share/vkhr/shaders/volumes/volume.frag.spv
+	install -Dm644 share/shaders/volumes/volume.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/volume.glsl
+	install -Dm644 share/shaders/volumes/volume_rendering.glsl "$pkgdir"/usr/share/vkhr/shaders/volumes/volume_rendering.glsl
+	install -Dm644 share/shaders/volumes/volume.vert "$pkgdir"/usr/share/vkhr/shaders/volumes/volume.vert
+	install -Dm644 share/shaders/volumes/volume.vert.spv "$pkgdir"/usr/share/vkhr/shaders/volumes/volume.vert.spv
+	install -Dm644 share/shaders/volumes/voxelize.comp "$pkgdir"/usr/share/vkhr/shaders/volumes/voxelize.comp
+	install -Dm644 share/shaders/volumes/voxelize.comp.spv "$pkgdir"/usr/share/vkhr/shaders/volumes/voxelize.comp.spv
+
+	install -Dm644 share/styles/bear.hair "$pkgdir"/usr/share/vkhr/styles/bear.hair
+	install -Dm644 share/styles/ponytail.hair "$pkgdir"/usr/share/vkhr/styles/ponytail.hair
 }
