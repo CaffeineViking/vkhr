@@ -3,6 +3,8 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 
 <p align="center"><img src="/docs/figures/ponytail-hair.jpg" alt="Lara Croft's Ponytail"/></p>
 
+For the rest of this document you'll find out about the [features](#features) in our renderer and the benefits of using a hybrid approach to hair rendering, by showing you its [performance](#benchmarks). Once you're intrigued, we'll show you how to [build](#compiling), and [run](#usage) the project yourself so you can try it out. I have written lots of [documentation](#documentation) if you want to find out how it works or which limitations there are. You'll find more [screenshots](#screenshots) towards the end of this document and in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log) found in the project wiki.
+
 <p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
 Table of Contents
@@ -11,7 +13,7 @@ Table of Contents
 * [Introduction](#real-time-hybrid-hair-renderer-in-vulkan)
 * [Table of Contents](#table-of-contents)
 * [Features](#features)
-* [Benchmark](#benchmark)
+* [Benchmarks](#benchmarks)
 * [Dependencies](#dependencies)
 * [Compiling](#compiling)
 * [System Requirements](#system-requirements)
@@ -21,7 +23,7 @@ Table of Contents
 * [Reporting Bugs](#reporting-bugs)
 * [Acknowledgements](#acknowledgements)
 * [Legal Notice](#legal-notice)
-* [Screenshots](#screenshots)
+* [Screenshots!](#screenshots)
 
 Features
 --------
@@ -58,10 +60,10 @@ Our hybrid rendering solution combines the best of strand- and volume-based hair
 * The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume**, but not in strand-based renderers,
 * It is **automatic** as our voxelization works even with **simulated hairs**.
 
-Benchmark
----------
+Benchmarks
+----------
 
-Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterized and raymarched solutions and how these perf scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
+Along with this project we bundle a set of benchmarks that can be run by passing the `--benchmark yes` flag. They compare the performance between the rasterizer and raymarcher and how these performance scale (e.g. with respect to increasing distances or strands). In order for you to get an idea if our solution is good enough for your purposes, we have included the results from our paper, which were run on a Radeon™ Pro WX 9100. The results were taken with V-Sync off and without any other GPU intensive programs running in the background. The timing information was taken via Vulkan timestamp queries, and averaged over a period of 60 frames (not much variance). We have plotted the results below for your viewing pleasure.
 
 <p align="center"><img width=97% src="/docs/figures/breakdown.png" alt="Performance and Memory Breakdown"/></p>
 
@@ -183,7 +185,7 @@ Directories
 Reporting Bugs
 --------------
 
-`vkhr` is 100% bug-free, anything that seems like a bug is in fact a feature.
+`vkhr` is 100% bug-free, anything that seems like a bug is in fact a feature!
 
 This is a proof-of-concept research prototype, and as such, I wouldn't recommend using it for something serious, at least as it is. Also, do not expect this repository to be well maintained, I will not spend too much time with it after the thesis is done.
 
@@ -213,8 +215,8 @@ Both GLFW and Embree are pre-compiled to facilitate building on Windows.
 
 See: [foreign/glfw/COPYING](foreign/glfw/COPYING.txt) and [foreign/embree/LICENSE](foreign/embree/LICENSE.txt) for these licenses.
 
-Screenshots
------------
+Screenshots!
+------------
 
 <p align="center">
    <img src="/docs/figures/ponytail.jpg" alt=""/>
