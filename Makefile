@@ -91,7 +91,7 @@ distclean: clean
 	rm -f imgui.ini
 	rm -rf bin/share
 	rm -rf build/.vs
-	find bin/ -type f ! -name "*.dll" -delete
+	find bin/ -type f ! \( -name "*.dll" -o -name "*.ico" \) -delete
 FORCE:
 
 .PHONY: all run benchmark help program shaders download download-modules pre-generate solution bundle-assets distribute docs tags clean distclean
