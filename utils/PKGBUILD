@@ -9,7 +9,7 @@ url="https://github.com/CaffeineViking/vkhr"
 license=('MIT')
 provides=('vkhr')
 depends=('embree' 'glfw' 'vulkan-icd-loader' 'vulkan-headers')
-makedepends=('git' 'premake-git')
+makedepends=('git' 'git-lfs' 'premake-git')
 source=('git+https://github.com/CaffeineViking/vkhr')
 md5sums=('SKIP')
 
