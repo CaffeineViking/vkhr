@@ -173,12 +173,9 @@ namespace vkhr {
         { "width",      Argument::Type::Integer, Argument::make_integer(1280),  "" },
         { "height",     Argument::Type::Integer, Argument::make_integer(720),   "" },
         { "cores",      Argument::Type::Integer, Argument::make_integer(8),     "" },
-
         { "fullscreen", Argument::Type::Boolean, Argument::make_boolean(false), "" },
         { "vsync",      Argument::Type::Boolean, Argument::make_boolean(true),  "" },
-        { "profile",    Argument::Type::Boolean, Argument::make_boolean(false), "" },
         { "ui",         Argument::Type::Boolean, Argument::make_boolean(true),  "" },
-        { "anti-alias", Argument::Type::Boolean, Argument::make_boolean(false), "" },
         { "benchmark",  Argument::Type::Boolean, Argument::make_boolean(false), "" },
     };
 }
