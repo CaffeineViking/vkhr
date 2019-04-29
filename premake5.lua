@@ -104,6 +104,6 @@ project (name)
         links { GLFW.."/lib/glfw3dll.lib" }
         links { EMBREE.."/lib/embree3.lib" }
     filter "system:linux or bsd or solaris"
-        links { "embree3", "glfw",  "vulkan" }
-        linkoptions  { "-fopenmp" } -- libgomp
+        links { "embree3", "glfw", "vulkan" }
+        linkoptions  { "-fopenmp", "-lstdc++fs" }
         buildoptions { "-fopenmp" }
