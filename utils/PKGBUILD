@@ -21,6 +21,7 @@ pkgver() {
 build() {
 	cd vkhr
 	make download-modules
+	export DEFINES='-DVKHR_ASSETS_PATH=\"/usr/share/vkhr/\"'
 	make config=release
 }
 
