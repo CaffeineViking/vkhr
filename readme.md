@@ -57,7 +57,6 @@ Our hybrid rendering solution combines the best of strand- and volume-based hair
 * It is **faster** than purely raster-based techniques in the far away case,
 * The **performance** is more **predictable and configurable** as raymarching scales **linearly** with the hair's screen coverage,
 * The **level-of-detail transition** is quite **smooth** because both the rasterizer and raymarcher **approximate similar effects**,
-* The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume**, but not in strand-based renderers,
 * The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume** but impossible in a pure rasterizer,
 * It is **automatic** as our voxelization works even with **simulated hairs**.
 
