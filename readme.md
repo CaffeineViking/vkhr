@@ -41,7 +41,7 @@ It uses this rasterized solution for close-up shots, and our raymarched solution
 * Models single **light scattering** in a strand with **[Kajiya-Kay's](http://www.cs.virginia.edu/~mjh7v/bib/Kajiya89.pdf)** shading,
 * Estimates hair **self-shadowing** with a fast **[Approximated Deep Shadow Map (ADSM)](developer.amd.com/wordpress/media/2013/05/HairInTombRaider_FMX2013.ppsx)** method à la **[Tomb Raider (2013)](https://www.gdcvault.com/play/1017625/Advanced-Visual-Effects-with-DirectX)**,
 * Produces **anti-aliased** strands by using a simple, but effective, line coverage calculation similar to Emil Persson's **[GPAA](www.humus.name/Articles/Persson_GraphicsGemsForGames.pptx)**,
-* Resolves strand **transparency** with an fragment **[k-Buffer](http://www-rev.sci.utah.edu/publications/SCITechReports/UUSCI-2006-032.pdf)** **[PPLL](http://developer.amd.com/wordpress/media/2013/06/2041_final.pdf)** similar to **[TressFX's](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.231.5679&rep=rep1&type=pdf)** OIT that builds and sorts on the GPU,
+* Resolves strand **transparency** with a fragment **[k-Buffer](http://www-rev.sci.utah.edu/publications/SCITechReports/UUSCI-2006-032.pdf)** **[PPLL](http://developer.amd.com/wordpress/media/2013/06/2041_final.pdf)** similar to **[TressFX's](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.231.5679&rep=rep1&type=pdf)** OIT that's built and sorted on the GPU,
 * Has a scalable **level-of-detail** scheme based on volume ray casting.
 
 This novel volumetric approximation for strand-based hair can be found once per-frame for fully simulated hair. It features:
@@ -50,7 +50,7 @@ This novel volumetric approximation for strand-based hair can be found once per-
 * An approximation of **[Kajiya-Kay's](http://www.cs.virginia.edu/~mjh7v/bib/Kajiya89.pdf)** model by finding the **tangents** inside of a volume by **[quantized strand voxelization](https://arxiv.org/pdf/1801.01155.pdf)**,
 * An **[ADSM](developer.amd.com/wordpress/media/2013/05/HairInTombRaider_FMX2013.ppsx)** equivalent, that also takes into account the varying hair spacing by using the actual **strand density** as input,
 * A way to approximate the **[local ambient occlusion](http://www.diva-portal.org/smash/get/diva2:321233/FULLTEXT01.pdf)** by using the same **strand density** (a useful representation for hair),
-* That can also be used to "fake" **transparency** for **low density areas**.
+* An approximation of **transparency**  (no DVR!) for **low density areas**.
 
 Our hybrid rendering solution combines the best of strand- and volume-based hair representations. Some benefits are that:
 
@@ -58,6 +58,7 @@ Our hybrid rendering solution combines the best of strand- and volume-based hair
 * The **performance** is more **predictable and configurable** as raymarching scales **linearly** with the hair's screen coverage,
 * The **level-of-detail transition** is quite **smooth** because both the rasterizer and raymarcher **approximate similar effects**,
 * The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume**, but not in strand-based renderers,
+* The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume** but impossible in a pure rasterizer,
 * It is **automatic** as our voxelization works even with **simulated hairs**.
 
 Benchmarks
