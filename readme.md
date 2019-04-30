@@ -1,7 +1,15 @@
 Real-Time Hybrid Hair Renderer in Vulkan™
 =========================================
 
-<p align="center"><img src="/docs/figures/ponytail-hair.jpg" alt="Lara Croft's Ponytail"/></p>
+<p align="center"><img src="/docs/figures/ponytail-hair.jpg" alt="Lara Croft's Ponytail"/></p> 
+
+This is a proof of concept hair renderer that's based on a novel hybrid approach. It's capable of rendering strand-based hair geometry in real-time, even for fully simulated hair styles with over 100,000 strands. Our hybrid rendering pipeline scales in the performance/quality domain by using a rasterizer for closeup shots and a raymarcher for level of detail minification. We can render multiple hair styles at once with this hybrid technique, which has a smooth transition between the two solutions.
+
+It is written 100% from scratch in Vulkan™ and simulates light scattering, self-shadowing and transparency in real-time with GLSL shaders and compute. We handle anti-aliasing by using a fast line coverage method. Our volumetric approximation is derived from the original geometry with a fast voxelization scheme that is used for raymarching and "direct" shading on an isosurface. We also use this volume for ambient occlusion and for more precise self-shadowing, even in the rasterized case.
+
+In the figure above we see Lara Croft's hair (with 136,320 hair strands and 1,635,840 line segments) rendered at 1920x1080 in real-time (7ms) with our rasterized solution. If we want to render more than a couple of characters on the screen at once we need a scalable solution, as our rasterizer does not scale well in far away distances. This is where our raymarcher comes in, as its performance scales linearly with the fragments rendered on the screen, and is a also lot cheaper for far away hairs.
+
+The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We've alpha blended these solutions in the middle to simulate a level of detail transition. As you can see the results are quite close, and the transition is not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
 
 For the rest of this document you'll find out about the [features](#features) in our renderer and the benefits of using a hybrid approach when rendering hair, by looking at its [performance](#benchmarks). Once you're intrigued, we'll show you how to [build](#compiling), and [run](#usage) the project yourself so you can try it out. I have written lots of [documentation](#documentation) if you want to find out how it works or which limitations there are. You'll find more [screenshots](#screenshots) towards the end of this document and in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log) found in the project wiki.
 
