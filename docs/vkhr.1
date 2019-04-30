@@ -1,10 +1,52 @@
 .TH VKHR 1 "April 2019"
 .SH NAME
-vkhr \- a vulkan-based real-time hair renderer
+vkhr \- a novel real-time hybrid hair renderer
 .SH SYNOPSIS
+\fBvkhr\fR [\fIRENDERER-SETTINGS\fR] [\fIA-SCENE-GRAPH-FILE\fR]
 .SH DESCRIPTION
+This is a proof-of-concept hair renderer that uses a rasterizer and raymarcher hybrid. It is used to render strand-based hair geometry that's given in the Cem Yuksel hair format. To render a scene that contains a hair style, a scene graph needs to be built. We use vkhr files for that, which is basically glorified JSON. This format isn't described anywhere though (sorry?), so you'll have to figure that out from the set of bundled examples. Once the renderer has finished loading your scene, you can start interacting with it. Most of the interesting things are controlled via the UI, which you'll have to figure out on your own (sorry). I've documented (gasp) the keyboard shortcuts and command line arguments in the sections below though. Again, this is a research prototype, and shouldn't really be used for anything serious. Read the paper and thesis to get a better idea on how it works.
+.SH SETTINGS
+\fB--benchmark\fR \fIyes\fR or \fIno\fR
+
+       Starts the renderer in benchmark mode, which will run through a set of pre-defined scenarios and profile this performance. A CSV file will be dumped in the same directory.
+
+\fB--width\fR \fIINTEGER\fR
+\fB--height\fR \fIINTEGER\fR
+
+       Will try to set the rendering resolution on start-up (might be overridden by the WM). We use a PPLL for transparency, which means these knobs will affect GPU memory a lot.
+
+\fB--imgui\fR \fIyes\fR / \fIno\fR
+
+       Enables or disables the built-in GUI on boot. This could be useful for e.g. presentation. If you want it back, use the U keyboard shortcut, which will re-enable the ImGui.
+
+\fB--fullscreen\fR \fIyes\fR / \fIno\fR
+
+       Because Vulkan swapchain recreation sometimes doesn't work (mistake on my part), this is a safe way to enable fullscreen, as the run-time fullscreen switch is hit-or-miss.
+
+\fB--vsync\fR \fIon\fR / \fIoff\fR
+.SH CONTROLS
 .SH EXAMPLES
+\fBvkhr:\fR
+
+\fBvkhr --benchmark yes:\fR
+
+\fBvkhr --width 1280 --height 720 --fullscreen no --vsync on --ui yes:\fR
+
+\fBvkhr --width 1280 --height 720 --fullscreen no --vsync on --ui yes /usr/share/vkhr/scenes/ponytail.vkhr:\fR
+
+\fBvkhr /usr/share/vkhr/scenes/ponytail.vkhr:\fR
+
+\fBvkhr wCurly.vkhr:\fR
 .SH FILES
+\fB/usr/share/vkhr/scenes:\fR
+
+\fB/usr/share/vkhr/styles:\fR
+
+\fB/usr/share/vkhr/shaders:\fR
+
+\fB/usr/share/vkhr/models:\fR
+
+\fB/usr/share/vkhr/images:\fR
 .SH AUTHORS
 Erik S. V. Jansson <caffeineviking@gmail.com>
 .SH COPYRIGHT
