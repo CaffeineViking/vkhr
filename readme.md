@@ -3,7 +3,7 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 
 <p align="center"><img src="/docs/figures/ponytail-hair.jpg" alt="Lara Croft's Ponytail"/></p>
 
-For the rest of this document you'll find out about the [features](#features) in our renderer and the benefits of using a hybrid approach to hair rendering, by showing you its [performance](#benchmarks). Once you're intrigued, we'll show you how to [build](#compiling), and [run](#usage) the project yourself so you can try it out. I have written lots of [documentation](#documentation) if you want to find out how it works or which limitations there are. You'll find more [screenshots](#screenshots) towards the end of this document and in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log) found in the project wiki.
+For the rest of this document you'll find out about the [features](#features) in our renderer and the benefits of using a hybrid approach when rendering hair, by looking at its [performance](#benchmarks). Once you're intrigued, we'll show you how to [build](#compiling), and [run](#usage) the project yourself so you can try it out. I have written lots of [documentation](#documentation) if you want to find out how it works or which limitations there are. You'll find more [screenshots](#screenshots) towards the end of this document and in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log) found in the project wiki.
 
 <p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
