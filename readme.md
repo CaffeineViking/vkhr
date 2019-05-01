@@ -9,16 +9,16 @@ It is written 100% from scratch in Vulkan™ and simulates light scattering, sel
 
 In the figure above we see Lara Croft's hair (with 136,320 hair strands and 1,635,840 line segments) rendered at 1920x1080, in real-time (7ms) with our rasterized solution. If we want to render more than a couple of characters on the screen at once we need a scalable solution, as our rasterizer does not scale well in far away distances. This is where our raymarcher comes in, as its performance scales linearly with the fragments rendered on the screen, and is a also lot cheaper for far away hairs.
 
-The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We've alpha blended these solutions in the middle to simulate a level of detail transition. As you can see the results are quite close, and the transition is not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
+The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We have alpha blended these two in the middle to simulate a level of detail transition. As you can see the results are quite close, and the transitions are not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
 
-Our raymarcher's performance breaks down during close-up shots, and also looks "worse", as it's only an approximation of the strand-based geometry. The trick is to use both of these solutions together! The rasterized solution may perform worse but it still produces higher-quality close-up shots than the raymarcher, and the performance scaling isn't too bad for those cases. The raymarcher performs and scales better at a distance, and is indistinguishable from this rasterizer for those cases.
+Our raymarcher's performance breaks down during close-up shots, and also looks "worse", as it's only an approximation of the strand-based geometry. The trick is to use both of these solutions together! The rasterized solution may perform worse but it still produces higher quality close-up shots than the raymarcher, and the performance scaling isn't too bad for those cases. The raymarcher performs and scales better at a distance, and is indistinguishable from this rasterizer for those cases.
+
+<p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
 Outline
 -------
 
 For the rest of this document you'll find out about the [features](#features) in our renderer and the benefits of using a hybrid approach when rendering hair, by looking at its [performance](#benchmarks). Once you're intrigued, we'll show you how to [build](#compiling), and [run](#usage) the project yourself so you can try it out. I have written lots of [documentation](#documentation) if you want to find out how it works or which limitations there are. You'll find more [screenshots](#screenshots) towards the end of this document and in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log) found in the project wiki.
-
-<p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
 Table of Contents
 -----------------
@@ -37,7 +37,7 @@ Table of Contents
 * [Reporting Bugs](#reporting-bugs)
 * [Acknowledgements](#acknowledgements)
 * [Legal Notice](#legal-notice)
-* [Screenshots!](#screenshots)
+* [Screenshots](#screenshots)
 
 Features
 --------
@@ -50,13 +50,13 @@ A real-time hybrid hair rendering pipeline suitable for video games, that scales
 * Loads **[Cem Yuksel's](http://www.cemyuksel.com/research/hairmodels/)** free & open **[.hair file format](http://www.cemyuksel.com/research/hairmodels/)**, and has a easy human-readable **[scene graph format](/share/scenes/ponytail.vkhr)** based on JSON,
 * Consists of a strand-based hair **rasterizer** and a volume **raymarcher**.
 
-It uses this rasterized solution for close-up shots, and our raymarched solution for level-of-detail. This hybrid hair renderer:
+It uses this rasterized solution for close-up shots, and our raymarched solution for level of detail. This hybrid hair renderer:
 
 * Models single **light scattering** in a strand with **[Kajiya-Kay's](http://www.cs.virginia.edu/~mjh7v/bib/Kajiya89.pdf)** shading,
 * Estimates hair **self-shadowing** with a fast **[Approximated Deep Shadow Map (ADSM)](developer.amd.com/wordpress/media/2013/05/HairInTombRaider_FMX2013.ppsx)** method à la **[Tomb Raider (2013)](https://www.gdcvault.com/play/1017625/Advanced-Visual-Effects-with-DirectX)**,
 * Produces **anti-aliased** strands by using a simple, but effective, line coverage calculation similar to Emil Persson's **[GPAA](www.humus.name/Articles/Persson_GraphicsGemsForGames.pptx)**,
 * Resolves strand **transparency** with a fragment **[k-Buffer](http://www-rev.sci.utah.edu/publications/SCITechReports/UUSCI-2006-032.pdf)** **[PPLL](http://developer.amd.com/wordpress/media/2013/06/2041_final.pdf)** similar to **[TressFX's](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.231.5679&rep=rep1&type=pdf)** OIT that's built and sorted on the GPU,
-* Has a scalable **level-of-detail** scheme based on volume ray casting.
+* Has a scalable **level of detail** scheme based on volume ray casting.
 
 This novel volumetric approximation for strand-based hair can be found once per-frame for fully simulated hair. It features:
 
@@ -70,7 +70,7 @@ Our hybrid rendering solution combines the best of strand- and volume-based hair
 
 * It is **faster** than purely raster-based techniques in the far away case,
 * The **performance** is more **predictable and configurable** as raymarching scales **linearly** with the hair's screen coverage,
-* The **level-of-detail transition** is quite **smooth** because both the rasterizer and raymarcher **approximate similar effects**,
+* The **level of detail transition** is quite **smooth** because both the rasterizer and raymarcher **approximate similar effects**,
 * The **ambient occlusion** and other **global effects** are **trivial to estimate in a volume** but impossible in a pure rasterizer,
 * It is **automatic** as our voxelization works even with **simulated hairs**.
 
@@ -229,46 +229,46 @@ Both GLFW and Embree are pre-compiled to facilitate building on Windows.
 
 See: [foreign/glfw/COPYING](foreign/glfw/COPYING.txt) and [foreign/embree/LICENSE](foreign/embree/LICENSE.txt) for these licenses.
 
-Screenshots!
-------------
+Screenshots
+-----------
 
 <p align="center">
-   <img src="/docs/figures/ponytail.jpg" alt=""/>
+   <img src="/docs/figures/ponytail.jpg" alt="Lara Croft's Ponytail"/>
    <br>
    The screenshot above is another render from Lara Croft's ponytail (with 136,320 strands of hair) but from a different angle.
 </p>
 
 <p align="center">
-   <img src="/docs/figures/bear.jpg"     alt=""/>
-   <img src="/docs/figures/bear-fur.jpg" alt=""/>
+   <img src="/docs/figures/bear.jpg"     alt="Bear from Tomb Raider"/>
+   <img src="/docs/figures/bear-fur.jpg" alt="Enhanced Fur for Bear"/>
    <br>
    Above are screenshots of the bear (with 961,280 strands of fur) from "Rise of the Tomb Raider" (2015) rendered in real-time.
 </p>
 
 <p align="center">
-   <img width=100% src="/docs/figures/composition.jpg" alt=""/>
+   <img width=100% src="/docs/figures/composition.jpg" alt="Component-by-Component Difference in the Two Solutions"/>
    <br>
    In the figure above we show the component-by-component difference between our rasterized and raymarched solutions.
 </p>
 
 <p align="center">
-   <img width=49% src="/docs/figures/bear-tangents.png"           alt=""/>
-   <img width=49% src="/docs/figures/bear-voxelized-tangents.png" alt=""/>
+   <img width=49% src="/docs/figures/bear-tangents.png"           alt="Original  Tangents"/>
+   <img width=49% src="/docs/figures/bear-voxelized-tangents.png" alt="Voxelized Tangents"/>
    <br>
    The comparisons above shows the differences between the actual tangents (on the left) and their voxelized approximations.
 </p>
    
 <p align="center">
-   <img width=32% src="/docs/figures/ponytail-raytraced-ao-comparison.png"  alt=""/>
-   <img width=32% src="/docs/figures/ponytail-rasterized-ao-comparison.png" alt=""/>
-   <img width=32% src="/docs/figures/ponytail-raymarched-ao-comparison.png" alt=""/>
+   <img width=32% src="/docs/figures/ponytail-raytraced-ao-comparison.png"  alt="Raytraced  AO"/>
+   <img width=32% src="/docs/figures/ponytail-rasterized-ao-comparison.png" alt="Rasterized AO"/>
+   <img width=32% src="/docs/figures/ponytail-raymarched-ao-comparison.png" alt="Raymarched AO"/>
    <br>
    Above is a comparison of the ground-truth AO (on the left) from our raytracer and our approximation (middle and right).
 </p>
 
 <p align="center">
-   <img width=49% src="/docs/figures/ponytail-aliased.png"      alt=""/>
-   <img width=49% src="/docs/figures/ponytail-anti-aliased.png" alt=""/>
+   <img width=49% src="/docs/figures/ponytail-aliased.png"      alt="Aliased Ponytail"/>
+   <img width=49% src="/docs/figures/ponytail-anti-aliased.png" alt="Anti-Aliased Ponytail"/>
    <br>
    Here we show the difference between not handling anti-aliasing and transparency at all (on the left) and when doing so ;-).
 </p>
