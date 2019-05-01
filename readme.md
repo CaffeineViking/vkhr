@@ -11,7 +11,7 @@ In the figure above we see Lara Croft's hair (with 136,320 hair strands and 1,63
 
 However, our raymarcher's performance breaks down during close-up shots, and also looks "worse" than our rasterizer for those cases, as it's an approximation of the real geometry. The trick is to use both of the solutions together! The rasterizer may perform worse, but it still produces high-quality close-up shots, and performance scaling isn't too bad in those cases. Our raymarcher performs and scales better at a distance and is indistinguishable from the rasterized results in those cases.
 
-The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We have alpha blended these two in the middle to simulate a level of detail transition. As you can see the results are quite close, and the transitions are not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
+The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We have alpha blended these two in the middle to simulate a level of detail transition. As you can see the results are quite close and the transitions are not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
 
 <p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
