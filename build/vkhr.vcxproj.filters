@@ -1285,13 +1285,7 @@
     <None Include="..\share\scenes\ponytail.vkhr">
       <Filter>scenes</Filter>
     </None>
-    <None Include="..\share\shaders\anti-aliasing\gbaa.glsl">
-      <Filter>shaders\anti-aliasing</Filter>
-    </None>
     <None Include="..\share\shaders\anti-aliasing\gpaa.glsl">
-      <Filter>shaders\anti-aliasing</Filter>
-    </None>
-    <None Include="..\share\shaders\anti-aliasing\phone-wire.glsl">
       <Filter>shaders\anti-aliasing</Filter>
     </None>
     <None Include="..\share\shaders\billboards\billboard.frag">
@@ -1302,9 +1296,6 @@
     </None>
     <None Include="..\share\shaders\billboards\billboard.vert">
       <Filter>shaders\billboards</Filter>
-    </None>
-    <None Include="..\share\shaders\level_of_detail\dither.glsl">
-      <Filter>shaders\level_of_detail</Filter>
     </None>
     <None Include="..\share\shaders\level_of_detail\scheme.glsl">
       <Filter>shaders\level_of_detail</Filter>
@@ -1369,9 +1360,6 @@
     <None Include="..\share\shaders\transparency\resolve.comp">
       <Filter>shaders\transparency</Filter>
     </None>
-    <None Include="..\share\shaders\utils\imageAtomicAverageRGBA8.glsl">
-      <Filter>shaders\utils</Filter>
-    </None>
     <None Include="..\share\shaders\utils\math.glsl">
       <Filter>shaders\utils</Filter>
     </None>
@@ -1385,9 +1373,6 @@
       <Filter>shaders\volumes</Filter>
     </None>
     <None Include="..\share\shaders\volumes\local_ambient_occlusion.glsl">
-      <Filter>shaders\volumes</Filter>
-    </None>
-    <None Include="..\share\shaders\volumes\naive_ambient_occlusion.glsl">
       <Filter>shaders\volumes</Filter>
     </None>
     <None Include="..\share\shaders\volumes\raymarch.glsl">
