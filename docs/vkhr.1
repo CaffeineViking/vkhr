@@ -6,47 +6,99 @@ vkhr \- a novel real-time hybrid hair renderer
 .SH DESCRIPTION
 This is a proof-of-concept hair renderer that uses a rasterizer and raymarcher hybrid. It is used to render strand-based hair geometry that's given in the Cem Yuksel hair format. To render a scene that contains a hair style, a scene graph needs to be built. We use vkhr files for that, which is basically glorified JSON. This format isn't described anywhere though (sorry?), so you'll have to figure that out from the set of bundled examples. Once the renderer has finished loading your scene, you can start interacting with it. Most of the interesting things are controlled via the UI, which you'll have to figure out on your own (sorry). I've documented (gasp) the keyboard shortcuts and command line arguments in the sections below though. Again, this is a research prototype, and shouldn't really be used for anything serious. Read the paper and thesis to get a better idea on how it works.
 .SH SETTINGS
+Below are more or less all of the command line arguments you can provide on start-up. If you're running in benchmark mode all of these settings will be ignored and defaults used.
+
+\fBDefaults:\fR rendering /usr/share/vkhr/scenes/ponytail.vkhr at 1280x720 resolution with v-sync off with no fullscreen, 1024x1024 shadow maps, 256^3 volumes and 512 raymarcher steps.
+
 \fB--benchmark\fR \fIyes\fR or \fIno\fR
 
        Starts the renderer in benchmark mode, which will run through a set of pre-defined scenarios and profile this performance. A CSV file will be dumped in the same directory.
+
+\fB--imgui\fR \fIyes\fR / \fIno\fR
+
+       Enables or disables the built-in GUI on boot. This could be useful for e.g. presentation. If you want it back, use the U keyboard shortcut, which will re-enable the ImGui.
 
 \fB--width\fR \fIINTEGER\fR
 \fB--height\fR \fIINTEGER\fR
 
        Will try to set the rendering resolution on start-up (might be overridden by the WM). We use a PPLL for transparency, which means these knobs will affect GPU memory a lot.
 
-\fB--imgui\fR \fIyes\fR / \fIno\fR
+\fB--vsync\fR \fIon\fR / \fIoff\fR
 
-       Enables or disables the built-in GUI on boot. This could be useful for e.g. presentation. If you want it back, use the U keyboard shortcut, which will re-enable the ImGui.
+       Enables or disables (maybe double-buffered) vsync on startup. Note that your driver might be overriding this, so make sure to disable it on your end to make sure it works.
 
 \fB--fullscreen\fR \fIyes\fR / \fIno\fR
 
        Because Vulkan swapchain recreation sometimes doesn't work (mistake on my part), this is a safe way to enable fullscreen, as the run-time fullscreen switch is hit-or-miss.
 
-\fB--vsync\fR \fIon\fR / \fIoff\fR
+There are a couple of less useful command line arguments you can provide as well, but those are only documented in the source code: /src/vkhr/arg_parser.cc between lines 172-180.
 .SH CONTROLS
+Most things you'll be controlling by using the built-in GUI, which should be visible by default. There are some useful keyboard shortcuts and controls you should be aware of too.
+
+\fBClick (Left Mouse Button) and Drag\fR
+
+       Rotates the camera by using arcball controls (don't worry about it!).
+
+\fBScroll Mouse Wheel\fR
+
+       Zooms the camera in or out.
+
+\fBPress and Hold Middle Mouse Button\fR
+
+       Pans the camera relative to the viewing plane (speed varies by zoom).
+
+\fBU\fR
+
+       Toggles the GUI on and off.
+
+\fBT\fR
+
+       Switches between the two latest renderers that were selected via GUI.
+
+\fBL\fR
+
+       Toggles light rotation off.
+
+\fBR\fR
+
+       Recompiles all of the shaders (with \fBglslc\fR if it's found in an $PATH).
+
+\fBQ and Escape\fR
+
+       The emergency exit buttons.
+
+\fBS\fR
+
+       Takes a screenshot without GUI and saves it to the current directory.
+
+There are again a couple of other keyboard shortcuts but they're for debugging purposes. If you really want to see them go to: /src/main.cc and scroll until you find a InputMap.
+
 .SH EXAMPLES
-\fBvkhr:\fR
+Below are a couple of ways you can start the program. I'd say they account for the most common usage scenarios so if you're confused now pick one of these and just try them out.
 
-\fBvkhr --benchmark yes:\fR
+\fBvkhr:\fR launches the renderer with the default settings in the /usr/share/vkhr/scenes/ponytail.vkhr scene.
 
-\fBvkhr --width 1280 --height 720 --fullscreen no --vsync on --ui yes:\fR
+\fBvkhr --benchmark yes:\fR starts the renderer in benchmark mode. Don't touch anything, it's fully automatic.
 
-\fBvkhr --width 1280 --height 720 --fullscreen no --vsync on --ui yes /usr/share/vkhr/scenes/ponytail.vkhr:\fR
+\fBvkhr --width 1280 --height 720 --fullscreen no --vsync on --ui yes:\fR changes some of the render settings.
 
-\fBvkhr /usr/share/vkhr/scenes/ponytail.vkhr:\fR
+\fBvkhr --width 1280 --height 720 --fullscreen no --vsync on --ui yes /usr/share/vkhr/scenes/ponytail.vkhr.\fR
 
-\fBvkhr wCurly.vkhr:\fR
+\fBvkhr /usr/share/vkhr/scenes/ponytail.vkhr:\fR specifies a custom scene in a absolute or relative directory.
+
+\fBvkhr wCurly.vkhr:\fR an example of a custom scene where the data files need to be relative to the scenario.
 .SH FILES
-\fB/usr/share/vkhr/scenes:\fR
+\fB/usr/share/vkhr/scenes:\fR location where the pre-bundled set of scenes (i.e. all .vkhr files) are located.
 
-\fB/usr/share/vkhr/styles:\fR
+\fB/usr/share/vkhr/styles:\fR where the actual hair geometry should go which is in the Cem Yuksel HAIR format.
 
-\fB/usr/share/vkhr/shaders:\fR
+\fB/usr/share/vkhr/shaders:\fR all of the shaders, if you make any changes, make sure to re-compile using "R".
 
-\fB/usr/share/vkhr/models:\fR
+\fB/usr/share/vkhr/models:\fR the wavefront .obj files plus their resources, needed to display polygon meshes.
 
-\fB/usr/share/vkhr/images:\fR
+\fB/usr/share/vkhr/images:\fR finally some icons and other stuff (like screenshots and custom image for HUDs).
+
+That's about it, hopefully this man-page was of some use. If you have questions, feel free to e-mail me or open an issue on the GitHub repository, and I'd be happy to help you.
 .SH AUTHORS
 Erik S. V. Jansson <caffeineviking@gmail.com>
 .SH COPYRIGHT
@@ -75,4 +127,4 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 .SH SEE ALSO
-https://github.com/CaffeineViking/vkhr
+\fBGitHub:\fR http://github.com/CaffeineViking/vkhr
