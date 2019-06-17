@@ -1,7 +1,6 @@
 \documentclass{egpubl}
-\usepackage{egsr19}
-
-\SpecialIssueSubmission
+\usepackage{egsr19_DLOnlyTrack}
+\WsPaper
 
 \usepackage[T1]{fontenc}
 \usepackage{dfadobe}
@@ -53,25 +52,23 @@
 \lstset{morekeywords={vec2, vec3, vec4, mat2, mat3, mat4, length}}
 
 \title[Real-Time Hybrid Hair Rendering]
-      {Real-Time Hybrid Hair Rendering}
+      {Real-Time Hybrid Hair Rendering \vspace{-0.41em}}
 
 \author[E. Jansson, M. Chajdas, J. Lacroix and I. Ragnemalm]
 {\parbox{\textwidth}{\centering Erik S.\,V. Jansson$^{1}$ \hspace{2.5ex} Matthäus G. Chajdas$^{2}$ \hspace{2.5ex} Jason Lacroix$^{2}$ \hspace{2.5ex} Ingemar Ragnemalm$^{1}$}\\
-{\parbox{\textwidth}{\centering $^1$Linköping University, Sweden \hspace{2.5ex} $^2$Advanced Micro Devices}}}
+{\parbox{\textwidth}{\centering $^1$Linköping University, Sweden \hspace{2.5ex} $^2$Advanced Micro Devices, Inc.}}}
 
 \begin{document}
 
-\teaser{\includegraphics[width=0.1855\linewidth]{figures/ponytail-transition.png}
+\teaser{\vspace{-0.45em}\includegraphics[width=0.1855\linewidth]{figures/ponytail-transition.png}
         \includegraphics[width=0.3956\linewidth]{figures/bear-transition.png}
         {\includegraphics[width=0.3956\linewidth]{figures/bear-transition-components.png}}
         \centering
-        \caption{\emph{We present a volume-based approximation of strand-based hair that is suitable for level-of-detail minification. It scales better than existing raster-based solutions with increasing distances, and can be combined with them, to create a hybrid technique. This figure shows the split alpha blended level-of-detail transition between our strand-based rasterizer (left side) and its volume-based approximation (right side).}}
+        \caption{\emph{We present a volume-based approximation of strand-based hair that is suitable for level-of-detail minification. It scales better than existing raster-based solutions with increasing distances, and can be combined with them, to create a hybrid technique. This figure shows the split alpha blended level-of-detail transition between our strand-based rasterizer (left side) and its volume-based approximation (right side). The four subfigures on the right showcase the Bear's individual components: Kajiya-Kay shading, tangents, shadows and ambient occlusion.}}
         \label{fig:teaser}
         \vspace{2mm}}
 
 \maketitle
-
-% Virtual characters need realistic hair rendering in order to be accurately portrayed, but this still remains challenging due to the complex nature of hair. Humans typically have over 100,000 strands of hair, with animal fur reaching the millions, making it difficult to both simulate and render hair in real-time. Strand-based simulation has proven to work well in practice, but rendering in this representation, especially for level-of-detail, still remains problematic. In this work we present a new hybrid approach to hair rendering that uses a volumetric approximation of this strand-based representation for level-of-detail. Our technique is automatic, and does not require any artist intervention or pre-computation, even for fully animated hair, making it easy to integrate into existing pipelines. Our approximation accounts for light scattering, self-shadowing, and transparency, by using a density and tangent volume found by real-time voxelization on the GPU. We show that this method scales better than strand-based rasterization for far-away hair, and can be used in conjunction with it for high-quality close-up shots, since the transitions are smooth. %
 
 \begin{abstract}
 Rendering hair is a challenging problem for real-time applications. Besides complex shading, the sheer amount of it poses a lot of problems, as a human scalp can have over 100,000 strands of hair, with animal fur often surpassing a million. For rendering, both strand-based and volume-based techniques have been used, but usually in isolation. In this work, we present a complete hair rendering solution based on a hybrid approach. The solution requires no pre-processing, making it a drop-in replacement, that combines the best of strand-based and volume-based rendering. Our approach uses this volume not only as a level-of-detail representation that is raymarched directly, but also to simulate global effects, like shadows and ambient occlusion in real-time.
@@ -125,11 +122,11 @@ Rendering hair is a challenging problem for real-time applications. Besides comp
 
 % I start by introducing hair rendering, and why strand-based methods are used (i.e. it's a model based on reality and simulations use this). I also describe the two main ways to represent hair: by using explicit hair strands or with a volume. I briefly cover the advantages and disadvantages of each technique. %
 
-Hair rendering and simulation are challenging problems in the field of computer graphics due to the complex nature of hair \cite{ward2007survey}. The human scalp typically has over 100,000 sub-pixel sized strands of hair attached to it \cite{ward2007survey}, making it non-trivial to accurately represent in practice. There are two main models to represent hair: as a \emph{volume}, or by using \emph{explicit hair strands} \cite{ward2007survey}. Each of these have their own strengths and weaknesses; with volume-based representations for instance, finding effects like ambient occlusion is trivial \cite{hernell2010local}, but not in strand-based representations, that use rasterization, as these use screen-space techniques. In real-time applications, such as games, the most widely used representation in practice is to use explicit hair strands \cite{nguyen2005hair, yuksel2010advanced, martin2014tressfx}, as they have proven to work well in real-time hair simulation \cite{han2014hair}.
+Hair rendering and simulation are challenging problems in the field of computer graphics due to the complex nature of hair \cite{ward2007survey}. The human scalp typically has over 100,000 sub-pixel sized strands of hair attached to it \cite{ward2007survey}, making it non-trivial to accurately represent in practice. There are two main models to represent hair: as a \emph{volume}, or by using \emph{explicit hair strands} \cite{ward2007survey}. Each of these have their own strengths and weaknesses; with volume-based representations for instance, finding effects like ambient occlusion is trivial \cite{hernell2010local}, but not in strand-based representations, that use rasterization, leading to cheap screen-space techniques. In real-time applications, such as games, the most widely used representation in practice is to use explicit hair strands \cite{nguyen2005hair, yuksel2010advanced, martin2014tressfx}, as they have proven to work well in real-time hair simulation \cite{han2014hair}.
 
 % Then, I describe that strand-based representations are usually quite computationally expensive, and generally don't scale well. Most of the existing level-of-detail schemes for hair also aren't ``automatic''. We need a scalable and general level-of-detail for strand-based hair. %
 
-Hair rendering still remains a challenging problem however, as existing raster-based solutions \cite{nguyen2005hair, martin2014tressfx} only have enough budget to render a couple of characters on the screen at once in real-time frames. This happens because rasterization does not scale well for this type of sub-pixel sized geometry \cite{riccio2014triangles}, for instance, with far away hair. Games typically solve this scaling problem by using a level-of-detail scheme, like reducing the number of hair strands dynamically \cite{yuksel2010advanced, steward2015augmented}, and compensating for any volume loss by making strands thicker. This last approach suffers from the same dilemma found in mesh simplification \cite{cignoni1998comparison}, as visual features important to the hair style could be evicted by accident. Yet another issue with strand-based rasterization, is that global effects, such as ambient occlusion, are not easy to compute accurately in real-time. In this paper we present a new approach that uses both strand-based and volume-based representations, a hybrid, to resolve these issues.
+Hair rendering still remains a challenging problem, however, as existing raster-based solutions \cite{nguyen2005hair, martin2014tressfx} only have enough budget to render a couple of characters on the screen at once in real-time frames. This happens because rasterization does not scale well for this type of sub-pixel sized geometry \cite{riccio2014triangles}, for instance, with far away hair. Games typically solve this scaling problem by using a level-of-detail scheme, like reducing the number of hair strands dynamically \cite{yuksel2010advanced, steward2015augmented}, and compensating for any volume loss by making strands thicker. This last approach suffers from the same dilemma found in mesh simplification \cite{cignoni1998comparison}, as visual features important to the hair style could be evicted by accident. Yet another issue with strand-based rasterization, is that global effects, such as ambient occlusion, are not easy to compute accurately in real-time. In this paper we present a new approach that uses both strand-based and volume-based representations, a hybrid, to resolve these issues.
 
 % Here I present our contribution: a real-time hybrid hair rendering pipeline which uses both strand rasterization and volume rendering. The novelty of our approach comes from using DVR for far-away cases, and cheaply approximating shading, self-shadowing and AO. %
 
@@ -145,23 +142,25 @@ We start off by talking about existing work within hair rendering, and then desc
 
 % First I cover recent techniques for rendering explicit hair strands, more notably: lighting models, self-shadowing algorithms and how to handle transparency and anti-aliasing. e.g.: Yu et al.~\cite{yu2012framework}. %
 
-Several hair rendering frameworks have been presented in real-time computer graphics. Most of these are strand-based \cite{yu2012framework}, and solve for light scattering, self-shadowing and transparency, as these are important aspects in hair rendering \cite{ward2007survey}. The framework by Yu et al.~\cite{yu2012framework}, that is also used for TressFX 3.1~\cite{martin2014tressfx}, is used in real-time applications, such as games \cite{lacroix2013tressfx, steward2015augmented}, but doesn't allow for more than a few characters to be on the screen at the same time. Our hair rendering pipeline is able to render multiple hair styles, by using a scalable level-of-detail minification based on a volumetric approximation of hair that is raymarched in real-time.
+Several hair rendering frameworks have been presented in real-time computer graphics. Most of these are strand-based \cite{yu2012framework}, and support light scattering, self-shadowing and transparency, as these are important aspects in hair rendering \cite{ward2007survey}. The framework by Yu et al.~\cite{yu2012framework}, that is also used for TressFX 3.1~\cite{martin2014tressfx}, is used in real-time applications, such as games \cite{lacroix2013tressfx, steward2015augmented}, but doesn't allow for more than a few characters to be on the screen at the same time. Our hair rendering pipeline is able to render multiple hair styles, by using a scalable level-of-detail minification based on a volumetric approximation of hair that is raymarched in real-time.
 
 % Several strand-based hair rendering frameworks have been presented in \cite{yu2012framework}
 
 % Here I show work related to the volume rendering of hair. %
 
-Rendering hair as a volume has been done before, in both offline \cite{petrovic2005volumetric, moon2008efficient, xing2015efficient} and interactive \cite{ren2010interactive, xing2012real} settings. With our solution, we use it for multiple purposes, and not just for rendering. Those include using it as a scalable complement to strand-based rasterization, that can be used in real-time contexts. This has not been explored in previous work within hair rendering.
+Rendering hair as a volume has been done before for both offline \cite{petrovic2005volumetric, moon2008efficient, xing2015efficient} and interactive \cite{ren2010interactive, xing2012real} settings. In our solution we use this volume for many purposes, not only for rendering. This includes using it as a scalable complement to strand-based rasterization that can be used for real-time contexts. This has not been explored in previous work within hair rendering.
 
 However, strand-based methods result in higher-quality hair, and are generally used for simulation \cite{han2014hair} in real-time applications.
 
 % Finally, I present Andersen et al.'s hybrid fur rendering~\cite{andersen2016hybrid}, which is a technique that is "close" to ours, and give a comparison. It's a fairly recent paper, and uses explicit hair strands and volumes. %
 
-The only other work that has tried to combine these strand-based and volume-based representations into a hybrid approach, is due to Andersen et al.~\cite{andersen2016hybrid}. They use it for fur rendering, as explicit hair strand geometry is not suitable to model undercoat hairs, while volume textures excel at it. While they also use the raymarcher and rasterizer together, like us, they do not use it for hair level-of-detail.
+The only other work which combines strand-based and volume-based representations into a hybrid approach for hair rendering is Andersen et al.~\cite{andersen2016hybrid}. They use it for fur rendering, as explicit hair strand geometry is not suitable to model undercoat hairs, while volume textures excel at it. While they also use the raymarcher and rasterizer together, like us, they do not use it for hair level-of-detail.
 
 % I then present existing level-of-detail algorithms for hair rendering. %
 
-For hair level-of-detail, the most common approach in games is to reduce the number of hair strands like Steward et al.~\cite{steward2015augmented} and increase the strand's radius. This technique removes geometry, and does not preserve the volume of the hair style, and requires manual intervention by an artist to fix. The method by Ward et al.~\cite{ward2003modeling} preserves visual features better, but at a substantial run-time cost. It also needs pre-computations, and since hair can be simulated, this is not a viable solution for real-time hair rendering. Our method is automatic, and preserves visual features, as we voxelize the original strand-based hair geometry in every frame, allowing animated hair.
+Another paper that proposes a hybrid level-of-detail approach is Loubet and Neyret~\cite{loubet2017hybrid}; they use a mesh for macroscopic details and switch to a pre-filtered volume for microscopic surfaces. It's a appearance preserving technique for complex geometry, that scales across different LoDs. This technique can be used in hair rendering, but because of its expensive pre-filtering \cite{heitz2015sggx}, it can not be used in real-time, since hair could be animated. The most common level-of-detail approach for games is to reduce the hair strands like in Steward et al.~\cite{steward2015augmented}. Ward et al's.~\cite{ward2003modeling} method is better at preserving visual details, but it comes with a greater run-time cost.
+
+% but this does not preserve volume. The method by Ward et al.~\cite{ward2003modeling} preserves visual features better.
 
 % The technique by Ward et al.~\cite{ward2003modeling} preserves visual features better, but at a substantial cost.
 
@@ -189,7 +188,7 @@ The input to our pipeline consists of \emph{hair strands}, which we model as an 
 
 % I then go on to describe the strand-based rasterizer we're going to be doing our approximation on.  %
 
-\noindent \textbf{Strand-Based Rasterizer. } Our rasterized solution renders strands of hair as line list primitives with the GPU's built-in line rasterizer, and shades each fragment with a hair strand \emph{lighting model} that uses tangents for shading. Since hair is sub-pixel sized \cite{leblanc1991rendering}, it leads to high aliasing, which we solve by using the pixel \emph{coverage} of a line for \emph{anti-aliasing}. Hair is not completely opaque \cite{sintorn2008real}, and since our coverage calculation modifies the alpha component, we need to \emph{sort}, and then \emph{blend}, the fragments in the correct order to handle strands with \emph{transparency}. Another important property of hair are \emph{self-shadows}~\cite{ward2007survey}, that we solve with a approximate technique, that we later generalize using a volume. This results in a high-quality, but expensive, real-time solution, that scales poorly.
+\noindent \textbf{Strand-Based Rasterizer. } Our rasterized solution renders strands of hair as line list primitives with the GPU's built-in line rasterizer, and shades each fragment using a hair strand \emph{lighting model} which uses tangents for shading. Since hair is sub-pixel sized \cite{leblanc1991rendering}, it leads to high aliasing, which we solve by using the pixel \emph{coverage} of a line for \emph{anti-aliasing}. Hair is not completely opaque \cite{sintorn2008real}, and since our coverage calculation modifies the alpha component, we need to \emph{sort}, and then \emph{blend}, the fragments in the correct order to handle strands with \emph{transparency}. Another important property of hair are \emph{self-shadows}~\cite{ward2007survey}, that we solve with a approximate technique, that we later generalize using a volume. This results in a high-quality, but expensive, real-time solution which scales poorly.
 
 % These lead to a high-quality, but expensive, real-time solution that doesn't scale well with increasing distances.
 
@@ -213,7 +212,7 @@ In the following sections we go into more detail on how we have solved each of t
 
 % First I mention the lighting model we've used, Kajiya-Kay, and as I'm not going to go into too much detail over how it works, I instead just mention the essentials: why we need the tangent, how to get the tangent when rasterizing, and how we setup the shading. %
 
-After rasterizing the strand segments with the GPU's line rasterizer we shade each fragment with the model due to Kajiya-Kay~\cite{kajiya1989rendering}, that estimates the light scattering inside of a strand with \emph{diffuse} and \emph{specular} terms. It is not physically-based \cite{marschner2003light, d2011energy}, but it is still widely used \cite{ward2007survey, yuksel2010advanced} for real-time applications for its simplicty and performance (or variants of it \cite{scheuermann2004practical, martin2014tressfx}).
+After rasterizing the strand segments with the GPU's line rasterizer, we shade each fragment with Kajiya-Kay's~\cite{kajiya1989rendering} lighting model, that estimates the light scattering inside a strand with a \emph{diffuse} and \emph{specular} term. It is not physically-based \cite{marschner2003light, d2011energy}, but it is still widely used \cite{ward2007survey, yuksel2010advanced} for real-time applications for its simplicity and performance (or variants of it \cite{scheuermann2004practical, martin2014tressfx}).
 
 % I show results when only the lighting model was taken into account, which leads to unnatural looking hair (because we don't account for any shadows) and the irritating jaggies that needs to be removed. I'll put an image of it here, with one of those CSI enhance effects. %
 
@@ -260,7 +259,7 @@ float strand_coverage(vec2 screen_fragment, vec4 world_line,
 
 % Here I show that our anti-aliasing won't look correct if the fragments aren't properly sorted in back-to-front order, and it also applies to strands that are naturally transparent. I say that there are many ways to solve this, but none of them are fast and also correct. correctly handle transparent strands of hair requires us to sort and blend their non-opaque fragments in back-to-front order! %
 
-\noindent \textbf{Sorting and Blending. } In order to draw transparent strands of hair we need to sort and blend the non-opaque hair fragments in back-to-front order. There are several of ways to solve this \cite{maule2011survey}, with their own set of strengths and weaknesses. We have chosen to use the same transparency solution as TressFX~\cite{martin2014tressfx}, as that has been proven to work for real-time hair rendering. It is based on the method by Yu et al.~\cite{yu2012framework}, which uses an Per-Pixel Linked List (PPLL) \cite{yang2010real} and $k$-buffer approach \cite{bavoil2007multi} to handle transparency. For it to work, writes to the depth buffer are disabled.
+\noindent \textbf{Sorting and Blending. } In order to draw transparent strands of hair we need to sort and blend the non-opaque hair fragments in back-to-front order. There are several of ways to solve this \cite{maule2011survey}, with their own set of strengths and weaknesses. We have chosen to use the same transparency solution as TressFX~\cite{martin2014tressfx}, as that has been proven to work for real-time hair rendering. It is based on the method by Yu et al.~\cite{yu2012framework}, which uses a Per-Pixel Linked List (PPLL) \cite{yang2010real} and $k$-buffer approach \cite{bavoil2007multi} to handle transparency. For it to work, writes to the depth buffer are disabled.
 
 % I explain that we've used a PPLL to sort and blend our fragments in the same way as in TressFX's K-Buffer. %
 
@@ -286,17 +285,17 @@ Instead, we use a volume-based approximation of this hair style as level-of-deta
 
 % I explain that our volume method works by voxelizing strands in GPU compute, to find strand density and its tangents. We use that to approximate the shading of the ground-truth rasterizer method. I also mention that other phenomena can be approximated as well, such as self-shadowing (which we cover later), and maybe also try to poke some of the future work (e.g. dual-scattering, IBL, etc...). After this I tell that we're going to start by describing the shading by assuming this density volume, and then go into detail how to voxelize the data we need. %
 
-Our volume-based approximation for strand-based hair uses the same underlying geometry as before: line segments. It takes these, and voxelizes them into two different volumes: the \emph{density volume}, and the \emph{tangent volume}, using GPU computations. The densities are used to represent the number of strands that have passed through a voxel, which we use to do our raymarching. The tangents are also needed as a volume because $\nabla f$, the gradient of the density, are not tangents, but normals, and are insufficient for Kajiya-Kay \cite{kajiya1989rendering}.
+Our volume-based approximation for strand-based hair uses the same underlying geometry as before: line segments. It takes these, and voxelizes them into two different volumes: the \emph{density volume}, and the \emph{tangent volume} with GPU-based compute. The densities are used to represent the number of strands that have passed through a voxel, which we use to do our raymarch later. The tangents are also needed as a volume because they can't be derived from the density, unlike the normals which are just $-\nabla d$, the gradient of the density.
 
-We use these volumes to approximate the rasterizer's shading on an isosurface. In our pipeline this means finding approximations of the lighting model, self-shadowing algorithm, and transparency in a volume. More lighting components can likely also be approximated in real-time by using these volumes, but we have chosen to limit us to the subset of effects that are commonly used when rendering hair in real-time. We show how to approximate self-shadowing and the ambient occlusion in \cref{sec:self-shadowing}. Before we can do this though, we need to find an isosurface to shade on. In our approach, we do not do full Direct Volume Rendering \cite{hadwiger2006gpu}, as shading inside the volume would be too expensive for our real-time needs. Instead, we only do shading on an isosurface. We start with explaining how to find this isosurface, and then go on to show how to do shading on it by using the volumes we have derived. We also show how to fake transparency without having to use DVR, by using the hair density.
+We use these volumes to approximate the rasterizer's shading on an isosurface. In our pipeline this means finding approximations of the lighting model, self-shadowing algorithm, and transparency in a volume. More lighting components can likely also be approximated in real-time by using these volumes, but we have chosen to limit us to the subset of effects that are commonly used when rendering hair in real-time. We show how to approximate self-shadowing and the ambient occlusion in \cref{sec:self-shadowing}. Before we can do this though, we need to find an isosurface to shade on. In our approach, we do not use Direct Volume Rendering (DVR) \cite{hadwiger2006gpu}, as shading inside the volume would be too expensive for our real-time needs. Instead, we only do shading on an isosurface. We start with explaining how to find this isosurface, and then go on to show how to do shading on it by using the volumes we have derived. We also show how to fake transparency without having to use DVR, by using the hair density.
 
 % Here I'll need to describe the basics of direct volume rendering, and how we've set everything up. I guess we can start by describing that we build a AABB, render it, and use the fragments to raymarch into the volume. To find a surface, we make constants steps through the volume and accumulate the density until it can be considered solid. I then explain that we use this surface point to do the shading, which is trivial, by using Kajiya-Kay, after we've voxelized hair tangents. %
 
 \noindent \textbf{Surface. } We start by building an AABB of the hair by expanding a cuboid with each incoming vertex. This is our proxy geometry, that houses our volume data, and which we use for raymarching. As we can't render volumes with a rasterizer, we render our cuboid, which gives us the fragment $\mathbf{f}$ on its surface. We use $\mathbf{f}$ and the eye $\mathbf{e}$ to find the direction $\mathbf{f} - \mathbf{e}$ in which we should be raymarching into, with an origin set for $\mathbf{f}$, we raymarch into this direction with constant steps.
 
-Next, we want to find an isosurface $\mathbf{s}$ inside this volume to do all our shading on. As we mentioned before, the hair densities contain the number of strands passing through each voxel. A raymarch from a voxel at $\mathbf{a}$ to another voxel at $\mathbf{b}$ gives us the number of hair strands in-between them. We use this to find the isosurface $\mathbf{s}$, as we classify a surface as ``solid'' only if it passes a minimum strand count. With a raymarch from $\mathbf{f}$ launched towards $\mathbf{f} - \mathbf{e}$, we accumulate strands until a ``solid'' isosurface $\mathbf{s}$ is found. We use this surface $\mathbf{s}$ to do our shading. In order to ``fake'' transparency we also shade ``non-solid'' surfaces, by finding the first intersection: an non-empty voxel, and changing its opacity based on the density. This leads to a smoother level-of-detail transition, especially for low-density (stray) regions.
+Next, we want to find an isosurface $\mathbf{s}$ inside this volume to do all our shading on. As we mentioned before, the hair densities contain the number of strands passing through each voxel. A raymarch from a voxel at $\mathbf{a}$ to another voxel at $\mathbf{b}$ gives us the number of hair strands in-between them. We use this to find the isosurface $\mathbf{s}$, as we classify a surface as ``solid'' only if it passes a minimum strand count. With a raymarch from $\mathbf{f}$ launched towards $\mathbf{f} - \mathbf{e}$, we accumulate strands until a ``solid'' isosurface $\mathbf{s}$ is found. We use this surface $\mathbf{s}$ to do our shading. In order to ``fake'' transparency we also shade ``non-solid'' isosurfaces, by finding the first intersection: a non-empty voxel, and changing its opacity based on the density. This leads to a smoother level-of-detail transition, especially for low-density (stray) regions.
 
-\noindent \textbf{Shading. } Was straight-forward once the isosurface has been found, as long as some tangent volume can be calculated. Simply shade the fragment $\mathbf{f}$ using standard Kajiya-Kay shading as before, where the tangent $\mathbf{t}$ is an approximation of the real tangent, found by querying the tangent volume at the isosurface $\mathbf{s}$. Other methods can probably be used to find the tangent too, like looking at the surface curvature.
+\noindent \textbf{Shading. } Shading is straightforward once this isosurface is found, and as long as a tangent volume can be voxelized. We simply shade the fragment using standard Kajiya-Kay shading, by using the same shader as our rasterizer, but replacing the analytical tangent with an approximation, found by querying the tangent volume at $\mathbf{s}$. We use a direct translation of Kajiya-Kay's \cite{kajiya1989rendering} algorithm for shading.
 
 % I then describe how we have done the voxelization, by first showing how to find the densities, and then how to voxelize the tangents. In the density-case, I describe both the fast (vertex-based) and the general (segment-based) schemes, and how they compare with each other by showing: results from ParaView, and their strengths and weaknesses. Then, I explain how to implement this efficiently in compute, by using the imageAtomicAdd functionality in GLSL. %
 
@@ -314,7 +313,7 @@ Next, we want to find an isosurface $\mathbf{s}$ inside this volume to do all ou
 
 % Here I describe how to quantize and store/load the tangent into a volume, since it's not possible to query the tangent (easily) if we're not using the rasterizer approach. I also describe the limitations of our approach, but say that in our tests, the result was acceptable. I do the same thing here, and describe how to efficiently implement this on the GPU, which also involves doing imageAtomicAdd. I will have a figure here showing normals v.s tangent-space shading. %
 
-To find the tangent volume we use something similar, but we find the average direction instead of the sum. We start by quantizing our tangents from $[-1.0,+1.0]$ into $[0,255]$ per-channel, and summing those values up, just as for the density volume. The trick is then to divide this by the number of hair stands in each voxel, which is the same as our density volume, and then de-quantizing it from $[0,255]$ back into $[+1.0,-1.0]$ when shading. See \cref{fig:tangents} for these results.
+To find the tangent volume we use something similar, but we find the average direction instead of the sum. We start by quantizing our tangents from $[-1.0,+1.0]$ into $[0,255]$ per-channel, and summing those values up, just as for the density volume. The trick is then to divide this by the number of hair stands in each voxel, which is the same as our density volume, and then de-quantizing it from $[0,255]$ back into $[-1.0,+1.0]$ when shading. See \cref{fig:tangents} for these results.
 
 \begin{figure}[htb]
     \centering
@@ -334,7 +333,7 @@ To find the tangent volume we use something similar, but we find the average dir
 
 After solving transparency and light scattering, our results shown in \cref{fig:aliasing} will still be flat looking, because strand self-shadowing is an essential part of rendering realistic hair \cite{ward2007survey}. There are several self-shadowing algorithms in related work, but we need one that is fast, and which maps to both rasterization and raymarching.
 
-We have chosen to use the technique due to Lacroix \cite{lacroix2013tressfx}, that is used in Tomb Raider and TressFX \cite{martin2014tressfx, steward2015augmented}, as it is very fast, and only requires a single shadow map per light source, which is not true for Deep Opacity Maps \cite{yuksel2008deep}. It's based on an approximation of the Deep Shadow Map (DSM) \cite{lokovic2000deep}, called the Approximated DSM (ADSM). It finds the traversed depth $d$ inside the hair by finding the distance between a fragment $f$ and the depth in the shadow map $s$. It uses this distance to estimate the number of strands in the way: $d \cdot r$, where $r$ is the expected spacing in-between hair strands. These are used to find the occlusion: $(1 - \alpha)^{dr}$, that is used to find the shadows for a strand with translucency $\alpha$. This will result in a smooth looking shadow that becomes darker the further we get inside the hair. An issue with this technique is that it assumes constant strand spacing, which is generally not true for most styles.
+We have chosen to use a novel technique due to Lacroix \cite{lacroix2013tressfx}, that is used in Tomb Raider and TressFX \cite{martin2014tressfx, steward2015augmented}, as it is very fast, and only requires one single shadow map per light source, which is not true for Deep Opacity Maps \cite{yuksel2008deep}. It's based on an approximation of the Deep Shadow Map (DSM) \cite{lokovic2000deep}, called the Approximated DSM (ADSM). First it finds the traversed depth $d$ in the hair by the distance between the strand fragment $f$ and the depth in the shadow map $s$. It uses the distance $d$ to estimate the number of strands in the way: $d \cdot r$, where $r$ is the expected spacing in-between hair strands. These are used to find the occlusion: $(1 - \alpha)^{dr}$, that we use to find the shadows for a strand with translucency $\alpha$. This will result in a smooth looking shadow, that becomes darker the further we get inside the hair. An issue with this technique is that it assumes constant strand spacing, which is generally not true for most styles.
 
  % After this I cover the Volumetric ADSM, which is based on the fact that ADSM approximates the number of occluding strands, as seen from the light source. Using this observation, and the fact that hair density is proportional to the number of strands in a voxel, we can use the same calculation as ADSM: $(1 - \alpha)^{dr}$, but replace $dr$ with the actual number of strands. I then show the figures of our results. %
 
@@ -405,13 +404,14 @@ We have also measured performance from different distances to see how our soluti
 
 % We then talk about the rest of the plots, which are more expanded versions of the scalability argument. We start by showing that raymarching scales a lot better at far distances, and is also linear, which is not the case for rasterization (at least in close-up shots). We show the figure that demonstrates that the raymarcher doesn't scale with the number of strands, at least not by a lot, because of voxelization. The voxelization is quite cheap, and the run-time performance of the raymarcher can be tweaked further by changing the number of raymarch steps. %
 
-As can be seen in \cref{fig:strands}, the rasterizer scales linearly with the hair strands, and so does our raymarcher, but with a ``shallow'' slope, caused by the voxelization in \cref{fig:raymarch}. The quality of our raymarch and its performance can be tuned by varying the step size in \cref{fig:raymarch}, making it possible to change its intercept in \cref{fig:strands}.
+As can be seen in \cref{fig:strands}, the rasterizer scales linearly with the hair strands, and so does our raymarcher, but with a ``shallow'' slope, caused by the voxelization in \cref{fig:raymarch}. The quality of our raymarch and its performance can be tuned by varying the step size in \cref{fig:raymarch}, making it possible to change the intercept of \cref{fig:strands}.
 
 \newpage
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth, trim={0.15cm, 0.25cm, 0.45cm, 0.25cm}, clip]{figures/pixels.eps}
+    \vspace{1mm}
+    \includegraphics[width=0.97\linewidth, trim={0.15cm, 0.25cm, 0.45cm, 0.25cm}, clip]{figures/pixels.eps}
+    \vspace{-1mm}
     \caption{\emph{Average rendering time of both solutions with decreasing distances (i.e. increasing screen space) for the Bear hair. Note that our raymarcher scales linearly, while the rasterizer does not, for far away hair. The raymarcher also has a lower constant cost attached.}}
     \label{fig:pixels}
     \vspace{-2mm}
@@ -422,14 +422,15 @@ As can be seen in \cref{fig:strands}, the rasterizer scales linearly with the ha
     \includegraphics[width=0.484\linewidth, trim={0.20cm, 0.20cm, 0.20cm, 0.25cm}, clip]{figures/raymarch.eps}
     \hfill
     \includegraphics[width=0.484\linewidth, trim={0.20cm, 0.20cm, 0.20cm, 0.25cm}, clip]{figures/voxelization.eps}
-    \caption{\emph{Some performance scaling aspects in our raymarcher for Ponytail hair. Voxelization is cheap, and performance can be tuned.}}
+    \vspace{-1mm}
+    \caption{\emph{Some performance scaling aspects in our raymarcher for Ponytail hair. Voxelization is cheap, and performance can be tuned. This seemingly flat region in the voxelization is not a measurement error, we believe it to be caused by the GPU cache being populated.}}
     \label{fig:raymarch}
     \vspace{-2mm}
 \end{figure}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth, trim={0.15cm, 0.25cm, 0.45cm, 0.25cm}, clip]{figures/strands.eps}
+    \includegraphics[width=0.97\linewidth, trim={0.15cm, 0.25cm, 0.45cm, 0.25cm}, clip]{figures/strands.eps}
+    \vspace{-1mm}
     \caption{\emph{Average rendering time of our solutions with increasing number of hair strands for the Ponytail hair. The raymarcher is only slightly affected because of the voxelization cost, and will otherwise be constant. This constant can be tuned with the raymarching steps.}}
     \label{fig:strands}
     \vspace{-2mm}
@@ -441,7 +442,9 @@ As can be seen in \cref{fig:strands}, the rasterizer scales linearly with the ha
 
 % Here I list the known limitations in our technique: the vertex-based strand voxelization isn't general, raymarching with wide step-sizes gives staircase artifacts, PPLLs and volumes use a lot of memory. I'd also say that we haven't tried other lighting models yet, since our method currently only assumes Kajiya-Kay's model. I also mention that voxelization has a constant cost attached to it. %
 
-While our strand voxelization strategy is quite fast, it does not work well for all cases. If the spacing between strand vertices is too large, or the grid resolution too granular, even a large reconstruction filter won't work, and will also yield diminishing returns in performance. For these cases, lowering the volume resolution will help, but it will result in a lower-quality result, and the ``real'' solution, to voxelize each segment with e.g. DDA, is too expensive to do in real-time, as shown by the pre-processing times from previous works \cite{kanzler2018voxel}. However it can still be done offline, if the hair style isn't simulated, and can be assumed to be static, or, if the strand length is very short.
+While our strand voxelization strategy is quite fast, it does not work well for all cases. If the spacing between strand vertices is too large, or the grid resolution too granular, even a large reconstruction filter won't work, and will also yield diminishing returns in performance. For those cases, lowering the volume resolution will help, but it will result in a lower-quality result. A solution would be to use e.g. DDA and rasterize the lines using compute. Our experiments have shown that this is quite expensive, and not suitable for real-time rendering, as confirmed by Kanzler et al.~\cite{kanzler2018voxel}. A promising method that was suggested to us is to sample the strand with the right frequency.
+
+% and the ``real'' solution, to voxelize each segment with e.g. DDA, is too expensive to do in real-time, as shown by the pre-processing times from previous works \cite{kanzler2018voxel}. However it can still be done offline, if the hair style isn't simulated, and can be assumed to be static, or, if the strand length is very short.
 
 For mobile targets our solution may be too memory intensive, as we saw in \cref{fig:memory}, the PPLL consumes a lot of GPU memory that is not readily available on these memory constrained platforms. We also haven't tried our solution with more advanced lighting models, like \cite{nguyen2005hair}, and it would be interesting to see if our raymarcher is able to account for these in real-time as well, while still performing better than the rasterizer. Another issue with our raymarcher is that it uses constant step size, and may result in staircase artifacts. There is also a fixed cost attached to clearing the volumes for each frame; but the cost can be ``hidden'' by doing asynchronous compute work.
 
@@ -461,21 +464,20 @@ We expect future work to focus on improving the volume-based approximation we ha
 
 \section*{Acknowledgments}
 
-We would like to thank Crystal Dynamics and AMD for providing the Ponytail and Bear hair geometry. We would also like to thank our anonymous reviewers at LiU and AMD for their valuable feedback. I would like to thank Matthäus, Jason, Ingemar and Dominik, for their help and support during my thesis at LiU on the same topic.
+We would like to thank AMD for providing us the ponytail and bear hair styles bundled in TressFX 3.1. We would also like to thank our anonymous reviewers at LiU and AMD for their valuable feedback. I would like to thank: Matthäus, Jason, Ingemar, and Dominik, for their help and support during my thesis at LiU, on this same subject.
 
-\noindent This is based on the \emph{Scalable Strand-Based Hair Rendering} thesis.
+\noindent The authors would like to thank the anonymous reviewers at EGSR for their great feedback on this paper. They were much appreciated!
 
 \nocite{*}
 
 \printbibliography
 
-\newpage
-
 \begin{figure}[H]
     \centering
-    \includegraphics[height=\linewidth, angle=-90, origin=c]{figures/composition.jpg}
-    \caption{\emph{Extra screenshots from within our hybrid hair renderer, for the Bear and Ponytail hair styles. The components shown here are: Kajiya-Kay, tangents, directional shadows, ambient occlusion, in left to right, top to bottom, ordering when rotated 90 degrees anti-clockwise. The hair geometry is based on Tomb Raider (2013).}}
-    \label{fig:representative}
+    \includegraphics[width=\linewidth]{figures/ponytail.jpg}
+    \includegraphics[width=\linewidth]{figures/ponytail-hair.jpg}
+    \includegraphics[width=\linewidth]{figures/bear-fur.jpg}
+    \includegraphics[width=\linewidth]{figures/bear.jpg}
 \end{figure}
 
 \end{document}

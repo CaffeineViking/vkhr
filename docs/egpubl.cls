@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%% start of egpubl.cls %%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%% start of egpubl.cls %%%%%%%%%%%%%%%%%%%%%%
 \def\fileversion{3.74}
 \def\filedate{2018/12/14}
 \def\docdate {2018/12/14}
@@ -769,7 +769,7 @@
 % ORCID
 \let\@orcid\relax
 \def\orcid@base{https://orcid.org/}
-\def\orcid#1{\hbox{\href{\orcid@base #1}{\includegraphics{../figures/orcid}}}}
+\def\orcid#1{\hbox{\href{\orcid@base #1}{\includegraphics{orcid}}}}
 
 \newif\ifSFB@abstract
 \def\abstract{\if@twocolumn
