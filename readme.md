@@ -5,7 +5,7 @@ Real-Time Hybrid Hair Renderer in Vulkan™
 
 This is a proof of concept hair renderer that's based on a novel hybrid approach. It's capable of rendering strand-based hair geometry in real-time, even for fully simulated hair styles with over 100,000 strands. Our hybrid rendering pipeline scales in the performance/quality domain by using a rasterizer for closeup shots and a raymarcher for level of detail minification. We can render multiple hair styles at once with this hybrid technique, which has a smooth transition between the two solutions.
 
-In the figure above we see Lara Croft's hair (with 136,320 hair strands and 1,635,840 line segments) rendered at 1920x1080, in real-time (7ms) with our rasterized solution. If we want to render more than a couple of characters on the screen at once, we're going to need a more scalable solution, as it doesn't scale for far away distances. This is where our raymarcher comes in, as its performance scales linearly with the fragments rendered on the screen, and is a also lot cheaper for far away hairs.
+In the figure above we see the ponytail from TressFX 3.1 (with 136,320 hair strands and 1,635,840 line segments) rendered in real-time (7ms) with our rasterized solution. If we want to render more than a couple of characters on the screen at once, we're going to need a more scalable solution, as it doesn't scale for far away distances. This is where our raymarcher comes in, as its performance scales linearly with the fragments rendered on the screen, and is a also lot cheaper for far away hairs.
 However, our raymarcher's performance breaks down during close-up shots, and also looks "worse" than our rasterizer for those cases, as it's an approximation of the real geometry. The trick is to use both of the solutions together! The rasterizer may perform worse, but it still produces high-quality close-up shots, and performance scaling isn't too bad in those cases. Our raymarcher performs and scales better at a distance and is indistinguishable from the rasterized results in those cases.
 The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We have alpha blended these two in the middle to simulate a level of detail transition. As you can see the results are quite close and the transitions are not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
 
@@ -231,17 +231,18 @@ Screenshots
 -----------
 
 <p align="center">
-   <img src="/docs/figures/ponytail.jpg" alt="Lara Croft's Ponytail"/>
+   <img src="/docs/figures/ponytail.jpg" alt="TressFX Ponytail"/>
    <br>
-   The screenshot above is another render from Lara Croft's ponytail (with 136,320 strands of hair) but from a different angle.
+   The screenshot above is another render of the ponytail from TressFX (with 136,320 hair strands), but from a different angle.
 </p>
 
 <p align="center">
-   <img src="/docs/figures/bear.jpg"     alt="Bear from Tomb Raider"/>
+   <img src="/docs/figures/bear.jpg"     alt="Big Bear from TressFX"/>
    <img src="/docs/figures/bear-fur.jpg" alt="Enhanced Fur for Bear"/>
    <br>
-   Above are screenshots of the bear (with 961,280 strands of fur) from "Rise of the Tomb Raider" (2015) rendered in real-time.
+   Above are screenshots of the bear from TressFX 3.1 (961,280 fur strands and 3,845,120 line segments) rendered in real-time.
 </p>
+
 
 <p align="center">
    <img width=100% src="/docs/figures/composition.jpg" alt="Component-by-Component Difference in the Two Solutions"/>
