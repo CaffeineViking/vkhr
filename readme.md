@@ -9,7 +9,7 @@ In the figure above we see the ponytail from TressFX 3.1 (with 136,320 hair stra
 However, our raymarcher's performance breaks down during close-up shots, and also looks "worse" than our rasterizer for those cases, as it's an approximation of the real geometry. The trick is to use both of the solutions together! The rasterizer may perform worse, but it still produces high-quality close-up shots, and performance scaling isn't too bad in those cases. Our raymarcher performs and scales better at a distance and is indistinguishable from the rasterized results in those cases.
 The figure below shows both the rasterized and raymarched solutions together. Each screenshot is split in the middle, with the left part being the rasterized solution, and the right side the raymarched solution. We have alpha blended these two in the middle to simulate a level of detail transition. As you can see the results are quite close and the transitions are not that noticeable from far away. There's however a huge (up to 5-6x) performance difference that scales proportional to distance.
 
-It is written 100% from scratch in Vulkan™ and simulates light scattering, self-shadowing and transparency in real-time with GLSL shaders and compute. We handle anti-aliasing by using a fast line coverage method. Our volumetric approximation is derived from the original geometry with a fast voxelization scheme that is used for raymarching and "direct" shading on an isosurface. We also use this volume for ambient occlusion and for more precise self-shadowing, even in the rasterized case.
+It is written 100% from scratch in Vulkan™ and simulates light scattering, self-shadowing and transparency in real-time. We do anti-aliasing by using a fast line coverage method. Our volumetric approximation is derived from the original geometry by a fast voxelization scheme that's used for raymarching and direct shading on an isosurface. We also use this volume for ambient occlusion and for more precise self-shadowing even in the rasterized case. Our work was published at EGSR 2019.
 
 <p align="center"><img width=97% src="/docs/figures/hybrid.jpg" alt="Hybrid Hair Render"/></p>
 
@@ -149,11 +149,13 @@ Usage
 
 * `bin/vkhr`: loads the default `vkhr` scene `share/scenes/ponytail.vkhr` with the default render settings.
 * `bin/vkhr <settings> <path-to-scene>`: loads the specified  `vkhr` scene, with the given render settings.
-* `bin/vkhr --benchmark yes`: runs the default benchmark and saves the profiles to an `benchmarks/` CSV.
-* **Default settings:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
+* `bin/vkhr --benchmark yes`: runs the default benchmark and saves it to a CSV file inside `benchmarks/`.
+    * Plots can be generated from this data by using the `utils/plotte.r` script (requires R and ggplot).
+* **Default configuration:** `--width 1280 --height 720 --fullscreen no --vsync on --benchmark no --ui yes`
 * **Shortcuts:** `U` toggles the UI, `S` takes a screenshots, `T` switches between renderers, `L` toggles light rotation on/off, `R` recompiles the shaders by using `glslc` (needs to be set in `$PATH` to work), and `Q` / `ESC` quits the app.
 * **Controls:** simply click and drag to rotate the camera, scroll to zoom, use the middle mouse button to pan.
 * **UI:** all configuration happens in the ImGUI window that is documented under the `Help` button in the UI.
+* `man docs/vkhr.1` will open the manual page containing even more detailed usage information for `vkhr`.
 
 Documentation
 -------------
@@ -163,6 +165,8 @@ You're reading part of it! Besides this [readme.md](/readme.md), you'll find tha
 If you want a high-level summary of our technique read [Real-Time Hybrid Hair Rendering](https://eriksvjansson.net/papers/rthhr.pdf), which is a short conference paper on our method (only the pre-print). You'll also find a copy of it here, which you can build by using LaTeX. If you want a more extensive and detailed version of our paper, my thesis [Scalable Strand-Based Hair Rendering](https://eriksvjansson.net/papers/ssbhr.pdf), will soon be available. Both of these also show the difference between our technique and other existing frameworks like TressFX, that only use a rasterizer.
 
 And if you still haven't had enough, I have written a bunch of entries in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log), that shows the progress log from day 1 to the current version. Besides having a lot of pretty pictures, it shows the problems we encountered, and how we've solved them. This gives a bit more insight into why we have chosen this approach, and not something completely different. Oh right, we also have a short [presentation](https://eriksvjansson.net/others/sshr.pptx) if you don't want to read the paper or thesis, it has everything but in less detail.
+
+And if you still haven't had enough, I have written a bunch of entries in the [Captain's Log](https://github.com/CaffeineViking/vkhr/wiki/Captain's-Log), that shows the progress log from day 1 to the current version. Besides having a lot of pretty pictures, it shows the problems we encountered, and how we've solved them. This gives a bit more insight into why we have chosen this approach, and not something completely different. The slides for my [thesis defense](https://eriksvjansson.net/others/sshr.pptx) and presentation at [EGSR 2019](https://eriksvjansson.net/others/rthhr.pptx) could also be useful to get an overview into our technique.
 
 Directories
 -----------
