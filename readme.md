@@ -43,7 +43,7 @@ Features
 A real-time hybrid hair rendering pipeline suitable for video games, that scales in the performance and quality domain. It is:
 
 * Written from scratch in **modern C++17** with minimal dependencies,
-* Uses the **[Vulkan™ API](https://www.khronos.org/vulkan/)** with a lightweight wrapper: **[vkpp](https://github.com/CaffeineViking/vkpp)**, written for modern C++17, with proper lifetime management,
+* Uses the **[Vulkan™ API](https://www.khronos.org/vulkan/)** with a lightweight wrapper: **[vkpp](/src/vkpp)**, written for modern C++17, with proper lifetime management,
 * Has a built-in raytracer based on **[Intel's Embree®](https://embree.github.io/)** with a **[CMJ](https://graphics.pixar.com/library/MultiJitteredSampling/paper.pdf)** sampler to compare ground-truth global effects, like AO,
 * Loads **[Cem Yuksel's](http://www.cemyuksel.com/research/hairmodels/)** free & open **[.hair file format](http://www.cemyuksel.com/research/hairmodels/)**, and has a easy human-readable **[scene graph format](/share/scenes/ponytail.vkhr)** based on JSON,
 * Consists of a strand-based hair **rasterizer** and a volume **raymarcher**.
@@ -98,7 +98,7 @@ Dependencies
 * `embree3` (uses v3.2.4)
 * Any C++17 compiler!
 
-All other dependencies are fetched using `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb` and `nlohmann/json`. The C++17 Vulkan wrapper: `vkpp` is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
+All other dependencies are fetched using `git submodules`. They include the following awesome libraries: `g-truc/glm`, `ocurnut/imgui`, `syoyo/tinyobjloader`, `nothings/stb` and `nlohmann/json`. The C++17 Vulkan wrapper: [vkpp](/src/vkpp) is being developed alongside this project. It will at a later time be split into another repository: [vkpp](https://github.com/CaffeineViking/vkpp), when I have time to do it.
 
 Compiling
 ---------
