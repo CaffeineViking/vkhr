@@ -113,9 +113,8 @@ namespace vkhr {
         if (gui_visible) {
             auto& window = rasterizer.window_surface.get_glfw_window();
 
-            ImGui::Begin(" Real-Time Hybrid Hair Renderer in Vulkan",
-                         &gui_visible, ImGuiWindowFlags_AlwaysAutoResize |
-                                       ImGuiWindowFlags_NoCollapse);
+            ImGui::Begin(" VKHR Settings", &gui_visible, ImGuiWindowFlags_AlwaysAutoResize |
+                                                         ImGuiWindowFlags_NoCollapse);
 
             // Changed with both ImGui and the keyboard shortcuts.
             if (ImGui::Checkbox("Fullscreen", &window.fullscreen)) {
@@ -135,7 +134,62 @@ namespace vkhr {
 
             ImGui::SameLine();
 
-            ImGui::Button("Help");
+            if (ImGui::Button("Help")) help_window = !help_window;
+
+            if (help_window) {
+                ImGui::Begin(" Help", &help_window, ImGuiWindowFlags_AlwaysAutoResize |
+                                                    ImGuiWindowFlags_NoCollapse |
+                                                    ImGuiWindowFlags_NoFocusOnAppearing);
+                ImGui::Text("VKHR: Real-Time Hybrid Hair Renderer in Vulkan");
+                ImGui::Text("Copyright (C) Erik S. V. Jansson - MIT License");
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::Text("VKHR is a proof-of-concept hair renderer based");
+                ImGui::Text("on a novel hybrid technique. It scales well in");
+                ImGui::Text("the performance/quality domain for many hairs.");
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::Text("Basic scene interaction happens with the mouse");
+                ImGui::Spacing();
+                ImGui::BulletText("Click and drag to rotate");
+                ImGui::BulletText("The middle mouse button pans your camera");
+                ImGui::BulletText("Zoom via the mouse wheel");
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::Text("Most of the configuration is done using the UI");
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::Text("Some things can be controlled via the keyboard");
+                ImGui::Spacing();
+                ImGui::BulletText("U: Toggle user interface");
+                ImGui::BulletText("T: Switch between last selected renderer");
+                ImGui::BulletText("L: Toggle light rotation");
+                ImGui::BulletText("R: Recompile GLSL (needs glslc in $PATH)");
+                ImGui::BulletText("F: Make fullscreen (F11)");
+                ImGui::BulletText("S: Take screenshot and save down to disk");
+                ImGui::BulletText("Q: Quits the application");
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::Text("Please file an issue if you find any problems!");
+                ImGui::Text("GitHub: https://github.com/CaffeineViking/vkhr");
+
+                ImGui::End();
+            }
 
             ImGui::Spacing();
             ImGui::Separator();
