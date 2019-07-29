@@ -186,8 +186,8 @@ namespace vkhr {
         bool light_debugger { false };
         bool light_rotation { false };
 
-        bool gui_visible { true };
-        bool help_window { true };
+        bool gui_visible { true  };
+        bool help_window { false };
 
         ImGuiContext* ctx { nullptr };
     };

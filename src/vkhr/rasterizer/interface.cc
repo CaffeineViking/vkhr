@@ -138,8 +138,7 @@ namespace vkhr {
 
             if (help_window) {
                 ImGui::Begin(" Help", &help_window, ImGuiWindowFlags_AlwaysAutoResize |
-                                                    ImGuiWindowFlags_NoCollapse |
-                                                    ImGuiWindowFlags_NoFocusOnAppearing);
+                                                    ImGuiWindowFlags_NoCollapse);
                 ImGui::Text("VKHR: Real-Time Hybrid Hair Renderer in Vulkan");
                 ImGui::Text("Copyright (C) Erik S. V. Jansson - MIT License");
 
