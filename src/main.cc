@@ -6,11 +6,10 @@
 
 #include <vkhr/rasterizer.hh>
 #include <vkhr/scene_graph.hh>
+#include <vkhr/benchmark.hh>
 #include <vkhr/ray_tracer.hh>
 
 #include <glm/glm.hpp>
-
-void build_benchmarks(vkhr::Rasterizer& dut);
 
 int main(int argc, char** argv) {
     vkhr::ArgParser argp { vkhr::arguments };
@@ -61,8 +60,8 @@ int main(int argc, char** argv) {
     window.show();
 
     if (argp["benchmark"].value.boolean == 1) {
-        build_benchmarks(rasterizer);
-        rasterizer.start_benchmark(scene_graph);
+        vkhr::Benchmark::construct(rasterizer);
+        rasterizer.run_benchmarks(scene_graph);
     }
 
     while (window.is_open()) {
@@ -113,135 +112,4 @@ int main(int argc, char** argv) {
     }
 
     return 0;
-}
-
-void build_benchmarks(vkhr::Rasterizer& rasterizer) {
-    vkhr::Rasterizer::Benchmark default_parameter {
-        "Benchmark Scenario",
-        SCENE("ponytail.vkhr"),
-        1280,
-        720,
-        vkhr::Renderer::Rasterizer,
-        226,
-        1.0,
-        512
-    };
-
-    rasterizer.append_benchmark({ "Time (ms)", SCENE("ponytail.vkhr"), default_parameter.width, default_parameter.height, vkhr::Renderer::Rasterizer, 226, default_parameter.strand_reduction, default_parameter.raymarch_steps });
-
-    for (float distance { 200.0f }; distance < 2000.0f; distance += 1800.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Distance",
-                                      SCENE("ponytail.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Rasterizer,
-                                      distance,
-                                      default_parameter.strand_reduction,
-                                      default_parameter.raymarch_steps });
-    }
-
-    for (float strands { 1.0f }; strands > 0.0f; strands -= 1.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Strands",
-                                      SCENE("ponytail.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Rasterizer,
-                                      226,
-                                      strands,
-                                      default_parameter.raymarch_steps });
-    }
-
-    rasterizer.append_benchmark({ "Time (ms)", SCENE("ponytail.vkhr"), default_parameter.width, default_parameter.height, vkhr::Renderer::Raymarcher, 226, default_parameter.strand_reduction, default_parameter.raymarch_steps });
-
-    for (float distance { 200.0f }; distance < 2000.0f; distance += 1800.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Distance",
-                                      SCENE("ponytail.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Raymarcher,
-                                      distance,
-                                      default_parameter.strand_reduction,
-                                      default_parameter.raymarch_steps });
-    }
-
-    for (int samples { 512 }; samples >= 64; samples -= 448 / 64) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Samples",
-                                      SCENE("ponytail.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Raymarcher,
-                                      226,
-                                      default_parameter.strand_reduction,
-                                      samples });
-    }
-
-    for (float strands { 1.0f }; strands > 0.0f; strands -= 1.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Strands",
-                                      SCENE("ponytail.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Raymarcher,
-                                      226,
-                                      strands,
-                                      default_parameter.raymarch_steps });
-    }
-
-    rasterizer.append_benchmark({ "Time (ms)", SCENE("bear.vkhr"), default_parameter.width, default_parameter.height, vkhr::Renderer::Rasterizer, 385, default_parameter.strand_reduction, default_parameter.raymarch_steps });
-
-    for (float distance { 300.0f }; distance < 3000.0f; distance += 2700.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Distance",
-                                      SCENE("bear.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Rasterizer,
-                                      distance,
-                                      default_parameter.strand_reduction,
-                                      default_parameter.raymarch_steps });
-    }
-
-    for (float strands { 1.0f }; strands > 0.0f; strands -= 1.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Strands",
-                                      SCENE("bear.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Rasterizer,
-                                      385,
-                                      strands,
-                                      default_parameter.raymarch_steps });
-    }
-
-    rasterizer.append_benchmark({ "Time (ms)", SCENE("bear.vkhr"), default_parameter.width, default_parameter.height, vkhr::Renderer::Raymarcher, 385, default_parameter.strand_reduction, default_parameter.raymarch_steps });
-
-    for (float distance { 300.0f }; distance < 3000.0f; distance += 2700.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Distance",
-                                      SCENE("bear.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Raymarcher,
-                                      distance,
-                                      default_parameter.strand_reduction,
-                                      default_parameter.raymarch_steps });
-    }
-
-    for (int samples { 512 }; samples >= 64; samples -= 448 / 64) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Samples",
-                                      SCENE("bear.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Raymarcher,
-                                      385,
-                                      default_parameter.strand_reduction,
-                                      samples });
-    }
-
-    for (float strands { 1.0f }; strands > 0.0f; strands -= 1.0f / 64.0f) {
-        rasterizer.append_benchmark({ "Time (ms) vs. Strands",
-                                      SCENE("bear.vkhr"),
-                                      default_parameter.width,
-                                      default_parameter.height,
-                                      vkhr::Renderer::Raymarcher,
-                                      385,
-                                      strands,
-                                      default_parameter.raymarch_steps });
-    }
 }

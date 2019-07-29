@@ -367,6 +367,7 @@
     <ClInclude Include="..\foreign\stb\stretchy_buffer.h" />
     <ClInclude Include="..\foreign\tinyobjloader\tiny_obj_loader.h" />
     <ClInclude Include="..\include\vkhr\arg_parser.hh" />
+    <ClInclude Include="..\include\vkhr\benchmark.hh" />
     <ClInclude Include="..\include\vkhr\image.hh" />
     <ClInclude Include="..\include\vkhr\input_map.hh" />
     <ClInclude Include="..\include\vkhr\paths.hh" />

@@ -71,7 +71,7 @@ namespace vkhr {
         };
 
         void append_benchmark(const Benchmark& benchmark_parameters);
-        void start_benchmark(SceneGraph& scene_graph);
+        void run_benchmarks(SceneGraph& scene_graph);
         void append_benchmarks(const std::vector<Benchmark>& params);
 
         bool benchmark(SceneGraph& scene_graph);

@@ -590,6 +590,12 @@ namespace vkhr {
         imgui_pass = {};
     }
 
+    /* |----------------------------------------------------------------------| */
+    /* |----------------------------------------------------------------------| */
+    /* |----------------------- BENCHMARK BOILERPLATE ------------------------| */
+    /* |----------------------------------------------------------------------| */
+    /* |----------------------------------------------------------------------| */
+
     void Rasterizer::append_benchmarks(const std::vector<Benchmark>& benchmarks) {
         for (auto& benchmark : benchmarks) {
             benchmark_queue.push(benchmark);
@@ -600,7 +606,7 @@ namespace vkhr {
         benchmark_queue.push(benchmark);
     }
 
-    void Rasterizer::start_benchmark(SceneGraph& scene_graph) {
+    void Rasterizer::run_benchmarks(SceneGraph& scene_graph) {
         if (!imgui.parameters.benchmarking && !benchmark_queue.empty()) {
             time_t current_time = time(0);
             struct tm time_structure;

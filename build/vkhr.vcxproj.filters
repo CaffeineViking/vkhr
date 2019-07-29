@@ -936,6 +936,9 @@
     <ClInclude Include="..\include\vkhr\arg_parser.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\vkhr\benchmark.hh">
+      <Filter>include\vkhr</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\vkhr\image.hh">
       <Filter>include\vkhr</Filter>
     </ClInclude>
