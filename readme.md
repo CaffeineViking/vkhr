@@ -117,7 +117,7 @@ Compiling
     * **Unix-like:** just install `embree` using your package managers
     * **Visual Studio:** pre-built version is already provided for you!
 6. Generate the `vkhr` project files by targeting your current setup
-    * **Visual Studio:** `premake5 vs2017` or my alias `make solution`
+    * **Visual Studio:** `premake5 vs2019` or my alias `make solution`
         * then open the Visual Studio project in `build/vkhr.sln`
         * you might have to retarget the VS solution to your SDK
     * **GNU Makefiles:** `premake5 gmake` or just call `make all/run`.
