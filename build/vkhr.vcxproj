@@ -58,11 +58,12 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
+      <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>DEBUG;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\examples;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/openmp /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -76,6 +77,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
+      <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>RELEASE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\examples;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -85,7 +87,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalOptions>/openmp %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/openmp /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

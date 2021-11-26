@@ -95,7 +95,9 @@ project (name)
 
         entrypoint "mainCRTStartup"
 
-        buildoptions { "/openmp" }
+        buildoptions { "/openmp", "/Zc:twoPhase-" }
+
+        disablewarnings { "4201" }
 
         files { GLFW.."/include/GLFW/*.h" }
         files { EMBREE.."/include/embree3/*.h" }
