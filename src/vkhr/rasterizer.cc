@@ -19,7 +19,7 @@ namespace vkhr {
 
         std::vector<vk::Layer> required_layers {
         #ifdef DEBUG
-            "VK_LAYER_LUNARG_standard_validation"
+            "VK_LAYER_KHRONOS_validation"
         #endif
         };
 
