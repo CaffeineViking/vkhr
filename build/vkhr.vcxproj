@@ -81,7 +81,7 @@
       <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>RELEASE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include;..\foreign\include;..\foreign\imgui;..\foreign\examples;..\foreign\imgui\examples;..\foreign\json\include;..\foreign\tinyobjloader;..\foreign\stb;..\foreign\glm;$(VULKAN_SDK)\include;..\foreign\embree\include;..\foreign\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -94,7 +94,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(VULKAN_SDK)\lib\vulkan-1.lib;..\foreign\glfw\lib\glfw3dll.lib;..\foreign\embree\lib\embree3.lib;%(AdditionalDependencies)</AdditionalDependencies>

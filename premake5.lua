@@ -17,7 +17,7 @@ workspace (name)
     filter "configurations:Release"
         defines  "RELEASE"
         optimize "Speed"
-        symbols  "Off"
+        symbols  "On"
 
     floatingpoint "Fast"
 
