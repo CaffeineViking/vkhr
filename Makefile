@@ -60,7 +60,7 @@ pre-generate: clean solution
 	rm -rf build/.vs
 	git add -f build
 solution: FORCE
-	premake5 vs2019
+	premake5 vs2022
 
 bundle-assets: FORCE
 	rm -rf bin/share
